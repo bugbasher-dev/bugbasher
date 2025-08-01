@@ -2,7 +2,7 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { data, redirect, Form, useSearchParams } from 'react-router'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
-import { safeRedirect } from 'remix-utils/safe-redirect'
+
 import { z } from 'zod'
 import { CheckboxField, ErrorList } from '#app/components/forms.tsx'
 import {
@@ -35,6 +35,7 @@ import { verifySessionStorage } from '#app/utils/verification.server.ts'
 import { type Route } from './+types/onboarding.ts'
 
 export const onboardingEmailSessionKey = 'onboardingEmail'
+export const onboardingInviteTokenSessionKey = 'onboardingInviteToken'
 
 const SignupFormSchema = z
 	.object({
@@ -61,13 +62,23 @@ async function requireOnboardingEmail(request: Request) {
 	return email
 }
 
+async function getOnboardingInviteToken(request: Request) {
+	const verifySession = await verifySessionStorage.getSession(
+		request.headers.get('cookie'),
+	)
+	const inviteToken = verifySession.get(onboardingInviteTokenSessionKey)
+	return typeof inviteToken === 'string' ? inviteToken : null
+}
+
 export async function loader({ request }: Route.LoaderArgs) {
 	const email = await requireOnboardingEmail(request)
-	return { email }
+	const inviteToken = await getOnboardingInviteToken(request)
+	return { email, inviteToken }
 }
 
 export async function action({ request }: Route.ActionArgs) {
 	const email = await requireOnboardingEmail(request)
+	const inviteToken = await getOnboardingInviteToken(request)
 	const formData = await request.formData()
 	await checkHoneypot(formData)
 	const submission = await parseWithZod(formData, {
@@ -129,6 +140,30 @@ export async function action({ request }: Route.ActionArgs) {
 		await verifySessionStorage.destroySession(verifySession),
 	)
 
+	// Check for invite token first
+	if (inviteToken) {
+		try {
+			const { createInvitationFromLink } = await import(
+				'#app/utils/organization-invitation.server.ts'
+			)
+			// Create a pending invitation for this user
+			const invitation = await createInvitationFromLink(inviteToken, email)
+
+			const inviterName = invitation.inviter?.name || invitation.inviter?.email || 'Someone'
+			return redirectWithToast(
+				'/settings/organizations',
+				{
+					title: 'Welcome!',
+					description: `Thanks for signing up! ${inviterName} has invited you to join ${invitation.organization.name}. Review the invitation below.`,
+				},
+				{ headers },
+			)
+		} catch (error) {
+			console.error('Error processing invite link during signup:', error)
+			// If invite link processing fails, continue with normal flow
+		}
+	}
+
 	// Check for pending organization invitations and accept them
 	try {
 		const { acceptInvitationByEmail } = await import(
@@ -144,15 +179,12 @@ export async function action({ request }: Route.ActionArgs) {
 				(result) => !result.alreadyMember,
 			)
 			if (joinedOrganizations.length > 0) {
-				const orgNames = joinedOrganizations
-					.map((result) => result.organization.name)
-					.join(', ')
-				const firstOrgSlug = joinedOrganizations[0]?.organization.slug
+				// If user has pending invitations, redirect to settings/organizations to accept them
 				return redirectWithToast(
-					`/app/${firstOrgSlug}`,
+					'/settings/organizations',
 					{
 						title: 'Welcome!',
-						description: `Thanks for signing up! You've been added to: ${orgNames}`,
+						description: `Thanks for signing up! You have pending organization invitations.`,
 					},
 					{ headers },
 				)
@@ -184,6 +216,7 @@ export default function OnboardingRoute({
 	const isPending = useIsPending()
 	const [searchParams] = useSearchParams()
 	const redirectTo = searchParams.get('redirectTo')
+	const inviteToken = loaderData.inviteToken
 
 	const [form, fields] = useForm({
 		id: 'onboarding-form',
@@ -199,9 +232,11 @@ export default function OnboardingRoute({
 	return (
 		<Card className="border-0 shadow-2xl">
 			<CardHeader className="text-center">
-				<CardTitle className="text-xl">Welcome aboard!</CardTitle>
+				<CardTitle className="text-xl">
+					{inviteToken ? 'Complete your profile' : 'Welcome aboard!'}
+				</CardTitle>
 				<CardDescription>
-					Hi {loaderData.email}, please complete your profile.
+					Hi {loaderData.email}, please complete your profile{inviteToken ? ' to join the organization' : ''}.
 				</CardDescription>
 			</CardHeader>
 			<CardContent>

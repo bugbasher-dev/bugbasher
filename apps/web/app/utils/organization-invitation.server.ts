@@ -3,7 +3,6 @@ import { OrganizationInviteEmail } from '@repo/email'
 import { prisma } from '#app/utils/db.server'
 import { sendEmail } from '#app/utils/email.server'
 import { markStepCompleted } from '#app/utils/onboarding'
-import { redirect } from 'react-router'
 
 export async function createOrganizationInvitation({
 	organizationId,
@@ -250,4 +249,189 @@ export async function validateAndAcceptInvitation(
 	])
 
 	return { organization: invitation.organization, alreadyMember: false }
+}
+
+// Invite Link Functions
+export async function createOrganizationInviteLink({
+	organizationId,
+	role = 'member',
+	createdById,
+}: {
+	organizationId: string
+	role?: string
+	createdById: string
+}) {
+	const token = crypto.randomUUID()
+
+	const inviteLink = await prisma.organizationInviteLink.upsert({
+		where: {
+			organizationId_createdById: {
+				organizationId,
+				createdById,
+			},
+		},
+		update: {
+			token,
+			role,
+			isActive: true,
+		},
+		create: {
+			organizationId,
+			token,
+			role,
+			createdById,
+		},
+	})
+
+	return inviteLink
+}
+
+export async function getOrganizationInviteLink(organizationId: string, createdById: string) {
+	return prisma.organizationInviteLink.findUnique({
+		where: {
+			organizationId_createdById: {
+				organizationId,
+				createdById,
+			},
+		},
+	})
+}
+
+export async function getAllOrganizationInviteLinks(organizationId: string) {
+	return prisma.organizationInviteLink.findMany({
+		where: {
+			organizationId,
+			isActive: true,
+		},
+		include: {
+			createdBy: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+				},
+			},
+		},
+	})
+}
+
+export async function deactivateOrganizationInviteLink(organizationId: string, createdById: string) {
+	return prisma.organizationInviteLink.update({
+		where: {
+			organizationId_createdById: {
+				organizationId,
+				createdById,
+			},
+		},
+		data: {
+			isActive: false,
+		},
+	})
+}
+
+export async function validateInviteLink(token: string) {
+	const inviteLink = await prisma.organizationInviteLink.findUnique({
+		where: { token },
+		include: {
+			organization: true,
+		},
+	})
+
+	if (!inviteLink) {
+		throw new Error('Invite link not found')
+	}
+
+	if (!inviteLink.isActive) {
+		throw new Error('Invite link is no longer active')
+	}
+
+	return inviteLink
+}
+
+export async function createInvitationFromLink(
+	token: string,
+	userEmail: string,
+) {
+	const inviteLink = await validateInviteLink(token)
+
+	// Create a pending invitation for this user, including who invited them
+	const invitation = await prisma.organizationInvitation.upsert({
+		where: {
+			email_organizationId: {
+				email: userEmail.toLowerCase(),
+				organizationId: inviteLink.organizationId,
+			},
+		},
+		update: {
+			role: inviteLink.role,
+			token: crypto.randomUUID(),
+			expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
+			inviterId: inviteLink.createdById, // Track who invited them
+		},
+		create: {
+			email: userEmail.toLowerCase(),
+			organizationId: inviteLink.organizationId,
+			role: inviteLink.role,
+			token: crypto.randomUUID(),
+			expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
+			inviterId: inviteLink.createdById, // Track who invited them
+		},
+		include: {
+			organization: true,
+			inviter: {
+				select: {
+					name: true,
+					email: true,
+				},
+			},
+		},
+	})
+
+	return invitation
+}
+
+export async function validateAndAcceptInviteLink(
+	token: string,
+	userId: string,
+) {
+	const inviteLink = await prisma.organizationInviteLink.findUnique({
+		where: { token },
+		include: {
+			organization: true,
+		},
+	})
+
+	if (!inviteLink) {
+		throw new Error('Invite link not found')
+	}
+
+	if (!inviteLink.isActive) {
+		throw new Error('Invite link is no longer active')
+	}
+
+	// Check if user is already a member
+	const existingMember = await prisma.userOrganization.findUnique({
+		where: {
+			userId_organizationId: {
+				userId,
+				organizationId: inviteLink.organizationId,
+			},
+		},
+	})
+
+	if (existingMember) {
+		return { organization: inviteLink.organization, alreadyMember: true }
+	}
+
+	// Add user to organization
+	await prisma.userOrganization.create({
+		data: {
+			userId,
+			organizationId: inviteLink.organizationId,
+			role: inviteLink.role,
+			active: true,
+		},
+	})
+
+	return { organization: inviteLink.organization, alreadyMember: false }
 }

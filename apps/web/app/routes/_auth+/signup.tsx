@@ -29,8 +29,10 @@ import { sendEmail } from '#app/utils/email.server.ts'
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { EmailSchema } from '#app/utils/user-validation.ts'
+import { verifySessionStorage } from '#app/utils/verification.server'
 import { type Route } from './+types/signup.ts'
 import { prepareVerification } from './verify.server.ts'
+import { onboardingInviteTokenSessionKey } from './onboarding'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,
@@ -71,7 +73,14 @@ const aj = arcjet
 
 export async function loader({ request }: Route.LoaderArgs) {
 	await requireAnonymous(request)
-	return null
+	
+	// Check for invite token in session
+	const verifySession = await verifySessionStorage.getSession(
+		request.headers.get('cookie'),
+	)
+	const inviteToken = verifySession.get(onboardingInviteTokenSessionKey)
+	
+	return { inviteToken: typeof inviteToken === 'string' ? inviteToken : null }
 }
 
 export async function action(args: Route.ActionArgs) {
@@ -166,10 +175,11 @@ export const meta: Route.MetaFunction = () => {
 	return [{ title: 'Sign Up | Epic Notes' }]
 }
 
-export default function SignupRoute({ actionData }: Route.ComponentProps) {
+export default function SignupRoute({ actionData, loaderData }: Route.ComponentProps) {
 	const isPending = useIsPending()
 	const [searchParams] = useSearchParams()
 	const redirectTo = searchParams.get('redirectTo')
+	const inviteToken = loaderData?.inviteToken
 
 	const [form, fields] = useForm({
 		id: 'signup-form',
@@ -185,9 +195,14 @@ export default function SignupRoute({ actionData }: Route.ComponentProps) {
 	return (
 		<Card className="border-0 shadow-2xl">
 			<CardHeader className="text-center">
-				<CardTitle className="text-xl">Create an account</CardTitle>
+				<CardTitle className="text-xl">
+					{inviteToken ? 'Join organization' : 'Create an account'}
+				</CardTitle>
 				<CardDescription>
-					Sign up with your social account or email
+					{inviteToken 
+						? 'Complete your signup to join the organization'
+						: 'Sign up with your social account or email'
+					}
 				</CardDescription>
 			</CardHeader>
 			<CardContent>

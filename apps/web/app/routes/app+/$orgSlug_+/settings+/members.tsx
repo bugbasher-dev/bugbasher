@@ -21,6 +21,9 @@ import {
 	sendOrganizationInvitationEmail,
 	getOrganizationInvitations,
 	deleteOrganizationInvitation,
+	createOrganizationInviteLink,
+	getOrganizationInviteLink,
+	deactivateOrganizationInviteLink,
 } from '#app/utils/organization-invitation.server'
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -47,7 +50,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 		throw new Response('Not Found', { status: 404 })
 	}
 
-	const [pendingInvitations, members] = await Promise.all([
+	const [pendingInvitations, members, inviteLink] = await Promise.all([
 		getOrganizationInvitations(organization.id),
 		prisma.userOrganization.findMany({
 			where: {
@@ -72,12 +75,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 				createdAt: 'asc',
 			},
 		}),
+		getOrganizationInviteLink(organization.id, userId),
 	])
 
 	return {
 		organization,
 		pendingInvitations,
 		members,
+		inviteLink,
 		currentUserId: userId,
 	}
 }
@@ -116,7 +121,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 	const formData = await request.formData()
 	const intent = formData.get('intent')
 
-	if (intent === 'invite') {
+	if (intent === 'send-invitations') {
 		const submission = parseWithZod(formData, { schema: InviteSchema })
 
 		if (submission.status !== 'success') {
@@ -209,11 +214,58 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		}
 	}
 
+	if (intent === 'create-invite-link') {
+		try {
+			const inviteLink = await createOrganizationInviteLink({
+				organizationId: organization.id,
+				role: 'member',
+				createdById: userId,
+			})
+			return Response.json({ success: true, inviteLink })
+		} catch (error) {
+			console.error('Error creating invite link:', error)
+			return Response.json(
+				{ error: 'Failed to create invite link' },
+				{ status: 500 },
+			)
+		}
+	}
+
+	if (intent === 'reset-invite-link') {
+		try {
+			const inviteLink = await createOrganizationInviteLink({
+				organizationId: organization.id,
+				role: 'member',
+				createdById: userId,
+			})
+			return Response.json({ success: true, inviteLink })
+		} catch (error) {
+			console.error('Error resetting invite link:', error)
+			return Response.json(
+				{ error: 'Failed to reset invite link' },
+				{ status: 500 },
+			)
+		}
+	}
+
+	if (intent === 'deactivate-invite-link') {
+		try {
+			await deactivateOrganizationInviteLink(organization.id, userId)
+			return Response.json({ success: true })
+		} catch (error) {
+			console.error('Error deactivating invite link:', error)
+			return Response.json(
+				{ error: 'Failed to deactivate invite link' },
+				{ status: 500 },
+			)
+		}
+	}
+
 	return Response.json({ error: `Invalid intent: ${intent}` }, { status: 400 })
 }
 
 export default function MembersSettings() {
-	const { pendingInvitations, members, currentUserId } =
+	const { pendingInvitations, members, inviteLink, currentUserId } =
 		useLoaderData<typeof loader>()
 	const actionData = useActionData<typeof action>()
 
@@ -232,6 +284,7 @@ export default function MembersSettings() {
 			>
 				<InvitationsCard
 					pendingInvitations={pendingInvitations}
+					inviteLink={inviteLink}
 					actionData={actionData}
 				/>
 			</AnnotatedSection>

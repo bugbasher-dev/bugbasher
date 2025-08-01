@@ -1,10 +1,13 @@
 import { Img } from 'openimg/react'
 import { useState } from 'react'
-import { type LoaderFunctionArgs, Link, useLoaderData } from 'react-router'
+import { type LoaderFunctionArgs, type ActionFunctionArgs, Link, useLoaderData, Form } from 'react-router'
 import { Button } from '#app/components/ui/button'
 import { Input } from '#app/components/ui/input'
 import { PageTitle } from '#app/components/ui/page-title'
+import { Badge } from '#app/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '#app/components/ui/card'
 import { requireUserId } from '#app/utils/auth.server'
+import { prisma } from '#app/utils/db.server'
 import {
 	type UserOrganizationWithRole,
 	getUserOrganizations,
@@ -14,13 +17,126 @@ import { Icon } from '#app/components/ui/icon.tsx'
 export async function loader({ request }: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)
 
-	const organizations = await getUserOrganizations(userId)
+	const [organizations, user] = await Promise.all([
+		getUserOrganizations(userId),
+		prisma.user.findUnique({
+			where: { id: userId },
+			select: { email: true },
+		}),
+	])
 
-	return { organizations }
+	// Get pending invitations for this user's email
+	const pendingInvitations = user?.email 
+		? await prisma.organizationInvitation.findMany({
+				where: {
+					email: user.email.toLowerCase(),
+					expiresAt: {
+						gte: new Date(),
+					},
+				},
+				include: {
+					organization: {
+						select: {
+							id: true,
+							name: true,
+							slug: true,
+							image: {
+								select: {
+									objectKey: true,
+								},
+							},
+						},
+					},
+					inviter: {
+						select: {
+							name: true,
+							email: true,
+						},
+					},
+				},
+				orderBy: {
+					createdAt: 'desc',
+				},
+			})
+		: []
+
+	return { organizations, pendingInvitations }
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+	const userId = await requireUserId(request)
+	const formData = await request.formData()
+	const intent = formData.get('intent')
+	const invitationId = formData.get('invitationId') as string
+
+	if (intent === 'accept-invitation') {
+		try {
+			const invitation = await prisma.organizationInvitation.findUnique({
+				where: { id: invitationId },
+				include: { organization: true },
+			})
+
+			if (!invitation) {
+				return Response.json({ error: 'Invitation not found' }, { status: 404 })
+			}
+
+			// Check if user is already a member
+			const existingMember = await prisma.userOrganization.findUnique({
+				where: {
+					userId_organizationId: {
+						userId,
+						organizationId: invitation.organizationId,
+					},
+				},
+			})
+
+			if (!existingMember) {
+				// Add user to organization
+				await prisma.userOrganization.create({
+					data: {
+						userId,
+						organizationId: invitation.organizationId,
+						role: invitation.role,
+						active: true,
+					},
+				})
+			}
+
+			// Delete the invitation
+			await prisma.organizationInvitation.delete({
+				where: { id: invitationId },
+			})
+
+			return Response.json({ success: true })
+		} catch (error) {
+			console.error('Error accepting invitation:', error)
+			return Response.json(
+				{ error: 'Failed to accept invitation' },
+				{ status: 500 },
+			)
+		}
+	}
+
+	if (intent === 'decline-invitation') {
+		try {
+			await prisma.organizationInvitation.delete({
+				where: { id: invitationId },
+			})
+			return Response.json({ success: true })
+		} catch (error) {
+			console.error('Error declining invitation:', error)
+			return Response.json(
+				{ error: 'Failed to decline invitation' },
+				{ status: 500 },
+			)
+		}
+	}
+
+	return Response.json({ error: 'Invalid intent' }, { status: 400 })
 }
 
 export default function OrganizationsPage() {
-	const { organizations } = useLoaderData<typeof loader>()
+	const { organizations, pendingInvitations } = useLoaderData<typeof loader>()
 	const [searchQuery, setSearchQuery] = useState('')
 
 	const filteredOrganizations = organizations.filter(
@@ -40,7 +156,7 @@ export default function OrganizationsPage() {
 			<div className="mb-8">
 				<PageTitle
 					title="Organizations"
-					description="Jump into an existing organization or add a new one."
+					description="Jump into an existing organization, accept pending invitations, or add a new one."
 				/>
 
 				<div className="mt-4 flex items-center gap-3">
@@ -65,6 +181,74 @@ export default function OrganizationsPage() {
 					</Button>
 				</div>
 			</div>
+
+			{/* Pending Invitations */}
+			{pendingInvitations.length > 0 && (
+				<Card className="mb-6">
+					<CardHeader>
+						<CardTitle className="flex items-center gap-2">
+							<Icon name="envelope-closed" className="h-5 w-5" />
+							Pending Invitations
+						</CardTitle>
+						<p className="text-muted-foreground text-sm">
+							You have been invited to join the following organizations. Choose to accept or decline each invitation.
+						</p>
+					</CardHeader>
+					<CardContent className="space-y-3">
+						{pendingInvitations.map((invitation) => (
+							<div
+								key={invitation.id}
+								className="flex items-center justify-between rounded-lg border p-4"
+							>
+								<div className="flex items-center gap-3">
+									<div className="ring-muted bg-muted flex h-10 w-10 items-center justify-center overflow-hidden rounded-md text-sm font-medium ring-2 ring-offset-2">
+										{invitation.organization.image?.objectKey ? (
+											<Img
+												src={getOrgImgSrc(invitation.organization.image.objectKey)}
+												alt={invitation.organization.name}
+												className="h-full w-full object-cover"
+												width={40}
+												height={40}
+											/>
+										) : (
+											<span>{invitation.organization.name.charAt(0).toUpperCase()}</span>
+										)}
+									</div>
+									<div>
+										<div className="font-medium">{invitation.organization.name}</div>
+										<div className="text-muted-foreground flex items-center gap-2 text-sm">
+											<Badge variant="secondary" className="text-xs">
+												{invitation.role}
+											</Badge>
+											{invitation.inviter && (
+												<span>
+													Invited by {invitation.inviter.name || invitation.inviter.email}
+												</span>
+											)}
+										</div>
+									</div>
+								</div>
+								<div className="flex gap-2">
+									<Form method="POST">
+										<input type="hidden" name="intent" value="accept-invitation" />
+										<input type="hidden" name="invitationId" value={invitation.id} />
+										<Button type="submit" size="sm">
+											Accept
+										</Button>
+									</Form>
+									<Form method="POST">
+										<input type="hidden" name="intent" value="decline-invitation" />
+										<input type="hidden" name="invitationId" value={invitation.id} />
+										<Button type="submit" variant="outline" size="sm">
+											Decline
+										</Button>
+									</Form>
+								</div>
+							</div>
+						))}
+					</CardContent>
+				</Card>
+			)}
 
 			<div className="space-y-2">
 				{filteredOrganizations.map((org: UserOrganizationWithRole) => (

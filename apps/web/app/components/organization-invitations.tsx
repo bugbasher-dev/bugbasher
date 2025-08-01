@@ -13,8 +13,9 @@ import { z } from 'zod'
 import { ErrorList, Field } from '#app/components/forms'
 import { Badge } from '#app/components/ui/badge'
 import { Button } from '#app/components/ui/button'
-import { Card, CardContent } from '#app/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '#app/components/ui/card'
 import { Icon } from '#app/components/ui/icon'
+import { Input } from '#app/components/ui/input'
 import {
 	Select,
 	SelectContent,
@@ -23,6 +24,7 @@ import {
 	SelectValue,
 } from '#app/components/ui/select'
 import { Separator } from '#app/components/ui/separator'
+import { useState } from 'react'
 
 const roles = [
 	{
@@ -50,6 +52,7 @@ const InviteSchema = z.object({
 
 export function OrganizationInvitations({
 	pendingInvitations = [],
+	inviteLink,
 	actionData,
 }: {
 	pendingInvitations?: Array<{
@@ -59,6 +62,13 @@ export function OrganizationInvitations({
 		createdAt: Date
 		inviter?: { name: string | null; email: string } | null
 	}>
+	inviteLink?: {
+		id: string
+		token: string
+		role: string
+		isActive: boolean
+		createdAt: Date
+	} | null
 	actionData?: any
 }) {
 	const [form, fields] = useForm({
@@ -75,10 +85,108 @@ export function OrganizationInvitations({
 	})
 
 	const invitesList = fields.invites.getFieldList()
+	const [linkCopied, setLinkCopied] = useState(false)
+
+	const inviteUrl = inviteLink?.isActive 
+		? `${typeof window !== 'undefined' ? window.location.origin : ''}/join/${inviteLink.token}`
+		: ''
+
+	const copyInviteLink = async () => {
+		if (inviteUrl) {
+			try {
+				await navigator.clipboard.writeText(inviteUrl)
+				setLinkCopied(true)
+				setTimeout(() => setLinkCopied(false), 2000)
+			} catch (error) {
+				console.error('Failed to copy link:', error)
+				// Fallback for browsers that don't support clipboard API
+				const textArea = document.createElement('textarea')
+				textArea.value = inviteUrl
+				document.body.appendChild(textArea)
+				textArea.select()
+				document.execCommand('copy')
+				document.body.removeChild(textArea)
+				setLinkCopied(true)
+				setTimeout(() => setLinkCopied(false), 2000)
+			}
+		}
+	}
 
 	return (
-		<Card>
-			<CardContent className="space-y-6">
+		<div className="space-y-6">
+			{/* Invite Link Section */}
+			<Card>
+				<CardHeader>
+					<CardTitle className="text-lg">Your personal invite link</CardTitle>
+					<p className="text-muted-foreground text-sm">
+						Anyone with this link can join your organization and will know you invited them. By default, they will have the Member role.
+					</p>
+				</CardHeader>
+				<CardContent className="space-y-4">
+					<div className="flex gap-2">
+						<Input
+							value={inviteUrl || 'No active invite link'}
+							readOnly
+							onClick={inviteUrl ? copyInviteLink : undefined}
+							className={`flex-1 ${inviteUrl ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+						/>
+						{inviteUrl && (
+							<Button
+								variant="outline"
+								onClick={copyInviteLink}
+								className="shrink-0"
+							>
+								{linkCopied ? (
+									<>
+										<Icon name="check" className="mr-2 h-4 w-4" />
+										Copied
+									</>
+								) : (
+									<>
+										<Icon name="copy" className="mr-2 h-4 w-4" />
+										Copy
+									</>
+								)}
+							</Button>
+						)}
+					</div>
+					<div className="flex gap-2">
+						{!inviteLink?.isActive ? (
+							<Form method="POST">
+								<input type="hidden" name="intent" value="create-invite-link" />
+								<Button type="submit" variant="outline">
+									<Icon name="plus" className="mr-2 h-4 w-4" />
+									Create Link
+								</Button>
+							</Form>
+						) : (
+							<>
+								<Form method="POST">
+									<input type="hidden" name="intent" value="reset-invite-link" />
+									<Button type="submit" variant="outline">
+										<Icon name="reset" className="mr-2 h-4 w-4" />
+										Reset
+									</Button>
+								</Form>
+								<Form method="POST">
+									<input type="hidden" name="intent" value="deactivate-invite-link" />
+									<Button type="submit" variant="outline">
+										<Icon name="cross-1" className="mr-2 h-4 w-4" />
+										Disable
+									</Button>
+								</Form>
+							</>
+						)}
+					</div>
+				</CardContent>
+			</Card>
+
+			{/* Email Invitations Section */}
+			<Card>
+				<CardHeader>
+					<CardTitle className="text-lg">Invite by email</CardTitle>
+				</CardHeader>
+				<CardContent className="space-y-6">
 				{/* Invitation Form */}
 				<FormProvider context={form.context}>
 					<Form method="POST" {...getFormProps(form)}>
@@ -165,8 +273,9 @@ export function OrganizationInvitations({
 						</div>
 					</>
 				)}
-			</CardContent>
-		</Card>
+				</CardContent>
+			</Card>
+		</div>
 	)
 }
 

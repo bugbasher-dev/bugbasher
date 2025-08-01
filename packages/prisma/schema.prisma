@@ -24,6 +24,7 @@ model User {
   onboardingProgress     OnboardingProgress[]
   onboardingStepProgress OnboardingStepProgress[]
   sentInvitations        OrganizationInvitation[]   @relation("inviter")
+  createdInviteLinks     OrganizationInviteLink[]
   createdOrgNotes        OrganizationNote[]         @relation("createdBy")
   passkey                Passkey[]
   password               Password?
@@ -182,6 +183,7 @@ model Organization {
   onboardingStepProgress OnboardingStepProgress[]
   image                  OrganizationImage?
   invitations            OrganizationInvitation[]
+  inviteLinks            OrganizationInviteLink[]
   notes                  OrganizationNote[]
   users                  UserOrganization[]
 }
@@ -228,6 +230,23 @@ model OrganizationInvitation {
 
   @@unique([email, organizationId])
   @@index([organizationId])
+}
+
+model OrganizationInviteLink {
+  id             String       @id @default(cuid())
+  token          String       @unique
+  role           String       @default("member")
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organizationId String
+  createdById    String
+  createdBy      User         @relation(fields: [createdById], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, createdById])
+  @@index([organizationId])
+  @@index([createdById])
 }
 
 model UtmSource {
