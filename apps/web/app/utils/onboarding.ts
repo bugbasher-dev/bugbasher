@@ -38,7 +38,7 @@ export const DEFAULT_ONBOARDING_STEPS = [
 		key: 'create_first_note',
 		title: 'Create your first note',
 		description: 'Start documenting your ideas and thoughts',
-		icon: 'note',
+		icon: 'file-text',
 		actionConfig: {
 			type: 'navigate' as const,
 			target: '/notes/new',
@@ -102,7 +102,7 @@ export const DEFAULT_ONBOARDING_STEPS = [
 		key: 'explore_command_menu',
 		title: 'Explore the command menu',
 		description: 'Use Cmd/Ctrl + K to quickly navigate and perform actions',
-		icon: 'command-menu',
+		icon: 'command',
 		actionConfig: {
 			type: 'modal' as const,
 			target: 'command-menu',
@@ -118,7 +118,7 @@ export const DEFAULT_ONBOARDING_STEPS = [
 		key: 'connect_integration',
 		title: 'Connect integrations',
 		description: 'Enhance your workflow with third-party integrations',
-		icon: 'integration',
+		icon: 'blocks',
 		actionConfig: {
 			type: 'navigate' as const,
 			target: '/settings/integrations',
