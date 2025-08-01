@@ -130,8 +130,8 @@ export function AppSidebar({
 	}
 	return (
 		<Sidebar collapsible="offcanvas" {...props}>
-			<SidebarHeader>
-				<Logo className="pl-2" />
+			<SidebarHeader className="space-y-4 p-2">
+				<Logo className="pl-6 mb-0" />
 				<TeamSwitcher />
 			</SidebarHeader>
 			<SidebarContent>

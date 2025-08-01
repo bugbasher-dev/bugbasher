@@ -3,13 +3,15 @@ import { useState } from 'react'
 import { Img } from 'openimg/react'
 import { Button } from '../ui/button'
 import { Icon } from '../ui/icon'
-import { getNoteImgSrc } from '#app/utils/misc'
+import { getNoteImgSrc, getUserImgSrc } from '#app/utils/misc'
 import CommentInput, { type MentionUser } from './comment-input'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 interface CommentUser {
 	id: string
 	name: string | null
 	username: string
+	image?: { objectKey: string } | null
 }
 
 interface Comment {
@@ -72,14 +74,17 @@ export function CommentItem({
 		<div className={`${depth > 0 ? 'border-border ml-6 border-l pl-4' : ''}`}>
 			<div className="group relative">
 				<div className="flex items-start gap-3 py-2">
-					{/* Avatar placeholder */}
-					<div className="bg-muted flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
-						<span className="text-muted-foreground text-xs font-medium">
+					<Avatar className="h-8 w-8 flex-shrink-0">
+						<AvatarImage
+							src={getUserImgSrc(comment.user.image?.objectKey)}
+							alt={comment.user.name || comment.user.username}
+						/>
+						<AvatarFallback>
 							{(comment.user.name || comment.user.username)
 								.charAt(0)
 								.toUpperCase()}
-						</span>
-					</div>
+						</AvatarFallback>
+					</Avatar>
 
 					<div className="min-w-0 flex-1">
 						<div className="mb-1 flex items-center justify-between">

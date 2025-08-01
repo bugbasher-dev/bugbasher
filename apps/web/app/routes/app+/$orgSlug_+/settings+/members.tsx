@@ -62,8 +62,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 						email: true,
 						image: {
 							select: {
-								id: true,
-								altText: true,
+								objectKey: true,
 							},
 						},
 					},

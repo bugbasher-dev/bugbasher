@@ -135,6 +135,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 			id: true,
 			name: true,
 			email: true,
+			image: { select: { objectKey: true } },
 		},
 	})
 
@@ -147,6 +148,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 			email: user?.email || '',
 			notesCount: item._count?.id || 0,
 			rank: index + 1,
+			image: user?.image || null,
 		}
 	})
 

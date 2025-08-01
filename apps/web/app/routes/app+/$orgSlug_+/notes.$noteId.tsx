@@ -133,6 +133,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 						id: true,
 						name: true,
 						username: true,
+						image: { select: { objectKey: true } },
 					},
 				},
 				images: {

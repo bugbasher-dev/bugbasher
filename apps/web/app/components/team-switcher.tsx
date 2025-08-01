@@ -57,31 +57,53 @@ export function TeamSwitcher() {
 					<DropdownMenuTrigger asChild>
 						<SidebarMenuButton
 							size="lg"
-							className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+							className="group relative h-14 px-3 py-2 hover:bg-sidebar-accent/50 data-[state=open]:bg-sidebar-accent/70 transition-all duration-200 border border-sidebar-border/50 rounded-xl bg-gradient-to-r from-sidebar-accent/20 to-sidebar-accent/10 backdrop-blur-sm"
 						>
-							<div className="bg-sidebar-primary text-sidebar-primary-foreground flex size-8 items-center justify-center rounded-lg">
-								<Avatar className="size-7 rounded-md">
-									{activeTeam.image?.objectKey ? (
-										<AvatarImage
-											src={`/resources/images?objectKey=${activeTeam.image.objectKey}`}
-											alt={
-												activeTeam.image?.altText || `${activeTeam.name} logo`
-											}
-										/>
-									) : null}
-									<AvatarFallback>{activeTeam.name.slice(0, 2)}</AvatarFallback>
-								</Avatar>
+							<div className="relative flex items-center gap-3 w-full">
+								{/* Enhanced Avatar Container */}
+								<div className="relative">
+									<div className="absolute inset-0 bg-gradient-to-br from-sidebar-primary/20 to-sidebar-primary/40 rounded blur-sm" />
+									<div className="relative bg-gradient-to-br from-sidebar-primary to-sidebar-primary/80 text-sidebar-primary-foreground flex size-8 items-center justify-center rounded shadow-lg ring-1 ring-sidebar-primary/20">
+										<Avatar className="size-8 rounded">
+											{activeTeam.image?.objectKey ? (
+												<AvatarImage
+													src={`/resources/images?objectKey=${activeTeam.image.objectKey}`}
+													alt={
+														activeTeam.image?.altText || `${activeTeam.name} logo`
+													}
+													className="object-cover ring ring-2"
+												/>
+											) : null}
+											<AvatarFallback className="bg-transparent text-sidebar-primary-foreground font-semibold text-sm">
+												{activeTeam.name.slice(0, 2).toUpperCase()}
+											</AvatarFallback>
+										</Avatar>
+									</div>
+								</div>
+
+								{/* Enhanced Text Content */}
+								<div className="flex-1 text-left min-w-0">
+									<div className="flex items-center gap-2">
+										<span className="text-sidebar-foreground font-semibold text-sm truncate">
+											{activeTeam.name}
+										</span>
+									</div>
+									{activeTeam.userCount && (
+										<span className="text-sidebar-foreground/60 text-xs">
+											{activeTeam.userCount}{' '}
+											{activeTeam.userCount === 1 ? 'member' : 'members'}
+										</span>
+									)}
+								</div>
+
+								{/* Enhanced Chevron */}
+								<div className="flex items-center justify-center size-6 rounded-md bg-sidebar-accent/30 group-hover:bg-sidebar-accent/50 transition-colors">
+									<Icon
+										name="chevron-down"
+										className="size-3 text-sidebar-foreground/70 group-data-[state=open]:rotate-180 transition-transform duration-200"
+									/>
+								</div>
 							</div>
-							<div className="grid flex-1 text-left text-sm leading-tight">
-								<span className="truncate font-medium">{activeTeam.name}</span>
-								{activeTeam.userCount && (
-									<span className="text-muted-foreground text-xs">
-										{activeTeam.userCount}{' '}
-										{activeTeam.userCount === 1 ? 'member' : 'members'}
-									</span>
-								)}
-							</div>
-							<Icon name="chevron-down" className="ml-auto" />
 						</SidebarMenuButton>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent
@@ -101,8 +123,8 @@ export function TeamSwitcher() {
 								}
 								className="gap-2 p-2"
 							>
-								<div className="flex size-6 items-center justify-center rounded-md border">
-									<Avatar className="size-6 rounded-md">
+								<div className="flex size-6 items-center justify-center rounded border">
+									<Avatar className="size-6 rounded">
 										{userOrg.organization.image?.objectKey ? (
 											<AvatarImage
 												src={`/resources/images?objectKey=${userOrg.organization.image.objectKey}`}
@@ -114,7 +136,7 @@ export function TeamSwitcher() {
 											/>
 										) : null}
 										<AvatarFallback>
-											{userOrg.organization.name.slice(0, 2)}
+											{userOrg.organization.name.slice(0, 2).toLocaleUpperCase()}
 										</AvatarFallback>
 									</Avatar>
 								</div>

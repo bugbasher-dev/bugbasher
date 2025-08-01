@@ -4,6 +4,7 @@ import { Badge } from '#app/components/ui/badge'
 import { Button } from '#app/components/ui/button'
 import { Card, CardContent } from '#app/components/ui/card'
 import { Icon } from '#app/components/ui/icon'
+import { getUserImgSrc } from '#app/utils/misc'
 
 interface OrganizationMember {
 	userId: string
@@ -14,8 +15,7 @@ interface OrganizationMember {
 		name: string | null
 		email: string
 		image?: {
-			id: string
-			altText: string | null
+			objectKey: string
 		} | null
 	}
 }
@@ -50,16 +50,8 @@ export function OrganizationMembers({
 								<div className="flex items-center gap-3">
 									<Avatar className="h-8 w-8">
 										<AvatarImage
-											src={
-												member.user.image
-													? `/resources/user-images/${member.user.image.id}`
-													: undefined
-											}
-											alt={
-												member.user.image?.altText ??
-												member.user.name ??
-												member.user.email
-											}
+											src={getUserImgSrc(member.user.image?.objectKey)}
+											alt={member.user.name ?? member.user.email}
 										/>
 										<AvatarFallback>
 											{(member.user.name ?? member.user.email)

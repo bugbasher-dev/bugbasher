@@ -1,4 +1,4 @@
-import { cn } from '#app/utils/misc.tsx'
+import { cn, getUserImgSrc } from '#app/utils/misc.tsx'
 import {
 	Card,
 	CardContent,
@@ -6,6 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from './ui/card'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 
 interface LeadershipUser {
 	id: string
@@ -13,6 +14,7 @@ interface LeadershipUser {
 	email: string
 	notesCount: number
 	rank: number
+	image?: { objectKey: string } | null
 }
 
 interface LeadershipCardProps {
@@ -77,13 +79,15 @@ export function LeadershipCard({ leaders, className }: LeadershipCardProps) {
 									)}
 								</div>
 								<div className="flex items-center gap-3">
-									<div
-										className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white ${getAvatarColor(
-											index,
-										)}`}
-									>
-										{leader.name.charAt(0).toUpperCase()}
-									</div>
+									<Avatar className="h-8 w-8">
+										<AvatarImage
+											src={getUserImgSrc(leader.image?.objectKey)}
+											alt={leader.name}
+										/>
+										<AvatarFallback className={getAvatarColor(index)}>
+											{leader.name.charAt(0).toUpperCase()}
+										</AvatarFallback>
+									</Avatar>
 									<div className="flex-1">
 										<div className="text-sm font-medium">{leader.name}</div>
 										<div className="text-muted-foreground text-xs">

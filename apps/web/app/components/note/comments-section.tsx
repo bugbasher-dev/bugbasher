@@ -9,6 +9,7 @@ interface CommentUser {
 	id: string
 	name: string | null
 	username: string
+	image?: { objectKey: string } | null
 }
 
 interface Comment {

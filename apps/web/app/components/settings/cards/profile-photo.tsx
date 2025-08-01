@@ -67,7 +67,7 @@ export function ProfilePhoto({ user, size = 'normal' }: ProfilePhotoProps) {
 					/>
 					<Button
 						variant="outline"
-						className={`absolute ${buttonPosition} flex ${size === 'small' ? 'size-8' : 'size-10'} hover:ring-primary/50 items-center justify-center rounded-full p-0 ring-2 ring-transparent ring-offset-2`}
+						className={`absolute ${buttonPosition} flex ${size === 'small' ? 'size-8' : 'size-10'} dark:bg-background dark:hover:bg-muted hover:ring-primary/50 items-center justify-center rounded-full p-0 ring-2 ring-transparent ring-offset-2`}
 					>
 						<Icon name="image" className="size-4" />
 					</Button>
