@@ -51,7 +51,7 @@ function UpgradeAccountCard({
 					left in your trial. Get in touch with questions or feedback.
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="flex flex-col gap-2 -mt-4 p-2">
+			<CardContent className="flex flex-col gap-2 -mt-4 p-2 pb-0">
 				<Button variant="secondary" size="sm" className="w-full bg-sidebar-foreground text-sidebar hover:bg-sidebar-foreground/70" asChild>
 					<Link to={`/app/${orgSlug}/settings/billing`}>Upgrade</Link>
 				</Button>
