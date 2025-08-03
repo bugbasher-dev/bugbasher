@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useSubmit } from 'react-router'
 import {
-	IconArrowLeft,
 	IconBan,
 	IconEdit,
 	IconUser,
@@ -159,15 +158,6 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 				{/* Header */}
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-4">
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={() => navigate('/admin/users')}
-							className="gap-2"
-						>
-							<IconArrowLeft className="h-4 w-4" />
-							Back to Users
-						</Button>
 						<Separator orientation="vertical" className="h-6" />
 						<div className="flex items-center gap-3">
 							<Avatar className="h-12 w-12">

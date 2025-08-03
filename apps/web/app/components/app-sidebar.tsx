@@ -16,6 +16,8 @@ import {
 	SidebarFooter,
 	SidebarHeader,
 } from '#app/components/ui/sidebar'
+import { Card, CardContent, CardDescription, CardHeader } from '#app/components/ui/card'
+import { Button } from '#app/components/ui/button'
 import { type loader as rootLoader } from '#app/root.tsx'
 import { type OnboardingProgressData } from '#app/utils/onboarding'
 import { CircleHelpIcon } from './icons/circle-help'
@@ -27,6 +29,39 @@ import FavoriteNotes from './favorite-notes'
 import { FeatureUpdates } from './feature-updates'
 import { ArrowLeftIcon } from './icons/arrow-left-icon'
 import { BuildingIcon } from './icons/building-icon'
+
+// Upgrade Account Card Component
+function UpgradeAccountCard({
+	trialStatus,
+	orgSlug,
+}: {
+	trialStatus: { isActive: boolean; daysRemaining: number }
+	orgSlug: string
+}) {
+	if (!trialStatus.isActive || trialStatus.daysRemaining < 0) return null
+
+	return (
+		<Card className="shadow-md p-2 gap-1 bg-sidebar-accent border-sidebar-border">
+			<CardHeader className="p-2">
+				<CardDescription className="text-sidebar-foreground">
+					There are{' '}
+					<span className="font-bold text-red-500">
+						{trialStatus.daysRemaining} days
+					</span>{' '}
+					left in your trial. Get in touch with questions or feedback.
+				</CardDescription>
+			</CardHeader>
+			<CardContent className="flex flex-col gap-2 -mt-4 p-2">
+				<Button variant="secondary" size="sm" className="w-full bg-sidebar-foreground text-sidebar hover:bg-sidebar-foreground/70" asChild>
+					<Link to={`/app/${orgSlug}/settings/billing`}>Upgrade</Link>
+				</Button>
+				<Button variant="link" size="sm" className="w-full text-sidebar-foreground hover:text-sidebar-foreground/80">
+					Get in touch
+				</Button>
+			</CardContent>
+		</Card>
+	)
+}
 
 // Account Sidebar Component
 function AccountSidebar({
@@ -97,7 +132,8 @@ function OrganizationSidebar({
 	organizationId,
 	favoriteNotes,
 	setHasVisibleFeatureUpdates,
-	hasVisibleFeatureUpdates
+	hasVisibleFeatureUpdates,
+	trialStatus
 }: {
 	user: any
 	location: any
@@ -107,6 +143,7 @@ function OrganizationSidebar({
 	favoriteNotes: any
 	setHasVisibleFeatureUpdates: (value: boolean) => void
 	hasVisibleFeatureUpdates: boolean
+	trialStatus?: { isActive: boolean; daysRemaining: number }
 }) {
 	const navMain = [
 		{
@@ -195,6 +232,11 @@ function OrganizationSidebar({
 
 				<NavMain items={navMain} />
 
+				{/* Upgrade Account Card */}
+				{trialStatus && orgSlug && (
+					<UpgradeAccountCard trialStatus={trialStatus} orgSlug={orgSlug} />
+				)}
+
 				{/* Favorite Notes */}
 				{favoriteNotes && orgSlug && (
 					<FavoriteNotes
@@ -225,9 +267,11 @@ function OrganizationSidebar({
 
 export function AppSidebar({
 	onboardingProgress,
+	trialStatus,
 	...props
 }: React.ComponentProps<typeof Sidebar> & {
 	onboardingProgress?: OnboardingProgressData | null
+	trialStatus?: { isActive: boolean; daysRemaining: number }
 }) {
 	const rootData = useRouteLoaderData<typeof rootLoader>('root')
 	const location = useLocation()
@@ -303,6 +347,7 @@ export function AppSidebar({
 						favoriteNotes={rootData?.favoriteNotes}
 						setHasVisibleFeatureUpdates={setHasVisibleFeatureUpdates}
 						hasVisibleFeatureUpdates={hasVisibleFeatureUpdates}
+						trialStatus={trialStatus}
 					/>
 				</motion.div>
 			</div>

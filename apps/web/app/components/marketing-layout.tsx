@@ -27,7 +27,7 @@ export function MarketingLayout({
 					} as React.CSSProperties
 				}
 			>
-				<AppSidebar variant="inset" onboardingProgress={onboardingProgress} />
+				<AppSidebar variant="inset" onboardingProgress={onboardingProgress} trialStatus={{isActive: true, daysRemaining: 7}} />
 				<SidebarInset
 					style={
 						{

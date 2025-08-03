@@ -199,19 +199,20 @@ export async function action({ request }: Route.ActionArgs) {
 	}
 }
 
-export default function CacheAdminRoute({ loaderData }: Route.ComponentProps) {
+export default function CacheAdminRoute() {
+	const data = useLoaderData<typeof loader>()
 	const [searchParams, setSearchParams] = useSearchParams()
 	const submit = useSubmit()
-	const [searchQuery, setSearchQuery] = useState(loaderData.filters.query)
+	const [searchQuery, setSearchQuery] = useState(data.filters.query)
 	const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set())
 	
 	// Use toast notifications
-	useToast(loaderData.toast)
+	useToast(data.toast)
 	
 	const query = searchParams.get('query') ?? ''
 	const limit = searchParams.get('limit') ?? '100'
 	const cacheType = searchParams.get('type') ?? 'all'
-	const instance = searchParams.get('instance') ?? loaderData.instance
+	const instance = searchParams.get('instance') ?? data.instance
 
 	const handleFormChange = useDebounce(async (form: HTMLFormElement) => {
 		await submit(form)
@@ -245,7 +246,7 @@ export default function CacheAdminRoute({ loaderData }: Route.ComponentProps) {
 	}
 
 	const hasActiveFilters = query || cacheType !== 'all'
-	const totalKeys = loaderData.cacheData.sqlite.length + loaderData.cacheData.lru.length
+	const totalKeys = data.cacheData.sqlite.length + data.cacheData.lru.length
 
 	return (
 		<div className="space-y-6">
