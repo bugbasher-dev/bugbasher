@@ -282,8 +282,6 @@ export async function userHasOrgAccess(
 		},
 	})
 
-	console.log('User accessing org:', user.name || user.username, user.id, 'Org ID:', organizationId, 'Has access:', !!userOrg)
-
 	if (!userOrg) {
 		throw new Response('You do not have access to this organization', {
 			status: 403,

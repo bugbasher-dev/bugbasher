@@ -3,7 +3,9 @@
   "name": "@repo/background-jobs",
   "version": "0.0.0",
   "private": true,
-  "sideEffects": false,
+  "sideEffects": [
+    "src/mocks/index.ts"
+  ],
   "main": "./index.ts",
   "types": "./index.ts",
   "files": [
@@ -19,8 +21,8 @@
     "@repo/prisma": "*",
     "@trigger.dev/build": "^3.0.0",
     "@trigger.dev/sdk": "^3.0.0",
-    "canvas": "^3.1.2",
     "fluent-ffmpeg": "^2.1.2",
+    "jimp": "^0.22.12",
     "mime-types": "^3.0.1",
     "msw": "^2.10.4",
     "node-fetch": "^3.3.2",

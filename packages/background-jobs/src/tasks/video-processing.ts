@@ -6,6 +6,31 @@ import * as os from "os"
 import * as path from "path"
 import { createId } from '@paralleldrive/cuid2'
 
+// Set Prisma engine path for Trigger.dev
+if (!process.env.PRISMA_QUERY_ENGINE_LIBRARY) {
+  try {
+    const path = require('path')
+    const fs = require('fs')
+    
+    // Try multiple possible paths relative to current working directory
+    const possiblePaths = [
+      path.resolve(process.cwd(), 'node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node'),
+      path.resolve(process.cwd(), '../../node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node'),
+      path.resolve(process.cwd(), '../../../node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node'),
+      path.resolve(__dirname, '../../../../node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node'),
+    ]
+    
+    for (const enginePath of possiblePaths) {
+      if (fs.existsSync(enginePath)) {
+        process.env.PRISMA_QUERY_ENGINE_LIBRARY = enginePath
+        break
+      }
+    }
+  } catch (error) {
+    // Fallback - let Prisma handle it
+  }
+}
+
 import { prisma } from "@repo/prisma"
 
 // Import MSW setup for development mode

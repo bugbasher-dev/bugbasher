@@ -15,7 +15,7 @@ import {
 	type ImageFieldset,
 	type MediaFieldset,
 } from './__org-note-editor'
-import { triggerVideoProcessing } from '@repo/background-jobs'
+import { triggerVideoProcessing, triggerImageProcessing } from '@repo/background-jobs'
 import { uploadNoteVideo, getSignedGetRequestInfo } from '#app/utils/storage.server.ts'
 
 function imageHasFile(
@@ -116,7 +116,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 								objectKey,
 								mimeType: upload.file?.type,
 								fileSize: upload.file?.size,
-								status: isVideo ? 'processing' : 'completed',
+								status: 'processing',
 							}
 						} else {
 							return {
@@ -142,7 +142,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 								objectKey,
 								mimeType: upload.file?.type,
 								fileSize: upload.file?.size,
-								status: isVideo ? 'processing' : 'completed',
+								status: 'processing',
 							}
 						}),
 				),
@@ -241,6 +241,39 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		} catch (error) {
 			console.error('Failed to trigger video processing:', error)
 			// Don't fail the note creation if video processing fails
+		}
+	}
+
+	// Trigger image processing for new image uploads
+	const newImageUploads = newUploads.filter(upload => upload.type === 'image')
+	for (const image of newImageUploads) {
+		try {
+			// Get the created image upload record to get its ID
+			const imageRecord = await prisma.organizationNoteUpload.findFirst({
+				where: {
+					noteId: updatedNote.id,
+					objectKey: image.objectKey,
+					type: 'image',
+				},
+				select: { id: true },
+			})
+
+			if (imageRecord) {
+				// Generate a signed URL for the image that the background task can use
+				const { url: signedImageUrl, headers: imageHeaders } = getSignedGetRequestInfo(image.objectKey)
+
+				await triggerImageProcessing({
+					imageUrl: signedImageUrl,
+					imageHeaders,
+					imageId: imageRecord.id,
+					noteId: updatedNote.id,
+					organizationId: organization.id,
+					userId,
+				})
+			}
+		} catch (error) {
+			console.error('Failed to trigger image processing:', error)
+			// Don't fail the note creation if image processing fails
 		}
 	}
 
