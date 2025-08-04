@@ -13,7 +13,10 @@ import {
 	MAX_UPLOAD_SIZE,
 	OrgNoteEditorSchema,
 	type ImageFieldset,
+	type MediaFieldset,
 } from './__org-note-editor'
+import { triggerVideoProcessing } from '@repo/background-jobs'
+import { uploadNoteVideo, getSignedGetRequestInfo } from '#app/utils/storage.server.ts'
 
 function imageHasFile(
 	image: ImageFieldset,
@@ -27,9 +30,37 @@ function imageHasId(
 	return Boolean(image.id)
 }
 
+function mediaHasFile(
+	media: MediaFieldset,
+): media is MediaFieldset & { file: NonNullable<MediaFieldset['file']> } {
+	return Boolean(media.file?.size && media.file?.size > 0)
+}
+
+function mediaHasId(
+	media: MediaFieldset,
+): media is MediaFieldset & { id: string } {
+	return Boolean(media.id)
+}
+
+type UploadFieldset = (ImageFieldset | MediaFieldset) & { type?: string }
+
+function uploadHasId(
+	upload: UploadFieldset,
+): upload is UploadFieldset & { id: string } {
+	return Boolean(upload.id)
+}
+
+function uploadHasFile(
+	upload: UploadFieldset,
+): upload is UploadFieldset & { file: File } {
+	return Boolean(upload.file?.size && upload.file?.size > 0)
+}
+
 export async function action({ request, params }: ActionFunctionArgs) {
 	const userId = await requireUserId(request)
 	const orgSlug = params.orgSlug
+
+	// Video processing will handle thumbnail uploads internally
 
 	// Find organization ID
 	const organization = await prisma.organization.findFirst({
@@ -44,7 +75,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 	}
 
 	const formData = await parseFormData(request, {
-		maxFileSize: MAX_UPLOAD_SIZE,
+		maxFileSize: MAX_UPLOAD_SIZE * 10, // Allow larger files for videos
 	})
 
 	const submission = await parseWithZod(formData, {
@@ -61,35 +92,57 @@ export async function action({ request, params }: ActionFunctionArgs) {
 					message: 'Note not found',
 				})
 			}
-		}).transform(async ({ images = [], ...data }) => {
+		}).transform(async ({ images = [], media = [], ...data }) => {
 			const noteId = data.id ?? cuid()
+
+			// Process all uploads (images, videos, and legacy images)
+			const allUploads = [...images.map(img => ({ ...img, type: 'image' })), ...media.map(m => ({ ...m, type: m.type || (m.file?.type?.startsWith('video/') ? 'video' : 'image') }))]
+
 			return {
 				...data,
 				id: noteId,
-				imageUpdates: await Promise.all(
-					images.filter(imageHasId).map(async (i) => {
-						if (imageHasFile(i)) {
+				uploadUpdates: await Promise.all(
+					allUploads.filter(uploadHasId).map(async (upload) => {
+						if (uploadHasFile(upload)) {
+							const isVideo = upload.type === 'video' || upload.file?.type?.startsWith('video/')
+							const objectKey = isVideo
+								? await uploadNoteVideo(userId, noteId, upload.file)
+								: await uploadNoteImage(userId, noteId, upload.file)
+
 							return {
-								id: i.id,
-								altText: i.altText,
-								objectKey: await uploadNoteImage(userId, noteId, i.file),
+								id: upload.id,
+								type: isVideo ? 'video' : 'image',
+								altText: upload.altText,
+								objectKey,
+								mimeType: upload.file?.type,
+								fileSize: upload.file?.size,
+								status: isVideo ? 'processing' : 'completed',
 							}
 						} else {
 							return {
-								id: i.id,
-								altText: i.altText,
+								id: upload.id,
+								altText: upload.altText,
 							}
 						}
 					}),
 				),
-				newImages: await Promise.all(
-					images
-						.filter(imageHasFile)
-						.filter((i) => !i.id)
-						.map(async (image) => {
+				newUploads: await Promise.all(
+					allUploads
+						.filter(uploadHasFile)
+						.filter((upload) => !upload.id)
+						.map(async (upload) => {
+							const isVideo = upload.type === 'video' || upload.file?.type?.startsWith('video/')
+							const objectKey = isVideo
+								? await uploadNoteVideo(userId, noteId, upload.file)
+								: await uploadNoteImage(userId, noteId, upload.file)
+
 							return {
-								altText: image.altText,
-								objectKey: await uploadNoteImage(userId, noteId, image.file),
+								type: isVideo ? 'video' : 'image',
+								altText: upload.altText,
+								objectKey,
+								mimeType: upload.file?.type,
+								fileSize: upload.file?.size,
+								status: isVideo ? 'processing' : 'completed',
 							}
 						}),
 				),
@@ -109,8 +162,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		id: noteId,
 		title,
 		content,
-		imageUpdates = [],
-		newImages = [],
+		uploadUpdates = [],
+		newUploads = [],
 	} = submission.value
 
 	// Check if this is a new note or an update
@@ -138,25 +191,58 @@ export async function action({ request, params }: ActionFunctionArgs) {
 			content,
 			organization: { connect: { id: organization.id } },
 			createdBy: { connect: { id: userId } },
-			images: { create: newImages },
+			uploads: { create: newUploads },
 		},
 		update: {
 			title,
 			content,
-			images: {
-				deleteMany: { id: { notIn: imageUpdates.map((i) => i.id) } },
-				updateMany: imageUpdates.map((updates) => ({
+			uploads: {
+				deleteMany: { id: { notIn: uploadUpdates.map((u) => u.id) } },
+				updateMany: uploadUpdates.map((updates) => ({
 					where: { id: updates.id },
 					data: {
 						...updates,
-						// If the image is new, we need to generate a new ID to bust the cache.
+						// If the upload is new, we need to generate a new ID to bust the cache.
 						id: updates.objectKey ? cuid() : updates.id,
 					},
 				})),
-				create: newImages,
+				create: newUploads,
 			},
 		},
 	})
+
+	// Trigger video processing for new video uploads
+	const newVideoUploads = newUploads.filter(upload => upload.type === 'video')
+	for (const video of newVideoUploads) {
+		try {
+			// Get the created video upload record to get its ID
+			const videoRecord = await prisma.organizationNoteUpload.findFirst({
+				where: {
+					noteId: updatedNote.id,
+					objectKey: video.objectKey,
+					type: 'video',
+				},
+				select: { id: true },
+			})
+
+			if (videoRecord) {
+				// Generate a signed URL for the video that the background task can use
+				const { url: signedVideoUrl, headers: videoHeaders } = getSignedGetRequestInfo(video.objectKey)
+
+				await triggerVideoProcessing({
+					videoUrl: signedVideoUrl,
+					videoHeaders,
+					videoId: videoRecord.id,
+					noteId: updatedNote.id,
+					organizationId: organization.id,
+					userId,
+				})
+			}
+		} catch (error) {
+			console.error('Failed to trigger video processing:', error)
+			// Don't fail the note creation if video processing fails
+		}
+	}
 
 	// Log activity
 	if (isNewNote) {
@@ -164,7 +250,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 			noteId: updatedNote.id,
 			userId,
 			action: 'created',
-			metadata: { title, hasImages: newImages.length > 0 },
+			metadata: { title, hasUploads: newUploads.length > 0 },
 		})
 
 		// Track onboarding step completion for creating first note
@@ -190,7 +276,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 			metadata: {
 				titleChanged,
 				contentChanged,
-				hasImageUpdates: imageUpdates.length > 0 || newImages.length > 0,
+				hasUploadUpdates: uploadUpdates.length > 0 || newUploads.length > 0,
 			},
 		})
 	}

@@ -48,11 +48,14 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 			updatedAt: true,
 			isPublic: true,
 			createdById: true,
-			images: {
+			uploads: {
 				select: {
 					id: true,
+					type: true,
 					altText: true,
 					objectKey: true,
+					thumbnailKey: true,
+					status: true,
 				},
 			},
 			createdBy: {
@@ -102,7 +105,35 @@ export default function NotesRoute({
 			slug: string
 			image?: { objectKey: string }
 		}
-		notes: Array<any>
+		notes: Array<{
+			id: string
+			title: string
+			content: string
+			createdAt: string
+			updatedAt: string
+			isPublic: boolean
+			createdById: string
+			images: Array<{
+				id: string
+				altText: string | null
+				objectKey: string
+			}>
+			videos: Array<{
+				id: string
+				altText: string | null
+				objectKey: string
+				thumbnailKey: string | null
+				status: string
+			}>
+			createdBy: {
+				name: string | null
+				username: string | null
+			} | null
+			noteAccess: Array<{
+				userId: string
+			}>
+			createdByName: string
+		}>
 	}
 }) {
 	const orgName = loaderData.organization.name

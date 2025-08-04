@@ -19,7 +19,9 @@
 			"@repo/email": ["../../packages/email/src"],
 			"@repo/email/*": ["../../packages/email/src/*"],
 			"@repo/integrations": ["../../packages/integrations/src"],
-			"@repo/integrations/*": ["../../packages/integrations/src/*"]
+			"@repo/integrations/*": ["../../packages/integrations/src/*"],
+			"@repo/background-jobs": ["../../packages/background-jobs/src"],
+			"@repo/background-jobs/*": ["../../packages/background-jobs/src/*"],
 		}
 	}
 }

@@ -72,6 +72,36 @@ export async function uploadCommentImage(
 	return uploadToStorage(file, key)
 }
 
+export async function uploadNoteVideo(
+	userId: string,
+	noteId: string,
+	file: File | FileUpload,
+) {
+	const fileId = createId()
+	const fileExtension = file.name.split('.').pop() || ''
+	const timestamp = Date.now()
+	const key = `users/${userId}/notes/${noteId}/videos/${timestamp}-${fileId}.${fileExtension}`
+	return uploadToStorage(file, key)
+}
+
+export async function uploadVideoThumbnail(
+	userId: string,
+	noteId: string,
+	videoId: string,
+	thumbnailBuffer: Buffer,
+) {
+	const fileId = createId()
+	const timestamp = Date.now()
+	const key = `users/${userId}/notes/${noteId}/videos/thumbnails/${timestamp}-${videoId}-${fileId}.jpg`
+	
+	// Create a File-like object from the buffer
+	const thumbnailFile = new File([thumbnailBuffer], 'thumbnail.jpg', {
+		type: 'image/jpeg',
+	})
+	
+	return uploadToStorage(thumbnailFile, key)
+}
+
 function hmacSha256(key: string | Buffer, message: string) {
 	const hmac = createHmac('sha256', key)
 	hmac.update(message)

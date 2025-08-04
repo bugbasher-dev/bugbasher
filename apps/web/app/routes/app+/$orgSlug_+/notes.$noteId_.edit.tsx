@@ -34,11 +34,14 @@ export async function loader({
 			id: true,
 			title: true,
 			content: true,
-			images: {
+			uploads: {
 				select: {
 					id: true,
+					type: true,
 					altText: true,
 					objectKey: true,
+					thumbnailKey: true,
+					status: true,
 				},
 			},
 		},
@@ -57,10 +60,13 @@ type NoteEditProps = {
 			id: string
 			title: string
 			content: string
-			images: Array<{
+			uploads: Array<{
 				id: string
+				type: string
 				altText: string | null
 				objectKey: string
+				thumbnailKey: string | null
+				status: string
 			}>
 		}
 	}

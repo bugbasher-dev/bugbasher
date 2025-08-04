@@ -34,3 +34,5 @@ coverage
 data.db
 
 reference-saas-app/
+
+.trigger

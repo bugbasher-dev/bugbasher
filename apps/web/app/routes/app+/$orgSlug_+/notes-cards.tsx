@@ -16,10 +16,13 @@ export type Note = {
 	createdAt: string
 	updatedAt: string
 	createdByName?: string
-	images: Array<{
+	uploads: Array<{
 		id: string
+		type: string
 		altText: string | null
 		objectKey: string
+		thumbnailKey: string | null
+		status: string
 	}>
 }
 
@@ -56,8 +59,11 @@ const NoteCard = ({ note, isHovered = false }: NoteCardProps) => {
 		setTimeout(() => setCopied(false), 1000)
 	}
 
-	// Get the first image for display
-	const firstImage = note.images[0]
+	// Get the first media item for display (prioritize videos with thumbnails, then images)
+	const firstVideo = note.uploads.find(u => u.type === 'video' && u.thumbnailKey && u.status === 'completed')
+	const firstImage = note.uploads.find(u => u.type === 'image')
+	const firstMedia = firstVideo || firstImage
+	const isVideo = !!firstVideo
 
 	return (
 		<Card
@@ -67,17 +73,30 @@ const NoteCard = ({ note, isHovered = false }: NoteCardProps) => {
 			onClick={handleCardClick}
 		>
 			<CardContent className="p-0">
-				{/* Image or Header Section */}
+				{/* Media or Header Section */}
 				<div className="bg-primary/20 relative aspect-video overflow-hidden">
-					{firstImage ? (
+					{firstMedia ? (
 						<>
 							<Img
-								src={getNoteImgSrc(firstImage.objectKey)}
-								alt={firstImage.altText || 'Note image'}
+								src={isVideo && firstVideo?.thumbnailKey 
+									? getNoteImgSrc(firstVideo.thumbnailKey)
+									: firstImage 
+									? getNoteImgSrc(firstImage.objectKey)
+									: ''
+								}
+								alt={firstMedia.altText || (isVideo ? 'Video thumbnail' : 'Note image')}
 								className="h-full w-full object-cover"
 								width={400}
 								height={225}
 							/>
+							{/* Video play overlay */}
+							{isVideo && (
+								<div className="absolute inset-0 flex items-center justify-center bg-black/20">
+									<div className="bg-white/90 rounded-full p-3 shadow-lg">
+										<Icon name="arrow-right" className="text-primary h-6 w-6" />
+									</div>
+								</div>
+							)}
 							{/* Overlay for better text visibility */}
 							<div className="absolute inset-0" />
 						</>
@@ -110,16 +129,27 @@ const NoteCard = ({ note, isHovered = false }: NoteCardProps) => {
 						</Button>
 					</div>
 
-					{/* Images Badge - Bottom Right */}
-					{note.images.length > 0 && (
-						<div className="absolute right-3 bottom-3">
-							<Badge
-								variant="outline"
-								className="border-white/50 bg-white/90 text-xs text-gray-700 shadow-sm backdrop-blur-sm"
-							>
-								<Icon name="image" className="mr-1 h-3 w-3" />
-								{note.images.length}
-							</Badge>
+					{/* Media Badge - Bottom Right */}
+					{note.uploads.length > 0 && (
+						<div className="absolute right-3 bottom-3 flex gap-2">
+							{note.uploads.filter(u => u.type === 'image').length > 0 && (
+								<Badge
+									variant="outline"
+									className="border-white/50 bg-white/90 text-xs text-gray-700 shadow-sm backdrop-blur-sm"
+								>
+									<Icon name="image" className="mr-1 h-3 w-3" />
+									{note.uploads.filter(u => u.type === 'image').length}
+								</Badge>
+							)}
+							{note.uploads.filter(u => u.type === 'video').length > 0 && (
+								<Badge
+									variant="outline"
+									className="border-white/50 bg-white/90 text-xs text-gray-700 shadow-sm backdrop-blur-sm"
+								>
+									<Icon name="camera" className="mr-1 h-3 w-3" />
+									{note.uploads.filter(u => u.type === 'video').length}
+								</Badge>
+							)}
 						</div>
 					)}
 				</div>

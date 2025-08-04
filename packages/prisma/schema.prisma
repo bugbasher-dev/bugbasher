@@ -284,7 +284,7 @@ model OrganizationNote {
   integrationConnections NoteIntegrationConnection[]
   createdBy              User                        @relation("createdBy", fields: [createdById], references: [id], onDelete: Cascade)
   organization           Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  images                 OrganizationNoteImage[]
+  uploads                OrganizationNoteUpload[]
   favorites              OrganizationNoteFavorite[]
 
   @@index([organizationId])
@@ -292,16 +292,25 @@ model OrganizationNote {
   @@index([organizationId, updatedAt])
 }
 
-model OrganizationNoteImage {
-  id        String           @id @default(cuid())
-  altText   String?
-  objectKey String
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
-  noteId    String
-  note      OrganizationNote @relation(fields: [noteId], references: [id], onDelete: Cascade)
+model OrganizationNoteUpload {
+  id           String           @id @default(cuid())
+  type         String           // "image" or "video"
+  altText      String?
+  objectKey    String
+  thumbnailKey String?          // Only used for videos
+  duration     Int?             // Only used for videos
+  fileSize     Int?
+  mimeType     String?
+  status       String           @default("completed") // processing, completed, failed (mainly for videos)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  noteId       String
+  note         OrganizationNote @relation(fields: [noteId], references: [id], onDelete: Cascade)
 
   @@index([noteId])
+  @@index([type])
+  @@index([status])
+  @@index([noteId, type])
 }
 
 model Integration {

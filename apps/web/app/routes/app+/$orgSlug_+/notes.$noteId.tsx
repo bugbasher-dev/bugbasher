@@ -57,10 +57,13 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 			organizationId: true,
 			updatedAt: true,
 			isPublic: true,
-			images: {
+			uploads: {
 				select: {
+					type: true,
 					altText: true,
 					objectKey: true,
+					thumbnailKey: true,
+					status: true,
 				},
 			},
 			organization: {
@@ -1397,10 +1400,10 @@ export default function NoteRoute() {
 						value="overview"
 						className="flex-1 overflow-y-auto px-6 pt-2 pb-8"
 					>
-						{/* Images */}
-						{note.images.length > 0 && (
+						{/* Media Uploads */}
+						{note.uploads.length > 0 && (
 							<ul className="mb-6 flex flex-wrap gap-5">
-								{note.images.map((image) => (
+								{note.uploads.filter(upload => upload.type === 'image').map((image) => (
 									<li key={image.objectKey}>
 										<a href={getNoteImgSrc(image.objectKey)}>
 											<Img
@@ -1411,6 +1414,24 @@ export default function NoteRoute() {
 												height={512}
 											/>
 										</a>
+									</li>
+								))}
+								{note.uploads.filter(upload => upload.type === 'video' && upload.thumbnailKey && upload.status === 'completed').map((video) => (
+									<li key={video.objectKey}>
+										<div className="relative">
+											<Img
+												src={getNoteImgSrc(video.thumbnailKey!)}
+												alt={video.altText ?? 'Video thumbnail'}
+												className="size-32 rounded-lg object-cover"
+												width={512}
+												height={512}
+											/>
+											<div className="absolute inset-0 flex items-center justify-center">
+												<div className="bg-black/50 rounded-full p-2">
+													<Icon name="arrow-right" className="text-white h-4 w-4" />
+												</div>
+											</div>
+										</div>
 									</li>
 								))}
 							</ul>

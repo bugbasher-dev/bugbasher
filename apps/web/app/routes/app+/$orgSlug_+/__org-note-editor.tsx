@@ -16,7 +16,7 @@ import {
 	type ContentEditorRef,
 } from '#app/components/note/content-editor.tsx'
 import { Button } from '#app/components/ui/button.tsx'
-import { MultiImageUpload } from '#app/components/ui/multi-image-upload.tsx'
+import { MultiMediaUpload } from '#app/components/ui/multi-media-upload.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { useIsPending } from '#app/utils/misc.tsx'
 
@@ -44,13 +44,33 @@ const ImageFieldsetSchema = z.object({
 	altText: z.string().optional(),
 })
 
+const MediaFieldsetSchema = z.object({
+	id: z.string().optional(),
+	fileId: z.string().optional(),
+	type: z.enum(['image', 'video']).optional(),
+	file: z
+		.any()
+		.optional()
+		.refine(
+			(file) =>
+				!file ||
+				(typeof File !== 'undefined' &&
+					file instanceof File &&
+					file.size <= (file.type?.startsWith('video/') ? MAX_UPLOAD_SIZE * 10 : MAX_UPLOAD_SIZE)), // 30MB for videos, 3MB for images
+			'File size must be less than 30MB for videos or 3MB for images',
+		),
+	altText: z.string().optional(),
+})
+
 export type ImageFieldset = z.infer<typeof ImageFieldsetSchema>
+export type MediaFieldset = z.infer<typeof MediaFieldsetSchema>
 
 export const OrgNoteEditorSchema = z.object({
 	id: z.string().optional(),
 	title: z.string().min(titleMinLength).max(titleMaxLength),
 	content: z.string().min(contentMinLength).max(contentMaxLength),
 	images: z.array(ImageFieldsetSchema).max(5).optional(),
+	media: z.array(MediaFieldsetSchema).max(5).optional(),
 })
 
 type OrgNoteEditorProps = {
@@ -58,10 +78,13 @@ type OrgNoteEditorProps = {
 		id: string
 		title: string
 		content: string
-		images: Array<{
+		uploads: Array<{
 			id: string
+			type: string
 			altText: string | null
 			objectKey: string
+			thumbnailKey?: string | null
+			status: string
 		}>
 	}
 	actionData?: {
@@ -99,7 +122,8 @@ export function OrgNoteEditor({
 		defaultValue: {
 			...note,
 			content: note?.content || '',
-			images: note?.images ?? [],
+			images: note?.uploads?.filter(u => u.type === 'image') ?? [],
+			media: note?.uploads ?? [],
 		},
 		shouldRevalidate: 'onBlur',
 	})
@@ -172,10 +196,11 @@ export function OrgNoteEditor({
 									</div>
 								)}
 							</div>
-							<MultiImageUpload
-								meta={fields.images}
+							<MultiMediaUpload
+								meta={fields.media}
 								formId={form.id}
-								existingImages={note?.images}
+								existingImages={note?.uploads?.filter(u => u.type === 'image')}
+								existingVideos={note?.uploads?.filter(u => u.type === 'video')}
 							/>
 						</div>
 						<ErrorList id={form.errorId} errors={form.errors} />
