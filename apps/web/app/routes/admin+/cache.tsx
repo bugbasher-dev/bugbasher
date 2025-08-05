@@ -776,19 +776,19 @@ function CacheBulkActions({
 				<DropdownMenuContent align="end">
 					{sqliteKeys.length > 0 && (
 						<DropdownMenuItem onClick={() => handleBulkDelete('sqlite')}>
-							<IconTrash className="mr-2 h-4 w-4" />
+							<IconTrash className="h-4 w-4" />
 							Delete {sqliteKeys.length} SQLite keys
 						</DropdownMenuItem>
 					)}
 					{lruKeys.length > 0 && (
 						<DropdownMenuItem onClick={() => handleBulkDelete('lru')}>
-							<IconTrash className="mr-2 h-4 w-4" />
+							<IconTrash className="h-4 w-4" />
 							Delete {lruKeys.length} LRU keys
 						</DropdownMenuItem>
 					)}
 					<DropdownMenuSeparator />
 					<DropdownMenuItem onClick={onClearSelection}>
-						<IconX className="mr-2 h-4 w-4" />
+						<IconX className="h-4 w-4" />
 						Clear selection
 					</DropdownMenuItem>
 				</DropdownMenuContent>

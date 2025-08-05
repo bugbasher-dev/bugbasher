@@ -138,12 +138,12 @@ export function OrganizationInvitations({
 							>
 								{linkCopied ? (
 									<>
-										<Icon name="check" className="mr-2 h-4 w-4" />
+										<Icon name="check" className="h-4 w-4" />
 										Copied
 									</>
 								) : (
 									<>
-										<Icon name="copy" className="mr-2 h-4 w-4" />
+										<Icon name="copy" className="h-4 w-4" />
 										Copy
 									</>
 								)}
@@ -155,7 +155,7 @@ export function OrganizationInvitations({
 							<Form method="POST">
 								<input type="hidden" name="intent" value="create-invite-link" />
 								<Button type="submit" variant="outline">
-									<Icon name="plus" className="mr-2 h-4 w-4" />
+									<Icon name="plus" className="h-4 w-4" />
 									Create Link
 								</Button>
 							</Form>
@@ -164,14 +164,14 @@ export function OrganizationInvitations({
 								<Form method="POST">
 									<input type="hidden" name="intent" value="reset-invite-link" />
 									<Button type="submit" variant="outline">
-										<Icon name="reset" className="mr-2 h-4 w-4" />
+										<Icon name="undo-2" className="h-4 w-4" />
 										Reset
 									</Button>
 								</Form>
 								<Form method="POST">
 									<input type="hidden" name="intent" value="deactivate-invite-link" />
 									<Button type="submit" variant="outline">
-										<Icon name="x" className="mr-2 h-4 w-4" />
+										<Icon name="x" className="h-4 w-4" />
 										Disable
 									</Button>
 								</Form>
@@ -210,7 +210,7 @@ export function OrganizationInvitations({
 									defaultValue: { email: '', role: 'member' },
 								})}
 							>
-								<Icon name="plus" className="mr-2 h-4 w-4" />
+								<Icon name="plus" className="h-4 w-4" />
 								Add another invitation
 							</Button>
 						</div>

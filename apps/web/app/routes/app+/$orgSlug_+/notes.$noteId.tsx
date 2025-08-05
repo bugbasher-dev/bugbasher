@@ -1502,7 +1502,7 @@ export default function NoteRoute() {
 								className="min-[525px]:max-md:aspect-square min-[525px]:max-md:px-0"
 							>
 								<Link to="edit">
-									<Icon name="pencil-1" className="h-4 w-4 max-md:scale-125">
+									<Icon name="pencil" className="h-4 w-4">
 										<span className="max-md:hidden">Edit</span>
 									</Icon>
 								</Link>
@@ -1572,9 +1572,8 @@ export function DeleteNote({ id }: { id: string }) {
 				size="sm"
 				status={isPending ? 'pending' : (form.status ?? 'idle')}
 				disabled={isPending}
-				className="min-[525px]:max-md:aspect-square min-[525px]:max-md:px-0"
 			>
-				<Icon name="trash" className="h-4 w-4 max-md:scale-125">
+				<Icon name="trash-2" className="h-4 w-4">
 					<span className="max-md:hidden">Delete</span>
 				</Icon>
 			</StatusButton>

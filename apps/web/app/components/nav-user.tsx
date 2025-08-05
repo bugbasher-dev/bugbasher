@@ -25,6 +25,7 @@ import { BuildingIcon } from './icons/building-icon'
 import { SettingsGearIcon } from './icons/settings-gear-icon'
 import { useOptimisticThemeMode } from '#app/routes/resources+/theme-switch'
 import { useOptionalRequestInfo } from '#app/utils/request-info'
+import { SunMoonIcon } from './icons/sun-moon-icon'
 
 export function NavUser({
 	user,
@@ -151,9 +152,8 @@ export function NavUser({
 								onMouseEnter={() => handleMenuItemMouseEnter('theme')}
 								onMouseLeave={() => handleMenuItemMouseLeave('theme')}
 							>
-								<Icon
-									name="sun"
-									className="size-4"
+								<SunMoonIcon
+									size={16}
 									ref={(ref: any) => (iconRefs.current['theme'] = ref)}
 								/>
 								Theme

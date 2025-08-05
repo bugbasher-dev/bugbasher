@@ -114,7 +114,7 @@ export function CacheConfirmationDialog({
 							</>
 						) : (
 							<>
-								<IconTrash className="mr-2 h-4 w-4" />
+								<IconTrash className="h-4 w-4" />
 								{confirmed ? confirmText : 'Confirm'}
 							</>
 						)}

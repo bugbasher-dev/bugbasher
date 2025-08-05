@@ -59,7 +59,7 @@ export default function FavoriteNotes({
     return (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>
-                <Icon name="star" className="mr-2 h-4 w-4" />
+                <Icon name="star" className="h-4 w-4" />
                 Favorites
             </SidebarGroupLabel>
             <SidebarMenu>
