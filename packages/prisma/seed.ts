@@ -9,6 +9,7 @@ import {
 } from '#tests/db-utils.ts'
 import { insertGitHubUser } from '#tests/mocks/github.ts'
 import { setupRoles } from './setup-roles.ts'
+import { initializeOnboardingSteps } from './setup-onboarding.ts'
 
 async function seed() {
 	console.log('🌱 Seeding...')
@@ -16,6 +17,11 @@ async function seed() {
 
 	// Setup roles first
 	await setupRoles()
+
+	// Initialize onboarding steps
+	console.time('🎯 Initialized onboarding steps')
+	await initializeOnboardingSteps()
+	console.timeEnd('🎯 Initialized onboarding steps')
 
 	const totalUsers = 5
 	console.time(`👤 Created ${totalUsers} users...`)
