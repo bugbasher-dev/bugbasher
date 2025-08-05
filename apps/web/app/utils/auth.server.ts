@@ -34,14 +34,14 @@ export async function getUserId(request: Request) {
 	const sessionId = authSession.get(sessionKey)
 	if (!sessionId) return null
 	const session = await prisma.session.findUnique({
-		select: { 
+		select: {
 			userId: true,
 			user: {
 				select: {
 					isBanned: true,
 					banExpiresAt: true,
-				}
-			}
+				},
+			},
 		},
 		where: { id: sessionId, expirationDate: { gt: new Date() } },
 	})
@@ -57,8 +57,9 @@ export async function getUserId(request: Request) {
 	if (session.user.isBanned) {
 		// Check if ban has expired
 		const now = new Date()
-		const banExpired = session.user.banExpiresAt && new Date(session.user.banExpiresAt) <= now
-		
+		const banExpired =
+			session.user.banExpiresAt && new Date(session.user.banExpiresAt) <= now
+
 		if (banExpired) {
 			// Automatically lift expired ban
 			await prisma.user.update({
@@ -69,7 +70,7 @@ export async function getUserId(request: Request) {
 					banExpiresAt: null,
 					bannedAt: null,
 					bannedById: null,
-				}
+				},
 			})
 		} else {
 			// User is still banned, destroy session and redirect
@@ -130,14 +131,16 @@ export async function login({
 			isBanned: true,
 			banExpiresAt: true,
 			banReason: true,
-		}
+		},
 	})
 
 	if (userWithBanInfo?.isBanned) {
 		// Check if ban has expired
 		const now = new Date()
-		const banExpired = userWithBanInfo.banExpiresAt && new Date(userWithBanInfo.banExpiresAt) <= now
-		
+		const banExpired =
+			userWithBanInfo.banExpiresAt &&
+			new Date(userWithBanInfo.banExpiresAt) <= now
+
 		if (banExpired) {
 			// Automatically lift expired ban
 			await prisma.user.update({
@@ -148,7 +151,7 @@ export async function login({
 					banExpiresAt: null,
 					bannedAt: null,
 					bannedById: null,
-				}
+				},
 			})
 		} else {
 			// User is still banned, return null to prevent login

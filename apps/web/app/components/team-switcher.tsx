@@ -57,24 +57,25 @@ export function TeamSwitcher() {
 					<DropdownMenuTrigger asChild>
 						<SidebarMenuButton
 							size="lg"
-							className="group relative h-14 px-3 py-2 hover:bg-sidebar-accent/50 data-[state=open]:bg-sidebar-accent/70 transition-all duration-200 border border-sidebar-border/50 rounded-xl bg-gradient-to-r from-sidebar-accent/20 to-sidebar-accent/10 backdrop-blur-sm"
+							className="group hover:bg-sidebar-accent/50 data-[state=open]:bg-sidebar-accent/70 border-sidebar-border/50 from-sidebar-accent/20 to-sidebar-accent/10 relative h-14 rounded-xl border bg-gradient-to-r px-3 py-2 backdrop-blur-sm transition-all duration-200"
 						>
-							<div className="relative flex items-center gap-3 w-full">
+							<div className="relative flex w-full items-center gap-3">
 								{/* Enhanced Avatar Container */}
 								<div className="relative">
-									<div className="absolute inset-0 bg-gradient-to-br from-sidebar-primary/20 to-sidebar-primary/40 rounded blur-sm" />
-									<div className="relative bg-gradient-to-br from-sidebar-primary to-sidebar-primary/80 text-sidebar-primary-foreground flex size-8 items-center justify-center rounded shadow-lg ring-1 ring-sidebar-primary/20">
+									<div className="from-sidebar-primary/20 to-sidebar-primary/40 absolute inset-0 rounded bg-gradient-to-br blur-sm" />
+									<div className="from-sidebar-primary to-sidebar-primary/80 text-sidebar-primary-foreground ring-sidebar-primary/20 relative flex size-8 items-center justify-center rounded bg-gradient-to-br shadow-lg ring-1">
 										<Avatar className="size-8 rounded">
 											{activeTeam.image?.objectKey ? (
 												<AvatarImage
 													src={`/resources/images?objectKey=${activeTeam.image.objectKey}`}
 													alt={
-														activeTeam.image?.altText || `${activeTeam.name} logo`
+														activeTeam.image?.altText ||
+														`${activeTeam.name} logo`
 													}
 													className="object-cover ring ring-2"
 												/>
 											) : null}
-											<AvatarFallback className="bg-transparent text-sidebar-primary-foreground font-semibold text-sm">
+											<AvatarFallback className="text-sidebar-primary-foreground bg-transparent text-sm font-semibold">
 												{activeTeam.name.slice(0, 2).toUpperCase()}
 											</AvatarFallback>
 										</Avatar>
@@ -82,9 +83,9 @@ export function TeamSwitcher() {
 								</div>
 
 								{/* Enhanced Text Content */}
-								<div className="flex-1 text-left min-w-0">
+								<div className="min-w-0 flex-1 text-left">
 									<div className="flex items-center gap-2">
-										<span className="text-sidebar-foreground font-semibold text-sm truncate">
+										<span className="text-sidebar-foreground truncate text-sm font-semibold">
 											{activeTeam.name}
 										</span>
 									</div>
@@ -97,10 +98,10 @@ export function TeamSwitcher() {
 								</div>
 
 								{/* Enhanced Chevron */}
-								<div className="flex items-center justify-center size-6 rounded-md bg-sidebar-accent/30 group-hover:bg-sidebar-accent/50 transition-colors">
+								<div className="bg-sidebar-accent/30 group-hover:bg-sidebar-accent/50 flex size-6 items-center justify-center rounded-md transition-colors">
 									<Icon
 										name="chevron-down"
-										className="size-3 text-sidebar-foreground/70 group-data-[state=open]:rotate-180 transition-transform duration-200"
+										className="text-sidebar-foreground/70 size-3 transition-transform duration-200 group-data-[state=open]:rotate-180"
 									/>
 								</div>
 							</div>
@@ -136,7 +137,9 @@ export function TeamSwitcher() {
 											/>
 										) : null}
 										<AvatarFallback>
-											{userOrg.organization.name.slice(0, 2).toLocaleUpperCase()}
+											{userOrg.organization.name
+												.slice(0, 2)
+												.toLocaleUpperCase()}
 										</AvatarFallback>
 									</Avatar>
 								</div>

@@ -59,19 +59,19 @@ export function AdminSidebar({
 	// User data for NavUser component
 	const userData = rootData?.user
 		? {
-			name: rootData.user.name || rootData.user.username || 'Admin',
-			email: rootData.user.username,
-			avatar: rootData.user.image
-				? `/resources/images?objectKey=${rootData.user.image.objectKey}`
-				: '/avatars/user.jpg',
-			roles: rootData.user.roles,
-		}
+				name: rootData.user.name || rootData.user.username || 'Admin',
+				email: rootData.user.username,
+				avatar: rootData.user.image
+					? `/resources/images?objectKey=${rootData.user.image.objectKey}`
+					: '/avatars/user.jpg',
+				roles: rootData.user.roles,
+			}
 		: {
-			name: 'Admin',
-			email: '',
-			avatar: '/avatars/user.jpg',
-			roles: [],
-		}
+				name: 'Admin',
+				email: '',
+				avatar: '/avatars/user.jpg',
+				roles: [],
+			}
 
 	return (
 		<Sidebar collapsible="offcanvas" {...props}>
@@ -79,11 +79,11 @@ export function AdminSidebar({
 				<Link to="/">
 					<Logo className="mb-0" />
 				</Link>
-				<div className="px-6 bg-sidebar-accent text-center p-2">
-					<div className="text-sm font-medium text-sidebar-foreground">
+				<div className="bg-sidebar-accent p-2 px-6 text-center">
+					<div className="text-sidebar-foreground text-sm font-medium">
 						Admin Dashboard
 					</div>
-					<div className="text-xs text-sidebar-muted-foreground">
+					<div className="text-sidebar-muted-foreground text-xs">
 						System Management
 					</div>
 				</div>

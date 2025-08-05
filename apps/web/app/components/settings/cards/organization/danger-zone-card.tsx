@@ -30,8 +30,7 @@ export default function DangerZoneCard({
 	const [confirmationText, setConfirmationText] = useState('')
 	const [isConfirmed, setIsConfirmed] = useState(false)
 
-	const isDeleteEnabled = 
-		confirmationText === organization.name && isConfirmed
+	const isDeleteEnabled = confirmationText === organization.name && isConfirmed
 
 	const handleSubmit = () => {
 		if (isDeleteEnabled) {
@@ -43,20 +42,18 @@ export default function DangerZoneCard({
 	return (
 		<Card className="border-destructive/20">
 			<CardContent className="space-y-4">
-				<div className="rounded-md border border-destructive/20 bg-destructive/5 p-4">
-					<h4 className="font-medium text-destructive mb-2">
+				<div className="border-destructive/20 bg-destructive/5 rounded-md border p-4">
+					<h4 className="text-destructive mb-2 font-medium">
 						Deleting your organization is irreversible
 					</h4>
-					<p className="text-sm text-muted-foreground">
+					<p className="text-muted-foreground text-sm">
 						All your data will be permanently removed from our servers.
 					</p>
 				</div>
 
 				<Dialog open={isOpen} onOpenChange={setIsOpen}>
 					<DialogTrigger asChild>
-						<Button variant="destructive">
-							Delete organization
-						</Button>
+						<Button variant="destructive">Delete organization</Button>
 					</DialogTrigger>
 					<DialogContent className="sm:max-w-md">
 						<DialogHeader>
@@ -64,10 +61,12 @@ export default function DangerZoneCard({
 								Delete organization?
 							</DialogTitle>
 							<DialogDescription>
-								By deleting your organization you and your team will lose access and all data will be lost. This is a permanent action and cannot be undone.
+								By deleting your organization you and your team will lose access
+								and all data will be lost. This is a permanent action and cannot
+								be undone.
 							</DialogDescription>
 						</DialogHeader>
-						
+
 						<div className="space-y-4">
 							<div className="space-y-2">
 								<Label htmlFor="confirmation">
@@ -80,28 +79,32 @@ export default function DangerZoneCard({
 									placeholder={organization.name}
 								/>
 							</div>
-							
+
 							<div className="flex items-center space-x-2">
 								<Checkbox
 									id="understand"
 									checked={isConfirmed}
-									onCheckedChange={(checked) => setIsConfirmed(checked === true)}
+									onCheckedChange={(checked) =>
+										setIsConfirmed(checked === true)
+									}
 								/>
 								<Label htmlFor="understand" className="text-sm">
-									I'll not be able to access the organization and its data anymore
+									I'll not be able to access the organization and its data
+									anymore
 								</Label>
 							</div>
 						</div>
 
 						<DialogFooter className="gap-2">
-							<Button
-								variant="outline"
-								onClick={() => setIsOpen(false)}
-							>
+							<Button variant="outline" onClick={() => setIsOpen(false)}>
 								Cancel
 							</Button>
 							<Form method="POST" onSubmit={handleSubmit}>
-								<input type="hidden" name="intent" value="delete-organization" />
+								<input
+									type="hidden"
+									name="intent"
+									value="delete-organization"
+								/>
 								<Button
 									type="submit"
 									variant="destructive"

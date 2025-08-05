@@ -10,9 +10,9 @@ test.describe('Admin Impersonation', () => {
 			where: { id: adminUser.id },
 			data: {
 				roles: {
-					connect: { name: 'admin' }
-				}
-			}
+					connect: { name: 'admin' },
+				},
+			},
 		})
 
 		// Create a regular user to impersonate
@@ -40,12 +40,18 @@ test.describe('Admin Impersonation', () => {
 
 		// Should see impersonation banner
 		await expect(page.locator('text=Admin Impersonation Active')).toBeVisible()
-		await expect(page.locator(`text=You are impersonating ${targetUser.name || targetUser.username}`)).toBeVisible()
+		await expect(
+			page.locator(
+				`text=You are impersonating ${targetUser.name || targetUser.username}`,
+			),
+		).toBeVisible()
 
 		// Should be able to stop impersonation
 		await page.click('button:has-text("Stop Impersonation")')
 		await expect(page).toHaveURL('/admin/users')
-		await expect(page.locator('text=Admin Impersonation Active')).not.toBeVisible()
+		await expect(
+			page.locator('text=Admin Impersonation Active'),
+		).not.toBeVisible()
 	})
 
 	test('non-admin cannot access impersonation routes', async ({ page }) => {
@@ -60,10 +66,13 @@ test.describe('Admin Impersonation', () => {
 		await page.click('[type="submit"]')
 
 		// Try to access impersonation route directly
-		const response = await page.goto(`/admin/users/${targetUser.id}/impersonate`, { 
-			waitUntil: 'networkidle' 
-		})
-		
+		const response = await page.goto(
+			`/admin/users/${targetUser.id}/impersonate`,
+			{
+				waitUntil: 'networkidle',
+			},
+		)
+
 		// Should get 403 or be redirected
 		expect(response?.status()).toBe(403)
 	})
@@ -75,9 +84,9 @@ test.describe('Admin Impersonation', () => {
 			where: { id: adminUser.id },
 			data: {
 				roles: {
-					connect: { name: 'admin' }
-				}
-			}
+					connect: { name: 'admin' },
+				},
+			},
 		})
 
 		// Create a banned user
@@ -88,7 +97,7 @@ test.describe('Admin Impersonation', () => {
 				isBanned: true,
 				banReason: 'Test ban',
 				bannedAt: new Date(),
-			}
+			},
 		})
 
 		// Login as admin

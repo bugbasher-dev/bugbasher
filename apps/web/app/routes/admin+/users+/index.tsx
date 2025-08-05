@@ -1,4 +1,3 @@
-
 import { useLoaderData, useSearchParams } from 'react-router'
 import { type Route } from './+types/index.ts'
 import { AdminUsersTable } from '#app/components/admin-users-table'
@@ -16,7 +15,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 	// Build where clause for filtering
 	const where: any = {}
-	
+
 	if (searchQuery) {
 		where.OR = [
 			{ name: { contains: searchQuery } },
@@ -29,9 +28,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 		where.organizations = {
 			some: {
 				organization: {
-					name: { contains: organizationFilter }
-				}
-			}
+					name: { contains: organizationFilter },
+				},
+			},
 		}
 	}
 
@@ -54,7 +53,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 					select: {
 						id: true,
 						altText: true,
-					}
+					},
 				},
 				organizations: {
 					select: {
@@ -62,19 +61,19 @@ export async function loader({ request }: Route.LoaderArgs) {
 							select: {
 								id: true,
 								name: true,
-							}
-						}
-					}
+							},
+						},
+					},
 				},
 				sessions: {
 					select: {
 						createdAt: true,
 					},
 					orderBy: {
-						createdAt: 'desc'
+						createdAt: 'desc',
 					},
 					take: 1,
-				}
+				},
 			},
 			orderBy: { createdAt: 'desc' },
 			skip: (page - 1) * pageSize,
@@ -93,7 +92,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 	const totalPages = Math.ceil(totalCount / pageSize)
 
 	return Response.json({
-		users: users.map(user => ({
+		users: users.map((user) => ({
 			...user,
 			organizationCount: user.organizations.length,
 			lastLoginAt: user.sessions[0]?.createdAt || null,
@@ -108,7 +107,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 		filters: {
 			search: searchQuery,
 			organization: organizationFilter,
-		}
+		},
 	})
 }
 
@@ -120,9 +119,7 @@ export default function AdminUsersPage() {
 		<div className="space-y-6">
 			<div>
 				<h1 className="text-3xl font-bold tracking-tight">Users</h1>
-				<p className="text-muted-foreground">
-					Manage all users in the system
-				</p>
+				<p className="text-muted-foreground">Manage all users in the system</p>
 			</div>
 
 			<AdminUsersTable

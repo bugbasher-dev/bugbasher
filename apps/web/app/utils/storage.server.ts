@@ -93,12 +93,12 @@ export async function uploadVideoThumbnail(
 	const fileId = createId()
 	const timestamp = Date.now()
 	const key = `users/${userId}/notes/${noteId}/videos/thumbnails/${timestamp}-${videoId}-${fileId}.jpg`
-	
+
 	// Create a File-like object from the buffer
 	const thumbnailFile = new File([thumbnailBuffer], 'thumbnail.jpg', {
 		type: 'image/jpeg',
 	})
-	
+
 	return uploadToStorage(thumbnailFile, key)
 }
 

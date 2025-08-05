@@ -1,10 +1,12 @@
 # Video Processing Setup Guide
 
-This guide will help you set up video processing with Trigger.dev for your organization notes app.
+This guide will help you set up video processing with Trigger.dev for your
+organization notes app.
 
 ## Overview
 
 The video processing feature allows users to:
+
 - Upload videos to organization notes
 - Automatically generate thumbnails using FFmpeg
 - Display video thumbnails in the notes list
@@ -12,7 +14,8 @@ The video processing feature allows users to:
 
 ## Prerequisites
 
-1. **Trigger.dev Account**: Create an account at [cloud.trigger.dev](https://cloud.trigger.dev)
+1. **Trigger.dev Account**: Create an account at
+   [cloud.trigger.dev](https://cloud.trigger.dev)
 2. **AWS S3 Bucket**: For storing videos and thumbnails
 3. **FFmpeg**: Will be automatically installed via the build extension
 
@@ -84,7 +87,8 @@ npx trigger.dev@latest dev
 1. **Fetch Video**: Downloads video from S3 URL
 2. **Generate Thumbnail**: Uses FFmpeg to create thumbnail at 2-second mark
 3. **Upload Thumbnail**: Saves thumbnail to S3
-4. **Update Database**: Updates video record with thumbnail info and `status: "completed"`
+4. **Update Database**: Updates video record with thumbnail info and
+   `status: "completed"`
 
 ### 3. Display Flow
 
@@ -129,7 +133,7 @@ Visit the Trigger.dev dashboard test page and run the "hello-world" task with:
 
 ```json
 {
-  "name": "Test User"
+	"name": "Test User"
 }
 ```
 
@@ -156,19 +160,24 @@ Make sure all environment variables are set in your production environment:
 - `TRIGGER_PROJECT_ID`
 - `TRIGGER_SECRET_KEY`
 
-The video processing will use your existing Tigris/S3-compatible storage configuration.
+The video processing will use your existing Tigris/S3-compatible storage
+configuration.
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **FFmpeg not found**: The build extension should handle this, but ensure it's properly configured in `trigger.config.ts`
+1. **FFmpeg not found**: The build extension should handle this, but ensure it's
+   properly configured in `trigger.config.ts`
 
-2. **Storage permissions**: Ensure your Tigris/S3-compatible storage has proper upload and read permissions
+2. **Storage permissions**: Ensure your Tigris/S3-compatible storage has proper
+   upload and read permissions
 
-3. **Database connection**: Make sure `setPrismaClient(prisma)` is called before triggering jobs
+3. **Database connection**: Make sure `setPrismaClient(prisma)` is called before
+   triggering jobs
 
-4. **Video processing fails**: Check the Trigger.dev dashboard logs for detailed error messages
+4. **Video processing fails**: Check the Trigger.dev dashboard logs for detailed
+   error messages
 
 ### Debug Steps
 

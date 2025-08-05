@@ -37,7 +37,7 @@ function EpicProgress() {
 			<div
 				ref={ref}
 				className={cn(
-					'bg-blue-500 h-full w-0 duration-500 ease-in-out',
+					'h-full w-0 bg-blue-500 duration-500 ease-in-out',
 					transition.state === 'idle' &&
 						(animationComplete
 							? 'transition-none'
@@ -51,7 +51,7 @@ function EpicProgress() {
 					<Icon
 						name="update"
 						size="md"
-						className="text-blue-500 m-1 animate-spin"
+						className="m-1 animate-spin text-blue-500"
 						aria-hidden
 					/>
 				</div>

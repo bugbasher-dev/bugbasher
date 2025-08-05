@@ -1,6 +1,12 @@
 import { cn } from '#app/utils/misc.tsx'
 
-export function Logo({ className, size = 34 }: { className?: string, size?: number }) {
+export function Logo({
+	className,
+	size = 34,
+}: {
+	className?: string
+	size?: number
+}) {
 	return (
 		<div className={cn('flex items-center gap-3', className)}>
 			<svg
@@ -11,48 +17,153 @@ export function Logo({ className, size = 34 }: { className?: string, size?: numb
 				xmlns="http://www.w3.org/2000/svg"
 				xmlnsXlink="http://www.w3.org/1999/xlink"
 			>
-				<filter id="a" colorInterpolationFilters="sRGB" filterUnits="userSpaceOnUse" height="54" width="48" x="0" y="-3">
+				<filter
+					id="a"
+					colorInterpolationFilters="sRGB"
+					filterUnits="userSpaceOnUse"
+					height="54"
+					width="48"
+					x="0"
+					y="-3"
+				>
 					<feFlood floodOpacity="0" result="BackgroundImageFix" />
-					<feBlend in="SourceGraphic" in2="BackgroundImageFix" mode="normal" result="shape" />
-					<feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+					<feBlend
+						in="SourceGraphic"
+						in2="BackgroundImageFix"
+						mode="normal"
+						result="shape"
+					/>
+					<feColorMatrix
+						in="SourceAlpha"
+						result="hardAlpha"
+						type="matrix"
+						values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+					/>
 					<feOffset dy="-3" />
 					<feGaussianBlur stdDeviation="1.5" />
 					<feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic" />
-					<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0" />
-					<feBlend in2="shape" mode="normal" result="effect1_innerShadow_3051_46903" />
-					<feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+					<feColorMatrix
+						type="matrix"
+						values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+					/>
+					<feBlend
+						in2="shape"
+						mode="normal"
+						result="effect1_innerShadow_3051_46903"
+					/>
+					<feColorMatrix
+						in="SourceAlpha"
+						result="hardAlpha"
+						type="matrix"
+						values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+					/>
 					<feOffset dy="3" />
 					<feGaussianBlur stdDeviation="1.5" />
 					<feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic" />
-					<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.1 0" />
-					<feBlend in2="effect1_innerShadow_3051_46903" mode="normal" result="effect2_innerShadow_3051_46903" />
-					<feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-					<feMorphology in="SourceAlpha" operator="erode" radius="1" result="effect3_innerShadow_3051_46903" />
+					<feColorMatrix
+						type="matrix"
+						values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.1 0"
+					/>
+					<feBlend
+						in2="effect1_innerShadow_3051_46903"
+						mode="normal"
+						result="effect2_innerShadow_3051_46903"
+					/>
+					<feColorMatrix
+						in="SourceAlpha"
+						result="hardAlpha"
+						type="matrix"
+						values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+					/>
+					<feMorphology
+						in="SourceAlpha"
+						operator="erode"
+						radius="1"
+						result="effect3_innerShadow_3051_46903"
+					/>
 					<feOffset />
 					<feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic" />
-					<feColorMatrix type="matrix" values="0 0 0 0 0.0627451 0 0 0 0 0.0941176 0 0 0 0 0.156863 0 0 0 0.24 0" />
-					<feBlend in2="effect2_innerShadow_3051_46903" mode="normal" result="effect3_innerShadow_3051_46903" />
+					<feColorMatrix
+						type="matrix"
+						values="0 0 0 0 0.0627451 0 0 0 0 0.0941176 0 0 0 0 0.156863 0 0 0 0.24 0"
+					/>
+					<feBlend
+						in2="effect2_innerShadow_3051_46903"
+						mode="normal"
+						result="effect3_innerShadow_3051_46903"
+					/>
 				</filter>
-				<filter id="b" colorInterpolationFilters="sRGB" filterUnits="userSpaceOnUse" height="44" width="38" x="5" y="5">
+				<filter
+					id="b"
+					colorInterpolationFilters="sRGB"
+					filterUnits="userSpaceOnUse"
+					height="44"
+					width="38"
+					x="5"
+					y="5"
+				>
 					<feFlood floodOpacity="0" result="BackgroundImageFix" />
-					<feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-					<feMorphology in="SourceAlpha" operator="erode" radius="2" result="effect1_dropShadow_3051_46903" />
+					<feColorMatrix
+						in="SourceAlpha"
+						result="hardAlpha"
+						type="matrix"
+						values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+					/>
+					<feMorphology
+						in="SourceAlpha"
+						operator="erode"
+						radius="2"
+						result="effect1_dropShadow_3051_46903"
+					/>
 					<feOffset dy="3" />
 					<feGaussianBlur stdDeviation="3" />
 					<feComposite in2="hardAlpha" operator="out" />
-					<feColorMatrix type="matrix" values="0 0 0 0 0.141176 0 0 0 0 0.141176 0 0 0 0 0.141176 0 0 0 0.1 0" />
-					<feBlend in2="BackgroundImageFix" mode="normal" result="effect1_dropShadow_3051_46903" />
-					<feBlend in="SourceGraphic" in2="effect1_dropShadow_3051_46903" mode="normal" result="shape" />
+					<feColorMatrix
+						type="matrix"
+						values="0 0 0 0 0.141176 0 0 0 0 0.141176 0 0 0 0 0.141176 0 0 0 0.1 0"
+					/>
+					<feBlend
+						in2="BackgroundImageFix"
+						mode="normal"
+						result="effect1_dropShadow_3051_46903"
+					/>
+					<feBlend
+						in="SourceGraphic"
+						in2="effect1_dropShadow_3051_46903"
+						mode="normal"
+						result="shape"
+					/>
 				</filter>
-				<linearGradient id="c" gradientUnits="userSpaceOnUse" x1="24" x2="26" y1=".000001" y2="48">
+				<linearGradient
+					id="c"
+					gradientUnits="userSpaceOnUse"
+					x1="24"
+					x2="26"
+					y1=".000001"
+					y2="48"
+				>
 					<stop offset="0" stopColor="#fff" stopOpacity="0" />
 					<stop offset="1" stopColor="#fff" stopOpacity=".12" />
 				</linearGradient>
-				<linearGradient id="d" gradientUnits="userSpaceOnUse" x1="24.0002" x2="24.0002" y1="9.71429" y2="38.2857">
+				<linearGradient
+					id="d"
+					gradientUnits="userSpaceOnUse"
+					x1="24.0002"
+					x2="24.0002"
+					y1="9.71429"
+					y2="38.2857"
+				>
 					<stop offset="0" stopColor="#fff" stopOpacity=".8" />
 					<stop offset="1" stopColor="#fff" stopOpacity=".5" />
 				</linearGradient>
-				<linearGradient id="e" gradientUnits="userSpaceOnUse" x1="24" x2="24" y1="0" y2="48">
+				<linearGradient
+					id="e"
+					gradientUnits="userSpaceOnUse"
+					x1="24"
+					x2="24"
+					y1="0"
+					y2="48"
+				>
 					<stop offset="0" stopColor="#fff" stopOpacity=".12" />
 					<stop offset="1" stopColor="#fff" stopOpacity="0" />
 				</linearGradient>
@@ -69,7 +180,15 @@ export function Logo({ className, size = 34 }: { className?: string, size?: numb
 							<path d="m14.0357 28.2857c-2.7857 0-5.0357 2.2341-5.0357 5 0 2.7447 2.25 4.9787 5.0143 5-.6857-.0213-1.2214-.5744-1.2214-1.2553s.5571-1.2553 1.2643-1.2553h12.6c2.0785 0 3.7714-1.6809 3.7714-3.7447s-1.6929-3.7447-3.7714-3.7447z" />
 						</g>
 					</g>
-					<rect height="46" rx="11" stroke="url(#e)" strokeWidth="2" width="46" x="1" y="1" />
+					<rect
+						height="46"
+						rx="11"
+						stroke="url(#e)"
+						strokeWidth="2"
+						width="46"
+						x="1"
+						y="1"
+					/>
 				</g>
 			</svg>
 			<div className="flex gap-1 font-bold">

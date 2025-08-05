@@ -57,7 +57,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 				uploads: note.uploads.map((upload) => ({
 					...upload,
 					url: domain + getNoteImgSrc(upload.objectKey),
-					thumbnailUrl: upload.thumbnailKey ? domain + getNoteImgSrc(upload.thumbnailKey) : null,
+					thumbnailUrl: upload.thumbnailKey
+						? domain + getNoteImgSrc(upload.thumbnailKey)
+						: null,
 				})),
 			})),
 		},

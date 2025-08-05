@@ -149,28 +149,25 @@ export function OnboardingChecklist({
 				{progress.steps.map((step) => (
 					<div
 						key={step.id}
-						className="flex items-center gap-4 rounded-lg border border-border bg-background p-4"
+						className="border-border bg-background flex items-center gap-4 rounded-lg border p-4"
 					>
 						<div className="flex-shrink-0">
 							{step.isCompleted ? (
 								<div className="flex h-8 w-8 items-center justify-center rounded-full bg-black">
-									<Icon
-										name="check"
-										className="h-4 w-4 text-white"
-									/>
+									<Icon name="check" className="h-4 w-4 text-white" />
 								</div>
 							) : (
 								<div className="flex h-8 w-8 items-center justify-center">
 									<Icon
-										name={step.icon || "circle"}
-										className="h-5 w-5 text-muted-foreground"
+										name={step.icon || 'circle'}
+										className="text-muted-foreground h-5 w-5"
 									/>
 								</div>
 							)}
 						</div>
 
 						<div className="min-w-0 flex-1">
-							<h4 className="text-sm font-medium text-foreground">
+							<h4 className="text-foreground text-sm font-medium">
 								{step.title}
 							</h4>
 							<p className="text-muted-foreground mt-1 text-sm">
@@ -180,7 +177,7 @@ export function OnboardingChecklist({
 
 						<div className="flex-shrink-0">
 							{step.isCompleted ? (
-								<span className="text-sm font-medium text-muted-foreground">
+								<span className="text-muted-foreground text-sm font-medium">
 									{step.completedLabel || 'Completed'}
 								</span>
 							) : (
@@ -191,10 +188,7 @@ export function OnboardingChecklist({
 												to={`/app/${orgSlug}${step.actionConfig.target}`}
 												onClick={() => handleStepAction(step)}
 											>
-												<Button
-													variant="outline"
-													size="sm"
-												>
+												<Button variant="outline" size="sm">
 													{step.actionConfig.label}
 													<Icon name="arrow-right" className="ml-2 h-3 w-3" />
 												</Button>

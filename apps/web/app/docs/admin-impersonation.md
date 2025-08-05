@@ -2,21 +2,25 @@
 
 ## Overview
 
-The admin impersonation system allows administrators to temporarily log in as other users for troubleshooting and support purposes. This feature includes proper session management, audit logging, and security controls.
+The admin impersonation system allows administrators to temporarily log in as
+other users for troubleshooting and support purposes. This feature includes
+proper session management, audit logging, and security controls.
 
 ## Features
 
 ### 1. Impersonation Action
+
 - **Route**: `/admin/users/{userId}/impersonate`
 - **Method**: POST
 - **Access**: Admin role required
-- **Functionality**: 
+- **Functionality**:
   - Creates a new session for the target user
   - Stores impersonation metadata in the admin's session
   - Prevents impersonation of banned users (unless ban has expired)
   - Redirects to main application as the impersonated user
 
 ### 2. Impersonation Banner
+
 - **Component**: `ImpersonationBanner`
 - **Location**: Displayed at the top of all pages when impersonating
 - **Information Shown**:
@@ -26,6 +30,7 @@ The admin impersonation system allows administrators to temporarily log in as ot
   - Quick "Stop Impersonation" button
 
 ### 3. Stop Impersonation
+
 - **Route**: `/admin/stop-impersonation`
 - **Method**: POST
 - **Functionality**:
@@ -35,6 +40,7 @@ The admin impersonation system allows administrators to temporarily log in as ot
   - Redirects back to admin dashboard
 
 ### 4. Audit Logging
+
 - **Storage**: Uses organization notes and activity logs
 - **Organization**: Creates/uses "admin-system" organization for audit logs
 - **Events Logged**:
@@ -48,6 +54,7 @@ The admin impersonation system allows administrators to temporarily log in as ot
   - Duration (for end events)
 
 ### 5. Audit Log Viewer
+
 - **Route**: `/admin/audit-logs`
 - **Access**: Admin role required
 - **Features**:
@@ -85,16 +92,19 @@ The admin impersonation system allows administrators to temporarily log in as ot
 ## Technical Implementation
 
 ### Session Management
+
 - Uses existing `authSessionStorage` for session handling
 - Stores impersonation metadata in session cookie
 - Creates new sessions for both impersonation start and end
 
 ### Database Schema
+
 - Leverages existing user ban fields (`isBanned`, `banExpiresAt`, etc.)
 - Uses organization notes for audit log storage
 - Activity logs store detailed metadata as JSON
 
 ### Components
+
 - `ImpersonationBanner`: Top-level UI indicator
 - `AdminUserDetail`: Updated with impersonation button
 - `AdminAuditLogs`: Dedicated audit log viewer
@@ -102,6 +112,7 @@ The admin impersonation system allows administrators to temporarily log in as ot
 ## Testing
 
 The system includes comprehensive tests covering:
+
 - Successful impersonation flow
 - Access control (non-admins blocked)
 - Banned user protection
@@ -111,6 +122,7 @@ The system includes comprehensive tests covering:
 ## Future Enhancements
 
 Potential improvements could include:
+
 - Time-limited impersonation sessions
 - More granular permissions
 - Enhanced audit log filtering

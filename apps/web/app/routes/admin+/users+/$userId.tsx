@@ -4,9 +4,15 @@ import { requireUserWithRole } from '#app/utils/permissions.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { UserDetailView } from '#app/components/admin-user-detail'
 
-export async function loader({ request, params }: { request: Request; params: { userId: string } }) {
+export async function loader({
+	request,
+	params,
+}: {
+	request: Request
+	params: { userId: string }
+}) {
 	await requireUserWithRole(request, 'admin')
-	
+
 	const { userId } = params
 	invariantResponse(userId, 'User ID is required')
 
@@ -29,13 +35,13 @@ export async function loader({ request, params }: { request: Request; params: { 
 					id: true,
 					name: true,
 					username: true,
-				}
+				},
 			},
 			image: {
 				select: {
 					id: true,
 					altText: true,
-				}
+				},
 			},
 			organizations: {
 				select: {
@@ -53,12 +59,12 @@ export async function loader({ request, params }: { request: Request; params: { 
 							active: true,
 							subscriptionStatus: true,
 							planName: true,
-						}
-					}
+						},
+					},
 				},
 				orderBy: {
-					createdAt: 'desc'
-				}
+					createdAt: 'desc',
+				},
 			},
 			sessions: {
 				select: {
@@ -67,9 +73,9 @@ export async function loader({ request, params }: { request: Request; params: { 
 					expirationDate: true,
 				},
 				orderBy: {
-					createdAt: 'desc'
+					createdAt: 'desc',
 				},
-				take: 10
+				take: 10,
 			},
 			connections: {
 				select: {
@@ -79,15 +85,15 @@ export async function loader({ request, params }: { request: Request; params: { 
 					createdAt: true,
 				},
 				orderBy: {
-					createdAt: 'desc'
-				}
+					createdAt: 'desc',
+				},
 			},
 			roles: {
 				select: {
 					id: true,
 					name: true,
 					description: true,
-				}
+				},
 			},
 			notes: {
 				select: {
@@ -97,16 +103,16 @@ export async function loader({ request, params }: { request: Request; params: { 
 					updatedAt: true,
 				},
 				orderBy: {
-					updatedAt: 'desc'
+					updatedAt: 'desc',
 				},
-				take: 5
+				take: 5,
 			},
 			password: {
 				select: {
 					hash: true,
-				}
-			}
-		}
+				},
+			},
+		},
 	})
 
 	invariantResponse(user, 'User not found', { status: 404 })
@@ -123,13 +129,13 @@ export async function loader({ request, params }: { request: Request; params: { 
 					select: {
 						id: true,
 						title: true,
-					}
-				}
+					},
+				},
 			},
 			orderBy: {
-				createdAt: 'desc'
+				createdAt: 'desc',
 			},
-			take: 5
+			take: 5,
 		}),
 		prisma.noteActivityLog.findMany({
 			where: { userId: user.id },
@@ -141,14 +147,14 @@ export async function loader({ request, params }: { request: Request; params: { 
 					select: {
 						id: true,
 						title: true,
-					}
-				}
+					},
+				},
 			},
 			orderBy: {
-				createdAt: 'desc'
+				createdAt: 'desc',
 			},
-			take: 10
-		})
+			take: 10,
+		}),
 	])
 
 	return Response.json({
@@ -159,7 +165,7 @@ export async function loader({ request, params }: { request: Request; params: { 
 		recentActivity: {
 			comments: recentNoteComments,
 			activityLogs: recentActivityLogs,
-		}
+		},
 	})
 }
 
@@ -168,10 +174,7 @@ export default function AdminUserDetailPage() {
 
 	return (
 		<div className="space-y-6">
-			<UserDetailView 
-				user={data.user}
-				recentActivity={data.recentActivity}
-			/>
+			<UserDetailView user={data.user} recentActivity={data.recentActivity} />
 		</div>
 	)
 }

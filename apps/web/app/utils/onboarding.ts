@@ -32,8 +32,6 @@ export interface OnboardingProgressData {
 	steps: OnboardingStepWithProgress[]
 }
 
-
-
 // Get onboarding progress for a user in an organization
 export async function getOnboardingProgress(
 	userId: string,

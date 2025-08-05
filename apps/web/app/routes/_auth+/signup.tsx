@@ -73,13 +73,13 @@ const aj = arcjet
 
 export async function loader({ request }: Route.LoaderArgs) {
 	await requireAnonymous(request)
-	
+
 	// Check for invite token in session
 	const verifySession = await verifySessionStorage.getSession(
 		request.headers.get('cookie'),
 	)
 	const inviteToken = verifySession.get(onboardingInviteTokenSessionKey)
-	
+
 	return { inviteToken: typeof inviteToken === 'string' ? inviteToken : null }
 }
 
@@ -175,7 +175,10 @@ export const meta: Route.MetaFunction = () => {
 	return [{ title: 'Sign Up | Epic Notes' }]
 }
 
-export default function SignupRoute({ actionData, loaderData }: Route.ComponentProps) {
+export default function SignupRoute({
+	actionData,
+	loaderData,
+}: Route.ComponentProps) {
 	const isPending = useIsPending()
 	const [searchParams] = useSearchParams()
 	const redirectTo = searchParams.get('redirectTo')
@@ -199,10 +202,9 @@ export default function SignupRoute({ actionData, loaderData }: Route.ComponentP
 					{inviteToken ? 'Join organization' : 'Create an account'}
 				</CardTitle>
 				<CardDescription>
-					{inviteToken 
+					{inviteToken
 						? 'Complete your signup to join the organization'
-						: 'Sign up with your social account or email'
-					}
+						: 'Sign up with your social account or email'}
 				</CardDescription>
 			</CardHeader>
 			<CardContent>

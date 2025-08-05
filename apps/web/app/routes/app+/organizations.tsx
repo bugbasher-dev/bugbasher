@@ -1,11 +1,22 @@
 import { Img } from 'openimg/react'
 import { useState } from 'react'
-import { type LoaderFunctionArgs, type ActionFunctionArgs, Link, useLoaderData, Form } from 'react-router'
+import {
+	type LoaderFunctionArgs,
+	type ActionFunctionArgs,
+	Link,
+	useLoaderData,
+	Form,
+} from 'react-router'
 import { Button } from '#app/components/ui/button'
 import { Input } from '#app/components/ui/input'
 import { PageTitle } from '#app/components/ui/page-title'
 import { Badge } from '#app/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '#app/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from '#app/components/ui/card'
 import { requireUserId } from '#app/utils/auth.server'
 import { prisma } from '#app/utils/db.server'
 import {
@@ -26,7 +37,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	])
 
 	// Get pending invitations for this user's email
-	const pendingInvitations = user?.email 
+	const pendingInvitations = user?.email
 		? await prisma.organizationInvitation.findMany({
 				where: {
 					email: user.email.toLowerCase(),
@@ -192,7 +203,8 @@ export default function OrganizationsPage() {
 								Pending Invitations
 							</CardTitle>
 							<p className="text-muted-foreground text-sm">
-								You have been invited to join the following organizations. Choose to accept or decline each invitation.
+								You have been invited to join the following organizations.
+								Choose to accept or decline each invitation.
 							</p>
 						</CardHeader>
 						<CardContent className="space-y-3">
@@ -205,25 +217,33 @@ export default function OrganizationsPage() {
 										<div className="ring-muted bg-muted flex h-10 w-10 items-center justify-center overflow-hidden rounded-md text-sm font-medium ring-2 ring-offset-2">
 											{invitation.organization.image?.objectKey ? (
 												<Img
-													src={getOrgImgSrc(invitation.organization.image.objectKey)}
+													src={getOrgImgSrc(
+														invitation.organization.image.objectKey,
+													)}
 													alt={invitation.organization.name}
 													className="h-full w-full object-cover"
 													width={40}
 													height={40}
 												/>
 											) : (
-												<span>{invitation.organization.name.charAt(0).toUpperCase()}</span>
+												<span>
+													{invitation.organization.name.charAt(0).toUpperCase()}
+												</span>
 											)}
 										</div>
 										<div>
-											<div className="font-medium">{invitation.organization.name}</div>
+											<div className="font-medium">
+												{invitation.organization.name}
+											</div>
 											<div className="text-muted-foreground flex items-center gap-2 text-sm">
 												<Badge variant="secondary" className="text-xs">
 													{invitation.role}
 												</Badge>
 												{invitation.inviter && (
 													<span>
-														Invited by {invitation.inviter.name || invitation.inviter.email}
+														Invited by{' '}
+														{invitation.inviter.name ||
+															invitation.inviter.email}
 													</span>
 												)}
 											</div>
@@ -231,15 +251,31 @@ export default function OrganizationsPage() {
 									</div>
 									<div className="flex gap-2">
 										<Form method="POST">
-											<input type="hidden" name="intent" value="accept-invitation" />
-											<input type="hidden" name="invitationId" value={invitation.id} />
+											<input
+												type="hidden"
+												name="intent"
+												value="accept-invitation"
+											/>
+											<input
+												type="hidden"
+												name="invitationId"
+												value={invitation.id}
+											/>
 											<Button type="submit" size="sm">
 												Accept
 											</Button>
 										</Form>
 										<Form method="POST">
-											<input type="hidden" name="intent" value="decline-invitation" />
-											<input type="hidden" name="invitationId" value={invitation.id} />
+											<input
+												type="hidden"
+												name="intent"
+												value="decline-invitation"
+											/>
+											<input
+												type="hidden"
+												name="invitationId"
+												value={invitation.id}
+											/>
 											<Button type="submit" variant="outline" size="sm">
 												Decline
 											</Button>
@@ -270,7 +306,9 @@ export default function OrganizationsPage() {
 												height={40}
 											/>
 										) : (
-											<span>{org.organization.name.charAt(0).toUpperCase()}</span>
+											<span>
+												{org.organization.name.charAt(0).toUpperCase()}
+											</span>
 										)}
 									</div>
 									<div>

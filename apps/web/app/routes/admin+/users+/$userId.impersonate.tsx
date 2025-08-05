@@ -6,7 +6,13 @@ import { sessionKey, getSessionExpirationDate } from '#app/utils/auth.server.ts'
 import { authSessionStorage } from '#app/utils/session.server.ts'
 import { createToastHeaders } from '#app/utils/toast.server.ts'
 
-export async function action({ request, params }: { request: Request; params: { userId: string } }) {
+export async function action({
+	request,
+	params,
+}: {
+	request: Request
+	params: { userId: string }
+}) {
 	const adminUserId = await requireUserWithRole(request, 'admin')
 	const { userId } = params
 	invariantResponse(userId, 'User ID is required')
@@ -21,7 +27,7 @@ export async function action({ request, params }: { request: Request; params: { 
 			email: true,
 			isBanned: true,
 			banExpiresAt: true,
-		}
+		},
 	})
 
 	invariantResponse(targetUser, 'User not found', { status: 404 })
@@ -29,8 +35,9 @@ export async function action({ request, params }: { request: Request; params: { 
 	// Check if user is banned and ban hasn't expired
 	if (targetUser.isBanned) {
 		const now = new Date()
-		const banExpired = targetUser.banExpiresAt && new Date(targetUser.banExpiresAt) <= now
-		
+		const banExpired =
+			targetUser.banExpiresAt && new Date(targetUser.banExpiresAt) <= now
+
 		if (!banExpired) {
 			throw data(
 				{ error: 'Cannot impersonate banned user' },
@@ -41,7 +48,7 @@ export async function action({ request, params }: { request: Request; params: { 
 						title: 'Impersonation Failed',
 						description: 'Cannot impersonate a banned user.',
 					}),
-				}
+				},
 			)
 		}
 	}
@@ -53,7 +60,7 @@ export async function action({ request, params }: { request: Request; params: { 
 			id: true,
 			name: true,
 			username: true,
-		}
+		},
 	})
 
 	invariantResponse(adminUser, 'Admin user not found')
@@ -71,7 +78,7 @@ export async function action({ request, params }: { request: Request; params: { 
 	// This is a workaround since we don't have a dedicated admin audit log table
 	const adminOrg = await prisma.organization.findFirst({
 		where: { slug: 'admin-system' },
-		select: { id: true }
+		select: { id: true },
 	})
 
 	let auditOrgId = adminOrg?.id
@@ -84,7 +91,7 @@ export async function action({ request, params }: { request: Request; params: { 
 				description: 'System organization for admin audit logs',
 				active: false, // Hidden from normal users
 			},
-			select: { id: true }
+			select: { id: true },
 		})
 		auditOrgId = createdAdminOrg.id
 	}
@@ -98,7 +105,7 @@ export async function action({ request, params }: { request: Request; params: { 
 			organizationId: auditOrgId,
 			createdById: adminUserId,
 		},
-		select: { id: true }
+		select: { id: true },
 	})
 
 	// Log the impersonation action for audit purposes

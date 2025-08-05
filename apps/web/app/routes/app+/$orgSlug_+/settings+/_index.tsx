@@ -14,8 +14,12 @@ import {
 	uploadOrgPhotoActionIntent,
 	deleteOrgPhotoActionIntent,
 } from '#app/components/settings/cards/organization/organization-photo-card'
-import TeamSizeCard, { TeamSizeSchema } from '#app/components/settings/cards/organization/team-size-card'
-import VerifiedDomainCard, { VerifiedDomainSchema } from '#app/components/settings/cards/organization/verified-domain-card'
+import TeamSizeCard, {
+	TeamSizeSchema,
+} from '#app/components/settings/cards/organization/team-size-card'
+import VerifiedDomainCard, {
+	VerifiedDomainSchema,
+} from '#app/components/settings/cards/organization/verified-domain-card'
 import DangerZoneCard from '#app/components/settings/cards/organization/danger-zone-card'
 import {
 	AnnotatedLayout,
@@ -81,7 +85,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
 				},
 			},
 		},
-		select: { id: true, name: true, slug: true, size: true, verifiedDomain: true },
+		select: {
+			id: true,
+			name: true,
+			slug: true,
+			size: true,
+			verifiedDomain: true,
+		},
 	})
 
 	// Get user email for domain validation
@@ -230,9 +240,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 			console.error('Error updating team size:', error)
 			return Response.json({
 				result: submission.reply({
-					formErrors: [
-						'Failed to update team size. Please try again.',
-					],
+					formErrors: ['Failed to update team size. Please try again.'],
 				}),
 			})
 		}
@@ -243,7 +251,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
 			schema: VerifiedDomainSchema.superRefine((data, ctx) => {
 				if (data.verifiedDomain) {
 					// Block common domains
-					if (['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com'].includes(data.verifiedDomain)) {
+					if (
+						[
+							'gmail.com',
+							'yahoo.com',
+							'hotmail.com',
+							'outlook.com',
+							'icloud.com',
+						].includes(data.verifiedDomain)
+					) {
 						ctx.addIssue({
 							path: ['verifiedDomain'],
 							code: z.ZodIssueCode.custom,
@@ -309,21 +325,22 @@ export async function action({ request, params }: ActionFunctionArgs) {
 					})
 				}
 
-				console.log(`Auto-added ${usersWithMatchingDomain.length} users to organization ${organization.name} based on verified domain ${verifiedDomain}`)
+				console.log(
+					`Auto-added ${usersWithMatchingDomain.length} users to organization ${organization.name} based on verified domain ${verifiedDomain}`,
+				)
 			})
 
 			return redirectWithToast(`/app/${organization.slug}/settings`, {
 				title: 'Verified domain updated',
-				description: 'Your organization verified domain has been updated and matching users have been automatically added.',
+				description:
+					'Your organization verified domain has been updated and matching users have been automatically added.',
 				type: 'success',
 			})
 		} catch (error) {
 			console.error('Error updating verified domain:', error)
 			return Response.json({
 				result: submission.reply({
-					formErrors: [
-						'Failed to update verified domain. Please try again.',
-					],
+					formErrors: ['Failed to update verified domain. Please try again.'],
 				}),
 			})
 		}
@@ -394,7 +411,10 @@ export default function GeneralSettings() {
 				title="Verified Domains"
 				description="Automatically add team members based on their email domain."
 			>
-				<VerifiedDomainCard organization={organization} actionData={actionData} />
+				<VerifiedDomainCard
+					organization={organization}
+					actionData={actionData}
+				/>
 			</AnnotatedSection>
 
 			<AnnotatedSection

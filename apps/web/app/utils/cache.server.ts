@@ -205,8 +205,11 @@ export interface CacheStats {
 
 export async function getCacheStats(): Promise<CacheStats> {
 	// SQLite cache stats
-	const sqliteStats = getCacheStatsStatement.get() as { totalKeys: number; totalSize: number }
-	
+	const sqliteStats = getCacheStatsStatement.get() as {
+		totalKeys: number
+		totalSize: number
+	}
+
 	// LRU cache stats
 	const lruKeys = [...lru.keys()]
 	const lruSize = lru.size
@@ -216,13 +219,16 @@ export async function getCacheStats(): Promise<CacheStats> {
 		sqlite: {
 			totalKeys: sqliteStats.totalKeys || 0,
 			totalSize: sqliteStats.totalSize || 0,
-			averageSize: sqliteStats.totalKeys > 0 ? Math.round((sqliteStats.totalSize || 0) / sqliteStats.totalKeys) : 0,
+			averageSize:
+				sqliteStats.totalKeys > 0
+					? Math.round((sqliteStats.totalSize || 0) / sqliteStats.totalKeys)
+					: 0,
 		},
 		lru: {
 			totalKeys: lruKeys.length,
 			maxSize: lruMaxSize,
 			currentSize: lruSize,
-		}
+		},
 	}
 }
 
@@ -245,31 +251,35 @@ export async function getAllCacheKeysWithDetails(limit: number): Promise<{
 		size: number
 		metadata: string
 	}>
-	
-	const sqliteKeys: CacheKeyInfo[] = sqliteRows.map(row => {
+
+	const sqliteKeys: CacheKeyInfo[] = sqliteRows.map((row) => {
 		let metadata: any = {}
 		try {
 			metadata = JSON.parse(row.metadata)
 		} catch {
 			// ignore parse errors
 		}
-		
+
 		return {
 			key: row.key,
 			size: row.size,
-			createdAt: metadata.createdTime ? new Date(metadata.createdTime) : undefined,
+			createdAt: metadata.createdTime
+				? new Date(metadata.createdTime)
+				: undefined,
 			ttl: metadata.ttl,
 			swr: metadata.swr,
 		}
 	})
 
 	// Get LRU cache keys with details
-	const lruKeys: CacheKeyInfo[] = [...lru.keys()].slice(0, limit).map(key => {
+	const lruKeys: CacheKeyInfo[] = [...lru.keys()].slice(0, limit).map((key) => {
 		const entry = lru.get(key)
 		return {
 			key,
 			size: 0, // LRU doesn't track size easily
-			createdAt: entry?.metadata?.createdTime ? new Date(entry.metadata.createdTime) : undefined,
+			createdAt: entry?.metadata?.createdTime
+				? new Date(entry.metadata.createdTime)
+				: undefined,
 			ttl: entry?.metadata?.ttl,
 			swr: entry?.metadata?.swr,
 		}
@@ -290,29 +300,37 @@ export async function searchCacheKeys(search: string, limit: number) {
 	}
 }
 
-export async function searchCacheKeysWithDetails(search: string, limit: number): Promise<{
+export async function searchCacheKeysWithDetails(
+	search: string,
+	limit: number,
+): Promise<{
 	sqlite: CacheKeyInfo[]
 	lru: CacheKeyInfo[]
 }> {
 	// Get SQLite cache keys with details
-	const sqliteRows = searchCacheKeysWithDetailsStatement.all(`%${search}%`, limit) as Array<{
+	const sqliteRows = searchCacheKeysWithDetailsStatement.all(
+		`%${search}%`,
+		limit,
+	) as Array<{
 		key: string
 		size: number
 		metadata: string
 	}>
-	
-	const sqliteKeys: CacheKeyInfo[] = sqliteRows.map(row => {
+
+	const sqliteKeys: CacheKeyInfo[] = sqliteRows.map((row) => {
 		let metadata: any = {}
 		try {
 			metadata = JSON.parse(row.metadata)
 		} catch {
 			// ignore parse errors
 		}
-		
+
 		return {
 			key: row.key,
 			size: row.size,
-			createdAt: metadata.createdTime ? new Date(metadata.createdTime) : undefined,
+			createdAt: metadata.createdTime
+				? new Date(metadata.createdTime)
+				: undefined,
 			ttl: metadata.ttl,
 			swr: metadata.swr,
 		}
@@ -322,12 +340,14 @@ export async function searchCacheKeysWithDetails(search: string, limit: number):
 	const lruKeys: CacheKeyInfo[] = [...lru.keys()]
 		.filter((key) => key.includes(search))
 		.slice(0, limit)
-		.map(key => {
+		.map((key) => {
 			const entry = lru.get(key)
 			return {
 				key,
 				size: 0, // LRU doesn't track size easily
-				createdAt: entry?.metadata?.createdTime ? new Date(entry.metadata.createdTime) : undefined,
+				createdAt: entry?.metadata?.createdTime
+					? new Date(entry.metadata.createdTime)
+					: undefined,
 				ttl: entry?.metadata?.ttl,
 				swr: entry?.metadata?.swr,
 			}
@@ -339,33 +359,42 @@ export async function searchCacheKeysWithDetails(search: string, limit: number):
 	}
 }
 
-export async function getCacheKeyDetails(key: string, type: 'sqlite' | 'lru'): Promise<CacheKeyInfo | null> {
+export async function getCacheKeyDetails(
+	key: string,
+	type: 'sqlite' | 'lru',
+): Promise<CacheKeyInfo | null> {
 	if (type === 'sqlite') {
-		const row = getCacheKeyDetailsStatement.get(key) as { key: string; size: number; metadata: string } | undefined
+		const row = getCacheKeyDetailsStatement.get(key) as
+			| { key: string; size: number; metadata: string }
+			| undefined
 		if (!row) return null
-		
+
 		let metadata: any = {}
 		try {
 			metadata = JSON.parse(row.metadata)
 		} catch {
 			// ignore parse errors
 		}
-		
+
 		return {
 			key: row.key,
 			size: row.size,
-			createdAt: metadata.createdTime ? new Date(metadata.createdTime) : undefined,
+			createdAt: metadata.createdTime
+				? new Date(metadata.createdTime)
+				: undefined,
 			ttl: metadata.ttl,
 			swr: metadata.swr,
 		}
 	} else {
 		const entry = lru.get(key)
 		if (!entry) return null
-		
+
 		return {
 			key,
 			size: 0, // LRU doesn't track size easily
-			createdAt: entry.metadata?.createdTime ? new Date(entry.metadata.createdTime) : undefined,
+			createdAt: entry.metadata?.createdTime
+				? new Date(entry.metadata.createdTime)
+				: undefined,
 			ttl: entry.metadata?.ttl,
 			swr: entry.metadata?.swr,
 		}
@@ -373,7 +402,9 @@ export async function getCacheKeyDetails(key: string, type: 'sqlite' | 'lru'): P
 }
 
 // Bulk operations
-export async function clearCacheByType(type: 'sqlite' | 'lru'): Promise<number> {
+export async function clearCacheByType(
+	type: 'sqlite' | 'lru',
+): Promise<number> {
 	if (type === 'sqlite') {
 		const result = cacheDb.prepare('DELETE FROM cache').run()
 		return result.changes || 0
@@ -384,9 +415,12 @@ export async function clearCacheByType(type: 'sqlite' | 'lru'): Promise<number> 
 	}
 }
 
-export async function deleteCacheKeys(keys: string[], type: 'sqlite' | 'lru'): Promise<number> {
+export async function deleteCacheKeys(
+	keys: string[],
+	type: 'sqlite' | 'lru',
+): Promise<number> {
 	let deletedCount = 0
-	
+
 	if (type === 'sqlite') {
 		const deleteStmt = cacheDb.prepare('DELETE FROM cache WHERE key = ?')
 		for (const key of keys) {
@@ -402,7 +436,7 @@ export async function deleteCacheKeys(keys: string[], type: 'sqlite' | 'lru'): P
 			}
 		}
 	}
-	
+
 	return deletedCount
 }
 

@@ -9,7 +9,7 @@ import { type Route } from './+types/_layout.ts'
 export async function loader({ request }: Route.LoaderArgs) {
 	// Require admin role for all admin routes
 	await requireUserWithRole(request, 'admin')
-	
+
 	return {}
 }
 
@@ -56,22 +56,22 @@ export function ErrorBoundary() {
 		<GeneralErrorBoundary
 			statusHandlers={{
 				403: ({ error }) => (
-					<div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+					<div className="flex min-h-[400px] flex-col items-center justify-center space-y-4">
 						<div className="text-center">
-							<h2 className="text-2xl font-bold text-foreground mb-2">
+							<h2 className="text-foreground mb-2 text-2xl font-bold">
 								Access Denied
 							</h2>
 							<p className="text-muted-foreground mb-4">
 								You don't have permission to access this admin area.
 							</p>
-							<p className="text-sm text-muted-foreground">
+							<p className="text-muted-foreground text-sm">
 								{error?.data?.message || 'Admin role required'}
 							</p>
 						</div>
 						<div className="text-center">
 							<a
 								href="/app"
-								className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+								className="bg-primary hover:bg-primary/90 focus:ring-primary inline-flex items-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white focus:ring-2 focus:ring-offset-2 focus:outline-none"
 							>
 								Return to App
 							</a>
@@ -79,9 +79,9 @@ export function ErrorBoundary() {
 					</div>
 				),
 				404: () => (
-					<div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+					<div className="flex min-h-[400px] flex-col items-center justify-center space-y-4">
 						<div className="text-center">
-							<h2 className="text-2xl font-bold text-foreground mb-2">
+							<h2 className="text-foreground mb-2 text-2xl font-bold">
 								Page Not Found
 							</h2>
 							<p className="text-muted-foreground mb-4">
@@ -91,7 +91,7 @@ export function ErrorBoundary() {
 						<div className="text-center">
 							<a
 								href="/admin"
-								className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+								className="bg-primary hover:bg-primary/90 focus:ring-primary inline-flex items-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white focus:ring-2 focus:ring-offset-2 focus:outline-none"
 							>
 								Return to Admin Dashboard
 							</a>

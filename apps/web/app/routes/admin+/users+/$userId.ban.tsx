@@ -17,12 +17,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		const reason = formData.get('reason')
 		const expiresAt = formData.get('expiresAt')
 
-		invariantResponse(typeof reason === 'string' && reason.trim(), 'Ban reason is required')
+		invariantResponse(
+			typeof reason === 'string' && reason.trim(),
+			'Ban reason is required',
+		)
 
 		// Check if user exists and is not already banned
 		const user = await prisma.user.findUnique({
 			where: { id: userId },
-			select: { id: true, isBanned: true, name: true, username: true }
+			select: { id: true, isBanned: true, name: true, username: true },
 		})
 
 		invariantResponse(user, 'User not found', { status: 404 })
@@ -59,12 +62,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
 				banExpiresAt,
 				bannedAt: new Date(),
 				bannedById: adminUserId,
-			}
+			},
 		})
 
 		// Invalidate all user sessions to force logout
 		await prisma.session.deleteMany({
-			where: { userId }
+			where: { userId },
 		})
 
 		return redirectWithToast(`/admin/users/${userId}`, {
@@ -78,7 +81,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		// Check if user exists and is banned
 		const user = await prisma.user.findUnique({
 			where: { id: userId },
-			select: { id: true, isBanned: true, name: true, username: true }
+			select: { id: true, isBanned: true, name: true, username: true },
 		})
 
 		invariantResponse(user, 'User not found', { status: 404 })
@@ -100,7 +103,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 				banExpiresAt: null,
 				bannedAt: null,
 				bannedById: null,
-			}
+			},
 		})
 
 		return redirectWithToast(`/admin/users/${userId}`, {

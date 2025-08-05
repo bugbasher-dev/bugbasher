@@ -45,7 +45,7 @@ export function NavUser({
 	const requestInfo = useOptionalRequestInfo()
 
 	// Check if user has admin role
-	const isAdmin = user.roles?.some(role => role.name === 'admin') ?? false
+	const isAdmin = user.roles?.some((role) => role.name === 'admin') ?? false
 
 	// Theme switching logic
 	const optimisticMode = useOptimisticThemeMode()
@@ -122,7 +122,9 @@ export function NavUser({
 							>
 								<Link to="/app/organizations">
 									<BuildingIcon
-										ref={(ref: any) => (iconRefs.current['organizations'] = ref)}
+										ref={(ref: any) =>
+											(iconRefs.current['organizations'] = ref)
+										}
 										size={16}
 									/>
 									Organizations
@@ -172,15 +174,14 @@ export function NavUser({
 											}
 											themeFetcher.submit(formData, {
 												method: 'POST',
-												action: '/resources/theme-switch'
+												action: '/resources/theme-switch',
 											})
 										}}
 									>
-										<Icon
-											name={option.icon as any}
-											className="size-4"
-										/>
-										<span className={mode === option.value ? 'font-medium' : ''}>
+										<Icon name={option.icon as any} className="size-4" />
+										<span
+											className={mode === option.value ? 'font-medium' : ''}
+										>
 											{option.label}
 										</span>
 										{mode === option.value && (

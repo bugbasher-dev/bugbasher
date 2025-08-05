@@ -16,7 +16,13 @@ import { GeneralErrorBoundary } from '#app/components/error-boundary'
 import { useToast } from '#app/components/toaster.tsx'
 import { Badge } from '#app/components/ui/badge.tsx'
 import { Button } from '#app/components/ui/button.tsx'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#app/components/ui/card.tsx'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '#app/components/ui/card.tsx'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -103,18 +109,18 @@ export async function loader({ request }: Route.LoaderArgs) {
 		cacheData.sqlite = []
 	}
 
-	return { 
-		cacheData, 
-		stats, 
-		instance, 
-		instances, 
+	return {
+		cacheData,
+		stats,
+		instance,
+		instances,
 		currentInstanceInfo,
 		toast,
 		filters: {
 			query: query || '',
 			type: cacheType,
 			limit,
-		}
+		},
 	}
 }
 
@@ -124,8 +130,11 @@ export async function action({ request }: Route.ActionArgs) {
 	const actionType = formData.get('actionType')
 	const { currentInstance } = await getInstanceInfo()
 	const instance = formData.get('instance') ?? currentInstance
-	
-	invariantResponse(typeof actionType === 'string', 'actionType must be a string')
+
+	invariantResponse(
+		typeof actionType === 'string',
+		'actionType must be a string',
+	)
 	invariantResponse(typeof instance === 'string', 'instance must be a string')
 	await ensureInstance(instance)
 
@@ -138,13 +147,13 @@ export async function action({ request }: Route.ActionArgs) {
 				const type = formData.get('type')
 				invariantResponse(typeof key === 'string', 'cacheKey must be a string')
 				invariantResponse(typeof type === 'string', 'type must be a string')
-				
+
 				if (type === 'sqlite') {
 					await cache.delete(key)
 				} else if (type === 'lru') {
 					lruCache.delete(key)
 				}
-				
+
 				return redirectWithToast(url.pathname + url.search, {
 					type: 'success',
 					title: 'Cache Key Deleted',
@@ -154,8 +163,11 @@ export async function action({ request }: Route.ActionArgs) {
 			case 'clearCache': {
 				const type = formData.get('type')
 				invariantResponse(typeof type === 'string', 'type must be a string')
-				invariantResponse(type === 'sqlite' || type === 'lru', 'Invalid cache type')
-				
+				invariantResponse(
+					type === 'sqlite' || type === 'lru',
+					'Invalid cache type',
+				)
+
 				const deletedCount = await clearCacheByType(type)
 				return redirectWithToast(url.pathname + url.search, {
 					type: 'success',
@@ -168,9 +180,12 @@ export async function action({ request }: Route.ActionArgs) {
 				const type = formData.get('type')
 				invariantResponse(typeof keys === 'string', 'keys must be a string')
 				invariantResponse(typeof type === 'string', 'type must be a string')
-				
+
 				const keyArray = JSON.parse(keys) as string[]
-				const deletedCount = await deleteCacheKeys(keyArray, type as 'sqlite' | 'lru')
+				const deletedCount = await deleteCacheKeys(
+					keyArray,
+					type as 'sqlite' | 'lru',
+				)
 				return redirectWithToast(url.pathname + url.search, {
 					type: 'success',
 					title: 'Bulk Delete Complete',
@@ -186,7 +201,8 @@ export async function action({ request }: Route.ActionArgs) {
 		return redirectWithToast(url.pathname + url.search, {
 			type: 'error',
 			title: 'Cache Operation Failed',
-			description: error instanceof Error ? error.message : 'An unexpected error occurred',
+			description:
+				error instanceof Error ? error.message : 'An unexpected error occurred',
 		})
 	}
 }
@@ -197,10 +213,10 @@ export default function CacheAdminRoute() {
 	const submit = useSubmit()
 	const [searchQuery, setSearchQuery] = useState(data.filters.query)
 	const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set())
-	
+
 	// Use toast notifications
 	useToast(data.toast)
-	
+
 	const query = searchParams.get('query') ?? ''
 	const limit = searchParams.get('limit') ?? '100'
 	const cacheType = searchParams.get('type') ?? 'all'
@@ -255,11 +271,13 @@ export default function CacheAdminRoute() {
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">SQLite Cache</CardTitle>
-						<Icon name="database" className="h-4 w-4 text-muted-foreground" />
+						<Icon name="database" className="text-muted-foreground h-4 w-4" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{data.stats.sqlite.totalKeys}</div>
-						<p className="text-xs text-muted-foreground">
+						<div className="text-2xl font-bold">
+							{data.stats.sqlite.totalKeys}
+						</div>
+						<p className="text-muted-foreground text-xs">
 							{formatBytes(data.stats.sqlite.totalSize)} total
 						</p>
 					</CardContent>
@@ -267,11 +285,11 @@ export default function CacheAdminRoute() {
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">LRU Cache</CardTitle>
-						<Icon name="database" className="h-4 w-4 text-muted-foreground" />
+						<Icon name="database" className="text-muted-foreground h-4 w-4" />
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">{data.stats.lru.totalKeys}</div>
-						<p className="text-xs text-muted-foreground">
+						<p className="text-muted-foreground text-xs">
 							{data.stats.lru.currentSize} / {data.stats.lru.maxSize} max
 						</p>
 					</CardContent>
@@ -279,29 +297,25 @@ export default function CacheAdminRoute() {
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Average Size</CardTitle>
-						<Icon name="database" className="h-4 w-4 text-muted-foreground" />
+						<Icon name="database" className="text-muted-foreground h-4 w-4" />
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">
 							{formatBytes(data.stats.sqlite.averageSize)}
 						</div>
-						<p className="text-xs text-muted-foreground">
-							per SQLite entry
-						</p>
+						<p className="text-muted-foreground text-xs">per SQLite entry</p>
 					</CardContent>
 				</Card>
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Total Entries</CardTitle>
-						<Icon name="database" className="h-4 w-4 text-muted-foreground" />
+						<Icon name="database" className="text-muted-foreground h-4 w-4" />
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">
 							{data.stats.sqlite.totalKeys + data.stats.lru.totalKeys}
 						</div>
-						<p className="text-xs text-muted-foreground">
-							across all caches
-						</p>
+						<p className="text-muted-foreground text-xs">across all caches</p>
 					</CardContent>
 				</Card>
 			</div>
@@ -309,8 +323,11 @@ export default function CacheAdminRoute() {
 			{/* Search and Filters */}
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div className="flex flex-1 items-center gap-2">
-					<div className="relative flex-1 max-w-sm">
-						<Icon name="search" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+					<div className="relative max-w-sm flex-1">
+						<Icon
+							name="search"
+							className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
+						/>
 						<Input
 							placeholder="Search cache keys..."
 							value={searchQuery}
@@ -328,11 +345,14 @@ export default function CacheAdminRoute() {
 							<SelectItem value="lru">LRU only</SelectItem>
 						</SelectContent>
 					</Select>
-					<Select value={limit} onValueChange={(value) => {
-						const newSearchParams = new URLSearchParams(searchParams)
-						newSearchParams.set('limit', value)
-						setSearchParams(newSearchParams)
-					}}>
+					<Select
+						value={limit}
+						onValueChange={(value) => {
+							const newSearchParams = new URLSearchParams(searchParams)
+							newSearchParams.set('limit', value)
+							setSearchParams(newSearchParams)
+						}}
+					>
 						<SelectTrigger className="w-24">
 							<SelectValue />
 						</SelectTrigger>
@@ -356,7 +376,7 @@ export default function CacheAdminRoute() {
 					)}
 				</div>
 				<div className="flex items-center gap-2">
-					<CacheBulkActions 
+					<CacheBulkActions
 						selectedKeys={selectedKeys}
 						onClearSelection={() => setSelectedKeys(new Set())}
 					/>
@@ -369,13 +389,15 @@ export default function CacheAdminRoute() {
 				<input type="hidden" name="type" value={cacheType} />
 				<input type="hidden" name="limit" value={limit} />
 				<div className="flex items-center gap-2">
-					<label htmlFor="instance" className="text-sm font-medium">Instance:</label>
-					<select 
-						name="instance" 
+					<label htmlFor="instance" className="text-sm font-medium">
+						Instance:
+					</label>
+					<select
+						name="instance"
 						id="instance"
 						defaultValue={instance}
 						onChange={(e) => e.currentTarget.form?.submit()}
-						className="rounded-md border border-input bg-background px-3 py-1 text-sm"
+						className="border-input bg-background rounded-md border px-3 py-1 text-sm"
 					>
 						{Object.entries(data.instances).map(([inst, region]) => (
 							<option key={inst} value={inst}>
@@ -398,17 +420,13 @@ export default function CacheAdminRoute() {
 			</Form>
 
 			{/* Results Summary */}
-			<div className="flex items-center justify-between text-sm text-muted-foreground">
+			<div className="text-muted-foreground flex items-center justify-between text-sm">
 				<div>
 					Showing {totalKeys} cache entries
 					{query && ` matching "${query}"`}
 					{cacheType !== 'all' && ` in ${cacheType.toUpperCase()} cache`}
 				</div>
-				{selectedKeys.size > 0 && (
-					<div>
-						{selectedKeys.size} selected
-					</div>
-				)}
+				{selectedKeys.size > 0 && <div>{selectedKeys.size} selected</div>}
 			</div>
 
 			{/* Cache Tables */}
@@ -423,7 +441,7 @@ export default function CacheAdminRoute() {
 						onSelectionChange={setSelectedKeys}
 					/>
 				)}
-				
+
 				{data.cacheData.lru.length > 0 && (
 					<CacheTable
 						title="LRU Cache"
@@ -438,13 +456,17 @@ export default function CacheAdminRoute() {
 				{totalKeys === 0 && (
 					<Card>
 						<CardContent className="flex flex-col items-center justify-center py-12">
-							<Icon name="database" className="h-12 w-12 text-muted-foreground mb-4" />
-							<h3 className="text-lg font-semibold mb-2">No cache entries found</h3>
+							<Icon
+								name="database"
+								className="text-muted-foreground mb-4 h-12 w-12"
+							/>
+							<h3 className="mb-2 text-lg font-semibold">
+								No cache entries found
+							</h3>
 							<p className="text-muted-foreground text-center">
-								{query 
+								{query
 									? `No cache keys match "${query}"`
-									: 'The cache is empty'
-								}
+									: 'The cache is empty'}
 							</p>
 						</CardContent>
 					</Card>
@@ -472,9 +494,9 @@ function CacheTable({
 	const handleSelectAll = (checked: boolean) => {
 		const newSelection = new Set(selectedKeys)
 		if (checked) {
-			keys.forEach(key => newSelection.add(`${type}:${key.key}`))
+			keys.forEach((key) => newSelection.add(`${type}:${key.key}`))
 		} else {
-			keys.forEach(key => newSelection.delete(`${type}:${key.key}`))
+			keys.forEach((key) => newSelection.delete(`${type}:${key.key}`))
 		}
 		onSelectionChange(newSelection)
 	}
@@ -490,8 +512,12 @@ function CacheTable({
 		onSelectionChange(newSelection)
 	}
 
-	const allSelected = keys.every(key => selectedKeys.has(`${type}:${key.key}`))
-	const someSelected = keys.some(key => selectedKeys.has(`${type}:${key.key}`))
+	const allSelected = keys.every((key) =>
+		selectedKeys.has(`${type}:${key.key}`),
+	)
+	const someSelected = keys.some((key) =>
+		selectedKeys.has(`${type}:${key.key}`),
+	)
 
 	return (
 		<Card>
@@ -503,7 +529,9 @@ function CacheTable({
 							<Badge variant="secondary">{keys.length}</Badge>
 						</CardTitle>
 						<CardDescription>
-							{type === 'sqlite' ? 'Persistent cache stored in SQLite database' : 'In-memory LRU cache'}
+							{type === 'sqlite'
+								? 'Persistent cache stored in SQLite database'
+								: 'In-memory LRU cache'}
 						</CardDescription>
 					</div>
 					<CacheClearButton type={type} />
@@ -568,8 +596,10 @@ function CacheKeyRow({
 	const [showConfirmDialog, setShowConfirmDialog] = useState(false)
 	const encodedKey = encodeURIComponent(keyInfo.key)
 	const valuePage = `/admin/cache/${type}/${encodedKey}?instance=${instance}`
-	
-	const isDeleting = fetcher.state !== 'idle' && fetcher.formData?.get('cacheKey') === keyInfo.key
+
+	const isDeleting =
+		fetcher.state !== 'idle' &&
+		fetcher.formData?.get('cacheKey') === keyInfo.key
 
 	const handleConfirm = () => {
 		void fetcher.submit(
@@ -579,7 +609,7 @@ function CacheKeyRow({
 				instance,
 				type,
 			},
-			{ method: 'POST' }
+			{ method: 'POST' },
 		)
 		setShowConfirmDialog(false)
 	}
@@ -596,8 +626,8 @@ function CacheKeyRow({
 					/>
 				</TableCell>
 				<TableCell>
-					<Link 
-						to={valuePage} 
+					<Link
+						to={valuePage}
 						className="font-mono text-sm hover:underline"
 						reloadDocument
 					>
@@ -610,18 +640,15 @@ function CacheKeyRow({
 				<TableCell>
 					{keyInfo.createdAt ? (
 						<span className="text-sm">
-							{keyInfo.createdAt.toLocaleDateString()} {keyInfo.createdAt.toLocaleTimeString()}
+							{keyInfo.createdAt.toLocaleDateString()}{' '}
+							{keyInfo.createdAt.toLocaleTimeString()}
 						</span>
 					) : (
 						'-'
 					)}
 				</TableCell>
 				<TableCell>
-					{keyInfo.ttl ? (
-						<Badge variant="outline">{keyInfo.ttl}ms</Badge>
-					) : (
-						'-'
-					)}
+					{keyInfo.ttl ? <Badge variant="outline">{keyInfo.ttl}ms</Badge> : '-'}
 				</TableCell>
 				<TableCell>
 					<Button
@@ -660,7 +687,8 @@ function CacheKeyRow({
 function CacheClearButton({ type }: { type: 'sqlite' | 'lru' }) {
 	const fetcher = useFetcher<typeof action>()
 	const [showConfirmDialog, setShowConfirmDialog] = useState(false)
-	const isClearing = fetcher.state !== 'idle' && fetcher.formData?.get('type') === type
+	const isClearing =
+		fetcher.state !== 'idle' && fetcher.formData?.get('type') === type
 
 	const handleConfirm = () => {
 		void fetcher.submit(
@@ -668,7 +696,7 @@ function CacheClearButton({ type }: { type: 'sqlite' | 'lru' }) {
 				actionType: 'clearCache',
 				type,
 			},
-			{ method: 'POST' }
+			{ method: 'POST' },
 		)
 		setShowConfirmDialog(false)
 	}
@@ -682,9 +710,9 @@ function CacheClearButton({ type }: { type: 'sqlite' | 'lru' }) {
 				onClick={() => setShowConfirmDialog(true)}
 			>
 				{isClearing ? (
-					<Icon name="loader" className="h-4 w-4 animate-spin mr-2" />
+					<Icon name="loader" className="mr-2 h-4 w-4 animate-spin" />
 				) : (
-					<Icon name="trash-2" className="h-4 w-4 mr-2" />
+					<Icon name="trash-2" className="mr-2 h-4 w-4" />
 				)}
 				Clear {type.toUpperCase()}
 			</Button>
@@ -719,16 +747,16 @@ function CacheBulkActions({
 		type: 'sqlite' | 'lru'
 		keys: string[]
 	} | null>(null)
-	
+
 	if (selectedKeys.size === 0) return null
 
 	const sqliteKeys = Array.from(selectedKeys)
-		.filter(key => key.startsWith('sqlite:'))
-		.map(key => key.replace('sqlite:', ''))
-	
+		.filter((key) => key.startsWith('sqlite:'))
+		.map((key) => key.replace('sqlite:', ''))
+
 	const lruKeys = Array.from(selectedKeys)
-		.filter(key => key.startsWith('lru:'))
-		.map(key => key.replace('lru:', ''))
+		.filter((key) => key.startsWith('lru:'))
+		.map((key) => key.replace('lru:', ''))
 
 	const handleBulkDelete = (type: 'sqlite' | 'lru') => {
 		const keys = type === 'sqlite' ? sqliteKeys : lruKeys
@@ -747,7 +775,7 @@ function CacheBulkActions({
 				type: pendingAction.type,
 				keys: JSON.stringify(pendingAction.keys),
 			},
-			{ method: 'POST' }
+			{ method: 'POST' },
 		)
 		setShowConfirmDialog(false)
 		setPendingAction(null)
@@ -824,22 +852,22 @@ export function ErrorBoundary() {
 		<GeneralErrorBoundary
 			statusHandlers={{
 				403: ({ error }) => (
-					<div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+					<div className="flex min-h-[400px] flex-col items-center justify-center space-y-4">
 						<div className="text-center">
-							<h2 className="text-2xl font-bold text-foreground mb-2">
+							<h2 className="text-foreground mb-2 text-2xl font-bold">
 								Access Denied
 							</h2>
 							<p className="text-muted-foreground mb-4">
 								You don't have permission to access this admin area.
 							</p>
-							<p className="text-sm text-muted-foreground">
+							<p className="text-muted-foreground text-sm">
 								{error?.data?.message || 'Admin role required'}
 							</p>
 						</div>
 						<div className="text-center">
 							<a
 								href="/admin"
-								className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+								className="bg-primary hover:bg-primary/90 focus:ring-primary inline-flex items-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white focus:ring-2 focus:ring-offset-2 focus:outline-none"
 							>
 								Return to Admin Dashboard
 							</a>

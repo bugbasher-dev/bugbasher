@@ -164,13 +164,14 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
 			</CardHeader>
 			<CardContent>
 				{isBanned && (
-					<div className="mb-4 rounded-lg border border-destructive bg-destructive/10 p-4">
-						<div className="flex items-center gap-2 text-destructive">
+					<div className="border-destructive bg-destructive/10 mb-4 rounded-lg border p-4">
+						<div className="text-destructive flex items-center gap-2">
 							<Icon name="lock-closed" className="h-5 w-5" />
 							<h3 className="font-semibold">Account Suspended</h3>
 						</div>
-						<p className="mt-2 text-sm text-destructive/80">
-							Your account has been suspended. Please contact support if you believe this is an error.
+						<p className="text-destructive/80 mt-2 text-sm">
+							Your account has been suspended. Please contact support if you
+							believe this is an error.
 						</p>
 					</div>
 				)}

@@ -217,13 +217,13 @@ export default function SecuritySettings() {
 	const data = useLoaderData()
 
 	return (
-		<div className="flex flex-1 flex-col gap-4 m-8">
+		<div className="m-8 flex flex-1 flex-col gap-4">
 			<AnnotatedLayout>
 				<PageTitle
 					title="Security Settings"
 					description="Manage your password, two-factor authentication, connected accounts, and advanced security settings."
 				/>
-				
+
 				<AnnotatedSection
 					title="Security"
 					description="Manage your password and two-factor authentication settings."

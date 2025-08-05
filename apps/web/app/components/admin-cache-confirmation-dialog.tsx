@@ -58,7 +58,7 @@ export function CacheConfirmationDialog({
 			<DialogContent className="sm:max-w-md">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
-						<Icon name="alert-triangle" className="h-5 w-5 text-destructive" />
+						<Icon name="alert-triangle" className="text-destructive h-5 w-5" />
 						{title}
 					</DialogTitle>
 					<DialogDescription className="space-y-2">
@@ -78,14 +78,17 @@ export function CacheConfirmationDialog({
 								{details.keys && details.keys.length > 0 && (
 									<div className="space-y-1">
 										<span className="text-sm font-medium">Keys to delete:</span>
-										<div className="max-h-32 overflow-y-auto space-y-1">
+										<div className="max-h-32 space-y-1 overflow-y-auto">
 											{details.keys.slice(0, 10).map((key, index) => (
-												<div key={index} className="text-xs font-mono bg-muted p-1 rounded">
+												<div
+													key={index}
+													className="bg-muted rounded p-1 font-mono text-xs"
+												>
 													{key}
 												</div>
 											))}
 											{details.keys.length > 10 && (
-												<div className="text-xs text-muted-foreground">
+												<div className="text-muted-foreground text-xs">
 													... and {details.keys.length - 10} more
 												</div>
 											)}

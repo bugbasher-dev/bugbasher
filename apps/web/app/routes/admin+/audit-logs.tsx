@@ -1,7 +1,13 @@
 import { useLoaderData } from 'react-router'
 import { Badge } from '#app/components/ui/badge'
 import { Icon } from '#app/components/ui/icon.tsx'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#app/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '#app/components/ui/card'
 import { prisma } from '#app/utils/db.server.ts'
 import { requireUserWithRole } from '#app/utils/permissions.server.ts'
 
@@ -11,7 +17,7 @@ export async function loader({ request }: { request: Request }) {
 	// Get admin audit logs from the admin system organization
 	const adminOrg = await prisma.organization.findFirst({
 		where: { slug: 'admin-system' },
-		select: { id: true }
+		select: { id: true },
 	})
 
 	if (!adminOrg) {
@@ -24,8 +30,8 @@ export async function loader({ request }: { request: Request }) {
 				organizationId: adminOrg.id,
 			},
 			action: {
-				in: ['ADMIN_IMPERSONATION_START', 'ADMIN_IMPERSONATION_END']
-			}
+				in: ['ADMIN_IMPERSONATION_START', 'ADMIN_IMPERSONATION_END'],
+			},
 		},
 		select: {
 			id: true,
@@ -37,7 +43,7 @@ export async function loader({ request }: { request: Request }) {
 					id: true,
 					name: true,
 					username: true,
-				}
+				},
 			},
 			targetUser: {
 				select: {
@@ -45,13 +51,13 @@ export async function loader({ request }: { request: Request }) {
 					name: true,
 					username: true,
 					email: true,
-				}
-			}
+				},
+			},
 		},
 		orderBy: {
-			createdAt: 'desc'
+			createdAt: 'desc',
 		},
-		take: 100 // Limit to last 100 audit logs
+		take: 100, // Limit to last 100 audit logs
 	})
 
 	return { auditLogs }
@@ -85,41 +91,46 @@ export default function AdminAuditLogsPage() {
 					{auditLogs?.length > 0 ? (
 						<div className="space-y-4">
 							{auditLogs.map((log) => {
-								const metadata = log.metadata ? JSON.parse(log.metadata) : {} as any
+								const metadata = log.metadata
+									? JSON.parse(log.metadata)
+									: ({} as any)
 								const isStart = log.action === 'ADMIN_IMPERSONATION_START'
-								
+
 								return (
 									<div
 										key={log.id}
-										className="flex items-center justify-between p-4 border rounded-lg"
+										className="flex items-center justify-between rounded-lg border p-4"
 									>
 										<div className="space-y-1">
 											<div className="flex items-center gap-2">
-												<Badge variant={isStart ? "default" : "secondary"}>
+												<Badge variant={isStart ? 'default' : 'secondary'}>
 													{isStart ? 'Started' : 'Ended'}
 												</Badge>
 												<span className="font-medium">
 													{log.user.name || log.user.username}
 												</span>
 												<span className="text-muted-foreground">
-													{isStart ? 'started impersonating' : 'stopped impersonating'}
+													{isStart
+														? 'started impersonating'
+														: 'stopped impersonating'}
 												</span>
 												<span className="font-medium">
 													{log.targetUser?.name || log.targetUser?.username}
 												</span>
 											</div>
 											{log.targetUser?.email && (
-												<p className="text-sm text-muted-foreground">
+												<p className="text-muted-foreground text-sm">
 													Target: {log.targetUser.email}
 												</p>
 											)}
 											{!isStart && metadata.duration && (
-												<p className="text-sm text-muted-foreground">
-													Duration: {Math.floor(metadata.duration / 1000 / 60)} minutes
+												<p className="text-muted-foreground text-sm">
+													Duration: {Math.floor(metadata.duration / 1000 / 60)}{' '}
+													minutes
 												</p>
 											)}
 										</div>
-										<div className="flex items-center gap-2 text-sm text-muted-foreground">
+										<div className="text-muted-foreground flex items-center gap-2 text-sm">
 											<Icon name="clock" className="h-4 w-4" />
 											<span>{new Date(log.createdAt).toLocaleString()}</span>
 										</div>
@@ -128,8 +139,11 @@ export default function AdminAuditLogsPage() {
 							})}
 						</div>
 					) : (
-						<div className="text-center py-8">
-							<Icon name="user" className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+						<div className="py-8 text-center">
+							<Icon
+								name="user"
+								className="text-muted-foreground mx-auto mb-4 h-12 w-12"
+							/>
 							<p className="text-muted-foreground">No audit logs found</p>
 						</div>
 					)}

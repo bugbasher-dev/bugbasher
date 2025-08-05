@@ -286,7 +286,7 @@ export default function CreateOrganizationPage() {
 	]
 
 	return (
-		<div className="md:container max-w-2xl px-4 py-8">
+		<div className="max-w-2xl px-4 py-8 md:container">
 			{/* Progress indicator */}
 			<div className="mb-8 text-center">
 				<div className="mb-2 flex items-center justify-center gap-2">

@@ -27,7 +27,8 @@ export function SectionCards() {
 				</CardHeader>
 				<CardFooter className="flex-col items-start gap-1.5 text-sm">
 					<div className="line-clamp-1 flex gap-2 font-medium">
-						Trending up this month <Icon name="trending-up" className="size-4" />
+						Trending up this month{' '}
+						<Icon name="trending-up" className="size-4" />
 					</div>
 					<div className="text-muted-foreground">
 						Visitors for the last 6 months
@@ -49,7 +50,8 @@ export function SectionCards() {
 				</CardHeader>
 				<CardFooter className="flex-col items-start gap-1.5 text-sm">
 					<div className="line-clamp-1 flex gap-2 font-medium">
-						Down 20% this period <Icon name="trending-down" className="size-4" />
+						Down 20% this period{' '}
+						<Icon name="trending-down" className="size-4" />
 					</div>
 					<div className="text-muted-foreground">
 						Acquisition needs attention
@@ -91,7 +93,8 @@ export function SectionCards() {
 				</CardHeader>
 				<CardFooter className="flex-col items-start gap-1.5 text-sm">
 					<div className="line-clamp-1 flex gap-2 font-medium">
-						Steady performance increase <Icon name="trending-up" className="size-4" />
+						Steady performance increase{' '}
+						<Icon name="trending-up" className="size-4" />
 					</div>
 					<div className="text-muted-foreground">Meets growth projections</div>
 				</CardFooter>

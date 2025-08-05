@@ -17,7 +17,12 @@ import {
 	SidebarFooter,
 	SidebarHeader,
 } from '#app/components/ui/sidebar'
-import { Card, CardContent, CardDescription, CardHeader } from '#app/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+} from '#app/components/ui/card'
 import { Button } from '#app/components/ui/button'
 import { type loader as rootLoader } from '#app/root.tsx'
 import { type OnboardingProgressData } from '#app/utils/onboarding'
@@ -42,7 +47,7 @@ function UpgradeAccountCard({
 	if (!trialStatus.isActive || trialStatus.daysRemaining < 0) return null
 
 	return (
-		<Card className="shadow-md p-2 gap-1 bg-sidebar-accent border-sidebar-border mb-4">
+		<Card className="bg-sidebar-accent border-sidebar-border mb-4 gap-1 p-2 shadow-md">
 			<CardHeader className="p-2">
 				<CardDescription className="text-sidebar-foreground">
 					There are{' '}
@@ -52,11 +57,20 @@ function UpgradeAccountCard({
 					left in your trial. Get in touch with questions or feedback.
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="flex flex-col gap-1 -mt-4 p-2 pb-0">
-				<Button variant="secondary" size="sm" className="w-full bg-sidebar-foreground text-sidebar hover:bg-sidebar-foreground/70" asChild>
+			<CardContent className="-mt-4 flex flex-col gap-1 p-2 pb-0">
+				<Button
+					variant="secondary"
+					size="sm"
+					className="bg-sidebar-foreground text-sidebar hover:bg-sidebar-foreground/70 w-full"
+					asChild
+				>
 					<Link to={`/app/${orgSlug}/settings/billing`}>Upgrade</Link>
 				</Button>
-				<Button variant="link" size="sm" className="w-full text-sidebar-foreground hover:text-sidebar-foreground/80">
+				<Button
+					variant="link"
+					size="sm"
+					className="text-sidebar-foreground hover:text-sidebar-foreground/80 w-full"
+				>
 					Get in touch
 				</Button>
 			</CardContent>
@@ -68,7 +82,7 @@ function UpgradeAccountCard({
 function AccountSidebar({
 	user,
 	location,
-	orgSlug
+	orgSlug,
 }: {
 	user: any
 	location: any
@@ -138,7 +152,7 @@ function OrganizationSidebar({
 	setHasVisibleFeatureUpdates,
 	hasVisibleFeatureUpdates,
 	trialStatus,
-	rootData
+	rootData,
 }: {
 	user: any
 	location: any
@@ -183,7 +197,8 @@ function OrganizationSidebar({
 				{
 					title: 'Integrations',
 					url: `/app/${orgSlug}/settings/integrations`,
-					isActive: location.pathname === `/app/${orgSlug}/settings/integrations`,
+					isActive:
+						location.pathname === `/app/${orgSlug}/settings/integrations`,
 				},
 				{
 					title: 'Billing',
@@ -216,7 +231,7 @@ function OrganizationSidebar({
 		<>
 			<SidebarHeader className="p-2">
 				<Link to="/">
-					<Logo className="mb-0 text-md" />
+					<Logo className="text-md mb-0" />
 				</Link>
 				<TeamSwitcher />
 			</SidebarHeader>
@@ -240,13 +255,9 @@ function OrganizationSidebar({
 
 				<NavMain items={navMain} />
 
-
 				{/* Favorite Notes */}
 				{favoriteNotes && orgSlug && (
-					<FavoriteNotes
-						favoriteNotes={favoriteNotes}
-						orgSlug={orgSlug}
-					/>
+					<FavoriteNotes favoriteNotes={favoriteNotes} orgSlug={orgSlug} />
 				)}
 
 				<div className="mt-auto">
@@ -255,18 +266,19 @@ function OrganizationSidebar({
 						<UpgradeAccountCard trialStatus={trialStatus} orgSlug={orgSlug} />
 					)}
 					{/* Feature Updates */}
-					{!trialStatus && <FeatureUpdates
-						onVisibilityChange={setHasVisibleFeatureUpdates}
-					/>}
+					{!trialStatus && (
+						<FeatureUpdates onVisibilityChange={setHasVisibleFeatureUpdates} />
+					)}
 					{/* NavSecondary */}
-					<NavSecondary
-						items={navSecondary}
-					/>
+					<NavSecondary items={navSecondary} />
 				</div>
 			</SidebarContent>
 
 			<SidebarFooter>
-				<NavUser user={user} userPreference={rootData?.requestInfo?.userPrefs?.theme} />
+				<NavUser
+					user={user}
+					userPreference={rootData?.requestInfo?.userPrefs?.theme}
+				/>
 			</SidebarFooter>
 		</>
 	)
@@ -294,23 +306,24 @@ export function AppSidebar({
 	const isProfileRoute = location.pathname === '/app/profile'
 	const isSecurityRoute = location.pathname === '/app/security'
 	const isOrganizationsRoute = location.pathname === '/app/organizations'
-	const isAccountRoute = isProfileRoute || isSecurityRoute || isOrganizationsRoute
+	const isAccountRoute =
+		isProfileRoute || isSecurityRoute || isOrganizationsRoute
 
 	const userData = rootData?.user
 		? {
-			name: rootData.user.name || rootData.user.username || 'User',
-			email: rootData.user.username,
-			avatar: rootData.user.image
-				? `/resources/images?objectKey=${rootData.user.image.objectKey}`
-				: '/avatars/user.jpg',
-			roles: rootData.user.roles,
-		}
+				name: rootData.user.name || rootData.user.username || 'User',
+				email: rootData.user.username,
+				avatar: rootData.user.image
+					? `/resources/images?objectKey=${rootData.user.image.objectKey}`
+					: '/avatars/user.jpg',
+				roles: rootData.user.roles,
+			}
 		: {
-			name: 'Guest',
-			email: '',
-			avatar: '/avatars/user.jpg',
-			roles: [],
-		}
+				name: 'Guest',
+				email: '',
+				avatar: '/avatars/user.jpg',
+				roles: [],
+			}
 
 	return (
 		<Sidebar collapsible="offcanvas" {...props} className="overflow-hidden">
@@ -319,37 +332,41 @@ export function AppSidebar({
 				<motion.div
 					initial={{
 						x: isAccountRoute ? 0 : -300,
-						opacity: isAccountRoute ? 1 : 0
+						opacity: isAccountRoute ? 1 : 0,
 					}}
 					animate={{
 						x: isAccountRoute ? 0 : -300,
-						opacity: isAccountRoute ? 1 : 0
+						opacity: isAccountRoute ? 1 : 0,
 					}}
 					transition={{
 						duration: 0.4,
 						ease: [0.4, 0, 0.2, 1],
-						opacity: { duration: 0.3 }
+						opacity: { duration: 0.3 },
 					}}
 					className="absolute inset-0 flex h-full flex-col"
 					style={{ pointerEvents: isAccountRoute ? 'auto' : 'none' }}
 				>
-					<AccountSidebar user={userData} location={location} orgSlug={orgSlug} />
+					<AccountSidebar
+						user={userData}
+						location={location}
+						orgSlug={orgSlug}
+					/>
 				</motion.div>
 
 				{/* Organization Sidebar */}
 				<motion.div
 					initial={{
 						x: !isAccountRoute ? 0 : 300,
-						opacity: !isAccountRoute ? 1 : 0
+						opacity: !isAccountRoute ? 1 : 0,
 					}}
 					animate={{
 						x: !isAccountRoute ? 0 : 300,
-						opacity: !isAccountRoute ? 1 : 0
+						opacity: !isAccountRoute ? 1 : 0,
 					}}
 					transition={{
 						duration: 0.4,
 						ease: [0.4, 0, 0.2, 1],
-						opacity: { duration: 0.3 }
+						opacity: { duration: 0.3 },
 					}}
 					className="absolute inset-0 flex h-full flex-col"
 					style={{ pointerEvents: !isAccountRoute ? 'auto' : 'none' }}

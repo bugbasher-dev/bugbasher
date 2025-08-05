@@ -1403,37 +1403,49 @@ export default function NoteRoute() {
 						{/* Media Uploads */}
 						{note.uploads.length > 0 && (
 							<ul className="mb-6 flex flex-wrap gap-5">
-								{note.uploads.filter(upload => upload.type === 'image').map((image) => (
-									<li key={image.objectKey}>
-										<a href={getNoteImgSrc(image.objectKey)}>
-											<Img
-												src={getNoteImgSrc(image.objectKey)}
-												alt={image.altText ?? ''}
-												className="size-32 rounded-lg object-cover"
-												width={512}
-												height={512}
-											/>
-										</a>
-									</li>
-								))}
-								{note.uploads.filter(upload => upload.type === 'video' && upload.thumbnailKey && upload.status === 'completed').map((video) => (
-									<li key={video.objectKey}>
-										<div className="relative">
-											<Img
-												src={getNoteImgSrc(video.thumbnailKey!)}
-												alt={video.altText ?? 'Video thumbnail'}
-												className="size-32 rounded-lg object-cover"
-												width={512}
-												height={512}
-											/>
-											<div className="absolute inset-0 flex items-center justify-center">
-												<div className="bg-black/50 rounded-full p-2">
-													<Icon name="arrow-right" className="text-white h-4 w-4" />
+								{note.uploads
+									.filter((upload) => upload.type === 'image')
+									.map((image) => (
+										<li key={image.objectKey}>
+											<a href={getNoteImgSrc(image.objectKey)}>
+												<Img
+													src={getNoteImgSrc(image.objectKey)}
+													alt={image.altText ?? ''}
+													className="size-32 rounded-lg object-cover"
+													width={512}
+													height={512}
+												/>
+											</a>
+										</li>
+									))}
+								{note.uploads
+									.filter(
+										(upload) =>
+											upload.type === 'video' &&
+											upload.thumbnailKey &&
+											upload.status === 'completed',
+									)
+									.map((video) => (
+										<li key={video.objectKey}>
+											<div className="relative">
+												<Img
+													src={getNoteImgSrc(video.thumbnailKey!)}
+													alt={video.altText ?? 'Video thumbnail'}
+													className="size-32 rounded-lg object-cover"
+													width={512}
+													height={512}
+												/>
+												<div className="absolute inset-0 flex items-center justify-center">
+													<div className="rounded-full bg-black/50 p-2">
+														<Icon
+															name="arrow-right"
+															className="h-4 w-4 text-white"
+														/>
+													</div>
 												</div>
 											</div>
-										</div>
-									</li>
-								))}
+										</li>
+									))}
 							</ul>
 						)}
 

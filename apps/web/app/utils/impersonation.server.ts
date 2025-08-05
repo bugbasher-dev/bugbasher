@@ -8,7 +8,9 @@ export interface ImpersonationInfo {
 	startedAt: string
 }
 
-export async function getImpersonationInfo(request: Request): Promise<ImpersonationInfo | null> {
+export async function getImpersonationInfo(
+	request: Request,
+): Promise<ImpersonationInfo | null> {
 	const authSession = await authSessionStorage.getSession(
 		request.headers.get('cookie'),
 	)

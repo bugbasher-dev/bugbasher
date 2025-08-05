@@ -1,7 +1,10 @@
 import { type LoaderFunctionArgs, redirect } from 'react-router'
 import { requireUserId } from '#app/utils/auth.server'
 import { prisma } from '#app/utils/db.server'
-import { validateInviteLink, createInvitationFromLink } from '#app/utils/organization-invitation.server'
+import {
+	validateInviteLink,
+	createInvitationFromLink,
+} from '#app/utils/organization-invitation.server'
 import { redirectWithToast } from '#app/utils/toast.server'
 import { verifySessionStorage } from '#app/utils/verification.server'
 import { onboardingInviteTokenSessionKey } from '#app/routes/_auth+/onboarding'
@@ -39,30 +42,28 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 		})
 
 		if (existingMember) {
-			return redirectWithToast(
-				`/app/${inviteLink.organization.slug}`,
-				{
-					title: 'Already a member',
-					description: `You're already a member of ${inviteLink.organization.name}`,
-				}
-			)
+			return redirectWithToast(`/app/${inviteLink.organization.slug}`, {
+				title: 'Already a member',
+				description: `You're already a member of ${inviteLink.organization.name}`,
+			})
 		}
 
 		// Create a pending invitation for this user
 		const invitation = await createInvitationFromLink(token, user.email)
 
 		// Redirect to settings/organizations where they can accept/decline
-		const inviterName = invitation.inviter?.name || invitation.inviter?.email || 'Someone'
-		return redirectWithToast(
-			'/app/organizations',
-			{
-				title: 'Organization Invitation',
-				description: `${inviterName} has invited you to join ${inviteLink.organization.name}. Review the invitation below.`,
-			}
-		)
+		const inviterName =
+			invitation.inviter?.name || invitation.inviter?.email || 'Someone'
+		return redirectWithToast('/app/organizations', {
+			title: 'Organization Invitation',
+			description: `${inviterName} has invited you to join ${inviteLink.organization.name}. Review the invitation below.`,
+		})
 	} catch (error) {
 		// Check if it's an authentication error (redirect response)
-		if (error instanceof Response && (error.status === 302 || error.status === 301)) {
+		if (
+			error instanceof Response &&
+			(error.status === 302 || error.status === 301)
+		) {
 			// User is not authenticated, store the invite token in session and redirect to signup
 			const verifySession = await verifySessionStorage.getSession(
 				request.headers.get('cookie'),

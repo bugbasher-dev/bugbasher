@@ -93,13 +93,11 @@ export async function action({
 	}
 }
 
-
-
 export default function ProfileSettings() {
 	const data = useLoaderData()
 
 	return (
-		<div className="flex flex-1 flex-col gap-4 m-8">
+		<div className="m-8 flex flex-1 flex-col gap-4">
 			<AnnotatedLayout>
 				<PageTitle
 					title="Profile Settings"
@@ -111,8 +109,6 @@ export default function ProfileSettings() {
 				>
 					<ProfileCard user={data.user} />
 				</AnnotatedSection>
-
-
 			</AnnotatedLayout>
 		</div>
 	)

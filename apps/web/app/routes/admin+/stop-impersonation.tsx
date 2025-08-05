@@ -10,7 +10,7 @@ export async function action({ request }: { request: Request }) {
 	)
 
 	const impersonationInfo = authSession.get('impersonating')
-	
+
 	if (!impersonationInfo) {
 		throw data(
 			{ error: 'Not currently impersonating' },
@@ -21,7 +21,7 @@ export async function action({ request }: { request: Request }) {
 					title: 'Error',
 					description: 'Not currently impersonating a user.',
 				}),
-			}
+			},
 		)
 	}
 
@@ -30,7 +30,7 @@ export async function action({ request }: { request: Request }) {
 	// Find the admin system organization for audit logging
 	const adminOrg = await prisma.organization.findFirst({
 		where: { slug: 'admin-system' },
-		select: { id: true }
+		select: { id: true },
 	})
 
 	if (adminOrg) {
@@ -43,7 +43,7 @@ export async function action({ request }: { request: Request }) {
 				organizationId: adminOrg.id,
 				createdById: adminUserId,
 			},
-			select: { id: true }
+			select: { id: true },
 		})
 
 		// Log the end of impersonation for audit purposes
@@ -58,7 +58,8 @@ export async function action({ request }: { request: Request }) {
 					targetUserId: targetUserId,
 					targetName: targetName,
 					endedAt: new Date().toISOString(),
-					duration: Date.now() - new Date(impersonationInfo.startedAt).getTime(),
+					duration:
+						Date.now() - new Date(impersonationInfo.startedAt).getTime(),
 				}),
 			},
 		})

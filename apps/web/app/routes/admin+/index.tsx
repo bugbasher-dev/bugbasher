@@ -1,6 +1,11 @@
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { Link } from 'react-router'
-import { Card, CardContent, CardHeader, CardTitle } from '#app/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from '#app/components/ui/card'
 import { requireUserWithRole } from '#app/utils/permissions.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { type Route } from './+types/index.ts'
@@ -11,7 +16,7 @@ export const handle: SEOHandle = {
 
 export async function loader({ request }: Route.LoaderArgs) {
 	await requireUserWithRole(request, 'admin')
-	
+
 	// Get key metrics and system status
 	const [
 		totalUsers,
@@ -21,61 +26,60 @@ export async function loader({ request }: Route.LoaderArgs) {
 		totalSessions,
 		recentUsers,
 		recentOrganizations,
-		subscriptionStats
+		subscriptionStats,
 	] = await Promise.all([
 		// Total users count
 		prisma.user.count(),
-		
+
 		// Total organizations count
 		prisma.organization.count(),
-		
+
 		// Active organizations count
 		prisma.organization.count({
-			where: { active: true }
+			where: { active: true },
 		}),
-		
+
 		// Total notes count (personal + organization)
-		Promise.all([
-			prisma.note.count(),
-			prisma.organizationNote.count()
-		]).then(([personal, org]) => personal + org),
-		
+		Promise.all([prisma.note.count(), prisma.organizationNote.count()]).then(
+			([personal, org]) => personal + org,
+		),
+
 		// Active sessions count
 		prisma.session.count({
 			where: {
 				expirationDate: {
-					gt: new Date()
-				}
-			}
+					gt: new Date(),
+				},
+			},
 		}),
-		
+
 		// Recent users (last 7 days)
 		prisma.user.count({
 			where: {
 				createdAt: {
-					gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-				}
-			}
+					gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+				},
+			},
 		}),
-		
+
 		// Recent organizations (last 7 days)
 		prisma.organization.count({
 			where: {
 				createdAt: {
-					gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-				}
-			}
+					gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+				},
+			},
 		}),
-		
+
 		// Subscription statistics
 		prisma.organization.groupBy({
 			by: ['subscriptionStatus'],
 			_count: {
-				subscriptionStatus: true
-			}
-		})
+				subscriptionStatus: true,
+			},
+		}),
 	])
-	
+
 	return {
 		metrics: {
 			totalUsers,
@@ -85,18 +89,18 @@ export async function loader({ request }: Route.LoaderArgs) {
 			totalSessions,
 			recentUsers,
 			recentOrganizations,
-			subscriptionStats
-		}
+			subscriptionStats,
+		},
 	}
 }
 
 export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 	const { metrics } = loaderData
-	
+
 	return (
 		<div className="space-y-6">
 			<div className="mb-8">
-				<h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
+				<h1 className="text-foreground text-3xl font-bold">Admin Dashboard</h1>
 				<p className="text-muted-foreground mt-2">
 					Manage users, organizations, and system settings
 				</p>
@@ -115,7 +119,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 							strokeLinecap="round"
 							strokeLinejoin="round"
 							strokeWidth="2"
-							className="h-4 w-4 text-muted-foreground"
+							className="text-muted-foreground h-4 w-4"
 						>
 							<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
 							<circle cx="9" cy="7" r="4" />
@@ -124,8 +128,10 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 						</svg>
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{metrics.totalUsers.toLocaleString()}</div>
-						<p className="text-xs text-muted-foreground">
+						<div className="text-2xl font-bold">
+							{metrics.totalUsers.toLocaleString()}
+						</div>
+						<p className="text-muted-foreground text-xs">
 							+{metrics.recentUsers} new this week
 						</p>
 					</CardContent>
@@ -142,7 +148,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 							strokeLinecap="round"
 							strokeLinejoin="round"
 							strokeWidth="2"
-							className="h-4 w-4 text-muted-foreground"
+							className="text-muted-foreground h-4 w-4"
 						>
 							<path d="M3 21h18" />
 							<path d="M5 21V7l8-4v18" />
@@ -150,9 +156,12 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 						</svg>
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{metrics.totalOrganizations.toLocaleString()}</div>
-						<p className="text-xs text-muted-foreground">
-							{metrics.activeOrganizations} active • +{metrics.recentOrganizations} new this week
+						<div className="text-2xl font-bold">
+							{metrics.totalOrganizations.toLocaleString()}
+						</div>
+						<p className="text-muted-foreground text-xs">
+							{metrics.activeOrganizations} active • +
+							{metrics.recentOrganizations} new this week
 						</p>
 					</CardContent>
 				</Card>
@@ -168,7 +177,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 							strokeLinecap="round"
 							strokeLinejoin="round"
 							strokeWidth="2"
-							className="h-4 w-4 text-muted-foreground"
+							className="text-muted-foreground h-4 w-4"
 						>
 							<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
 							<polyline points="14,2 14,8 20,8" />
@@ -178,8 +187,10 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 						</svg>
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{metrics.totalNotes.toLocaleString()}</div>
-						<p className="text-xs text-muted-foreground">
+						<div className="text-2xl font-bold">
+							{metrics.totalNotes.toLocaleString()}
+						</div>
+						<p className="text-muted-foreground text-xs">
 							Personal + Organization notes
 						</p>
 					</CardContent>
@@ -187,7 +198,9 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Active Sessions</CardTitle>
+						<CardTitle className="text-sm font-medium">
+							Active Sessions
+						</CardTitle>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 24 24"
@@ -196,7 +209,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 							strokeLinecap="round"
 							strokeLinejoin="round"
 							strokeWidth="2"
-							className="h-4 w-4 text-muted-foreground"
+							className="text-muted-foreground h-4 w-4"
 						>
 							<circle cx="12" cy="12" r="3" />
 							<path d="M12 1v6m0 6v6" />
@@ -204,8 +217,10 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 						</svg>
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{metrics.totalSessions.toLocaleString()}</div>
-						<p className="text-xs text-muted-foreground">
+						<div className="text-2xl font-bold">
+							{metrics.totalSessions.toLocaleString()}
+						</div>
+						<p className="text-muted-foreground text-xs">
 							Currently logged in users
 						</p>
 					</CardContent>
@@ -216,14 +231,21 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 			{metrics.subscriptionStats.length > 0 && (
 				<Card>
 					<CardHeader>
-						<CardTitle className="text-lg font-medium">Subscription Status</CardTitle>
+						<CardTitle className="text-lg font-medium">
+							Subscription Status
+						</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<div className="grid gap-4 md:grid-cols-3">
 							{metrics.subscriptionStats.map((stat) => (
-								<div key={stat.subscriptionStatus || 'none'} className="text-center">
-									<div className="text-2xl font-bold">{stat._count.subscriptionStatus}</div>
-									<p className="text-sm text-muted-foreground capitalize">
+								<div
+									key={stat.subscriptionStatus || 'none'}
+									className="text-center"
+								>
+									<div className="text-2xl font-bold">
+										{stat._count.subscriptionStatus}
+									</div>
+									<p className="text-muted-foreground text-sm capitalize">
 										{stat.subscriptionStatus || 'No Subscription'}
 									</p>
 								</div>
@@ -235,7 +257,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 
 			{/* Management Cards */}
 			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-				<Card className="hover:shadow-md transition-shadow">
+				<Card className="transition-shadow hover:shadow-md">
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Users</CardTitle>
 						<svg
@@ -246,7 +268,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 							strokeLinecap="round"
 							strokeLinejoin="round"
 							strokeWidth="2"
-							className="h-4 w-4 text-muted-foreground"
+							className="text-muted-foreground h-4 w-4"
 						>
 							<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
 							<circle cx="9" cy="7" r="4" />
@@ -256,19 +278,19 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">Manage Users</div>
-						<p className="text-xs text-muted-foreground mt-1">
+						<p className="text-muted-foreground mt-1 text-xs">
 							View, search, and manage user accounts
 						</p>
 						<Link
 							to="/admin/users"
-							className="inline-flex items-center text-sm text-primary hover:underline mt-2"
+							className="text-primary mt-2 inline-flex items-center text-sm hover:underline"
 						>
 							View Users →
 						</Link>
 					</CardContent>
 				</Card>
 
-				<Card className="hover:shadow-md transition-shadow">
+				<Card className="transition-shadow hover:shadow-md">
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Organizations</CardTitle>
 						<svg
@@ -279,7 +301,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 							strokeLinecap="round"
 							strokeLinejoin="round"
 							strokeWidth="2"
-							className="h-4 w-4 text-muted-foreground"
+							className="text-muted-foreground h-4 w-4"
 						>
 							<path d="M3 21h18" />
 							<path d="M5 21V7l8-4v18" />
@@ -288,19 +310,19 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">Manage Organizations</div>
-						<p className="text-xs text-muted-foreground mt-1">
+						<p className="text-muted-foreground mt-1 text-xs">
 							View organization details and subscriptions
 						</p>
 						<Link
 							to="/admin/organizations"
-							className="inline-flex items-center text-sm text-primary hover:underline mt-2"
+							className="text-primary mt-2 inline-flex items-center text-sm hover:underline"
 						>
 							View Organizations →
 						</Link>
 					</CardContent>
 				</Card>
 
-				<Card className="hover:shadow-md transition-shadow">
+				<Card className="transition-shadow hover:shadow-md">
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Cache</CardTitle>
 						<svg
@@ -311,7 +333,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 							strokeLinecap="round"
 							strokeLinejoin="round"
 							strokeWidth="2"
-							className="h-4 w-4 text-muted-foreground"
+							className="text-muted-foreground h-4 w-4"
 						>
 							<ellipse cx="12" cy="5" rx="9" ry="3" />
 							<path d="M3 5v14a9 3 0 0 0 18 0V5" />
@@ -320,12 +342,12 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">Cache Management</div>
-						<p className="text-xs text-muted-foreground mt-1">
+						<p className="text-muted-foreground mt-1 text-xs">
 							Monitor and manage system cache
 						</p>
 						<Link
 							to="/admin/cache"
-							className="inline-flex items-center text-sm text-primary hover:underline mt-2"
+							className="text-primary mt-2 inline-flex items-center text-sm hover:underline"
 						>
 							Manage Cache →
 						</Link>
@@ -335,11 +357,11 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 
 			{/* Quick Actions */}
 			<div className="mt-8">
-				<h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+				<h2 className="mb-4 text-xl font-semibold">Quick Actions</h2>
 				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 					<Link
 						to="/admin/users"
-						className="flex items-center p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+						className="hover:bg-muted/50 flex items-center rounded-lg border p-4 transition-colors"
 					>
 						<div className="mr-3">
 							<svg
@@ -358,7 +380,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 						</div>
 						<div>
 							<div className="font-medium">Search Users</div>
-							<div className="text-sm text-muted-foreground">
+							<div className="text-muted-foreground text-sm">
 								Find and manage user accounts
 							</div>
 						</div>
@@ -366,7 +388,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 
 					<Link
 						to="/admin/organizations"
-						className="flex items-center p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+						className="hover:bg-muted/50 flex items-center rounded-lg border p-4 transition-colors"
 					>
 						<div className="mr-3">
 							<svg
@@ -386,7 +408,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 						</div>
 						<div>
 							<div className="font-medium">View Organizations</div>
-							<div className="text-sm text-muted-foreground">
+							<div className="text-muted-foreground text-sm">
 								Monitor organization activity
 							</div>
 						</div>
@@ -394,7 +416,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 
 					<Link
 						to="/admin/cache"
-						className="flex items-center p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+						className="hover:bg-muted/50 flex items-center rounded-lg border p-4 transition-colors"
 					>
 						<div className="mr-3">
 							<svg
@@ -414,7 +436,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 						</div>
 						<div>
 							<div className="font-medium">Clear Cache</div>
-							<div className="text-sm text-muted-foreground">
+							<div className="text-muted-foreground text-sm">
 								Manage system performance
 							</div>
 						</div>

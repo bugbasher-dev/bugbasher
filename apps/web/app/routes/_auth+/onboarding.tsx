@@ -149,7 +149,8 @@ export async function action({ request }: Route.ActionArgs) {
 			// Create a pending invitation for this user
 			const invitation = await createInvitationFromLink(inviteToken, email)
 
-			const inviterName = invitation.inviter?.name || invitation.inviter?.email || 'Someone'
+			const inviterName =
+				invitation.inviter?.name || invitation.inviter?.email || 'Someone'
 			return redirectWithToast(
 				'/app/organizations',
 				{
@@ -202,21 +203,22 @@ export async function action({ request }: Route.ActionArgs) {
 	try {
 		const emailDomain = email.split('@')[1]
 		if (emailDomain) {
-			const organizationsWithMatchingDomain = await prisma.organization.findMany({
-				where: {
-					verifiedDomain: emailDomain,
-					users: {
-						none: {
-							userId: session.userId,
+			const organizationsWithMatchingDomain =
+				await prisma.organization.findMany({
+					where: {
+						verifiedDomain: emailDomain,
+						users: {
+							none: {
+								userId: session.userId,
+							},
 						},
 					},
-				},
-				select: {
-					id: true,
-					name: true,
-					slug: true,
-				},
-			})
+					select: {
+						id: true,
+						name: true,
+						slug: true,
+					},
+				})
 
 			if (organizationsWithMatchingDomain.length > 0) {
 				// Auto-add user to organizations with matching verified domains
@@ -228,8 +230,12 @@ export async function action({ request }: Route.ActionArgs) {
 					})),
 				})
 
-				const orgNames = organizationsWithMatchingDomain.map((org) => org.name).join(', ')
-				console.log(`Auto-added user ${email} to organizations: ${orgNames} based on verified domain ${emailDomain}`)
+				const orgNames = organizationsWithMatchingDomain
+					.map((org) => org.name)
+					.join(', ')
+				console.log(
+					`Auto-added user ${email} to organizations: ${orgNames} based on verified domain ${emailDomain}`,
+				)
 
 				// Redirect to organizations page to show the user they've been added
 				return redirectWithToast(
@@ -288,7 +294,8 @@ export default function OnboardingRoute({
 					{inviteToken ? 'Complete your profile' : 'Welcome aboard!'}
 				</CardTitle>
 				<CardDescription>
-					Hi {loaderData.email}, please complete your profile{inviteToken ? ' to join the organization' : ''}.
+					Hi {loaderData.email}, please complete your profile
+					{inviteToken ? ' to join the organization' : ''}.
 				</CardDescription>
 			</CardHeader>
 			<CardContent>

@@ -60,8 +60,10 @@ const NoteCard = ({ note, isHovered = false }: NoteCardProps) => {
 	}
 
 	// Get the first media item for display (prioritize videos with thumbnails, then images)
-	const firstVideo = note.uploads.find(u => u.type === 'video' && u.thumbnailKey && u.status === 'completed')
-	const firstImage = note.uploads.find(u => u.type === 'image')
+	const firstVideo = note.uploads.find(
+		(u) => u.type === 'video' && u.thumbnailKey && u.status === 'completed',
+	)
+	const firstImage = note.uploads.find((u) => u.type === 'image')
 	const firstMedia = firstVideo || firstImage
 	const isVideo = !!firstVideo
 
@@ -78,13 +80,17 @@ const NoteCard = ({ note, isHovered = false }: NoteCardProps) => {
 					{firstMedia ? (
 						<>
 							<Img
-								src={isVideo && firstVideo?.thumbnailKey 
-									? getNoteImgSrc(firstVideo.thumbnailKey)
-									: firstImage 
-									? getNoteImgSrc(firstImage.objectKey)
-									: ''
+								src={
+									isVideo && firstVideo?.thumbnailKey
+										? getNoteImgSrc(firstVideo.thumbnailKey)
+										: firstImage
+											? getNoteImgSrc(firstImage.objectKey)
+											: ''
 								}
-								alt={firstMedia.altText || (isVideo ? 'Video thumbnail' : 'Note image')}
+								alt={
+									firstMedia.altText ||
+									(isVideo ? 'Video thumbnail' : 'Note image')
+								}
 								className="h-full w-full object-cover"
 								width={400}
 								height={225}
@@ -92,7 +98,7 @@ const NoteCard = ({ note, isHovered = false }: NoteCardProps) => {
 							{/* Video play overlay */}
 							{isVideo && (
 								<div className="absolute inset-0 flex items-center justify-center bg-black/20">
-									<div className="bg-white/90 rounded-full p-3 shadow-lg">
+									<div className="rounded-full bg-white/90 p-3 shadow-lg">
 										<Icon name="arrow-right" className="text-primary h-6 w-6" />
 									</div>
 								</div>
@@ -132,22 +138,22 @@ const NoteCard = ({ note, isHovered = false }: NoteCardProps) => {
 					{/* Media Badge - Bottom Right */}
 					{note.uploads.length > 0 && (
 						<div className="absolute right-3 bottom-3 flex gap-2">
-							{note.uploads.filter(u => u.type === 'image').length > 0 && (
+							{note.uploads.filter((u) => u.type === 'image').length > 0 && (
 								<Badge
 									variant="outline"
 									className="border-white/50 bg-white/90 text-xs text-gray-700 shadow-sm backdrop-blur-sm"
 								>
 									<Icon name="image" className="mr-1 h-3 w-3" />
-									{note.uploads.filter(u => u.type === 'image').length}
+									{note.uploads.filter((u) => u.type === 'image').length}
 								</Badge>
 							)}
-							{note.uploads.filter(u => u.type === 'video').length > 0 && (
+							{note.uploads.filter((u) => u.type === 'video').length > 0 && (
 								<Badge
 									variant="outline"
 									className="border-white/50 bg-white/90 text-xs text-gray-700 shadow-sm backdrop-blur-sm"
 								>
 									<Icon name="camera" className="mr-1 h-3 w-3" />
-									{note.uploads.filter(u => u.type === 'video').length}
+									{note.uploads.filter((u) => u.type === 'video').length}
 								</Badge>
 							)}
 						</div>

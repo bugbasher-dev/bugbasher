@@ -15,8 +15,14 @@ import {
 	type ImageFieldset,
 	type MediaFieldset,
 } from './__org-note-editor'
-import { triggerVideoProcessing, triggerImageProcessing } from '@repo/background-jobs'
-import { uploadNoteVideo, getSignedGetRequestInfo } from '#app/utils/storage.server.ts'
+import {
+	triggerVideoProcessing,
+	triggerImageProcessing,
+} from '@repo/background-jobs'
+import {
+	uploadNoteVideo,
+	getSignedGetRequestInfo,
+} from '#app/utils/storage.server.ts'
 
 function imageHasFile(
 	image: ImageFieldset,
@@ -96,7 +102,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
 			const noteId = data.id ?? cuid()
 
 			// Process all uploads (images, videos, and legacy images)
-			const allUploads = [...images.map(img => ({ ...img, type: 'image' })), ...media.map(m => ({ ...m, type: m.type || (m.file?.type?.startsWith('video/') ? 'video' : 'image') }))]
+			const allUploads = [
+				...images.map((img) => ({ ...img, type: 'image' })),
+				...media.map((m) => ({
+					...m,
+					type:
+						m.type || (m.file?.type?.startsWith('video/') ? 'video' : 'image'),
+				})),
+			]
 
 			return {
 				...data,
@@ -104,7 +117,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
 				uploadUpdates: await Promise.all(
 					allUploads.filter(uploadHasId).map(async (upload) => {
 						if (uploadHasFile(upload)) {
-							const isVideo = upload.type === 'video' || upload.file?.type?.startsWith('video/')
+							const isVideo =
+								upload.type === 'video' ||
+								upload.file?.type?.startsWith('video/')
 							const objectKey = isVideo
 								? await uploadNoteVideo(userId, noteId, upload.file)
 								: await uploadNoteImage(userId, noteId, upload.file)
@@ -131,7 +146,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
 						.filter(uploadHasFile)
 						.filter((upload) => !upload.id)
 						.map(async (upload) => {
-							const isVideo = upload.type === 'video' || upload.file?.type?.startsWith('video/')
+							const isVideo =
+								upload.type === 'video' ||
+								upload.file?.type?.startsWith('video/')
 							const objectKey = isVideo
 								? await uploadNoteVideo(userId, noteId, upload.file)
 								: await uploadNoteImage(userId, noteId, upload.file)
@@ -212,7 +229,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 	})
 
 	// Trigger video processing for new video uploads
-	const newVideoUploads = newUploads.filter(upload => upload.type === 'video')
+	const newVideoUploads = newUploads.filter((upload) => upload.type === 'video')
 	for (const video of newVideoUploads) {
 		try {
 			// Get the created video upload record to get its ID
@@ -227,7 +244,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
 			if (videoRecord) {
 				// Generate a signed URL for the video that the background task can use
-				const { url: signedVideoUrl, headers: videoHeaders } = getSignedGetRequestInfo(video.objectKey)
+				const { url: signedVideoUrl, headers: videoHeaders } =
+					getSignedGetRequestInfo(video.objectKey)
 
 				await triggerVideoProcessing({
 					videoUrl: signedVideoUrl,
@@ -245,7 +263,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 	}
 
 	// Trigger image processing for new image uploads
-	const newImageUploads = newUploads.filter(upload => upload.type === 'image')
+	const newImageUploads = newUploads.filter((upload) => upload.type === 'image')
 	for (const image of newImageUploads) {
 		try {
 			// Get the created image upload record to get its ID
@@ -260,7 +278,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
 			if (imageRecord) {
 				// Generate a signed URL for the image that the background task can use
-				const { url: signedImageUrl, headers: imageHeaders } = getSignedGetRequestInfo(image.objectKey)
+				const { url: signedImageUrl, headers: imageHeaders } =
+					getSignedGetRequestInfo(image.objectKey)
 
 				await triggerImageProcessing({
 					imageUrl: signedImageUrl,

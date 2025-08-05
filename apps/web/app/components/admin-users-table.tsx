@@ -109,12 +109,8 @@ const columns: ColumnDef<AdminUser>[] = [
 						</AvatarFallback>
 					</Avatar>
 					<div className="flex flex-col">
-						<span className="font-medium">
-							{user.name || user.username}
-						</span>
-						<span className="text-sm text-muted-foreground">
-							{user.email}
-						</span>
+						<span className="font-medium">{user.name || user.username}</span>
+						<span className="text-muted-foreground text-sm">{user.email}</span>
 					</div>
 				</div>
 			)
@@ -155,7 +151,8 @@ const columns: ColumnDef<AdminUser>[] = [
 		cell: ({ row }) => {
 			const user = row.original
 			if (user.isBanned) {
-				const isBanExpired = user.banExpiresAt && new Date(user.banExpiresAt) <= new Date()
+				const isBanExpired =
+					user.banExpiresAt && new Date(user.banExpiresAt) <= new Date()
 				return (
 					<Badge variant="destructive" className="gap-1">
 						<Icon name="ban" className="h-3 w-3" />
@@ -204,7 +201,9 @@ export function AdminUsersTable({
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 	const [searchQuery, setSearchQuery] = useState(filters.search)
-	const [organizationFilter, setOrganizationFilter] = useState(filters.organization)
+	const [organizationFilter, setOrganizationFilter] = useState(
+		filters.organization,
+	)
 
 	const table = useReactTable({
 		data: users,
@@ -275,8 +274,11 @@ export function AdminUsersTable({
 			{/* Search and Filters */}
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div className="flex flex-1 items-center gap-2">
-					<div className="relative flex-1 max-w-sm">
-						<Icon name="search" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+					<div className="relative max-w-sm flex-1">
+						<Icon
+							name="search"
+							className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
+						/>
 						<Input
 							placeholder="Search users..."
 							value={searchQuery}
@@ -348,11 +350,14 @@ export function AdminUsersTable({
 			</div>
 
 			{/* Results Summary */}
-			<div className="flex items-center justify-between text-sm text-muted-foreground">
+			<div className="text-muted-foreground flex items-center justify-between text-sm">
 				<div>
-					Showing {((pagination.page - 1) * pagination.pageSize) + 1} to{' '}
-					{Math.min(pagination.page * pagination.pageSize, pagination.totalCount)} of{' '}
-					{pagination.totalCount} users
+					Showing {(pagination.page - 1) * pagination.pageSize + 1} to{' '}
+					{Math.min(
+						pagination.page * pagination.pageSize,
+						pagination.totalCount,
+					)}{' '}
+					of {pagination.totalCount} users
 				</div>
 			</div>
 
@@ -383,7 +388,7 @@ export function AdminUsersTable({
 								<TableRow
 									key={row.id}
 									data-state={row.getIsSelected() && 'selected'}
-									className="cursor-pointer hover:bg-muted/50"
+									className="hover:bg-muted/50 cursor-pointer"
 									onClick={() => navigate(`/admin/users/${row.original.id}`)}
 								>
 									{row.getVisibleCells().map((cell) => (

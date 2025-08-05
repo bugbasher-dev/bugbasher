@@ -56,7 +56,10 @@ const MediaFieldsetSchema = z.object({
 				!file ||
 				(typeof File !== 'undefined' &&
 					file instanceof File &&
-					file.size <= (file.type?.startsWith('video/') ? MAX_UPLOAD_SIZE * 10 : MAX_UPLOAD_SIZE)), // 30MB for videos, 3MB for images
+					file.size <=
+						(file.type?.startsWith('video/')
+							? MAX_UPLOAD_SIZE * 10
+							: MAX_UPLOAD_SIZE)), // 30MB for videos, 3MB for images
 			'File size must be less than 30MB for videos or 3MB for images',
 		),
 	altText: z.string().optional(),
@@ -122,7 +125,7 @@ export function OrgNoteEditor({
 		defaultValue: {
 			...note,
 			content: note?.content || '',
-			images: note?.uploads?.filter(u => u.type === 'image') ?? [],
+			images: note?.uploads?.filter((u) => u.type === 'image') ?? [],
 			media: note?.uploads ?? [],
 		},
 		shouldRevalidate: 'onBlur',
@@ -199,8 +202,12 @@ export function OrgNoteEditor({
 							<MultiMediaUpload
 								meta={fields.media}
 								formId={form.id}
-								existingImages={note?.uploads?.filter(u => u.type === 'image')}
-								existingVideos={note?.uploads?.filter(u => u.type === 'video')}
+								existingImages={note?.uploads?.filter(
+									(u) => u.type === 'image',
+								)}
+								existingVideos={note?.uploads?.filter(
+									(u) => u.type === 'video',
+								)}
 							/>
 						</div>
 						<ErrorList id={form.errorId} errors={form.errors} />

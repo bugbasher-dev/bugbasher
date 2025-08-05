@@ -13,7 +13,12 @@ import { z } from 'zod'
 import { ErrorList, Field } from '#app/components/forms'
 import { Badge } from '#app/components/ui/badge'
 import { Button } from '#app/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '#app/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from '#app/components/ui/card'
 import { Icon } from '#app/components/ui/icon'
 import { Input } from '#app/components/ui/input'
 import {
@@ -87,7 +92,7 @@ export function OrganizationInvitations({
 	const invitesList = fields.invites.getFieldList()
 	const [linkCopied, setLinkCopied] = useState(false)
 
-	const inviteUrl = inviteLink?.isActive 
+	const inviteUrl = inviteLink?.isActive
 		? `${typeof window !== 'undefined' ? window.location.origin : ''}/join/${inviteLink.token}`
 		: ''
 
@@ -119,7 +124,8 @@ export function OrganizationInvitations({
 				<CardHeader>
 					<CardTitle className="text-lg">Your personal invite link</CardTitle>
 					<p className="text-muted-foreground text-sm">
-						Anyone with this link can join your organization and will know you invited them. By default, they will have the Member role.
+						Anyone with this link can join your organization and will know you
+						invited them. By default, they will have the Member role.
 					</p>
 				</CardHeader>
 				<CardContent className="space-y-4">
@@ -162,14 +168,22 @@ export function OrganizationInvitations({
 						) : (
 							<>
 								<Form method="POST">
-									<input type="hidden" name="intent" value="reset-invite-link" />
+									<input
+										type="hidden"
+										name="intent"
+										value="reset-invite-link"
+									/>
 									<Button type="submit" variant="outline">
 										<Icon name="undo-2" className="h-4 w-4" />
 										Reset
 									</Button>
 								</Form>
 								<Form method="POST">
-									<input type="hidden" name="intent" value="deactivate-invite-link" />
+									<input
+										type="hidden"
+										name="intent"
+										value="deactivate-invite-link"
+									/>
 									<Button type="submit" variant="outline">
 										<Icon name="x" className="h-4 w-4" />
 										Disable
@@ -187,92 +201,95 @@ export function OrganizationInvitations({
 					<CardTitle className="text-lg">Invite by email</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-6">
-				{/* Invitation Form */}
-				<FormProvider context={form.context}>
-					<Form method="POST" {...getFormProps(form)}>
-						<input type="hidden" name="intent" value="send-invitations" />
-						<div className="space-y-1">
-							{invitesList.map((invite, index) => (
-								<InviteFieldset
-									key={invite.key}
-									meta={invite}
-									fields={fields}
-									form={form}
-									index={index}
-								/>
-							))}
-
-							<Button
-								variant="outline"
-								className="w-full"
-								{...form.insert.getButtonProps({
-									name: fields.invites.name,
-									defaultValue: { email: '', role: 'member' },
-								})}
-							>
-								<Icon name="plus" className="h-4 w-4" />
-								Add another invitation
-							</Button>
-						</div>
-
-						<div className="mt-6 space-y-2">
-							<ErrorList id={form.errorId} errors={form.errors} />
-							<Button type="submit" className="w-full">
-								Send Invitations
-							</Button>
-						</div>
-					</Form>
-				</FormProvider>
-
-				{/* Pending Invitations */}
-				{pendingInvitations.length > 0 && (
-					<>
-						<Separator />
-						<div>
-							<h4 className="mb-3 text-sm font-medium">Pending Invitations</h4>
-							<div className="space-y-2">
-								{pendingInvitations.map((invitation) => (
-									<div
-										key={invitation.id}
-										className="flex items-center justify-between rounded-lg border p-3"
-									>
-										<div className="flex-1">
-											<div className="flex items-center gap-2">
-												<span className="text-sm font-medium">
-													{invitation.email}
-												</span>
-												<Badge variant="secondary" className="text-xs">
-													{invitation.role}
-												</Badge>
-											</div>
-											{invitation.inviter && (
-												<p className="text-muted-foreground mt-1 text-xs">
-													Invited by{' '}
-													{invitation.inviter.name || invitation.inviter.email}
-												</p>
-											)}
-										</div>
-										<Form method="POST">
-											<input
-												type="hidden"
-												name="intent"
-												value="remove-invitation"
-											/>
-											<input
-												type="hidden"
-												name="invitationId"
-												value={invitation.id}
-											/>
-											<Button type="submit" variant="ghost" size="sm">
-												<Icon name="trash" className="h-4 w-4" />
-											</Button>
-										</Form>
-									</div>
+					{/* Invitation Form */}
+					<FormProvider context={form.context}>
+						<Form method="POST" {...getFormProps(form)}>
+							<input type="hidden" name="intent" value="send-invitations" />
+							<div className="space-y-1">
+								{invitesList.map((invite, index) => (
+									<InviteFieldset
+										key={invite.key}
+										meta={invite}
+										fields={fields}
+										form={form}
+										index={index}
+									/>
 								))}
+
+								<Button
+									variant="outline"
+									className="w-full"
+									{...form.insert.getButtonProps({
+										name: fields.invites.name,
+										defaultValue: { email: '', role: 'member' },
+									})}
+								>
+									<Icon name="plus" className="h-4 w-4" />
+									Add another invitation
+								</Button>
 							</div>
-						</div>
-					</>
-				)}
+
+							<div className="mt-6 space-y-2">
+								<ErrorList id={form.errorId} errors={form.errors} />
+								<Button type="submit" className="w-full">
+									Send Invitations
+								</Button>
+							</div>
+						</Form>
+					</FormProvider>
+
+					{/* Pending Invitations */}
+					{pendingInvitations.length > 0 && (
+						<>
+							<Separator />
+							<div>
+								<h4 className="mb-3 text-sm font-medium">
+									Pending Invitations
+								</h4>
+								<div className="space-y-2">
+									{pendingInvitations.map((invitation) => (
+										<div
+											key={invitation.id}
+											className="flex items-center justify-between rounded-lg border p-3"
+										>
+											<div className="flex-1">
+												<div className="flex items-center gap-2">
+													<span className="text-sm font-medium">
+														{invitation.email}
+													</span>
+													<Badge variant="secondary" className="text-xs">
+														{invitation.role}
+													</Badge>
+												</div>
+												{invitation.inviter && (
+													<p className="text-muted-foreground mt-1 text-xs">
+														Invited by{' '}
+														{invitation.inviter.name ||
+															invitation.inviter.email}
+													</p>
+												)}
+											</div>
+											<Form method="POST">
+												<input
+													type="hidden"
+													name="intent"
+													value="remove-invitation"
+												/>
+												<input
+													type="hidden"
+													name="invitationId"
+													value={invitation.id}
+												/>
+												<Button type="submit" variant="ghost" size="sm">
+													<Icon name="trash" className="h-4 w-4" />
+												</Button>
+											</Form>
+										</div>
+									))}
+								</div>
+							</div>
+						</>
+					)}
 				</CardContent>
 			</Card>
 		</div>

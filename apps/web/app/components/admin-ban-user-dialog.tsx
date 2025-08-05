@@ -36,17 +36,17 @@ export function BanUserDialog({ user, isOpen, onClose }: BanUserDialogProps) {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
-		
+
 		if (!reason.trim()) {
 			return
 		}
 
 		setIsSubmitting(true)
-		
+
 		const formData = new FormData()
 		formData.append('intent', 'ban')
 		formData.append('reason', reason.trim())
-		
+
 		if (hasExpiration && expirationDate) {
 			formData.append('expiresAt', expirationDate)
 		}
@@ -79,12 +79,13 @@ export function BanUserDialog({ user, isOpen, onClose }: BanUserDialogProps) {
 			<DialogContent className="sm:max-w-md">
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
-						<Icon name="ban" className="h-5 w-5 text-destructive" />
+						<Icon name="ban" className="text-destructive h-5 w-5" />
 						Ban User
 					</DialogTitle>
 					<DialogDescription>
-						You are about to ban <strong>{user.name || user.username}</strong> ({user.email}).
-						This will prevent them from accessing the application.
+						You are about to ban <strong>{user.name || user.username}</strong> (
+						{user.email}). This will prevent them from accessing the
+						application.
 					</DialogDescription>
 				</DialogHeader>
 
@@ -124,7 +125,10 @@ export function BanUserDialog({ user, isOpen, onClose }: BanUserDialogProps) {
 
 						{hasExpiration && (
 							<div className="space-y-2">
-								<Label htmlFor="expiration-date" className="flex items-center gap-2">
+								<Label
+									htmlFor="expiration-date"
+									className="flex items-center gap-2"
+								>
 									<Icon name="calendar" className="h-4 w-4" />
 									Expiration Date
 								</Label>
@@ -136,8 +140,9 @@ export function BanUserDialog({ user, isOpen, onClose }: BanUserDialogProps) {
 									min={minDate}
 									disabled={isSubmitting}
 								/>
-								<p className="text-xs text-muted-foreground">
-									The ban will be automatically lifted on this date. Leave empty for permanent ban.
+								<p className="text-muted-foreground text-xs">
+									The ban will be automatically lifted on this date. Leave empty
+									for permanent ban.
 								</p>
 							</div>
 						)}

@@ -49,11 +49,7 @@ export const StatusButton = ({
 				role="status"
 				className="bg-destructive inline-flex size-6 items-center justify-center rounded-full"
 			>
-				<Icon
-					name="x"
-					className="text-destructive-foreground"
-					title="error"
-				/>
+				<Icon name="x" className="text-destructive-foreground" title="error" />
 			</div>
 		),
 		idle: null,

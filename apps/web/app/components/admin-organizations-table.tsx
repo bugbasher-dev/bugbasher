@@ -90,7 +90,7 @@ const getSubscriptionStatusBadge = (status: string | null) => {
 	if (!status) {
 		return <Badge variant="secondary">No Subscription</Badge>
 	}
-	
+
 	switch (status.toLowerCase()) {
 		case 'active':
 			return <Badge variant="default">Active</Badge>
@@ -120,7 +120,11 @@ const columns: ColumnDef<AdminOrganization>[] = [
 				<div className="flex items-center gap-3">
 					<Avatar className="h-8 w-8">
 						<AvatarImage
-							src={org.image?.id ? `/resources/organization-images/${org.image.id}` : undefined}
+							src={
+								org.image?.id
+									? `/resources/organization-images/${org.image.id}`
+									: undefined
+							}
 							alt={org.image?.altText ?? org.name}
 						/>
 						<AvatarFallback>
@@ -129,9 +133,7 @@ const columns: ColumnDef<AdminOrganization>[] = [
 					</Avatar>
 					<div className="flex flex-col">
 						<span className="font-medium">{org.name}</span>
-						<span className="text-sm text-muted-foreground">
-							{org.slug}
-						</span>
+						<span className="text-muted-foreground text-sm">{org.slug}</span>
 					</div>
 				</div>
 			)
@@ -147,7 +149,7 @@ const columns: ColumnDef<AdminOrganization>[] = [
 				return <span className="text-muted-foreground">No description</span>
 			}
 			return (
-				<span className="text-sm max-w-xs truncate" title={description}>
+				<span className="max-w-xs truncate text-sm" title={description}>
 					{description}
 				</span>
 			)
@@ -160,13 +162,11 @@ const columns: ColumnDef<AdminOrganization>[] = [
 			const org = row.original
 			return (
 				<div className="flex items-center gap-2">
-					<Icon name="user-plus" className="h-4 w-4 text-muted-foreground" />
+					<Icon name="user-plus" className="text-muted-foreground h-4 w-4" />
 					<span className="text-sm">
 						{org.memberCount}
 						{org.totalMembers !== org.memberCount && (
-							<span className="text-muted-foreground">
-								/{org.totalMembers}
-							</span>
+							<span className="text-muted-foreground">/{org.totalMembers}</span>
 						)}
 					</span>
 				</div>
@@ -180,7 +180,7 @@ const columns: ColumnDef<AdminOrganization>[] = [
 			const noteCount = row.original.noteCount
 			return (
 				<div className="flex items-center gap-2">
-					<Icon name="file-text" className="h-4 w-4 text-muted-foreground" />
+					<Icon name="file-text" className="text-muted-foreground h-4 w-4" />
 					<span className="text-sm">{noteCount}</span>
 				</div>
 			)
@@ -193,7 +193,7 @@ const columns: ColumnDef<AdminOrganization>[] = [
 			const org = row.original
 			return (
 				<div className="flex items-center gap-2">
-					<Icon name="link-2" className="h-4 w-4 text-muted-foreground" />
+					<Icon name="link-2" className="text-muted-foreground h-4 w-4" />
 					<span className="text-sm">
 						{org.activeIntegrations}
 						{org.totalIntegrations !== org.activeIntegrations && (
@@ -215,7 +215,7 @@ const columns: ColumnDef<AdminOrganization>[] = [
 				<div className="flex flex-col gap-1">
 					{getSubscriptionStatusBadge(org.subscriptionStatus)}
 					{org.planName && (
-						<span className="text-xs text-muted-foreground">
+						<span className="text-muted-foreground text-xs">
 							{org.planName}
 						</span>
 					)}
@@ -270,7 +270,9 @@ export function AdminOrganizationsTable({
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 	const [searchQuery, setSearchQuery] = useState(filters.search)
-	const [subscriptionStatusFilter, setSubscriptionStatusFilter] = useState(filters.subscriptionStatus)
+	const [subscriptionStatusFilter, setSubscriptionStatusFilter] = useState(
+		filters.subscriptionStatus,
+	)
 	const [planFilter, setPlanFilter] = useState(filters.plan)
 
 	const table = useReactTable({
@@ -348,15 +350,19 @@ export function AdminOrganizationsTable({
 		setSearchParams({})
 	}
 
-	const hasActiveFilters = filters.search || filters.subscriptionStatus || filters.plan
+	const hasActiveFilters =
+		filters.search || filters.subscriptionStatus || filters.plan
 
 	return (
 		<div className="space-y-4">
 			{/* Search and Filters */}
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<div className="flex flex-1 items-center gap-2">
-					<div className="relative flex-1 max-w-sm">
-						<Icon name="search" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+					<div className="relative max-w-sm flex-1">
+						<Icon
+							name="search"
+							className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
+						/>
 						<Input
 							placeholder="Search organizations..."
 							value={searchQuery}
@@ -380,10 +386,7 @@ export function AdminOrganizationsTable({
 							))}
 						</SelectContent>
 					</Select>
-					<Select
-						value={planFilter || 'all'}
-						onValueChange={handlePlanFilter}
-					>
+					<Select value={planFilter || 'all'} onValueChange={handlePlanFilter}>
 						<SelectTrigger className="w-48">
 							<SelectValue placeholder="Filter by plan" />
 						</SelectTrigger>
@@ -444,11 +447,14 @@ export function AdminOrganizationsTable({
 			</div>
 
 			{/* Results Summary */}
-			<div className="flex items-center justify-between text-sm text-muted-foreground">
+			<div className="text-muted-foreground flex items-center justify-between text-sm">
 				<div>
-					Showing {((pagination.page - 1) * pagination.pageSize) + 1} to{' '}
-					{Math.min(pagination.page * pagination.pageSize, pagination.totalCount)} of{' '}
-					{pagination.totalCount} organizations
+					Showing {(pagination.page - 1) * pagination.pageSize + 1} to{' '}
+					{Math.min(
+						pagination.page * pagination.pageSize,
+						pagination.totalCount,
+					)}{' '}
+					of {pagination.totalCount} organizations
 				</div>
 			</div>
 
@@ -479,8 +485,10 @@ export function AdminOrganizationsTable({
 								<TableRow
 									key={row.id}
 									data-state={row.getIsSelected() && 'selected'}
-									className="cursor-pointer hover:bg-muted/50"
-									onClick={() => navigate(`/admin/organizations/${row.original.id}`)}
+									className="hover:bg-muted/50 cursor-pointer"
+									onClick={() =>
+										navigate(`/admin/organizations/${row.original.id}`)
+									}
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell key={cell.id}>

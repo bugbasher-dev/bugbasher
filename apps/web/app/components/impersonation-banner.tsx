@@ -7,13 +7,15 @@ interface ImpersonationBannerProps {
 	impersonationInfo: ImpersonationInfo
 }
 
-export function ImpersonationBanner({ impersonationInfo }: ImpersonationBannerProps) {
+export function ImpersonationBanner({
+	impersonationInfo,
+}: ImpersonationBannerProps) {
 	const startedAt = new Date(impersonationInfo.startedAt)
 	const duration = Math.floor((Date.now() - startedAt.getTime()) / 1000 / 60) // minutes
 
 	return (
-		<div className="bg-yellow-50 border-b border-yellow-200 px-4 py-3">
-			<div className="flex items-center justify-between max-w-7xl mx-auto">
+		<div className="border-b border-yellow-200 bg-yellow-50 px-4 py-3">
+			<div className="mx-auto flex max-w-7xl items-center justify-between">
 				<div className="flex items-center gap-3">
 					<div className="flex items-center gap-2 text-yellow-800">
 						<Icon name="alert-triangle" className="h-5 w-5" />
@@ -23,10 +25,11 @@ export function ImpersonationBanner({ impersonationInfo }: ImpersonationBannerPr
 						<span className="font-medium text-yellow-900">
 							Admin Impersonation Active
 						</span>
-						<span className="text-yellow-700 ml-2">
-							You are impersonating <strong>{impersonationInfo.targetName}</strong>
+						<span className="ml-2 text-yellow-700">
+							You are impersonating{' '}
+							<strong>{impersonationInfo.targetName}</strong>
 						</span>
-						<span className="text-yellow-600 ml-2">
+						<span className="ml-2 text-yellow-600">
 							({duration} minute{duration !== 1 ? 's' : ''} ago)
 						</span>
 					</div>
@@ -36,9 +39,9 @@ export function ImpersonationBanner({ impersonationInfo }: ImpersonationBannerPr
 						type="submit"
 						variant="outline"
 						size="sm"
-						className="bg-white border-yellow-300 text-yellow-800 hover:bg-yellow-50 hover:border-yellow-400"
+						className="border-yellow-300 bg-white text-yellow-800 hover:border-yellow-400 hover:bg-yellow-50"
 					>
-						<Icon name="x" className="h-4 w-4 mr-1" />
+						<Icon name="x" className="mr-1 h-4 w-4" />
 						Stop Impersonation
 					</Button>
 				</Form>

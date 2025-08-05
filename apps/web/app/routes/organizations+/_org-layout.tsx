@@ -13,7 +13,7 @@ export default function OrganizationLayout() {
 	const rootData = useRouteLoaderData<typeof rootLoader>('root')
 	return (
 		<div className="bg-background flex min-h-screen flex-col">
-			<header className="border-b shadow-xs p-2">
+			<header className="border-b p-2 shadow-xs">
 				<div className="container flex items-center justify-between p-2">
 					<Logo />
 					<div>{rootData?.user?.name}</div>

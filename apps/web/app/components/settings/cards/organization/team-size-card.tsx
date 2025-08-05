@@ -59,14 +59,13 @@ export default function TeamSizeCard({
 			<CardHeader>
 				<CardTitle>Team Size</CardTitle>
 				<CardDescription>
-					Help us understand your organization size to provide better recommendations.
+					Help us understand your organization size to provide better
+					recommendations.
 				</CardDescription>
 			</CardHeader>
 			<Form method="POST" {...getFormProps(form)}>
 				<input type="hidden" name="intent" value="update-team-size" />
-				<input
-					{...getInputProps(fields.organizationId, { type: 'hidden' })}
-				/>
+				<input {...getInputProps(fields.organizationId, { type: 'hidden' })} />
 				<CardContent className="space-y-4">
 					<div className="space-y-2">
 						<Label htmlFor={fields.size.id}>Organization Size</Label>
@@ -90,9 +89,7 @@ export default function TeamSizeCard({
 					<ErrorList errors={form.errors} id={form.errorId} />
 				</CardContent>
 				<CardFooter className="justify-end">
-					<Button type="submit">
-						Update
-					</Button>
+					<Button type="submit">Update</Button>
 				</CardFooter>
 			</Form>
 		</Card>

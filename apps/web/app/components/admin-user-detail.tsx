@@ -6,9 +6,20 @@ import { BanUserDialog } from '#app/components/admin-ban-user-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
 import { Badge } from '#app/components/ui/badge'
 import { Button } from '#app/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#app/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '#app/components/ui/card'
 import { Separator } from '#app/components/ui/separator'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '#app/components/ui/tabs'
+import {
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from '#app/components/ui/tabs'
 import { getUserImgSrc } from '#app/utils/misc.tsx'
 
 export interface AdminUserDetail {
@@ -131,10 +142,13 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 	}
 
 	// Check if ban is expired
-	const isBanExpired = user.isBanned && user.banExpiresAt && new Date(user.banExpiresAt) <= new Date()
+	const isBanExpired =
+		user.isBanned &&
+		user.banExpiresAt &&
+		new Date(user.banExpiresAt) <= new Date()
 
 	const activeSessions = user.sessions.filter(
-		session => new Date(session.expirationDate) > new Date()
+		(session) => new Date(session.expirationDate) > new Date(),
 	)
 
 	return (
@@ -168,8 +182,11 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 								</div>
 								<p className="text-muted-foreground">{user.email}</p>
 								{user.isBanned && user.banReason && (
-									<p className="text-sm text-destructive mt-1">
-										<Icon name="alert-triangle" className="h-4 w-4 inline mr-1" />
+									<p className="text-destructive mt-1 text-sm">
+										<Icon
+											name="alert-triangle"
+											className="mr-1 inline h-4 w-4"
+										/>
 										{user.banReason}
 									</p>
 								)}
@@ -224,36 +241,47 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 					<Card>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-sm font-medium">Organizations</CardTitle>
-							<Icon name="building" className="h-4 w-4 text-muted-foreground" />
+							<CardTitle className="text-sm font-medium">
+								Organizations
+							</CardTitle>
+							<Icon name="building" className="text-muted-foreground h-4 w-4" />
 						</CardHeader>
 						<CardContent>
-							<div className="text-2xl font-bold">{user.organizations.length}</div>
-							<p className="text-xs text-muted-foreground">
-								{user.organizations.filter(org => org.active).length} active
+							<div className="text-2xl font-bold">
+								{user.organizations.length}
+							</div>
+							<p className="text-muted-foreground text-xs">
+								{user.organizations.filter((org) => org.active).length} active
 							</p>
 						</CardContent>
 					</Card>
 					<Card>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-sm font-medium">Active Sessions</CardTitle>
-							<Icon name="key" className="h-4 w-4 text-muted-foreground" />
+							<CardTitle className="text-sm font-medium">
+								Active Sessions
+							</CardTitle>
+							<Icon name="key" className="text-muted-foreground h-4 w-4" />
 						</CardHeader>
 						<CardContent>
 							<div className="text-2xl font-bold">{activeSessions.length}</div>
-							<p className="text-xs text-muted-foreground">
+							<p className="text-muted-foreground text-xs">
 								{user.sessions.length} total sessions
 							</p>
 						</CardContent>
 					</Card>
 					<Card>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-sm font-medium">Notes Created</CardTitle>
-							<Icon name="file-text" className="h-4 w-4 text-muted-foreground" />
+							<CardTitle className="text-sm font-medium">
+								Notes Created
+							</CardTitle>
+							<Icon
+								name="file-text"
+								className="text-muted-foreground h-4 w-4"
+							/>
 						</CardHeader>
 						<CardContent>
 							<div className="text-2xl font-bold">{user.notes.length}</div>
-							<p className="text-xs text-muted-foreground">
+							<p className="text-muted-foreground text-xs">
 								Recent notes shown
 							</p>
 						</CardContent>
@@ -261,15 +289,13 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 					<Card>
 						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 							<CardTitle className="text-sm font-medium">Security</CardTitle>
-							<Icon name="shield" className="h-4 w-4 text-muted-foreground" />
+							<Icon name="shield" className="text-muted-foreground h-4 w-4" />
 						</CardHeader>
 						<CardContent>
 							<div className="text-2xl font-bold">
 								{user.hasPassword ? '✓' : '✗'}
 							</div>
-							<p className="text-xs text-muted-foreground">
-								0 passkeys
-							</p>
+							<p className="text-muted-foreground text-xs">0 passkeys</p>
 						</CardContent>
 					</Card>
 				</div>
@@ -287,7 +313,7 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 						{user.isBanned && (
 							<Card className="border-destructive">
 								<CardHeader>
-									<CardTitle className="flex items-center gap-2 text-destructive">
+									<CardTitle className="text-destructive flex items-center gap-2">
 										<Icon name="ban" className="h-5 w-5" />
 										Ban Information
 									</CardTitle>
@@ -315,7 +341,11 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 										{user.banExpiresAt && (
 											<div className="flex items-center gap-2 text-sm">
 												<span className="font-medium">Expires:</span>
-												<span className={isBanExpired ? 'text-muted-foreground' : ''}>
+												<span
+													className={
+														isBanExpired ? 'text-muted-foreground' : ''
+													}
+												>
 													{new Date(user.banExpiresAt).toLocaleString()}
 													{isBanExpired && ' (Expired)'}
 												</span>
@@ -324,7 +354,9 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 										{user.bannedBy && (
 											<div className="flex items-center gap-2 text-sm">
 												<span className="font-medium">Banned by:</span>
-												<span>{user.bannedBy.name || user.bannedBy.username}</span>
+												<span>
+													{user.bannedBy.name || user.bannedBy.username}
+												</span>
 											</div>
 										)}
 									</div>
@@ -342,24 +374,40 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 								<CardContent className="space-y-4">
 									<div className="grid gap-2">
 										<div className="flex items-center gap-2 text-sm">
-											<Icon name="mail" className="h-4 w-4 text-muted-foreground" />
+											<Icon
+												name="mail"
+												className="text-muted-foreground h-4 w-4"
+											/>
 											<span className="font-medium">Email:</span>
 											<span>{user.email}</span>
 										</div>
 										<div className="flex items-center gap-2 text-sm">
-											<Icon name="user" className="h-4 w-4 text-muted-foreground" />
+											<Icon
+												name="user"
+												className="text-muted-foreground h-4 w-4"
+											/>
 											<span className="font-medium">Username:</span>
 											<span className="font-mono">{user.username}</span>
 										</div>
 										<div className="flex items-center gap-2 text-sm">
-											<Icon name="calendar" className="h-4 w-4 text-muted-foreground" />
+											<Icon
+												name="calendar"
+												className="text-muted-foreground h-4 w-4"
+											/>
 											<span className="font-medium">Created:</span>
-											<span>{new Date(user.createdAt).toLocaleDateString()}</span>
+											<span>
+												{new Date(user.createdAt).toLocaleDateString()}
+											</span>
 										</div>
 										<div className="flex items-center gap-2 text-sm">
-											<Icon name="calendar" className="h-4 w-4 text-muted-foreground" />
+											<Icon
+												name="calendar"
+												className="text-muted-foreground h-4 w-4"
+											/>
 											<span className="font-medium">Updated:</span>
-											<span>{new Date(user.updatedAt).toLocaleDateString()}</span>
+											<span>
+												{new Date(user.updatedAt).toLocaleDateString()}
+											</span>
 										</div>
 									</div>
 								</CardContent>
@@ -376,15 +424,20 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 									<div className="space-y-2">
 										{user.roles.length > 0 ? (
 											user.roles.map((role) => (
-												<div key={role.id} className="flex items-center justify-between">
+												<div
+													key={role.id}
+													className="flex items-center justify-between"
+												>
 													<Badge variant="secondary">{role.name}</Badge>
-													<span className="text-xs text-muted-foreground">
+													<span className="text-muted-foreground text-xs">
 														{role.description}
 													</span>
 												</div>
 											))
 										) : (
-											<p className="text-sm text-muted-foreground">No roles assigned</p>
+											<p className="text-muted-foreground text-sm">
+												No roles assigned
+											</p>
 										)}
 									</div>
 								</CardContent>
@@ -406,27 +459,39 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 										{user.organizations.map((membership) => (
 											<div
 												key={membership.organization.id}
-												className="flex items-center justify-between p-4 border rounded-lg"
+												className="flex items-center justify-between rounded-lg border p-4"
 											>
 												<div className="space-y-1">
 													<div className="flex items-center gap-2">
-														<h4 className="font-medium">{membership.organization.name}</h4>
+														<h4 className="font-medium">
+															{membership.organization.name}
+														</h4>
 														{membership.isDefault && (
-															<Badge variant="outline" className="text-xs">Default</Badge>
+															<Badge variant="outline" className="text-xs">
+																Default
+															</Badge>
 														)}
 														{!membership.active && (
-															<Badge variant="destructive" className="text-xs">Inactive</Badge>
+															<Badge variant="destructive" className="text-xs">
+																Inactive
+															</Badge>
 														)}
 													</div>
-													<p className="text-sm text-muted-foreground">
-														{membership.organization.description || 'No description'}
+													<p className="text-muted-foreground text-sm">
+														{membership.organization.description ||
+															'No description'}
 													</p>
-													<div className="flex items-center gap-4 text-xs text-muted-foreground">
+													<div className="text-muted-foreground flex items-center gap-4 text-xs">
 														<span>Role: {membership.role}</span>
 														{membership.department && (
 															<span>Department: {membership.department}</span>
 														)}
-														<span>Joined: {new Date(membership.createdAt).toLocaleDateString()}</span>
+														<span>
+															Joined:{' '}
+															{new Date(
+																membership.createdAt,
+															).toLocaleDateString()}
+														</span>
 													</div>
 												</div>
 												<div className="flex items-center gap-2">
@@ -438,7 +503,11 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 													<Button
 														variant="ghost"
 														size="sm"
-														onClick={() => navigate(`/admin/organizations/${membership.organization.id}`)}
+														onClick={() =>
+															navigate(
+																`/admin/organizations/${membership.organization.id}`,
+															)
+														}
 													>
 														<Icon name="external-link" className="h-4 w-4" />
 													</Button>
@@ -447,7 +516,7 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 										))}
 									</div>
 								) : (
-									<p className="text-sm text-muted-foreground">
+									<p className="text-muted-foreground text-sm">
 										User is not a member of any organizations
 									</p>
 								)}
@@ -470,16 +539,20 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 											{recentActivity.comments.map((comment) => (
 												<div key={comment.id} className="space-y-1">
 													<p className="text-sm">{comment.content}</p>
-													<div className="flex items-center gap-2 text-xs text-muted-foreground">
+													<div className="text-muted-foreground flex items-center gap-2 text-xs">
 														<span>On: {comment.note.title}</span>
 														<span>•</span>
-														<span>{new Date(comment.createdAt).toLocaleDateString()}</span>
+														<span>
+															{new Date(comment.createdAt).toLocaleDateString()}
+														</span>
 													</div>
 												</div>
 											))}
 										</div>
 									) : (
-										<p className="text-sm text-muted-foreground">No recent comments</p>
+										<p className="text-muted-foreground text-sm">
+											No recent comments
+										</p>
 									)}
 								</CardContent>
 							</Card>
@@ -497,16 +570,20 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 											{recentActivity.activityLogs.map((log) => (
 												<div key={log.id} className="space-y-1">
 													<p className="text-sm font-medium">{log.action}</p>
-													<div className="flex items-center gap-2 text-xs text-muted-foreground">
+													<div className="text-muted-foreground flex items-center gap-2 text-xs">
 														<span>On: {log.note.title}</span>
 														<span>•</span>
-														<span>{new Date(log.createdAt).toLocaleDateString()}</span>
+														<span>
+															{new Date(log.createdAt).toLocaleDateString()}
+														</span>
 													</div>
 												</div>
 											))}
 										</div>
 									) : (
-										<p className="text-sm text-muted-foreground">No recent activity</p>
+										<p className="text-muted-foreground text-sm">
+											No recent activity
+										</p>
 									)}
 								</CardContent>
 							</Card>
@@ -523,19 +600,26 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 								{user.notes.length > 0 ? (
 									<div className="space-y-3">
 										{user.notes.map((note) => (
-											<div key={note.id} className="flex items-center justify-between">
+											<div
+												key={note.id}
+												className="flex items-center justify-between"
+											>
 												<div>
 													<p className="font-medium">{note.title}</p>
-													<p className="text-xs text-muted-foreground">
-														Created: {new Date(note.createdAt).toLocaleDateString()} •
-														Updated: {new Date(note.updatedAt).toLocaleDateString()}
+													<p className="text-muted-foreground text-xs">
+														Created:{' '}
+														{new Date(note.createdAt).toLocaleDateString()} •
+														Updated:{' '}
+														{new Date(note.updatedAt).toLocaleDateString()}
 													</p>
 												</div>
 											</div>
 										))}
 									</div>
 								) : (
-									<p className="text-sm text-muted-foreground">No notes created</p>
+									<p className="text-muted-foreground text-sm">
+										No notes created
+									</p>
 								)}
 							</CardContent>
 						</Card>
@@ -550,15 +634,13 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 								<CardContent className="space-y-4">
 									<div className="flex items-center justify-between">
 										<span className="text-sm">Password</span>
-										<Badge variant={user.hasPassword ? "default" : "secondary"}>
-											{user.hasPassword ? "Set" : "Not Set"}
+										<Badge variant={user.hasPassword ? 'default' : 'secondary'}>
+											{user.hasPassword ? 'Set' : 'Not Set'}
 										</Badge>
 									</div>
 									<div className="flex items-center justify-between">
 										<span className="text-sm">Passkeys</span>
-										<Badge variant="secondary">
-											0 configured
-										</Badge>
+										<Badge variant="secondary">0 configured</Badge>
 									</div>
 								</CardContent>
 							</Card>
@@ -571,19 +653,30 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 									{user.connections.length > 0 ? (
 										<div className="space-y-2">
 											{user.connections.map((connection) => (
-												<div key={connection.id} className="flex items-center justify-between">
+												<div
+													key={connection.id}
+													className="flex items-center justify-between"
+												>
 													<div className="flex items-center gap-2">
-														<Badge variant="outline">{connection.providerName}</Badge>
-														<span className="text-sm font-mono">{connection.providerId}</span>
+														<Badge variant="outline">
+															{connection.providerName}
+														</Badge>
+														<span className="font-mono text-sm">
+															{connection.providerId}
+														</span>
 													</div>
-													<span className="text-xs text-muted-foreground">
-														{new Date(connection.createdAt).toLocaleDateString()}
+													<span className="text-muted-foreground text-xs">
+														{new Date(
+															connection.createdAt,
+														).toLocaleDateString()}
 													</span>
 												</div>
 											))}
 										</div>
 									) : (
-										<p className="text-sm text-muted-foreground">No connected accounts</p>
+										<p className="text-muted-foreground text-sm">
+											No connected accounts
+										</p>
 									)}
 								</CardContent>
 							</Card>
@@ -592,31 +685,38 @@ export function UserDetailView({ user, recentActivity }: UserDetailViewProps) {
 						<Card>
 							<CardHeader>
 								<CardTitle>Active Sessions</CardTitle>
-								<CardDescription>
-									Current active login sessions
-								</CardDescription>
+								<CardDescription>Current active login sessions</CardDescription>
 							</CardHeader>
 							<CardContent>
 								{activeSessions.length > 0 ? (
 									<div className="space-y-2">
 										{activeSessions.map((session) => (
-											<div key={session.id} className="flex items-center justify-between p-3 border rounded">
+											<div
+												key={session.id}
+												className="flex items-center justify-between rounded border p-3"
+											>
 												<div>
-													<p className="text-sm font-medium">Session {session.id.slice(0, 8)}...</p>
-													<p className="text-xs text-muted-foreground">
-														Created: {new Date(session.createdAt).toLocaleString()}
+													<p className="text-sm font-medium">
+														Session {session.id.slice(0, 8)}...
+													</p>
+													<p className="text-muted-foreground text-xs">
+														Created:{' '}
+														{new Date(session.createdAt).toLocaleString()}
 													</p>
 												</div>
 												<div className="text-right">
-													<p className="text-xs text-muted-foreground">
-														Expires: {new Date(session.expirationDate).toLocaleString()}
+													<p className="text-muted-foreground text-xs">
+														Expires:{' '}
+														{new Date(session.expirationDate).toLocaleString()}
 													</p>
 												</div>
 											</div>
 										))}
 									</div>
 								) : (
-									<p className="text-sm text-muted-foreground">No active sessions</p>
+									<p className="text-muted-foreground text-sm">
+										No active sessions
+									</p>
 								)}
 							</CardContent>
 						</Card>

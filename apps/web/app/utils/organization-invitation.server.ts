@@ -286,7 +286,10 @@ export async function createOrganizationInviteLink({
 	return inviteLink
 }
 
-export async function getOrganizationInviteLink(organizationId: string, createdById: string) {
+export async function getOrganizationInviteLink(
+	organizationId: string,
+	createdById: string,
+) {
 	return prisma.organizationInviteLink.findUnique({
 		where: {
 			organizationId_createdById: {
@@ -315,7 +318,10 @@ export async function getAllOrganizationInviteLinks(organizationId: string) {
 	})
 }
 
-export async function deactivateOrganizationInviteLink(organizationId: string, createdById: string) {
+export async function deactivateOrganizationInviteLink(
+	organizationId: string,
+	createdById: string,
+) {
 	return prisma.organizationInviteLink.update({
 		where: {
 			organizationId_createdById: {

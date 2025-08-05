@@ -9,8 +9,10 @@ import {
 	PasswordSchema,
 	PasswordAndConfirmPasswordSchema,
 } from '#app/utils/user-validation.ts'
-import { changePasswordActionIntent, setPasswordActionIntent } from '#app/routes/app+/security.tsx'
-
+import {
+	changePasswordActionIntent,
+	setPasswordActionIntent,
+} from '#app/routes/app+/security.tsx'
 
 export const ChangePasswordSchema = z
 	.object({

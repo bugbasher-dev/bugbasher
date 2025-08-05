@@ -1,6 +1,7 @@
 # Background Jobs Package
 
-This package handles background job processing using Trigger.dev, specifically for video processing tasks.
+This package handles background job processing using Trigger.dev, specifically
+for video processing tasks.
 
 ## Setup
 
@@ -58,11 +59,11 @@ import { triggerVideoProcessing } from '@repo/background-jobs'
 
 // Trigger video processing (upload function is handled internally)
 const handle = await triggerVideoProcessing({
-  videoUrl: 'https://example.com/video.mp4',
-  videoId: 'video-database-id',
-  noteId: 'note-database-id',
-  organizationId: 'org-database-id',
-  userId: 'user-id'
+	videoUrl: 'https://example.com/video.mp4',
+	videoId: 'video-database-id',
+	noteId: 'note-database-id',
+	organizationId: 'org-database-id',
+	userId: 'user-id',
 })
 ```
 
@@ -100,18 +101,24 @@ npx trigger.dev@latest deploy
 
 ### GitHub Actions
 
-Set up automatic deployment using GitHub Actions by following the [Trigger.dev GitHub Actions guide](https://trigger.dev/docs/github-actions).
+Set up automatic deployment using GitHub Actions by following the
+[Trigger.dev GitHub Actions guide](https://trigger.dev/docs/github-actions).
 
 ## Troubleshooting
 
 ### FFmpeg Issues
 
-Make sure FFmpeg is installed on your system and available in the PATH. The package uses the `ffmpeg` build extension which should handle this automatically in deployed environments.
+Make sure FFmpeg is installed on your system and available in the PATH. The
+package uses the `ffmpeg` build extension which should handle this automatically
+in deployed environments.
 
 ### Storage Permissions
 
-The package uses the existing Tigris/S3-compatible storage system. Ensure your storage credentials have the necessary permissions for uploading and reading files.
+The package uses the existing Tigris/S3-compatible storage system. Ensure your
+storage credentials have the necessary permissions for uploading and reading
+files.
 
 ### Database Connection
 
-The package uses `@repo/prisma` directly for database access and handles thumbnail uploads internally using the same storage system as your app.
+The package uses `@repo/prisma` directly for database access and handles
+thumbnail uploads internally using the same storage system as your app.

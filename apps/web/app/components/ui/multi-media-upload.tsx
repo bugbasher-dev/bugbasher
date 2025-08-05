@@ -57,7 +57,7 @@ export function MultiMediaUpload({
 	const handleFileUpload = useCallback(
 		(file: File) => {
 			const isVideo = file.type.startsWith('video/')
-			
+
 			if (isVideo) {
 				// For videos, we'll show a placeholder thumbnail
 				form.insert({
@@ -139,8 +139,9 @@ export function MultiMediaUpload({
 
 			if (disabled) return
 
-			const files = Array.from(e.dataTransfer.files).filter((file) =>
-				file.type.startsWith('image/') || file.type.startsWith('video/')
+			const files = Array.from(e.dataTransfer.files).filter(
+				(file) =>
+					file.type.startsWith('image/') || file.type.startsWith('video/'),
 			)
 
 			if (files.length > 0) {
@@ -178,7 +179,7 @@ export function MultiMediaUpload({
 						const existingVideo = existingVideos.find(
 							({ id }) => id === mediaMetaId,
 						)
-						
+
 						return (
 							<MediaPreview
 								key={key}
@@ -289,7 +290,7 @@ function MediaPreview({
 	const existingImageUrl = existingImage?.objectKey
 		? getNoteImgSrc(existingImage.objectKey)
 		: null
-	
+
 	const existingVideoThumbnail = existingVideo?.thumbnailKey
 		? getNoteImgSrc(existingVideo.thumbnailKey)
 		: null
@@ -308,11 +309,12 @@ function MediaPreview({
 				className={cn('group absolute size-32 rounded-lg', {
 					'bg-accent opacity-40 focus-within:opacity-100 hover:opacity-100':
 						!mediaUrl,
-					'cursor-pointer focus-within:ring-2': !existingImageUrl && !existingVideo,
+					'cursor-pointer focus-within:ring-2':
+						!existingImageUrl && !existingVideo,
 				})}
 			>
 				{mediaUrl ? (
-					<div className="relative size-32 rounded-lg overflow-hidden">
+					<div className="relative size-32 overflow-hidden rounded-lg">
 						<img
 							src={mediaUrl}
 							alt={fields.altText.initialValue ?? ''}
@@ -325,7 +327,7 @@ function MediaPreview({
 						)}
 						{existingVideo?.status === 'processing' && (
 							<div className="absolute inset-0 flex items-center justify-center bg-black/50">
-								<div className="text-white text-xs">Processing...</div>
+								<div className="text-xs text-white">Processing...</div>
 							</div>
 						)}
 						{existingVideo?.status === 'failed' && (
@@ -341,9 +343,9 @@ function MediaPreview({
 				)}
 			</label>
 			<input
-				aria-label={isVideo ? "Video" : "Image"}
+				aria-label={isVideo ? 'Video' : 'Image'}
 				className="absolute top-0 left-0 z-0 size-32 cursor-pointer opacity-0"
-				accept={isVideo ? "video/*" : "image/*"}
+				accept={isVideo ? 'video/*' : 'image/*'}
 				{...getInputProps(fields.file, { type: 'file' })}
 				ref={(input) => {
 					if (input && file) {

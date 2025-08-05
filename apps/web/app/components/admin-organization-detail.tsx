@@ -4,7 +4,13 @@ import { formatDistanceToNow } from 'date-fns'
 import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
 import { Badge } from '#app/components/ui/badge'
 import { Button } from '#app/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#app/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '#app/components/ui/card'
 import {
 	Table,
 	TableBody,
@@ -123,7 +129,7 @@ const getSubscriptionStatusBadge = (status: string | null) => {
 	if (!status) {
 		return <Badge variant="secondary">No Subscription</Badge>
 	}
-	
+
 	switch (status.toLowerCase()) {
 		case 'active':
 			return <Badge variant="default">Active</Badge>
@@ -165,7 +171,7 @@ const getActivityIcon = (action: string) => {
 		case 'deleted':
 			return <Icon name="activity" className="h-4 w-4 text-red-500" />
 		default:
-			return <Icon name="activity" className="h-4 w-4 text-muted-foreground" />
+			return <Icon name="activity" className="text-muted-foreground h-4 w-4" />
 	}
 }
 
@@ -180,7 +186,11 @@ export function AdminOrganizationDetail({
 				<div className="flex items-center gap-4">
 					<Avatar className="h-16 w-16">
 						<AvatarImage
-							src={organization.image?.id ? `/resources/organization-images/${organization.image.id}` : undefined}
+							src={
+								organization.image?.id
+									? `/resources/organization-images/${organization.image.id}`
+									: undefined
+							}
 							alt={organization.image?.altText ?? organization.name}
 						/>
 						<AvatarFallback>
@@ -188,10 +198,12 @@ export function AdminOrganizationDetail({
 						</AvatarFallback>
 					</Avatar>
 					<div>
-						<h1 className="text-3xl font-bold tracking-tight">{organization.name}</h1>
+						<h1 className="text-3xl font-bold tracking-tight">
+							{organization.name}
+						</h1>
 						<p className="text-muted-foreground">@{organization.slug}</p>
 						{organization.description && (
-							<p className="text-sm text-muted-foreground mt-1">
+							<p className="text-muted-foreground mt-1 text-sm">
 								{organization.description}
 							</p>
 						)}
@@ -212,11 +224,11 @@ export function AdminOrganizationDetail({
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Members</CardTitle>
-						<Icon name="user-plus" className="h-4 w-4 text-muted-foreground" />
+						<Icon name="user-plus" className="text-muted-foreground h-4 w-4" />
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">{organization.memberCount}</div>
-						<p className="text-xs text-muted-foreground">
+						<p className="text-muted-foreground text-xs">
 							{organization.totalMembers !== organization.memberCount && (
 								<span>{organization.totalMembers} total, </span>
 							)}
@@ -229,24 +241,27 @@ export function AdminOrganizationDetail({
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Notes</CardTitle>
-						<Icon name="file-text" className="h-4 w-4 text-muted-foreground" />
+						<Icon name="file-text" className="text-muted-foreground h-4 w-4" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{organization._count.notes}</div>
-						<p className="text-xs text-muted-foreground">
-							Total notes created
-						</p>
+						<div className="text-2xl font-bold">
+							{organization._count.notes}
+						</div>
+						<p className="text-muted-foreground text-xs">Total notes created</p>
 					</CardContent>
 				</Card>
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Integrations</CardTitle>
-						<Icon name="link-2" className="h-4 w-4 text-muted-foreground" />
+						<Icon name="link-2" className="text-muted-foreground h-4 w-4" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{organization.activeIntegrations}</div>
-						<p className="text-xs text-muted-foreground">
-							{organization.totalIntegrations !== organization.activeIntegrations && (
+						<div className="text-2xl font-bold">
+							{organization.activeIntegrations}
+						</div>
+						<p className="text-muted-foreground text-xs">
+							{organization.totalIntegrations !==
+								organization.activeIntegrations && (
 								<span>{organization.totalIntegrations} total, </span>
 							)}
 							Active integrations
@@ -256,13 +271,16 @@ export function AdminOrganizationDetail({
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Subscription</CardTitle>
-						<Icon name="credit-card" className="h-4 w-4 text-muted-foreground" />
+						<Icon
+							name="credit-card"
+							className="text-muted-foreground h-4 w-4"
+						/>
 					</CardHeader>
 					<CardContent>
 						<div className="flex flex-col gap-1">
 							{getSubscriptionStatusBadge(organization.subscriptionStatus)}
 							{organization.planName && (
-								<p className="text-xs text-muted-foreground">
+								<p className="text-muted-foreground text-xs">
 									{organization.planName}
 								</p>
 							)}
@@ -286,26 +304,39 @@ export function AdminOrganizationDetail({
 					<CardContent>
 						<div className="space-y-4">
 							{organization.users.slice(0, 10).map((member) => (
-								<div key={member.id} className="flex items-center justify-between">
+								<div
+									key={member.id}
+									className="flex items-center justify-between"
+								>
 									<div className="flex items-center gap-3">
 										<Avatar className="h-8 w-8">
 											<AvatarImage
-												src={member.user.image?.id ? `/resources/user-images/${member.user.image.id}` : undefined}
-												alt={member.user.image?.altText ?? member.user.name ?? member.user.username}
+												src={
+													member.user.image?.id
+														? `/resources/user-images/${member.user.image.id}`
+														: undefined
+												}
+												alt={
+													member.user.image?.altText ??
+													member.user.name ??
+													member.user.username
+												}
 											/>
 											<AvatarFallback>
-												{(member.user.name ?? member.user.username).slice(0, 2).toUpperCase()}
+												{(member.user.name ?? member.user.username)
+													.slice(0, 2)
+													.toUpperCase()}
 											</AvatarFallback>
 										</Avatar>
 										<div className="flex flex-col">
 											<span className="text-sm font-medium">
 												{member.user.name || member.user.username}
 											</span>
-											<span className="text-xs text-muted-foreground">
+											<span className="text-muted-foreground text-xs">
 												{member.user.email}
 											</span>
 											{member.department && (
-												<span className="text-xs text-muted-foreground">
+												<span className="text-muted-foreground text-xs">
 													{member.department}
 												</span>
 											)}
@@ -344,9 +375,7 @@ export function AdminOrganizationDetail({
 							<Icon name="file-text" className="h-5 w-5" />
 							Recent Notes ({organization.notes.length})
 						</CardTitle>
-						<CardDescription>
-							Recently created or updated notes
-						</CardDescription>
+						<CardDescription>Recently created or updated notes</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<div className="space-y-4">
@@ -354,23 +383,32 @@ export function AdminOrganizationDetail({
 								<div key={note.id} className="flex items-start justify-between">
 									<div className="flex-1">
 										<div className="flex items-center gap-2">
-											<span className="text-sm font-medium line-clamp-1">
+											<span className="line-clamp-1 text-sm font-medium">
 												{note.title}
 											</span>
 											{!note.isPublic && (
-												<Icon name="lock" className="h-3 w-3 text-muted-foreground" />
+												<Icon
+													name="lock"
+													className="text-muted-foreground h-3 w-3"
+												/>
 											)}
 										</div>
-										<div className="flex items-center gap-2 text-xs text-muted-foreground">
-											<span>by {note.createdBy.name || note.createdBy.username}</span>
+										<div className="text-muted-foreground flex items-center gap-2 text-xs">
+											<span>
+												by {note.createdBy.name || note.createdBy.username}
+											</span>
 											<span>•</span>
-											<span>{formatDistanceToNow(new Date(note.updatedAt), { addSuffix: true })}</span>
+											<span>
+												{formatDistanceToNow(new Date(note.updatedAt), {
+													addSuffix: true,
+												})}
+											</span>
 										</div>
 									</div>
 								</div>
 							))}
 							{organization.notes.length === 0 && (
-								<p className="text-sm text-muted-foreground text-center py-4">
+								<p className="text-muted-foreground py-4 text-center text-sm">
 									No notes found
 								</p>
 							)}
@@ -395,31 +433,39 @@ export function AdminOrganizationDetail({
 					<CardContent>
 						<div className="space-y-4">
 							{organization.integrations.map((integration) => (
-								<div key={integration.id} className="flex items-center justify-between">
+								<div
+									key={integration.id}
+									className="flex items-center justify-between"
+								>
 									<div className="flex items-center gap-3">
 										<div className="flex flex-col">
 											<span className="text-sm font-medium capitalize">
 												{integration.providerName}
 											</span>
-											<span className="text-xs text-muted-foreground">
+											<span className="text-muted-foreground text-xs">
 												{integration.providerType}
 											</span>
 										</div>
 									</div>
 									<div className="flex items-center gap-2">
-										<Badge variant={integration.isActive ? 'default' : 'secondary'}>
+										<Badge
+											variant={integration.isActive ? 'default' : 'secondary'}
+										>
 											{integration.isActive ? 'Active' : 'Inactive'}
 										</Badge>
 										{integration.lastSyncAt && (
-											<span className="text-xs text-muted-foreground">
-												Last sync: {formatDistanceToNow(new Date(integration.lastSyncAt), { addSuffix: true })}
+											<span className="text-muted-foreground text-xs">
+												Last sync:{' '}
+												{formatDistanceToNow(new Date(integration.lastSyncAt), {
+													addSuffix: true,
+												})}
 											</span>
 										)}
 									</div>
 								</div>
 							))}
 							{organization.integrations.length === 0 && (
-								<p className="text-sm text-muted-foreground text-center py-4">
+								<p className="text-muted-foreground py-4 text-center text-sm">
 									No integrations configured
 								</p>
 							)}
@@ -434,9 +480,7 @@ export function AdminOrganizationDetail({
 							<Icon name="activity" className="h-5 w-5" />
 							Recent Activity
 						</CardTitle>
-						<CardDescription>
-							Latest organization activity
-						</CardDescription>
+						<CardDescription>Latest organization activity</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<div className="space-y-4">
@@ -448,22 +492,26 @@ export function AdminOrganizationDetail({
 											<span className="text-sm font-medium">
 												{activity.user.name || activity.user.username}
 											</span>
-											<span className="text-sm text-muted-foreground">
+											<span className="text-muted-foreground text-sm">
 												{activity.action}
 											</span>
 											<span className="text-sm font-medium">
 												{activity.note.title}
 											</span>
 										</div>
-										<div className="flex items-center gap-2 text-xs text-muted-foreground">
+										<div className="text-muted-foreground flex items-center gap-2 text-xs">
 											<Icon name="clock" className="h-3 w-3" />
-											<span>{formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}</span>
+											<span>
+												{formatDistanceToNow(new Date(activity.createdAt), {
+													addSuffix: true,
+												})}
+											</span>
 										</div>
 									</div>
 								</div>
 							))}
 							{recentActivity.length === 0 && (
-								<p className="text-sm text-muted-foreground text-center py-4">
+								<p className="text-muted-foreground py-4 text-center text-sm">
 									No recent activity
 								</p>
 							)}
@@ -484,16 +532,16 @@ export function AdminOrganizationDetail({
 					<div className="grid gap-4 md:grid-cols-2">
 						<div className="space-y-2">
 							<div className="flex items-center gap-2">
-								<Icon name="clock" className="h-4 w-4 text-muted-foreground" />
+								<Icon name="clock" className="text-muted-foreground h-4 w-4" />
 								<span className="text-sm font-medium">Created:</span>
-								<span className="text-sm text-muted-foreground">
+								<span className="text-muted-foreground text-sm">
 									{new Date(organization.createdAt).toLocaleDateString()}
 								</span>
 							</div>
 							<div className="flex items-center gap-2">
-								<Icon name="clock" className="h-4 w-4 text-muted-foreground" />
+								<Icon name="clock" className="text-muted-foreground h-4 w-4" />
 								<span className="text-sm font-medium">Updated:</span>
-								<span className="text-sm text-muted-foreground">
+								<span className="text-muted-foreground text-sm">
 									{new Date(organization.updatedAt).toLocaleDateString()}
 								</span>
 							</div>
@@ -501,18 +549,24 @@ export function AdminOrganizationDetail({
 						<div className="space-y-2">
 							{organization.stripeCustomerId && (
 								<div className="flex items-center gap-2">
-									<Icon name="credit-card" className="h-4 w-4 text-muted-foreground" />
+									<Icon
+										name="credit-card"
+										className="text-muted-foreground h-4 w-4"
+									/>
 									<span className="text-sm font-medium">Stripe Customer:</span>
-									<span className="text-sm text-muted-foreground font-mono">
+									<span className="text-muted-foreground font-mono text-sm">
 										{organization.stripeCustomerId}
 									</span>
 								</div>
 							)}
 							{organization.stripeSubscriptionId && (
 								<div className="flex items-center gap-2">
-									<Icon name="credit-card" className="h-4 w-4 text-muted-foreground" />
+									<Icon
+										name="credit-card"
+										className="text-muted-foreground h-4 w-4"
+									/>
 									<span className="text-sm font-medium">Subscription:</span>
-									<span className="text-sm text-muted-foreground font-mono">
+									<span className="text-muted-foreground font-mono text-sm">
 										{organization.stripeSubscriptionId}
 									</span>
 								</div>
@@ -551,23 +605,29 @@ export function AdminOrganizationDetail({
 										<TableCell className="font-medium">
 											{invitation.email}
 										</TableCell>
+										<TableCell>{getRoleBadge(invitation.role)}</TableCell>
 										<TableCell>
-											{getRoleBadge(invitation.role)}
+											{invitation.inviter?.name ||
+												invitation.inviter?.username ||
+												'System'}
 										</TableCell>
 										<TableCell>
-											{invitation.inviter?.name || invitation.inviter?.username || 'System'}
-										</TableCell>
-										<TableCell>
-											{formatDistanceToNow(new Date(invitation.createdAt), { addSuffix: true })}
+											{formatDistanceToNow(new Date(invitation.createdAt), {
+												addSuffix: true,
+											})}
 										</TableCell>
 										<TableCell>
 											{invitation.expiresAt ? (
-												<span className={
-													new Date(invitation.expiresAt) <= new Date() 
-														? 'text-red-500' 
-														: 'text-muted-foreground'
-												}>
-													{formatDistanceToNow(new Date(invitation.expiresAt), { addSuffix: true })}
+												<span
+													className={
+														new Date(invitation.expiresAt) <= new Date()
+															? 'text-red-500'
+															: 'text-muted-foreground'
+													}
+												>
+													{formatDistanceToNow(new Date(invitation.expiresAt), {
+														addSuffix: true,
+													})}
 												</span>
 											) : (
 												<span className="text-muted-foreground">Never</span>
