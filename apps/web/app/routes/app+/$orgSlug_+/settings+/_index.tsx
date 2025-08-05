@@ -16,6 +16,7 @@ import {
 } from '#app/components/settings/cards/organization/organization-photo-card'
 import TeamSizeCard, { TeamSizeSchema } from '#app/components/settings/cards/organization/team-size-card'
 import VerifiedDomainCard, { VerifiedDomainSchema } from '#app/components/settings/cards/organization/verified-domain-card'
+import DangerZoneCard from '#app/components/settings/cards/organization/danger-zone-card'
 import {
 	AnnotatedLayout,
 	AnnotatedSection,
@@ -345,6 +346,27 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		}
 	}
 
+	if (intent === 'delete-organization') {
+		try {
+			// Delete the organization - cascade deletes will handle all related data
+			await prisma.organization.delete({
+				where: { id: organization.id },
+			})
+
+			return redirectWithToast('/app', {
+				title: 'Organization deleted',
+				description: 'Your organization has been permanently deleted.',
+				type: 'success',
+			})
+		} catch (error) {
+			console.error('Error deleting organization:', error)
+			return Response.json(
+				{ error: 'Failed to delete organization' },
+				{ status: 500 },
+			)
+		}
+	}
+
 	return Response.json({ error: `Invalid intent: ${intent}` }, { status: 400 })
 }
 
@@ -373,6 +395,13 @@ export default function GeneralSettings() {
 				description="Automatically add team members based on their email domain."
 			>
 				<VerifiedDomainCard organization={organization} actionData={actionData} />
+			</AnnotatedSection>
+
+			<AnnotatedSection
+				title="Danger Zone"
+				description="Be careful, an organization deletion cannot be undone."
+			>
+				<DangerZoneCard organization={organization} />
 			</AnnotatedSection>
 		</AnnotatedLayout>
 	)
