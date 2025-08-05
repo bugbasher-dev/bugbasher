@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useLocation, useRouteLoaderData } from 'react-router'
+import { Link, useLocation, useRouteLoaderData } from 'react-router'
 import { HomeIcon } from '#app/components/icons/home-icon'
 import { UserIcon } from '#app/components/icons/user-icon'
 import { BuildingIcon } from '#app/components/icons/building-icon'
@@ -15,6 +15,7 @@ import {
 } from '#app/components/ui/sidebar'
 import { type loader as rootLoader } from '#app/root.tsx'
 import { Logo } from './icons/logo'
+import { ShieldCheckIcon } from './icons/shield-check-icon'
 
 export function AdminSidebar({
 	...props
@@ -52,7 +53,7 @@ export function AdminSidebar({
 			title: 'Audit Logs',
 			url: '/admin/audit-logs',
 			isActive: location.pathname.startsWith('/admin/audit-logs'),
-			icon: IconShield,
+			icon: ShieldCheckIcon,
 		},
 	]
 
@@ -75,9 +76,11 @@ export function AdminSidebar({
 
 	return (
 		<Sidebar collapsible="offcanvas" {...props}>
-			<SidebarHeader className="space-y-4 p-2">
-				<Logo className="pl-6 mb-0" />
-				<div className="px-6">
+			<SidebarHeader className="p-2">
+				<Link to="/">
+					<Logo className="mb-0" />
+				</Link>
+				<div className="px-6 bg-sidebar-accent text-center p-2">
 					<div className="text-sm font-medium text-sidebar-foreground">
 						Admin Dashboard
 					</div>

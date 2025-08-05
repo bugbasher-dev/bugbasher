@@ -50,7 +50,7 @@ export function AIContentGenerator({
 			disabled={!title.trim() || disabled || isGenerating}
 			className="flex items-center gap-2"
 		>
-			<Icon name="sparkles" className="h-4 w-4 text-black" />
+			<Icon name="sparkles" className="h-4 w-4" />
 			{isGenerating ? 'Generating...' : 'Generate with AI'}
 		</Button>
 	)

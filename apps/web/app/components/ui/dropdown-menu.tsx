@@ -2,6 +2,7 @@ import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import * as React from 'react'
 
 import { cn } from '#app/utils/misc'
+import { Icon } from './icon'
 
 function DropdownMenu(
 	props: React.ComponentProps<typeof DropdownMenuPrimitive.Root>,
@@ -90,7 +91,9 @@ const DropdownMenuSubTrigger = ({
 		{...props}
 	>
 		{children}
-		<span className="ml-auto size-4">▶️</span>
+		<span className="ml-auto">
+			<Icon name="chevron-right" className="size-4 items-center" />
+		</span>
 	</DropdownMenuPrimitive.SubTrigger>
 )
 

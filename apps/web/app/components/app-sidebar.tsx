@@ -42,7 +42,7 @@ function UpgradeAccountCard({
 	if (!trialStatus.isActive || trialStatus.daysRemaining < 0) return null
 
 	return (
-		<Card className="shadow-md p-2 gap-1 bg-sidebar-accent border-sidebar-border">
+		<Card className="shadow-md p-2 gap-1 bg-sidebar-accent border-sidebar-border mb-4">
 			<CardHeader className="p-2">
 				<CardDescription className="text-sidebar-foreground">
 					There are{' '}
@@ -120,10 +120,6 @@ function AccountSidebar({
 
 	return (
 		<>
-			<SidebarHeader className="space-y-4 p-2">
-				{/* Empty header for account routes */}
-			</SidebarHeader>
-
 			<SidebarContent>
 				<NavMain items={navMain} />
 			</SidebarContent>
@@ -141,7 +137,8 @@ function OrganizationSidebar({
 	favoriteNotes,
 	setHasVisibleFeatureUpdates,
 	hasVisibleFeatureUpdates,
-	trialStatus
+	trialStatus,
+	rootData
 }: {
 	user: any
 	location: any
@@ -152,6 +149,7 @@ function OrganizationSidebar({
 	setHasVisibleFeatureUpdates: (value: boolean) => void
 	hasVisibleFeatureUpdates: boolean
 	trialStatus?: { isActive: boolean; daysRemaining: number }
+	rootData: any
 }) {
 	const navMain = [
 		{
@@ -216,8 +214,10 @@ function OrganizationSidebar({
 
 	return (
 		<>
-			<SidebarHeader className="space-y-4 p-2">
-				<Logo className="pl-6 mb-0" />
+			<SidebarHeader className="p-2">
+				<Link to="/">
+					<Logo className="mb-0 text-md" />
+				</Link>
 				<TeamSwitcher />
 			</SidebarHeader>
 
@@ -240,10 +240,6 @@ function OrganizationSidebar({
 
 				<NavMain items={navMain} />
 
-				{/* Upgrade Account Card */}
-				{trialStatus && orgSlug && (
-					<UpgradeAccountCard trialStatus={trialStatus} orgSlug={orgSlug} />
-				)}
 
 				{/* Favorite Notes */}
 				{favoriteNotes && orgSlug && (
@@ -253,21 +249,24 @@ function OrganizationSidebar({
 					/>
 				)}
 
-				{/* Feature Updates */}
-				<FeatureUpdates
-					className="mt-auto"
-					onVisibilityChange={setHasVisibleFeatureUpdates}
-				/>
-
-				{/* NavSecondary */}
-				<NavSecondary
-					items={navSecondary}
-					className={hasVisibleFeatureUpdates ? '' : 'mt-auto'}
-				/>
+				<div className="mt-auto">
+					{/* Upgrade Account Card */}
+					{trialStatus && orgSlug && (
+						<UpgradeAccountCard trialStatus={trialStatus} orgSlug={orgSlug} />
+					)}
+					{/* Feature Updates */}
+					{!trialStatus && <FeatureUpdates
+						onVisibilityChange={setHasVisibleFeatureUpdates}
+					/>}
+					{/* NavSecondary */}
+					<NavSecondary
+						items={navSecondary}
+					/>
+				</div>
 			</SidebarContent>
 
 			<SidebarFooter>
-				<NavUser user={user} />
+				<NavUser user={user} userPreference={rootData?.requestInfo?.userPrefs?.theme} />
 			</SidebarFooter>
 		</>
 	)
@@ -365,6 +364,7 @@ export function AppSidebar({
 						setHasVisibleFeatureUpdates={setHasVisibleFeatureUpdates}
 						hasVisibleFeatureUpdates={hasVisibleFeatureUpdates}
 						trialStatus={trialStatus}
+						rootData={rootData}
 					/>
 				</motion.div>
 			</div>

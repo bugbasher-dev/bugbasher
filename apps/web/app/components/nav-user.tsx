@@ -1,6 +1,5 @@
-import * as React from 'react'
 import { useRef } from 'react'
-import { Link, Form } from 'react-router'
+import { Link, Form, useFetcher } from 'react-router'
 import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
 import {
 	DropdownMenu,
@@ -8,6 +7,9 @@ import {
 	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuSeparator,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from '#app/components/ui/dropdown-menu'
 import { Icon } from '#app/components/ui/icon'
@@ -21,9 +23,12 @@ import { UserIcon } from './icons/user-icon'
 import { LogoutIcon } from './icons/logout-icon'
 import { BuildingIcon } from './icons/building-icon'
 import { SettingsGearIcon } from './icons/settings-gear-icon'
+import { useOptimisticThemeMode } from '#app/routes/resources+/theme-switch'
+import { useOptionalRequestInfo } from '#app/utils/request-info'
 
 export function NavUser({
 	user,
+	userPreference,
 }: {
 	user: {
 		name: string
@@ -31,12 +36,25 @@ export function NavUser({
 		avatar: string
 		roles?: Array<{ name: string }> | undefined
 	}
+	userPreference?: 'light' | 'dark' | 'system' | null
 }) {
 	const { isMobile } = useSidebar()
 	const iconRefs = useRef<{ [key: string]: any }>({})
+	const themeFetcher = useFetcher()
+	const requestInfo = useOptionalRequestInfo()
 
 	// Check if user has admin role
 	const isAdmin = user.roles?.some(role => role.name === 'admin') ?? false
+
+	// Theme switching logic
+	const optimisticMode = useOptimisticThemeMode()
+	const mode = optimisticMode ?? userPreference ?? 'system'
+
+	const themeOptions = [
+		{ value: 'light', icon: 'sun', label: 'Light mode' },
+		{ value: 'dark', icon: 'moon', label: 'Dark mode' },
+		{ value: 'system', icon: 'laptop', label: 'System theme' },
+	] as const
 
 	const handleMenuItemMouseEnter = (iconKey: string) => {
 		const iconRef = iconRefs.current[iconKey]
@@ -126,6 +144,52 @@ export function NavUser({
 								</DropdownMenuItem>
 							)}
 						</DropdownMenuGroup>
+						<DropdownMenuSeparator />
+						<DropdownMenuSub>
+							<DropdownMenuSubTrigger
+								className="gap-2"
+								onMouseEnter={() => handleMenuItemMouseEnter('theme')}
+								onMouseLeave={() => handleMenuItemMouseLeave('theme')}
+							>
+								<Icon
+									name="sun"
+									className="size-4"
+									ref={(ref: any) => (iconRefs.current['theme'] = ref)}
+								/>
+								Theme
+							</DropdownMenuSubTrigger>
+							<DropdownMenuSubContent>
+								{themeOptions.map((option) => (
+									<DropdownMenuItem
+										key={option.value}
+										className="gap-2"
+										onSelect={(e) => {
+											e.preventDefault()
+											const formData = new FormData()
+											formData.append('theme', option.value)
+											if (requestInfo?.path) {
+												formData.append('redirectTo', requestInfo.path)
+											}
+											themeFetcher.submit(formData, {
+												method: 'POST',
+												action: '/resources/theme-switch'
+											})
+										}}
+									>
+										<Icon
+											name={option.icon as any}
+											className="size-4"
+										/>
+										<span className={mode === option.value ? 'font-medium' : ''}>
+											{option.label}
+										</span>
+										{mode === option.value && (
+											<Icon name="check" className="ml-auto size-4" />
+										)}
+									</DropdownMenuItem>
+								))}
+							</DropdownMenuSubContent>
+						</DropdownMenuSub>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem
 							asChild

@@ -226,6 +226,7 @@ function Document({
 }) {
 	const allowIndexing = ENV.ALLOW_INDEXING !== 'false'
 	const { locale } = useLoaderData<typeof loader>()
+
 	return (
 		<html lang={locale ?? 'en'} className={`${theme} h-full overflow-x-hidden`}>
 			<head>
@@ -262,21 +263,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 	const isMarketingRoute = matches.some((match) =>
 		match.pathname?.startsWith?.('/app'),
 	)
-
-	if (isMarketingRoute) {
-		// For marketing routes, only render the MarketingDocument without the App component
-		const safeNonce = nonce || ''
-		return (
-			<MarketingDocument
-				locale={data?.locale}
-				nonce={safeNonce}
-				theme={theme}
-				env={data?.ENV || {}}
-			>
-				{children}
-			</MarketingDocument>
-		)
-	}
 
 	// For non-marketing routes, use the regular Document with App component
 	return (
