@@ -5,6 +5,14 @@ import { Button } from '#app/components/ui/button'
 import { Card, CardContent } from '#app/components/ui/card'
 import { Icon } from '#app/components/ui/icon'
 import { getUserImgSrc } from '#app/utils/misc'
+import {
+	Select,
+	SelectTrigger,
+	SelectValue,
+	SelectContent,
+	SelectItem,
+} from '#app/components/ui/select'
+import { useState } from 'react'
 
 interface OrganizationMember {
 	userId: string
@@ -18,6 +26,64 @@ interface OrganizationMember {
 			objectKey: string
 		} | null
 	}
+}
+
+function OrganizationMemberRoleEditor({
+	member,
+	currentUserId,
+	members,
+}: {
+	member: OrganizationMember
+	currentUserId: string
+	members: OrganizationMember[]
+}) {
+	const currentMember = members.find((m) => m.userId === currentUserId)
+	const isAdmin = currentMember?.role === 'admin' && currentMember.active
+	const isSelf = member.userId === currentUserId
+
+	if (!isAdmin || isSelf) {
+		return (
+			<Badge
+				variant={member.role === 'admin' ? 'default' : 'secondary'}
+				className="text-xs"
+			>
+				{member.role === 'admin' && (
+					<Icon name="settings" className="mr-1 h-3 w-3" />
+				)}
+				{member.role === 'member' && (
+					<Icon name="user" className="mr-1 h-3 w-3" />
+				)}
+				{member.role}
+			</Badge>
+		)
+	}
+
+	const [role, setRole] = useState(member.role)
+
+	return (
+		<Form method="POST" className="flex items-center gap-2">
+			<input type="hidden" name="intent" value="update-member-role" />
+			<input type="hidden" name="userId" value={member.userId} />
+			<input type="hidden" name="role" value={role} />
+			<Select
+				name="role"
+				defaultValue={member.role}
+				value={role}
+				onValueChange={setRole}
+			>
+				<SelectTrigger size="sm" className="w-28">
+					<SelectValue />
+				</SelectTrigger>
+				<SelectContent>
+					<SelectItem value="admin">Admin</SelectItem>
+					<SelectItem value="member">Member</SelectItem>
+				</SelectContent>
+			</Select>
+			<Button type="submit" variant="outline" size="sm">
+				Save
+			</Button>
+		</Form>
+	)
 }
 
 export function OrganizationMembers({
@@ -80,19 +146,11 @@ export function OrganizationMembers({
 								</div>
 
 								<div className="flex items-center gap-2">
-									<Badge
-										variant={member.role === 'admin' ? 'default' : 'secondary'}
-										className="text-xs"
-									>
-										{member.role === 'admin' && (
-											<Icon name="settings" className="mr-1 h-3 w-3" />
-										)}
-										{member.role === 'member' && (
-											<Icon name="user" className="mr-1 h-3 w-3" />
-										)}
-										{member.role}
-									</Badge>
-
+									<OrganizationMemberRoleEditor
+										member={member}
+										currentUserId={currentUserId}
+										members={members}
+									/>
 									{member.userId !== currentUserId && (
 										<Form method="POST">
 											<input
@@ -111,7 +169,7 @@ export function OrganizationMembers({
 												size="sm"
 												className="text-destructive hover:text-destructive"
 											>
-												<Icon name="trash" className="h-4 w-4" />
+												<Icon name="trash-2" className="h-4 w-4" />
 											</Button>
 										</Form>
 									)}
