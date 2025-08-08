@@ -1,0 +1,39 @@
+{
+  "../../../@crx/manifest": {
+    "file": "assets/chunk-nLORB6my.js",
+    "name": "crx-manifest.js",
+    "src": "../../../@crx/manifest",
+    "isEntry": true
+  },
+  "_chunk-D_23u5v3.js": {
+    "file": "assets/chunk-D_23u5v3.js",
+    "name": "index"
+  },
+  "index.html": {
+    "file": "assets/chunk-CWH0qrnG.js",
+    "name": "index.html",
+    "src": "index.html",
+    "isEntry": true,
+    "imports": [
+      "_chunk-D_23u5v3.js"
+    ],
+    "css": [
+      "assets/index-CdQtyQkv.css"
+    ]
+  },
+  "src/background/index.ts": {
+    "file": "assets/chunk-BmIEPEkh.js",
+    "name": "index.ts",
+    "src": "src/background/index.ts",
+    "isEntry": true,
+    "imports": [
+      "_chunk-D_23u5v3.js"
+    ]
+  },
+  "src/content/index.ts": {
+    "file": "assets/chunk-DFkXb1SM.js",
+    "name": "index.ts",
+    "src": "src/content/index.ts",
+    "isEntry": true
+  }
+}
