@@ -7,17 +7,17 @@ import {
 	useLoaderData,
 	useRouteLoaderData,
 } from 'react-router'
-import { PageTitle } from '#app/components/ui/page-title.tsx'
-import { requireUserId } from '#app/utils/auth.server'
-import { prisma } from '#app/utils/db.server'
-import { loader as rootLoader } from '#app/root.tsx'
+import { LeadershipCard } from '#app/components/leadership-card.tsx'
 import { NotesChart } from '#app/components/notes-chart'
 import { OnboardingChecklist } from '#app/components/onboarding-checklist'
+import { PageTitle } from '#app/components/ui/page-title.tsx'
+import { type loader as rootLoader } from '#app/root.tsx'
+import { requireUserId } from '#app/utils/auth.server'
+import { prisma } from '#app/utils/db.server'
 import {
 	getOnboardingProgress,
 	autoDetectCompletedSteps,
 } from '#app/utils/onboarding'
-import { LeadershipCard } from '#app/components/leadership-card.tsx'
 
 const novu = new Novu({
 	secretKey: process.env.NOVU_SECRET_KEY,

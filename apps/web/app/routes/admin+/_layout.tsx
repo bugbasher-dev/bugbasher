@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router'
-import { GeneralErrorBoundary } from '#app/components/error-boundary'
 import { AdminSidebar } from '#app/components/admin-sidebar'
+import { GeneralErrorBoundary } from '#app/components/error-boundary'
 import { SidebarInset, SidebarProvider } from '#app/components/ui/sidebar'
 import { requireUserWithRole } from '#app/utils/permissions.server.ts'
 

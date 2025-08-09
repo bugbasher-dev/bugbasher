@@ -7,23 +7,23 @@ import {
 	useLoaderData,
 	Form,
 } from 'react-router'
-import { Button } from '#app/components/ui/button'
-import { Input } from '#app/components/ui/input'
-import { PageTitle } from '#app/components/ui/page-title'
 import { Badge } from '#app/components/ui/badge'
+import { Button } from '#app/components/ui/button'
 import {
 	Card,
 	CardContent,
 	CardHeader,
 	CardTitle,
 } from '#app/components/ui/card'
+import { Icon } from '#app/components/ui/icon.tsx'
+import { Input } from '#app/components/ui/input'
+import { PageTitle } from '#app/components/ui/page-title'
 import { requireUserId } from '#app/utils/auth.server'
 import { prisma } from '#app/utils/db.server'
 import {
 	type UserOrganizationWithRole,
 	getUserOrganizations,
 } from '#app/utils/organizations.server'
-import { Icon } from '#app/components/ui/icon.tsx'
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)

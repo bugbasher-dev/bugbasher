@@ -7,8 +7,8 @@ import {
 	TableHeader,
 	TableRow,
 } from '#app/components/ui/table'
-import { requireUserWithRole } from '#app/utils/permissions.server'
 import { prisma } from '#app/utils/db.server'
+import { requireUserWithRole } from '#app/utils/permissions.server'
 
 export async function loader({ request }: { request: Request }) {
 	await requireUserWithRole(request, 'admin')

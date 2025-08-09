@@ -1,5 +1,5 @@
-import { cn } from '#app/utils/misc.tsx'
 import * as React from 'react'
+import { cn } from '#app/utils/misc.tsx'
 
 interface ShineBorderProps extends React.HTMLAttributes<HTMLDivElement> {
 	/**

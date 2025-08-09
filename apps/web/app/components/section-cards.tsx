@@ -1,5 +1,4 @@
 import { Badge } from '#app/components/ui/badge'
-import { Icon } from '#app/components/ui/icon.tsx'
 import {
 	Card,
 	CardAction,
@@ -8,6 +7,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '#app/components/ui/card'
+import { Icon } from '#app/components/ui/icon.tsx'
 
 export function SectionCards() {
 	return (

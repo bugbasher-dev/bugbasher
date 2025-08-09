@@ -1,7 +1,7 @@
 import { type Organization } from '@prisma/client'
+import { TrialEndingEmail } from '@repo/email'
 import { redirect } from 'react-router'
 import Stripe from 'stripe'
-import { TrialEndingEmail } from '@repo/email'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { sendEmail } from '#app/utils/email.server.ts'

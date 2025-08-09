@@ -2,8 +2,8 @@ import { type ReactNode } from 'react'
 import { AppSidebar } from '#app/components/app-sidebar'
 import { SiteHeader } from '#app/components/site-header'
 import { SidebarInset, SidebarProvider } from '#app/components/ui/sidebar'
-import { EpicProgress } from './progress-bar'
 import { type OnboardingProgressData } from '#app/utils/onboarding'
+import { EpicProgress } from './progress-bar'
 
 type MarketingLayoutProps = {
 	children: ReactNode

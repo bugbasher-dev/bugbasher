@@ -31,8 +31,8 @@ import { useIsPending } from '#app/utils/misc.tsx'
 import { EmailSchema } from '#app/utils/user-validation.ts'
 import { verifySessionStorage } from '#app/utils/verification.server'
 import { type Route } from './+types/signup.ts'
-import { prepareVerification } from './verify.server.ts'
 import { onboardingInviteTokenSessionKey } from './onboarding'
+import { prepareVerification } from './verify.server.ts'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,

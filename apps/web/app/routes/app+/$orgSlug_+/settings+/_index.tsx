@@ -9,6 +9,7 @@ import {
 } from 'react-router'
 import { z } from 'zod'
 
+import DangerZoneCard from '#app/components/settings/cards/organization/danger-zone-card'
 import { GeneralSettingsCard } from '#app/components/settings/cards/organization/general-settings-card'
 import {
 	uploadOrgPhotoActionIntent,
@@ -20,16 +21,15 @@ import TeamSizeCard, {
 import VerifiedDomainCard, {
 	VerifiedDomainSchema,
 } from '#app/components/settings/cards/organization/verified-domain-card'
-import DangerZoneCard from '#app/components/settings/cards/organization/danger-zone-card'
 import {
 	AnnotatedLayout,
 	AnnotatedSection,
 } from '#app/components/ui/annotated-layout'
 import { requireUserId } from '#app/utils/auth.server'
 import { prisma } from '#app/utils/db.server'
+import { markStepCompleted } from '#app/utils/onboarding'
 import { uploadOrganizationImage } from '#app/utils/storage.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server'
-import { markStepCompleted } from '#app/utils/onboarding'
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)

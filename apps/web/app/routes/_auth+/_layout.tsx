@@ -1,5 +1,5 @@
-import { EpicToaster } from '#app/components/ui/sonner.tsx'
 import { Outlet } from 'react-router'
+import { EpicToaster } from '#app/components/ui/sonner.tsx'
 import { useTheme } from '../resources+/theme-switch'
 
 export default function AuthLayout() {

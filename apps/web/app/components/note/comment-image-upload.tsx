@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
+import { cn } from '#app/utils/misc'
 import { Button } from '../ui/button'
 import { Icon } from '../ui/icon'
-import { cn } from '#app/utils/misc'
 
 interface CommentImageUploadProps {
 	onImagesSelected: (files: File[]) => void

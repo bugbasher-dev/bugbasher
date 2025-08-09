@@ -1,6 +1,5 @@
 import { Outlet, useLoaderData } from 'react-router'
 import { MarketingLayout } from '#app/components/marketing-layout'
-import { getSidebarState } from '#app/utils/sidebar-cookie.server'
 import { requireUserId } from '#app/utils/auth.server'
 import {
 	getOnboardingProgress,
@@ -8,6 +7,7 @@ import {
 	type OnboardingProgressData,
 } from '#app/utils/onboarding'
 import { getUserDefaultOrganization } from '#app/utils/organizations.server'
+import { getSidebarState } from '#app/utils/sidebar-cookie.server'
 
 export async function loader({ request }: { request: Request }) {
 	const isCollapsed = await getSidebarState(request)

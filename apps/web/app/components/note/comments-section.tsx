@@ -1,7 +1,7 @@
-import { Form, useRevalidator } from 'react-router'
 import { useState } from 'react'
-import { Icon } from '../ui/icon'
+import { Form, useRevalidator } from 'react-router'
 import { Button } from '../ui/button'
+import { Icon } from '../ui/icon'
 import CommentInput, { type MentionUser } from './comment-input'
 import { CommentItem } from './comment-item'
 

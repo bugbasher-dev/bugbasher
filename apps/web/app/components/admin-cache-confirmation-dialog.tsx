@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Badge } from '#app/components/ui/badge'
-import { Icon } from '#app/components/ui/icon.tsx'
 import { Button } from '#app/components/ui/button'
 import {
 	Dialog,
@@ -10,6 +9,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '#app/components/ui/dialog'
+import { Icon } from '#app/components/ui/icon.tsx'
 
 interface CacheConfirmationDialogProps {
 	isOpen: boolean

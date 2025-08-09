@@ -1,10 +1,10 @@
+import { useState } from 'react'
 import { Form } from 'react-router'
 import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
 import { Badge } from '#app/components/ui/badge'
 import { Button } from '#app/components/ui/button'
 import { Card, CardContent } from '#app/components/ui/card'
 import { Icon } from '#app/components/ui/icon'
-import { getUserImgSrc } from '#app/utils/misc'
 import {
 	Select,
 	SelectTrigger,
@@ -12,7 +12,7 @@ import {
 	SelectContent,
 	SelectItem,
 } from '#app/components/ui/select'
-import { useState } from 'react'
+import { getUserImgSrc } from '#app/utils/misc'
 
 interface OrganizationMember {
 	userId: string

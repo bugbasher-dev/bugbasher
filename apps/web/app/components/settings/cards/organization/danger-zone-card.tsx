@@ -8,6 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '#app/components/ui/card'
+import { Checkbox } from '#app/components/ui/checkbox'
 import {
 	Dialog,
 	DialogContent,
@@ -19,7 +20,6 @@ import {
 } from '#app/components/ui/dialog'
 import { Input } from '#app/components/ui/input'
 import { Label } from '#app/components/ui/label'
-import { Checkbox } from '#app/components/ui/checkbox'
 
 export default function DangerZoneCard({
 	organization,

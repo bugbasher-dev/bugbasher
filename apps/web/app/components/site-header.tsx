@@ -3,9 +3,9 @@ import { Button } from '#app/components/ui/button'
 import { Separator } from '#app/components/ui/separator'
 import { SidebarTrigger } from '#app/components/ui/sidebar'
 import { useGlobalHotkeys } from '#app/hooks/use-hotkeys'
+import { CommandMenu } from './command-menu'
 import { Icon } from './ui/icon'
 import NotificationBell from './ui/notification-bell'
-import { CommandMenu } from './command-menu'
 
 export function SiteHeader() {
 	const [commandOpen, setCommandOpen] = useState(false)

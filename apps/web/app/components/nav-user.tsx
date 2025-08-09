@@ -19,13 +19,13 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from '#app/components/ui/sidebar'
-import { UserIcon } from './icons/user-icon'
-import { LogoutIcon } from './icons/logout-icon'
-import { BuildingIcon } from './icons/building-icon'
-import { SettingsGearIcon } from './icons/settings-gear-icon'
 import { useOptimisticThemeMode } from '#app/routes/resources+/theme-switch'
 import { useOptionalRequestInfo } from '#app/utils/request-info'
+import { BuildingIcon } from './icons/building-icon'
+import { LogoutIcon } from './icons/logout-icon'
+import { SettingsGearIcon } from './icons/settings-gear-icon'
 import { SunMoonIcon } from './icons/sun-moon-icon'
+import { UserIcon } from './icons/user-icon'
 
 export function NavUser({
 	user,

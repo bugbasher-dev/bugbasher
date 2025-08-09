@@ -9,8 +9,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from '#app/components/ui/card.tsx'
-import { type getPlansAndPrices } from '#app/utils/payments.server.ts'
 import { Icon } from '#app/components/ui/icon.tsx'
+import { type getPlansAndPrices } from '#app/utils/payments.server.ts'
 
 const PLANS = {
 	Base: {

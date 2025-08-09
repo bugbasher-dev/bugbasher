@@ -1,28 +1,26 @@
 import { parseWithZod } from '@conform-to/zod'
 import { parseFormData } from '@mjackson/form-data-parser'
 import { createId as cuid } from '@paralleldrive/cuid2'
+import {
+	triggerVideoProcessing,
+	triggerImageProcessing,
+} from '@repo/background-jobs'
 import { noteHooks } from '@repo/integrations'
 import { data, redirect, type ActionFunctionArgs } from 'react-router'
 import { z } from 'zod'
+import { logNoteActivity } from '#app/utils/activity-log.server.ts'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
-import { uploadNoteImage } from '#app/utils/storage.server.ts'
-import { logNoteActivity } from '#app/utils/activity-log.server.ts'
 import { markStepCompleted } from '#app/utils/onboarding.ts'
+import { uploadNoteImage,
+	uploadNoteVideo,
+	getSignedGetRequestInfo } from '#app/utils/storage.server.ts'
 import {
 	MAX_UPLOAD_SIZE,
 	OrgNoteEditorSchema,
 	type ImageFieldset,
 	type MediaFieldset,
 } from './__org-note-editor'
-import {
-	triggerVideoProcessing,
-	triggerImageProcessing,
-} from '@repo/background-jobs'
-import {
-	uploadNoteVideo,
-	getSignedGetRequestInfo,
-} from '#app/utils/storage.server.ts'
 
 function imageHasFile(
 	image: ImageFieldset,

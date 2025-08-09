@@ -1,11 +1,11 @@
 import { formatDistanceToNow } from 'date-fns'
-import { useState } from 'react'
 import { Img } from 'openimg/react'
+import { useState } from 'react'
+import { getNoteImgSrc, getUserImgSrc } from '#app/utils/misc'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
 import { Icon } from '../ui/icon'
-import { getNoteImgSrc, getUserImgSrc } from '#app/utils/misc'
 import CommentInput, { type MentionUser } from './comment-input'
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 interface CommentUser {
 	id: string

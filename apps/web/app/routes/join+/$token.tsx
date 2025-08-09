@@ -1,4 +1,5 @@
 import { type LoaderFunctionArgs, redirect } from 'react-router'
+import { onboardingInviteTokenSessionKey } from '#app/routes/_auth+/onboarding'
 import { requireUserId } from '#app/utils/auth.server'
 import { prisma } from '#app/utils/db.server'
 import {
@@ -7,7 +8,6 @@ import {
 } from '#app/utils/organization-invitation.server'
 import { redirectWithToast } from '#app/utils/toast.server'
 import { verifySessionStorage } from '#app/utils/verification.server'
-import { onboardingInviteTokenSessionKey } from '#app/routes/_auth+/onboarding'
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
 	const token = params.token

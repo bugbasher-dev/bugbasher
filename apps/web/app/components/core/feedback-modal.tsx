@@ -8,8 +8,8 @@ import {
 	DialogTitle,
 	DialogDescription,
 } from '#app/components/ui/dialog.tsx'
-import { Textarea } from '#app/components/ui/textarea.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
+import { Textarea } from '#app/components/ui/textarea.tsx'
 
 type FeedbackModalProps = {
 	isOpen: boolean

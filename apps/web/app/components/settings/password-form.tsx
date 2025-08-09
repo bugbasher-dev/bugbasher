@@ -6,13 +6,13 @@ import { ErrorList, Field } from '#app/components/forms.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import {
-	PasswordSchema,
-	PasswordAndConfirmPasswordSchema,
-} from '#app/utils/user-validation.ts'
-import {
 	changePasswordActionIntent,
 	setPasswordActionIntent,
 } from '#app/routes/app+/security.tsx'
+import {
+	PasswordSchema,
+	PasswordAndConfirmPasswordSchema,
+} from '#app/utils/user-validation.ts'
 
 export const ChangePasswordSchema = z
 	.object({

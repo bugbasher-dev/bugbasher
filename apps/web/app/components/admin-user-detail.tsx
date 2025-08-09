@@ -1,4 +1,3 @@
-import { Icon } from '#app/components/ui/icon.tsx'
 import { useState } from 'react'
 import { useNavigate, useSubmit } from 'react-router'
 
@@ -13,6 +12,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '#app/components/ui/card'
+import { Icon } from '#app/components/ui/icon.tsx'
 import { Separator } from '#app/components/ui/separator'
 import {
 	Tabs,

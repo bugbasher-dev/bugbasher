@@ -6,8 +6,8 @@ import { Avatar, AvatarFallback } from '#app/components/ui/avatar.tsx'
 import { Badge } from '#app/components/ui/badge.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { Card, CardContent } from '#app/components/ui/card.tsx'
-import { getNoteImgSrc } from '#app/utils/misc.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
+import { getNoteImgSrc } from '#app/utils/misc.tsx'
 
 export type Note = {
 	id: string

@@ -1,8 +1,7 @@
 import { computePosition } from '@floating-ui/dom'
-import { ReactRenderer } from '@tiptap/react'
-import type { Editor } from '@tiptap/react'
-import type { EmojiItem } from '@tiptap/extension-emoji'
-import type { SuggestionOptions } from '@tiptap/suggestion'
+import  { type EmojiItem } from '@tiptap/extension-emoji'
+import { ReactRenderer, type Editor  } from '@tiptap/react'
+import  { type SuggestionOptions } from '@tiptap/suggestion'
 
 import { EmojiList } from './emoji-list'
 

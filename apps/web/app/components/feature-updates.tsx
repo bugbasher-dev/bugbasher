@@ -1,7 +1,6 @@
-import { useState } from 'react'
-import { useEffect } from 'react'
-import { X, Play } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { X, Play } from 'lucide-react'
+import { useState, useEffect  } from 'react'
 import { cn } from '#app/utils/misc'
 
 interface FeatureUpdate {

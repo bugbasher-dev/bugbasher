@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useFetcher } from 'react-router'
+import { Avatar, AvatarFallback } from '#app/components/ui/avatar.tsx'
+import { Badge } from '#app/components/ui/badge.tsx'
 import { Button } from '#app/components/ui/button.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
 import {
 	Dialog,
 	DialogContent,
@@ -10,13 +11,12 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '#app/components/ui/dialog.tsx'
-import { Switch } from '#app/components/ui/switch.tsx'
-import { Label } from '#app/components/ui/label.tsx'
-import { Badge } from '#app/components/ui/badge.tsx'
-import { Avatar, AvatarFallback } from '#app/components/ui/avatar.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+import { Icon } from '#app/components/ui/icon.tsx'
 import { Input } from '#app/components/ui/input.tsx'
+import { Label } from '#app/components/ui/label.tsx'
 import { Separator } from '#app/components/ui/separator.tsx'
+import { StatusButton } from '#app/components/ui/status-button.tsx'
+import { Switch } from '#app/components/ui/switch.tsx'
 
 type ShareNoteButtonProps = {
 	noteId: string

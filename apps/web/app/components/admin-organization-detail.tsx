@@ -1,4 +1,3 @@
-import { Icon } from '#app/components/ui/icon.tsx'
 
 import { formatDistanceToNow } from 'date-fns'
 import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
@@ -11,6 +10,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '#app/components/ui/card'
+import { Icon } from '#app/components/ui/icon.tsx'
 import {
 	Table,
 	TableBody,

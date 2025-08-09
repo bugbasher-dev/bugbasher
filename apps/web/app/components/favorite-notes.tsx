@@ -1,6 +1,5 @@
 import { useRef } from 'react'
 import { Form, Link } from 'react-router'
-import { Icon } from '#app/components/ui/icon'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -8,6 +7,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '#app/components/ui/dropdown-menu'
+import { Icon } from '#app/components/ui/icon'
 import {
 	SidebarGroup,
 	SidebarGroupLabel,

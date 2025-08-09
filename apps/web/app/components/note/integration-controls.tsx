@@ -1,10 +1,8 @@
-import { useFetcher, useLoaderData } from 'react-router'
 import { useState } from 'react'
 import * as React from 'react'
-import { Button } from '#app/components/ui/button'
-import { Icon } from '#app/components/ui/icon'
+import { useFetcher, useLoaderData } from 'react-router'
 import { Badge } from '#app/components/ui/badge'
-import { StatusButton } from '#app/components/ui/status-button'
+import { Button } from '#app/components/ui/button'
 import {
 	Dialog,
 	DialogContent,
@@ -13,6 +11,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '#app/components/ui/dialog'
+import { Icon } from '#app/components/ui/icon'
 import {
 	Select,
 	SelectContent,
@@ -20,6 +19,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '#app/components/ui/select'
+import { StatusButton } from '#app/components/ui/status-button'
 import { cn } from '#app/utils/misc'
 
 export const connectNoteActionIntent = 'connect-note-to-channel'

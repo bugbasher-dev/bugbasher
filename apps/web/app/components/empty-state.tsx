@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Link } from 'react-router'
 import { Button } from '#app/components/ui/button'
 import { cn } from '#app/utils/misc.tsx'
-import { Icon, IconName } from './ui/icon'
+import { Icon, type IconName } from './ui/icon'
 
 interface EmptyStateProps {
 	title: string

@@ -1,8 +1,8 @@
-import { useLoaderData } from 'react-router'
 import { invariantResponse } from '@epic-web/invariant'
-import { requireUserWithRole } from '#app/utils/permissions.server.ts'
-import { prisma } from '#app/utils/db.server.ts'
+import { useLoaderData } from 'react-router'
 import { UserDetailView } from '#app/components/admin-user-detail'
+import { prisma } from '#app/utils/db.server.ts'
+import { requireUserWithRole } from '#app/utils/permissions.server.ts'
 
 export async function loader({
 	request,

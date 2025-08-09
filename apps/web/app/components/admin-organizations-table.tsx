@@ -1,4 +1,3 @@
-import { Icon } from '#app/components/ui/icon.tsx'
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
@@ -23,6 +22,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from '#app/components/ui/dropdown-menu'
+import { Icon } from '#app/components/ui/icon.tsx'
 import { Input } from '#app/components/ui/input'
 import { Label } from '#app/components/ui/label'
 import {

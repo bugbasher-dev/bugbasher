@@ -6,8 +6,8 @@ import {
 	FormProvider,
 } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
-import { useState, useEffect } from 'react'
 import slugify from '@sindresorhus/slugify'
+import { useState, useEffect } from 'react'
 import {
 	redirect,
 	type ActionFunctionArgs,
@@ -17,28 +17,8 @@ import {
 } from 'react-router'
 import { z } from 'zod'
 import { ErrorList } from '#app/components/forms'
-import { Button } from '#app/components/ui/button'
-import { Input } from '#app/components/ui/input'
-import { Label } from '#app/components/ui/label'
-import { PageTitle } from '#app/components/ui/page-title'
-import { Textarea } from '#app/components/ui/textarea'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '#app/components/ui/select'
 import { OrganizationInvitations } from '#app/components/organization-invitations'
-
-import { requireUserId } from '#app/utils/auth.server'
-import { createOrganization } from '#app/utils/organizations.server'
-import { uploadOrganizationImage } from '#app/utils/storage.server'
-import {
-	createOrganizationInvitation,
-	sendOrganizationInvitationEmail,
-} from '#app/utils/organization-invitation.server'
-import { prisma } from '#app/utils/db.server'
+import { Button } from '#app/components/ui/button'
 import {
 	Card,
 	CardContent,
@@ -47,6 +27,26 @@ import {
 	CardTitle,
 } from '#app/components/ui/card.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
+import { Input } from '#app/components/ui/input'
+import { Label } from '#app/components/ui/label'
+import { PageTitle } from '#app/components/ui/page-title'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '#app/components/ui/select'
+import { Textarea } from '#app/components/ui/textarea'
+
+import { requireUserId } from '#app/utils/auth.server'
+import { prisma } from '#app/utils/db.server'
+import {
+	createOrganizationInvitation,
+	sendOrganizationInvitationEmail,
+} from '#app/utils/organization-invitation.server'
+import { createOrganization } from '#app/utils/organizations.server'
+import { uploadOrganizationImage } from '#app/utils/storage.server'
 
 // Photo upload schema
 const MAX_SIZE = 1024 * 1024 * 5 // 5MB

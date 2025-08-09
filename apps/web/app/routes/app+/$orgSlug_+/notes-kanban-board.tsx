@@ -1,5 +1,3 @@
-import { useState } from 'react'
-import { createPortal } from 'react-dom'
 import {
   DndContext,
   KeyboardSensor,
@@ -14,18 +12,20 @@ import {
   type DragStartEvent,
   type DragEndEvent,
   type DragOverEvent,
-  Announcements,
+  type Announcements,
 } from '@dnd-kit/core'
 import {
   SortableContext,
   verticalListSortingStrategy,
   useSortable,
 } from '@dnd-kit/sortable'
-import { useFetcher, useFetchers } from 'react-router'
 import { CSS } from '@dnd-kit/utilities'
+import { useState } from 'react'
+import { createPortal } from 'react-dom'
+import { useFetcher, useFetchers } from 'react-router'
 import { Button } from '#app/components/ui/button.tsx'
-import { Input } from '#app/components/ui/input.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
+import { Input } from '#app/components/ui/input.tsx'
 import { NoteCard } from './notes-cards.tsx'
 
 type Note = LoaderNote & {

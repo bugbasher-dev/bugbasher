@@ -1,6 +1,6 @@
+import hotkeys from 'hotkeys-js'
 import { useEffect } from 'react'
 import { useNavigate, useRouteLoaderData } from 'react-router'
-import hotkeys from 'hotkeys-js'
 import { type loader as rootLoader } from '#app/root.tsx'
 
 interface HotkeyConfig {

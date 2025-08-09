@@ -1,7 +1,7 @@
+import { motion } from 'motion/react'
 import * as React from 'react'
 
 import { useLocation, useRouteLoaderData, Link } from 'react-router'
-import { motion } from 'motion/react'
 import { FoldersIcon } from '#app/components/icons/folders-icon'
 import { HomeIcon } from '#app/components/icons/home-icon'
 import { LockOpenIcon } from '#app/components/icons/lock-open-icon.tsx'
@@ -11,31 +11,31 @@ import { NavMain } from '#app/components/nav-main'
 import { NavUser } from '#app/components/nav-user'
 import { OnboardingChecklist } from '#app/components/onboarding-checklist'
 import { TeamSwitcher } from '#app/components/team-switcher'
-import {
-	Sidebar,
-	SidebarContent,
-	SidebarFooter,
-	SidebarHeader,
-} from '#app/components/ui/sidebar'
+import { Button } from '#app/components/ui/button'
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 } from '#app/components/ui/card'
-import { Button } from '#app/components/ui/button'
+import {
+	Sidebar,
+	SidebarContent,
+	SidebarFooter,
+	SidebarHeader,
+} from '#app/components/ui/sidebar'
 import { type loader as rootLoader } from '#app/root.tsx'
 import { type OnboardingProgressData } from '#app/utils/onboarding'
-import { CircleHelpIcon } from './icons/circle-help'
-import { MessageSquareMoreIcon } from './icons/message-square-more'
-import { NavSecondary } from './nav-secondary'
-import { UserRoundPlusIcon } from './icons/user-round-plus'
-import { Logo } from './icons/logo'
+import FeedbackModal from './core/feedback-modal'
 import FavoriteNotes from './favorite-notes'
 import { FeatureUpdates } from './feature-updates'
 import { ArrowLeftIcon } from './icons/arrow-left-icon'
 import { BuildingIcon } from './icons/building-icon'
-import FeedbackModal from './core/feedback-modal'
+import { CircleHelpIcon } from './icons/circle-help'
+import { Logo } from './icons/logo'
+import { MessageSquareMoreIcon } from './icons/message-square-more'
+import { UserRoundPlusIcon } from './icons/user-round-plus'
+import { NavSecondary } from './nav-secondary'
 
 // Upgrade Account Card Component
 function UpgradeAccountCard({

@@ -15,8 +15,8 @@ import {
 	DropdownMenu,
 	DropdownMenuTrigger,
 } from '#app/components/ui/dropdown-menu.js'
-import { cn, getUserImgSrc } from '#app/utils/misc.js'
 import { Icon } from '#app/components/ui/icon.tsx'
+import { cn, getUserImgSrc } from '#app/utils/misc.js'
 
 const AccountSettingsPage = () => {
 	const location = useLocation()

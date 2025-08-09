@@ -1,15 +1,15 @@
+import { Emoji, gitHubEmojis } from '@tiptap/extension-emoji'
 import Mention from '@tiptap/extension-mention'
 import { useEditor, EditorContent, type Editor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { Emoji, gitHubEmojis } from '@tiptap/extension-emoji'
 import React, { useEffect, useState } from 'react'
 import { cn } from '#app/utils/misc.js'
 import { Button } from '../ui/button'
-import getSuggestions from './suggestions'
-import { default as getEmojiSuggestion } from './emoji-suggestions'
-import { CommentImageUpload } from './comment-image-upload'
 import { CommentImagePreview } from './comment-image-preview'
+import { CommentImageUpload } from './comment-image-upload'
 import { EmojiPickerButton } from './emoji-picker-button'
+import { default as getEmojiSuggestion } from './emoji-suggestions'
+import getSuggestions from './suggestions'
 
 export interface MentionUser {
 	id: string

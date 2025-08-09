@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
+import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
 import { Button } from '#app/components/ui/button'
-import { Input } from '#app/components/ui/input'
-import { Label } from '#app/components/ui/label'
 import {
 	Card,
 	CardContent,
@@ -9,8 +9,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from '#app/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
-import { toast } from 'sonner'
+import { Input } from '#app/components/ui/input'
+import { Label } from '#app/components/ui/label'
 
 // Jira user interface
 interface JiraUser {

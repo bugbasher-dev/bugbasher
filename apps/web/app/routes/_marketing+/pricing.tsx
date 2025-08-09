@@ -6,12 +6,12 @@ import {
 	useLoaderData,
 } from 'react-router'
 import { Button } from '#app/components/ui/button.tsx'
+import { Icon } from '#app/components/ui/icon.tsx'
 import { prisma } from '#app/utils/db.server.ts'
 import {
 	createCheckoutSession,
 	getPlansAndPrices,
 } from '#app/utils/payments.server.ts'
-import { Icon } from '#app/components/ui/icon.tsx'
 
 export async function loader() {
 	const isClosedBeta = process.env.LAUNCH_STATUS === 'CLOSED_BETA'

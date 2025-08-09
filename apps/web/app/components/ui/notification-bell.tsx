@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import { type Notification } from '@novu/js'
 import { useNotifications, useNovu } from '@novu/react/hooks'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
-import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar'
-import { Button } from '../ui/button'
-import { ScrollArea } from '../ui/scroll-area'
-import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover'
-import { Badge } from '../ui/badge'
-import { Notification } from '@novu/js'
-import Markdown from 'react-markdown'
 import { motion, AnimatePresence } from 'framer-motion'
-
+import React, { useEffect, useState } from 'react'
+import Markdown from 'react-markdown'
+import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
+import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover'
+import { ScrollArea } from '../ui/scroll-area'
+
 
 import {
 	Tooltip,
