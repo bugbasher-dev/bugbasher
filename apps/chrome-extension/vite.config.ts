@@ -25,17 +25,12 @@ const baseManifest: ManifestV3Export = {
   ]
 }
 
-const devManifest: Partial<ManifestV3Export> = {
-  host_permissions: ['http://localhost:5173/*'],
-}
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const isDev = mode === 'development'
 
   const finalManifest = {
     ...baseManifest,
-    ...(isDev ? devManifest : {}),
   }
 
   return {
