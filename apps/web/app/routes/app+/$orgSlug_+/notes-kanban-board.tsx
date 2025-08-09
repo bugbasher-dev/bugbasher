@@ -546,7 +546,7 @@ function NewColumnButton({ orgSlug }: { orgSlug: string }) {
   const [editing, setEditing] = useState(false)
 
   return (
-    <div className="flex flex-col justify-start min-w-[260px]">
+    <div className="flex flex-col justify-start min-w-[270px]">
       {editing ? (
         <fetcher.Form
           method="post"
@@ -555,8 +555,8 @@ function NewColumnButton({ orgSlug }: { orgSlug: string }) {
           className="mt-2 flex gap-2"
         >
           <input type="hidden" name="intent" value="create-status" />
-          <Input autoFocus name="name" placeholder="Column name" maxLength={24} onBlur={() => setEditing(false)} />
-          <Button type="submit" variant="default" size="sm">
+          <Input autoFocus name="name" placeholder="Column name (Enter to create)" maxLength={24} onBlur={() => setEditing(false)} />
+          <Button className="hidden" type="submit" variant="default" size="sm">
             Save
           </Button>
         </fetcher.Form>

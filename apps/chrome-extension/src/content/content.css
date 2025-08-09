@@ -92,6 +92,7 @@
 
 /* Also define on the container div for better compatibility */
 .shadow-root-container {
+	background-color: transparent;
 	/* Custom theme variables */
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.145 0 0);
