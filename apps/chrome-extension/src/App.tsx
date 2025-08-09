@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import contentScript from './content/index.tsx?script'
 import { Button } from './components/ui/button'
 import {
   Card,
@@ -9,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from './components/ui/card'
+import contentScript from './content/index.tsx?script'
 
 function App() {
   const [url, setUrl] = useState('')
@@ -33,6 +33,7 @@ function App() {
             setUrl('This page is not supported.')
           }
         } catch (error) {
+          console.error(error)
           setUrl('Invalid URL.')
         }
       }

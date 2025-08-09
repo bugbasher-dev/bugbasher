@@ -142,6 +142,7 @@ function createShadowWidget() {
       hostElement.style.transform = 'translateY(0)'
     }, 100)    
   } catch (error) {
+    console.error('Failed to create shadow DOM manually:', error)
   }
 }
 
@@ -206,6 +207,7 @@ function initializeWidget() {
       }, 100)
     }    
   } catch (error) {
+    console.error('Failed to initialize widget:', error)
     createShadowWidget()
   }
 }

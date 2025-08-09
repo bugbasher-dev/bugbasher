@@ -1,6 +1,6 @@
 import contentScript from '../content/index.tsx?script'
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {  
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {  
   if (changeInfo.status === 'complete') {
     chrome.tabs.get(tabId, (fullTab) => {
       if (chrome.runtime.lastError) {
@@ -17,7 +17,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         chrome.storage.local.get([domain], (result) => {          
           if (result[domain]) {
             const scriptPath = contentScript.startsWith('/') ? contentScript.slice(1) : contentScript
-            chrome.scripting.executeScript({
+            void chrome.scripting.executeScript({
               target: { tabId: tabId },
               files: [scriptPath],
             })
@@ -25,6 +25,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
           }
         })
       } catch (error) {
+        console.error('Error parsing URL:', error)
       }
     })
   }
