@@ -142,6 +142,51 @@ app.use(
 	}),
 )
 
+// IP tracking and blacklist middleware
+app.use(async (req, res, next) => {
+	try {
+		// Check if IP is blacklisted first
+		const ipTracking = await import('../app/utils/ip-tracking.server.js')
+		const ip = req.get('fly-client-ip') || req.ip || '127.0.0.1'
+		
+		const isBlacklisted = await ipTracking.isIpBlacklisted(ip)
+		if (isBlacklisted) {
+			return res.status(403).json({ 
+				error: 'Access denied', 
+				message: 'Your IP address has been blocked due to suspicious activity.',
+				code: 'IP_BLACKLISTED'
+			})
+		}
+	} catch (error) {
+		// If there's an error checking blacklist, log it but don't block the request
+		console.error('Error checking IP blacklist:', error)
+	}
+	
+	// Track the request after the response is finished
+	res.on('finish', () => {
+		// Track the request asynchronously
+		setImmediate(async () => {
+			try {
+				const ipTracking = await import('../app/utils/ip-tracking.server.js')
+				const ip = req.get('fly-client-ip') || req.ip || '127.0.0.1'
+				await ipTracking.trackIpRequest({
+					ip,
+					method: req.method,
+					path: req.path,
+					userAgent: req.get('user-agent'),
+					referer: req.get('referer'),
+					statusCode: res.statusCode,
+				})
+			} catch (error) {
+				// Silently fail to not break the app
+				console.error('IP tracking error:', error)
+			}
+		})
+	})
+	
+	next()
+})
+
 // When running tests or running in development, we want to effectively disable
 // rate limiting because playwright tests are very fast and we don't want to
 // have to wait for the rate limit to reset between tests.
