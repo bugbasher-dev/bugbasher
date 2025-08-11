@@ -2,7 +2,7 @@ import { promises as fs, constants } from 'node:fs'
 import { invariantResponse } from '@epic-web/invariant'
 import { getImgResponse } from 'openimg/node'
 import { getDomainUrl } from '#app/utils/misc.tsx'
-import { getSignedGetRequestInfo } from '#app/utils/storage.server.ts'
+import { getSignedGetRequestInfoAsync } from '#app/utils/storage.server.ts'
 import { type Route } from './+types/images'
 
 let cacheDir: string | null = null
@@ -33,6 +33,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 	headers.set('Cache-Control', 'public, max-age=31536000, immutable')
 
 	const objectKey = searchParams.get('objectKey')
+	const organizationId = searchParams.get('organizationId')
 
 	return getImgResponse(request, {
 		headers,
@@ -41,10 +42,10 @@ export async function loader({ request }: Route.LoaderArgs) {
 			process.env.AWS_ENDPOINT_URL_S3,
 		].filter(Boolean),
 		cacheFolder: await getCacheDir(),
-		getImgSource: () => {
+		getImgSource: async () => {
 			if (objectKey) {
 				const { url: signedUrl, headers: signedHeaders } =
-					getSignedGetRequestInfo(objectKey)
+					await getSignedGetRequestInfoAsync(objectKey, organizationId!)
 				return {
 					type: 'fetch',
 					url: signedUrl,
