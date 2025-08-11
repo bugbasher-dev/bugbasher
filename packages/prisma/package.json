@@ -6,7 +6,7 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "scripts": {
-    "db:generate": "prisma generate",
+    "db:generate": "prisma generate --sql",
     "db:push": "prisma db push --skip-generate",
     "db:seed": "tsx seed.ts",
     "db:migrate:dev": "prisma migrate dev",
@@ -15,11 +15,11 @@
   },
   "dependencies": {
     "@epic-web/remember": "^1.1.0",
-    "@prisma/client": "^6.7.0"
+    "@prisma/client": "^6.8.2"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.7.0",
-    "prisma": "^6.7.0",
+    "prisma": "^6.8.2",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }
