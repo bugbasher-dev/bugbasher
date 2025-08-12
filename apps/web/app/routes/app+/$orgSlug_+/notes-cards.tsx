@@ -76,8 +76,9 @@ export const NoteCard = ({ note, organizationId, isEditing = false, setEditingNo
 	const fetcher = useFetcher()
 	const loaderData = useRouteLoaderData<typeof loader>('routes/app+/$orgSlug_+/notes')
 	const titleInputRef = useRef<HTMLInputElement>(null)
+	const isKanbanView = loaderData?.viewMode === 'kanban'
 
-	const timeAgo = formatDistanceToNow(new Date(note.updatedAt), {
+	const timeAgo = formatDistanceToNow(new Date(note.createdAt), {
 		addSuffix: true,
 	})
 
@@ -227,18 +228,16 @@ export const NoteCard = ({ note, organizationId, isEditing = false, setEditingNo
 					)}
 
 					{/* Status and Priority indicators - Top Left */}
-					<div className="absolute top-2 left-2 flex items-center gap-1">
+					{!isKanbanView && <div className="absolute top-2 left-2 flex items-center gap-1">
 						{/* Status indicator */}
 						{note.status && (
-							<div className="flex items-center gap-1.5 px-2 py-1 bg-white/95 backdrop-blur-sm rounded-full shadow-sm border border-white/20">
+							<div className="flex items-center gap-1.5 px-2 py-1 bg-muted backdrop-blur-sm rounded-full shadow-sm border border-white/20">
 								{(() => {
-									const statusName = typeof note.status === 'string' ? note.status : (note.status as { name: string })?.name
-									if (statusName === 'blocked') return <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
-									if (statusName === 'in-progress') return <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-									if (statusName === 'completed') return <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-									return <div className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+									const status = typeof note.status === 'string' ? { name: note.status, color: '#6b7280' } : note.status as { name: string; color?: string }
+									const color = status.color || '#6b7280'
+									return <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
 								})()}
-								<span className="text-gray-700 text-xs font-medium">
+								<span className="text-muted-foreground text-xs font-medium">
 									{(() => {
 										const statusName = typeof note.status === 'string' ? note.status : (note.status as { name: string })?.name
 										return statusName ? statusName.replace('-', ' ') : ''
@@ -246,9 +245,7 @@ export const NoteCard = ({ note, organizationId, isEditing = false, setEditingNo
 								</span>
 							</div>
 						)}
-
-
-					</div>
+					</div>}
 
 					{/* Floating action buttons - only show on hover */}
 					<div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300 flex gap-1">

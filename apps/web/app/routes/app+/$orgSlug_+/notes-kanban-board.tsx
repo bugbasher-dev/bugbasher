@@ -20,10 +20,11 @@ import {
   useSortable,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useFetcher, useFetchers } from 'react-router'
 import { Button } from '#app/components/ui/button.tsx'
+import { ColorPicker } from '#app/components/ui/color-picker.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { Input } from '#app/components/ui/input.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
@@ -53,8 +54,8 @@ type LoaderNote = {
   }>
 }
 
-type Status = { id: string; name: string; position: number | null }
-type Column = { id: string; name: string }
+type Status = { id: string; name: string; color?: string; position: number | null }
+type Column = { id: string; name: string; color?: string }
 
 const UNCATEGORISED = '__uncategorised'
 const SEPARATOR = ':::'
@@ -145,6 +146,7 @@ export function NotesKanbanBoard({
       .map(s => ({
         id: s.id,
         name: renameMap[s.id] ?? s.name,
+        color: s.color,
       })),
     ...pendingCreatesStatus,
   ]
@@ -397,28 +399,20 @@ function KanbanColumn({
       {/* header ------------------------------------------------------- */}
       <div className="font-semibold mb-1 flex items-center gap-2 group w-full">
         {editing ? (
-          <renameFetcher.Form
-            className="w-full"
-            method="patch"
-            action={`/app/${orgSlug}/notes/status/${column.id}`}
-            onSubmit={() => setEditing(false)}
-            onBlur={e => {
-              if (!e.currentTarget.contains(e.relatedTarget)) setEditing(false)
-            }}
-          >
-            <input type="hidden" name="intent" value="rename-status" />
-            <input type="hidden" name="statusId" value={column.id} />
-            <Input
-              name="name"
-              defaultValue={column.name}
-              autoFocus
-              className="w-full h-8 px-2"
-              onKeyDown={e => e.key === 'Escape' && setEditing(false)}
-            />
-          </renameFetcher.Form>
+          <EditColumnForm
+            column={column}
+            orgSlug={orgSlug}
+            onCancel={() => setEditing(false)}
+          />
         ) : (
           <div className="flex items-center justify-between gap-2 w-full">
-            <button className="hover:underline" onClick={() => setEditing(true)}>
+            <button className="hover:underline flex items-center gap-2" onClick={() => setEditing(true)}>
+              {column.id !== UNCATEGORISED && column.color && (
+                <div
+                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: column.color }}
+                />
+              )}
               <span className="text-sm">{column.name}</span>
               {column.id !== UNCATEGORISED && (
                 <button className="invisible group-hover:visible p-1 px-2">
@@ -548,9 +542,67 @@ function SortableNote({ note, dragId, organizationId }: { note: Note; dragId: st
 /*  “+ column” button – stateless (details element manages open/close)    */
 /* -------------------------------------------------------------------------- */
 
+function EditColumnForm({
+  column,
+  orgSlug,
+  onCancel
+}: {
+  column: Column
+  orgSlug: string
+  onCancel: () => void
+}) {
+  const fetcher = useFetcher()
+  const [selectedColor, setSelectedColor] = useState(column.color || '#6b7280')
+
+  // Close editing when fetcher is done
+  React.useEffect(() => {
+    if (fetcher.state === 'idle' && fetcher.data) {
+      onCancel()
+    }
+  }, [fetcher.state, fetcher.data, onCancel])
+
+  return (
+    <fetcher.Form
+      className="w-full space-y-2"
+      method="patch"
+      action={`/app/${orgSlug}/notes/status/${column.id}`}
+    >
+      <input type="hidden" name="intent" value="rename-status" />
+      <input type="hidden" name="statusId" value={column.id} />
+      <input type="hidden" name="color" value={selectedColor} />
+      <div className="flex gap-2">
+        <Input
+          name="name"
+          defaultValue={column.name}
+          autoFocus
+          className="flex-1 h-8 px-2"
+          onKeyDown={e => e.key === 'Escape' && onCancel()}
+        />
+        <ColorPicker value={selectedColor} onChange={setSelectedColor} />
+      </div>
+      <div className="flex gap-2">
+        <Button type="submit" variant="default" size="sm" className="flex-1">
+          Save
+        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={onCancel}>
+          Cancel
+        </Button>
+      </div>
+    </fetcher.Form>
+  )
+}
+
 function NewColumnButton({ orgSlug }: { orgSlug: string }) {
   const fetcher = useFetcher()
   const [editing, setEditing] = useState(false)
+  const [selectedColor, setSelectedColor] = useState('#6b7280')
+
+  // Close editing when fetcher is done
+  React.useEffect(() => {
+    if (fetcher.state === 'idle' && fetcher.data) {
+      setEditing(false)
+    }
+  }, [fetcher.state, fetcher.data])
 
   return (
     <div className="flex flex-col justify-start min-w-[270px]">
@@ -559,21 +611,34 @@ function NewColumnButton({ orgSlug }: { orgSlug: string }) {
           method="post"
           action={`/app/${orgSlug}/notes/statuses`}
           onSubmit={() => (document.activeElement as HTMLElement)?.blur()}
-          className="mt-2 flex gap-2"
+          className="mt-2 space-y-2"
         >
           <input type="hidden" name="intent" value="create-status" />
-          <Input autoFocus name="name" placeholder="Column name (Enter to create)" maxLength={24} onBlur={() => setEditing(false)} />
-          <Button className="hidden" type="submit" variant="default" size="sm">
-            Save
-          </Button>
+          <input type="hidden" name="color" value={selectedColor} />
+          <div className="flex gap-2">
+            <Input
+              autoFocus
+              name="name"
+              placeholder="Column name"
+              maxLength={24}
+              className="flex-1"
+            />
+            <ColorPicker value={selectedColor} onChange={setSelectedColor} />
+          </div>
+          <div className="flex gap-2">
+            <Button type="submit" variant="default" size="sm" className="flex-1">
+              Create
+            </Button>
+            <Button type="button" variant="outline" size="sm" onClick={() => setEditing(false)}>
+              Cancel
+            </Button>
+          </div>
         </fetcher.Form>
       ) : (
         <Button type="button" variant="secondary" className="mt-2" onClick={() => setEditing(true)}>
           <Icon name="plus" className="mr-1" /> Add column
         </Button>
       )}
-
-
     </div>
   )
 }

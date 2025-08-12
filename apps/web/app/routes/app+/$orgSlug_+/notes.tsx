@@ -61,7 +61,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 			isPublic: true,
 			createdById: true,
 			statusId: true,
-			status: { select: { id: true, name: true } },
+			status: { select: { id: true, name: true, color: true } },
 			position: true,
 			uploads: {
 				select: {
@@ -122,7 +122,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 	const statuses = await prisma.organizationNoteStatus.findMany({
 		where: { organizationId: organization.id },
 		orderBy: { position: 'asc' },
-		select: { id: true, name: true, position: true }
+		select: { id: true, name: true, color: true, position: true }
 	})
 
 	// Get the current view mode from cookie

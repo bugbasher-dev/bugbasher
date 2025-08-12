@@ -18,6 +18,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 	const formData = await request.formData();
 	const name = formData.get('name')?.toString().trim();
+	const color = formData.get('color')?.toString().trim() || '#6b7280';
 	if (!name) return new Response('Missing name', { status: 400 })
 
 	// Prevent duplicate status names in org
@@ -37,9 +38,10 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 		data: {
 			organizationId: organization.id,
 			name,
+			color,
 			position: nextPosition,
 		},
-		select: { id: true, name: true, position: true },
+		select: { id: true, name: true, color: true, position: true },
 	})
 
 	return Response.json(created)

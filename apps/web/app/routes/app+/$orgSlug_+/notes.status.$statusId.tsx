@@ -16,6 +16,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   if (request.method === 'PATCH') {
     const formData = await request.formData()
     const name = formData.get('name')?.toString().trim()
+    const color = formData.get('color')?.toString().trim()
     if (!name) return new Response('Missing name', { status: 400 })
 
     // Check for duplicate name
@@ -24,10 +25,13 @@ export const action: ActionFunction = async ({ request, params }) => {
     })
     if (existing) return new Response('Name already exists', { status: 409 })
 
+    const updateData: { name: string; color?: string } = { name }
+    if (color) updateData.color = color
+
     const updated = await prisma.organizationNoteStatus.update({
       where: { id: statusId, organizationId: organization.id },
-      data: { name },
-      select: { id: true, name: true, position: true },
+      data: updateData,
+      select: { id: true, name: true, color: true, position: true },
     })
 
     return Response.json(updated)
