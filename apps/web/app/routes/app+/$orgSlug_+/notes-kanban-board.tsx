@@ -506,6 +506,7 @@ function KanbanColumn({
 /* -------------------------------------------------------------------------- */
 
 function SortableNote({ note, dragId, organizationId }: { note: Note; dragId: string, organizationId: string }) {
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
   const {
     attributes,
     listeners,
@@ -538,7 +539,7 @@ function SortableNote({ note, dragId, organizationId }: { note: Note; dragId: st
       {...attributes}
       {...listeners}
     >
-      <NoteCard note={note} organizationId={organizationId} />
+      <NoteCard note={note} organizationId={organizationId} isEditing={editingNoteId === note.id} setEditingNote={setEditingNoteId} />
     </div>
   )
 }

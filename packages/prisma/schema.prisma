@@ -296,6 +296,8 @@ model OrganizationNote {
   title                  String
   content                String
   isPublic               Boolean                     @default(true)
+  priority               String?                     // "low", "medium", "high"
+  tags                   String?                     // JSON array of tags stored as string
   createdAt              DateTime                    @default(now())
   updatedAt              DateTime                    @updatedAt
   organizationId         String

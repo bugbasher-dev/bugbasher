@@ -69,9 +69,12 @@ export type ImageFieldset = z.infer<typeof ImageFieldsetSchema>
 export type MediaFieldset = z.infer<typeof MediaFieldsetSchema>
 
 export const OrgNoteEditorSchema = z.object({
+	actionType: z.string().optional(),
 	id: z.string().optional(),
 	title: z.string().min(titleMinLength).max(titleMaxLength),
 	content: z.string().min(contentMinLength).max(contentMaxLength),
+	priority: z.string().optional(),
+	tags: z.string().optional(), // JSON string of tags array
 	images: z.array(ImageFieldsetSchema).max(5).optional(),
 	media: z.array(MediaFieldsetSchema).max(5).optional(),
 })
@@ -81,6 +84,8 @@ type OrgNoteEditorProps = {
 		id: string
 		title: string
 		content: string
+		priority?: string | null
+		tags?: string | null
 		uploads: Array<{
 			id: string
 			type: string
@@ -127,6 +132,14 @@ export function OrgNoteEditor({
 		defaultValue: {
 			...note,
 			content: note?.content || '',
+			priority: note?.priority || '',
+			tags: (() => {
+				try {
+					return note?.tags ? JSON.parse(note.tags).join(', ') : ''
+				} catch {
+					return ''
+				}
+			})(),
 			images: note?.uploads?.filter((u) => u.type === 'image') ?? [],
 			media: note?.uploads ?? [],
 		},
@@ -173,6 +186,47 @@ export function OrgNoteEditor({
 								}}
 								errors={fields.title.errors}
 							/>
+							
+							{/* Priority and Tags Row */}
+							<div className="flex gap-4">
+								<div className="flex-1">
+									<label htmlFor={fields.priority.id} className="text-sm leading-none font-medium">
+										Priority
+									</label>
+									<select
+										id={fields.priority.id}
+										name={fields.priority.name}
+										defaultValue={fields.priority.initialValue}
+										className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+									>
+										<option value="">Select priority</option>
+										<option value="no-priority">No priority</option>
+										<option value="urgent">Urgent</option>
+										<option value="high">High</option>
+										<option value="medium">Medium</option>
+										<option value="low">Low</option>
+									</select>
+									{fields.priority.errors && (
+										<div className="min-h-[32px] px-4 pt-1 pb-3">
+											<ErrorList
+												id={fields.priority.errorId}
+												errors={fields.priority.errors}
+											/>
+										</div>
+									)}
+								</div>
+								
+								<div className="flex-1">
+									<Field
+										labelProps={{ children: 'Tags (comma-separated)' }}
+										inputProps={{
+											...getInputProps(fields.tags, { type: 'text' }),
+											placeholder: 'e.g. urgent, meeting, project',
+										}}
+										errors={fields.tags.errors}
+									/>
+								</div>
+							</div>
 							<div className="flex flex-col gap-2">
 								<div className="flex items-center justify-between">
 									<label className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -210,7 +264,7 @@ export function OrgNoteEditor({
 								existingVideos={note?.uploads?.filter(
 									(u) => u.type === 'video',
 								)}
-								organizationId={note}
+								organizationId={organizationId}
 							/>
 						</div>
 						<ErrorList id={form.errorId} errors={form.errors} />

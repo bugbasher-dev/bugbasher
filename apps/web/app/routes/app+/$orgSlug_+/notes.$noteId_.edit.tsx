@@ -34,6 +34,8 @@ export async function loader({
 			id: true,
 			title: true,
 			content: true,
+			priority: true,
+			tags: true,
 			uploads: {
 				select: {
 					id: true,
@@ -60,6 +62,8 @@ type NoteEditProps = {
 			id: string
 			title: string
 			content: string
+			priority?: string | null
+			tags?: string | null
 			uploads: Array<{
 				id: string
 				type: string

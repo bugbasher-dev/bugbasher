@@ -53,6 +53,8 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 			id: true,
 			title: true,
 			content: true,
+			priority: true,
+			tags: true,
 			createdAt: true,
 			updatedAt: true,
 			isPublic: true,
@@ -74,6 +76,11 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 				select: {
 					name: true,
 					username: true,
+					image: {
+						select: {
+							objectKey: true,
+						},
+					},
 				},
 			},
 			noteAccess: {
@@ -93,7 +100,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 		orderBy: [
 			{ statusId: 'asc' },
 			{ position: 'asc' },
-			{ updatedAt: 'desc' },
+			{ createdAt: 'desc' },
 		],
 	})
 
@@ -254,7 +261,7 @@ export default function NotesRoute({
 				</div>
 			</div>
 
-			<div className="flex-grow overflow-auto pb-4">
+			<div className="flex-grow pb-4">
 				{loaderData.notes.length > 0 ? (
 					viewMode === 'kanban' ? (
 						<NotesKanbanBoard

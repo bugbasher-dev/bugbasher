@@ -12,9 +12,11 @@ import { logNoteActivity } from '#app/utils/activity-log.server.ts'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { markStepCompleted } from '#app/utils/onboarding.ts'
-import { uploadNoteImage,
+import {
+	uploadNoteImage,
 	uploadNoteVideo,
-	getSignedGetRequestInfo } from '#app/utils/storage.server.ts'
+	getSignedGetRequestInfo
+} from '#app/utils/storage.server.ts'
 import {
 	MAX_UPLOAD_SIZE,
 	OrgNoteEditorSchema,
@@ -154,23 +156,36 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		id: noteId,
 		title,
 		content,
+		priority,
+		tags,
 		uploadUpdates = [],
 		newUploads = [],
+		actionType
 	} = submission.value
+
+	// Process tags - convert comma-separated string to JSON array
+	const processedTags = tags
+		? JSON.stringify(tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0))
+		: null
+
+	// Process priority - convert empty string to null and validate
+	const processedPriority = priority && priority !== '' && ['low', 'medium', 'high', 'urgent', 'no-priority'].includes(priority) ? priority : null
 
 	// Check if this is a new note or an update
 	const existingNote = await prisma.organizationNote.findUnique({
 		where: { id: noteId },
-		select: { id: true, title: true, content: true },
+		select: { id: true, title: true, content: true, priority: true, tags: true },
 	})
 
 	const isNewNote = !existingNote
-	let beforeSnapshot: { title: string; content: string } | undefined
+	let beforeSnapshot: { title: string; content: string; priority: string | null; tags: string | null } | undefined
 
 	if (!isNewNote && existingNote) {
 		beforeSnapshot = {
 			title: existingNote.title,
 			content: existingNote.content,
+			priority: existingNote.priority,
+			tags: existingNote.tags,
 		}
 	}
 
@@ -181,26 +196,35 @@ export async function action({ request, params }: ActionFunctionArgs) {
 			id: noteId,
 			title,
 			content,
+			priority: processedPriority,
+			tags: processedTags,
 			organization: { connect: { id: organization.id } },
 			createdBy: { connect: { id: userId } },
 			uploads: { create: newUploads },
 		},
-		update: {
-			title,
-			content,
-			uploads: {
-				deleteMany: { id: { notIn: uploadUpdates.map((u) => u.id) } },
-				updateMany: uploadUpdates.map((updates) => ({
-					where: { id: updates.id },
-					data: {
-						...updates,
-						// If the upload is new, we need to generate a new ID to bust the cache.
-						id: updates.objectKey ? cuid() : updates.id,
-					},
-				})),
-				create: newUploads,
+		update: actionType === 'inline-edit'
+			? {
+				title,
+				content,
+			}
+			: {
+				title,
+				content,
+				priority: processedPriority,
+				tags: processedTags,
+				uploads: {
+					deleteMany: { id: { notIn: uploadUpdates.map((u) => u.id) } },
+					updateMany: uploadUpdates.map((updates) => ({
+						where: { id: updates.id },
+						data: {
+							...updates,
+							// If the upload is new, we need to generate a new ID to bust the cache.
+							id: updates.objectKey ? cuid() : updates.id,
+						},
+					})),
+					create: newUploads,
+				},
 			},
-		},
 	})
 
 	// Trigger video processing for new video uploads
@@ -295,6 +319,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		// Determine what changed
 		const titleChanged = beforeSnapshot.title !== title
 		const contentChanged = beforeSnapshot.content !== content
+		const priorityChanged = beforeSnapshot.priority !== processedPriority
+		const tagsChanged = beforeSnapshot.tags !== processedTags
 
 		await logNoteActivity({
 			noteId: updatedNote.id,
@@ -303,6 +329,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
 			metadata: {
 				titleChanged,
 				contentChanged,
+				priorityChanged,
+				tagsChanged,
 				hasUploadUpdates: uploadUpdates.length > 0 || newUploads.length > 0,
 			},
 		})
@@ -313,6 +341,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		await noteHooks.afterNoteCreated(updatedNote.id, userId)
 	} else {
 		await noteHooks.afterNoteUpdated(updatedNote.id, userId, beforeSnapshot)
+	}
+
+	if (actionType === 'inline-edit') {
+		return data({ result: submission.reply() }, { status: 200 })
 	}
 
 	return redirect(`/app/${orgSlug}/notes/${updatedNote.id}`)

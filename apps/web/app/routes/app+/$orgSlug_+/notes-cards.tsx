@@ -1,12 +1,37 @@
 import { formatDistanceToNow } from 'date-fns'
 import { Img } from 'openimg/react'
-import { useState } from 'react'
-import { useNavigate } from 'react-router'
-import { Badge } from '#app/components/ui/badge.tsx'
+import { useState, useRef, useEffect } from 'react'
+import { useNavigate, useRouteLoaderData, useFetcher } from 'react-router'
+import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar.tsx'
+
 import { Button } from '#app/components/ui/button.tsx'
 import { Card, CardContent } from '#app/components/ui/card.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
-import { getNoteImgSrc } from '#app/utils/misc.tsx'
+import { Input } from '#app/components/ui/input.tsx'
+import { Textarea } from '#app/components/ui/textarea.tsx'
+import { getNoteImgSrc, getUserImgSrc } from '#app/utils/misc.tsx'
+import { loader } from './notes'
+
+
+type LoaderNote = {
+	id: string
+	title: string
+	content: string
+	createdAt: string
+	updatedAt: string
+	createdById: string
+	createdByName: string
+	statusId: string | null
+	statusName: string | null
+	uploads: Array<{
+		id: string
+		type: string
+		altText: string | null
+		objectKey: string
+		thumbnailKey: string | null
+		status: string
+	}>
+}
 
 export type Note = {
 	id: string
@@ -15,8 +40,15 @@ export type Note = {
 	createdAt: string
 	updatedAt: string
 	createdByName?: string
-	status?: string | null
+	createdBy?: {
+		name?: string | null
+		username?: string | null
+		image?: { objectKey: string } | null
+	}
+	status?: string | null | { id: string; name: string }
 	position?: number | null
+	priority?: string | null
+	tags?: string | null
 	uploads: Array<{
 		id: string
 		type: string
@@ -31,26 +63,84 @@ interface NoteCardProps {
 	note: Note
 	isHovered?: boolean
 	organizationId: string
+	isEditing?: boolean
+	setEditingNote?: (noteId: string | null) => void
 }
 
-export const NoteCard = ({ note, isHovered = false, organizationId }: NoteCardProps) => {
-	const [hovered, setHovered] = useState(isHovered)
+export const NoteCard = ({ note, organizationId, isEditing = false, setEditingNote }: NoteCardProps) => {
 	const [copied, setCopied] = useState(false)
+	const [editTitle, setEditTitle] = useState(note.title)
+	const [editContent, setEditContent] = useState(note.content ? note.content.replace(/<[^>]*>/g, '') : '')
 	const navigate = useNavigate()
+	const fetcher = useFetcher()
+	const loaderData = useRouteLoaderData<typeof loader>('routes/app+/$orgSlug_+/notes')
+	const titleInputRef = useRef<HTMLInputElement>(null)
 
 	const timeAgo = formatDistanceToNow(new Date(note.updatedAt), {
 		addSuffix: true,
 	})
 
 	const createdBy = note.createdByName || 'Unknown'
-	createdBy
+	const createdByInitials = createdBy
 		.split(' ')
 		.map((n) => n[0])
 		.join('')
 		.toUpperCase()
 
+	// Focus title input when editing starts
+	useEffect(() => {
+		if (isEditing && titleInputRef.current) {
+			titleInputRef.current.focus()
+			titleInputRef.current.select()
+		}
+	}, [isEditing])
+
 	const handleCardClick = () => {
-		void navigate(`${note.id}`)
+		if (!isEditing) {
+			void navigate(`${note.id}`)
+		}
+	}
+
+	const handleStartEdit = (e: React.MouseEvent) => {
+		e.stopPropagation()
+		if (setEditingNote) {
+			setEditingNote(note.id)
+		}
+	}
+
+	const handleSaveEdit = () => {
+		if (fetcher.state === 'idle') {
+			const formData = new FormData()
+			formData.append('actionType', 'inline-edit')
+			formData.append('id', note.id)
+			formData.append('title', editTitle)
+			formData.append('content', editContent)
+
+			fetcher.submit(formData, {
+				method: 'POST',
+				action: `/app/${loaderData?.organization.slug}/notes/${note.id}/edit`,
+			})
+		}
+		if (setEditingNote) {
+			setEditingNote(null)
+		}
+	}
+
+	const handleCancelEdit = () => {
+		setEditTitle(note.title)
+		setEditContent(note.content ? note.content.replace(/<[^>]*>/g, '') : '')
+		if (setEditingNote) {
+			setEditingNote(null)
+		}
+	}
+
+	const handleKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === 'Enter' && !e.shiftKey) {
+			e.preventDefault()
+			handleSaveEdit()
+		} else if (e.key === 'Escape') {
+			handleCancelEdit()
+		}
 	}
 
 	const handleCopyLink = (e: React.MouseEvent) => {
@@ -69,16 +159,35 @@ export const NoteCard = ({ note, isHovered = false, organizationId }: NoteCardPr
 	const firstMedia = firstVideo || firstImage
 	const isVideo = !!firstVideo
 
+	// Parse tags from JSON string
+	const tags = (() => {
+		try {
+			if (!note.tags) return []
+			const parsed = JSON.parse(note.tags)
+			if (Array.isArray(parsed)) {
+				// Ensure all items are strings
+				return parsed.map(tag =>
+					typeof tag === 'string' ? tag :
+						typeof tag === 'object' && tag?.name ? tag.name :
+							String(tag)
+				).filter(Boolean)
+			}
+			return []
+		} catch {
+			return []
+		}
+	})()
+
+
+
 	return (
 		<Card
-			className="group hover:ring-2 hover:ring-primary w-full cursor-pointer overflow-hidden py-0"
-			onMouseEnter={() => setHovered(true)}
-			onMouseLeave={() => setHovered(false)}
+			className="cursor-pointer group overflow-hidden border transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 py-0 h-full flex flex-col"
 			onClick={handleCardClick}
 		>
-			<CardContent className="p-0">
-				{/* Media or Header Section */}
-				<div className="bg-primary/20 relative aspect-video overflow-hidden">
+			<CardContent className="p-0 flex flex-col h-full">
+				{/* Compact Media Header */}
+				<div className="relative h-32 overflow-hidden">
 					{firstMedia ? (
 						<>
 							<Img
@@ -93,85 +202,218 @@ export const NoteCard = ({ note, isHovered = false, organizationId }: NoteCardPr
 									firstMedia.altText ||
 									(isVideo ? 'Video thumbnail' : 'Note image')
 								}
-								className="h-full w-full object-cover"
-								width={400}
-								height={225}
+								className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+								width={350}
+								height={128}
 							/>
-							{/* Video play overlay */}
+
+							{/* Minimal video play overlay */}
 							{isVideo && (
-								<div className="absolute inset-0 flex items-center justify-center bg-black/20">
-									<div className="rounded-full bg-white/90 p-3 shadow-lg">
-										<Icon name="arrow-right" className="text-primary h-6 w-6" />
+								<div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+									<div className="rounded-full bg-black/20 backdrop-blur-sm p-2">
+										<Icon name="arrow-right" className="text-white h-4 w-4" />
 									</div>
 								</div>
 							)}
-							{/* Overlay for better text visibility */}
-							<div className="absolute inset-0" />
+
+							{/* Gradient overlay for better text readability */}
+							<div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
 						</>
 					) : (
-						<div className="flex h-full items-center justify-center">
-							<div className="bg-background/80 rounded-full p-4 shadow-sm">
-								<Icon name="file-text" className="text-primary h-8 w-8" />
-							</div>
+						<div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/5 to-primary/10">
+							<Icon name="file-text" className="text-primary/40 h-6 w-6" />
 						</div>
 					)}
 
-					{/* Copy Button - Top Right */}
-					<div
-						className={`absolute top-3 right-3 transition-all duration-300 ${hovered ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'
-							}`}
-					>
-						<Button size="sm" variant="secondary" onClick={handleCopyLink}>
+					{/* Status and Priority indicators - Top Left */}
+					<div className="absolute top-2 left-2 flex items-center gap-1">
+						{/* Status indicator */}
+						{note.status && (
+							<div className="flex items-center gap-1.5 px-2 py-1 bg-white/95 backdrop-blur-sm rounded-full shadow-sm border border-white/20">
+								{(() => {
+									const statusName = typeof note.status === 'string' ? note.status : (note.status as { name: string })?.name
+									if (statusName === 'blocked') return <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+									if (statusName === 'in-progress') return <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+									if (statusName === 'completed') return <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+									return <div className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+								})()}
+								<span className="text-gray-700 text-xs font-medium">
+									{(() => {
+										const statusName = typeof note.status === 'string' ? note.status : (note.status as { name: string })?.name
+										return statusName ? statusName.replace('-', ' ') : ''
+									})()}
+								</span>
+							</div>
+						)}
+
+						{/* Priority indicator */}
+						{note.priority && (
+							<div className="flex items-center gap-1 px-1.5 py-0.5 bg-white/95 backdrop-blur-sm rounded-full shadow-sm border border-white/20">
+								{(() => {
+									switch (note.priority) {
+										case 'urgent':
+											return <Icon name="octagon-alert" className="w-3 h-3 text-red-600" />
+										case 'high':
+											return <Icon name="signal-high" className="w-3 h-3 text-red-500" />
+										case 'medium':
+											return <Icon name="signal-medium" className="w-3 h-3 text-yellow-500" />
+										case 'low':
+											return <Icon name="signal-low" className="w-3 h-3 text-green-500" />
+										default:
+											return <Icon name="minus" className="w-3 h-3 text-gray-400" />
+									}
+								})()}
+								<span className="text-gray-700 text-xs font-medium capitalize">
+									{note.priority}
+								</span>
+							</div>
+						)}
+					</div>
+
+					{/* Floating action buttons - only show on hover */}
+					<div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300 flex gap-1">
+						{setEditingNote && (
+							<Button
+								size="sm"
+								variant="ghost"
+								onClick={handleStartEdit}
+								aria-label="Edit note"
+								className="h-7 w-7 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 shadow-sm backdrop-blur-sm"
+							>
+								<Icon name="pencil" className="h-3 w-3" />
+							</Button>
+						)}
+						<Button
+							size="sm"
+							variant="ghost"
+							onClick={handleCopyLink}
+							className="h-7 w-7 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 shadow-sm backdrop-blur-sm"
+						>
 							{copied ? (
-								<>
-									<Icon name="check" className="h-3 w-3" />
-									Copied
-								</>
+								<Icon name="check" className="h-3 w-3" />
 							) : (
-								<>
-									<Icon name="copy" className="h-3 w-3" />
-									Copy
-								</>
+								<Icon name="copy" className="h-3 w-3" />
 							)}
 						</Button>
 					</div>
 
-					{/* Media Badge - Bottom Right */}
+					{/* Minimal media count indicators */}
 					{note.uploads.length > 0 && (
-						<div className="absolute right-3 bottom-3 flex gap-2">
+						<div className="absolute bottom-2 left-2 flex gap-1">
 							{note.uploads.filter((u) => u.type === 'image').length > 0 && (
-								<Badge
-									variant="outline"
-									className="border-white/50 bg-white/90 text-xs text-gray-700 shadow-sm backdrop-blur-sm"
-								>
-									<Icon name="image" className="mr-1 h-3 w-3" />
-									{note.uploads.filter((u) => u.type === 'image').length}
-								</Badge>
+								<div className="flex items-center gap-1 px-1.5 py-0.5 bg-black/20 backdrop-blur-sm rounded text-white text-xs">
+									<Icon name="image" className="h-2.5 w-2.5" />
+									<span>{note.uploads.filter((u) => u.type === 'image').length}</span>
+								</div>
 							)}
 							{note.uploads.filter((u) => u.type === 'video').length > 0 && (
-								<Badge
-									variant="outline"
-									className="border-white/50 bg-white/90 text-xs text-gray-700 shadow-sm backdrop-blur-sm"
-								>
-									<Icon name="camera" className="mr-1 h-3 w-3" />
-									{note.uploads.filter((u) => u.type === 'video').length}
-								</Badge>
+								<div className="flex items-center gap-1 px-1.5 py-0.5 bg-black/20 backdrop-blur-sm rounded text-white text-xs">
+									<Icon name="camera" className="h-2.5 w-2.5" />
+									<span>{note.uploads.filter((u) => u.type === 'video').length}</span>
+								</div>
 							)}
 						</div>
 					)}
 				</div>
 
-				{/* Content Section */}
-				<div className="p-2 px-4">
-					<div className="flex items-start gap-3">
-						<div className="min-w-0 flex-1">
-							<h4 className="line-clamp-2 leading-tight">{note.title}</h4>
-							<div className="mt-1 text-xs">
-								<h3 className="text-foreground inline font-medium">
-									{createdBy}
-								</h3>
-								<span className="text-muted-foreground ml-2">• {timeAgo}</span>
+				{/* Content Section - Flex container */}
+				<div className="flex flex-col flex-1">
+					{/* Main content area */}
+					<div className="p-4 py-2  space-y-2 flex-1">
+						{/* Title and Content */}
+						{isEditing ? (
+							<div className="space-y-2">
+								<div className="flex gap-2">
+									<Input
+										ref={titleInputRef}
+										value={editTitle}
+										onChange={(e) => setEditTitle(e.target.value)}
+										onKeyDown={handleKeyDown}
+										className="flex-1 font-medium h-8 px-2"
+										placeholder="Note title..."
+									/>
+									<div className="flex gap-1">
+										<Button
+											size="sm"
+											onClick={handleSaveEdit}
+											className="h-8 w-8 p-0"
+											aria-label="Save changes"
+											disabled={fetcher.state !== 'idle'}
+										>
+											<Icon name="check" className="h-3 w-3" />
+										</Button>
+										<Button
+											size="sm"
+											variant="ghost"
+											onClick={handleCancelEdit}
+											className="h-8 w-8 p-0"
+											aria-label="Cancel editing"
+										>
+											<Icon name="x" className="h-3 w-3" />
+										</Button>
+									</div>
+								</div>
+								<Textarea
+									value={editContent}
+									onChange={(e) => setEditContent(e.target.value)}
+									onKeyDown={handleKeyDown}
+									placeholder="Note content..."
+									className="resize-none text-sm min-h-16"
+									rows={2}
+								/>
 							</div>
+						) : (
+							<div className="space-y-0">
+								<h4 className="text-foreground leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200">
+									{note.title}
+								</h4>
+								<p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+									{note.content ? note.content.replace(/<[^>]*>/g, '').substring(0, 100) : 'No content'}
+									{note.content && note.content.replace(/<[^>]*>/g, '').length > 100 && '...'}
+								</p>
+							</div>
+						)}
+
+						{/* Minimal tags */}
+						{tags && tags.length > 0 && (
+							<div className="flex flex-wrap gap-1">
+								{tags.slice(0, 3).map((tag: any, index: number) => (
+									<span
+										key={index}
+										className="inline-flex items-center px-2 py-0.5 bg-primary/8 text-primary text-xs rounded-md"
+									>
+										{typeof tag === 'string' ? tag : tag?.name || String(tag)}
+									</span>
+								))}
+								{tags.length > 3 && (
+									<span className="px-2 py-0.5 bg-muted text-muted-foreground text-xs rounded-md">
+										+{tags.length - 3}
+									</span>
+								)}
+							</div>
+						)}
+					</div>
+
+					<div className="border-t mt-auto font-mono">
+						<div className="flex items-center justify-between px-4 py-2">
+							<div className="flex items-center gap-2">
+								<Avatar className="h-5 w-5">
+									<AvatarImage
+										src={note.createdBy?.image?.objectKey ? getUserImgSrc(note.createdBy.image.objectKey) : undefined}
+										alt={createdBy}
+									/>
+									<AvatarFallback className="text-xs font-medium">
+										{createdByInitials}
+									</AvatarFallback>
+								</Avatar>
+								<span className="text-xs text-muted-foreground font-medium">
+									{createdBy.split(' ')[0]}
+								</span>
+							</div>
+
+							<span className="text-xs text-muted-foreground tracking-tighter">
+								{timeAgo}
+							</span>
 						</div>
 					</div>
 				</div>
@@ -180,15 +422,23 @@ export const NoteCard = ({ note, isHovered = false, organizationId }: NoteCardPr
 	)
 }
 
-export function NotesCards({ notes, organizationId }: { notes: Note[], organizationId: string }) {
+export function NotesCards({ notes, organizationId }: { notes: LoaderNote[], organizationId: string }) {
+	const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
+
 	if (notes.length === 0) {
 		return null
 	}
 
 	return (
-		<div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 p-1">
+		<div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 p-1">
 			{notes.map((note) => (
-				<NoteCard key={note.id} note={note} organizationId={organizationId} />
+				<NoteCard
+					key={note.id}
+					note={note}
+					organizationId={organizationId}
+					isEditing={editingNoteId === note.id}
+					setEditingNote={setEditingNoteId}
+				/>
 			))}
 		</div>
 	)
