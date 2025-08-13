@@ -29,20 +29,82 @@ export const action: ActionFunction = async ({ request, params }) => {
 		if (!statusRow) return new Response('Invalid statusId', { status: 400 })
 	}
 
-	const updated = await prisma.organizationNote.updateMany({
-		where: {
-			id: noteId,
-			organizationId: organization.id,
-		},
-		data: {
-			statusId,
-			position,
-		},
-	})
+	// Use a transaction to properly reorder notes
+	await prisma.$transaction(async (tx) => {
+		// Get the note being moved
+		const noteToMove = await tx.organizationNote.findFirst({
+			where: { id: noteId, organizationId: organization.id },
+			select: { id: true, statusId: true, position: true }
+		});
 
-	if (updated.count === 0) {
-		return new Response('Note not found or not in org', { status: 404 })
-	}
+		if (!noteToMove) {
+			throw new Error('Note not found');
+		}
+
+		const oldStatusId = noteToMove.statusId;
+		const oldPosition = noteToMove.position ?? 0;
+
+		// Get all notes in the destination column, ordered by position
+		const notesInDestColumn = await tx.organizationNote.findMany({
+			where: {
+				organizationId: organization.id,
+				statusId: statusId,
+				id: { not: noteId } // Exclude the note being moved
+			},
+			select: { id: true, position: true },
+			orderBy: { position: 'asc' }
+		});
+
+		// Calculate new positions
+		const updates: Array<{ id: string; position: number }> = [];
+
+		// Insert the moved note at the specified position
+		let currentPos = 0;
+		for (let i = 0; i < notesInDestColumn.length; i++) {
+			if (currentPos === position) {
+				// Insert moved note here
+				updates.push({ id: noteId, position: currentPos });
+				currentPos++;
+			}
+			// Update existing note position
+			updates.push({ id: notesInDestColumn?.[i]?.id, position: currentPos });
+			currentPos++;
+		}
+
+		// If position is at the end, add the moved note
+		if (position >= notesInDestColumn.length) {
+			updates.push({ id: noteId, position: notesInDestColumn.length });
+		}
+
+		// If moving between columns, also reorder the old column
+		if (oldStatusId !== statusId && oldStatusId !== null) {
+			const notesInOldColumn = await tx.organizationNote.findMany({
+				where: {
+					organizationId: organization.id,
+					statusId: oldStatusId,
+					id: { not: noteId }
+				},
+				select: { id: true, position: true },
+				orderBy: { position: 'asc' }
+			});
+
+			// Reorder old column (close the gap)
+			notesInOldColumn.forEach((note, index) => {
+				updates.push({ id: note.id, position: index });
+			});
+		}
+
+		// Apply all updates
+		for (const update of updates) {
+			await tx.organizationNote.update({
+				where: { id: update.id },
+				data: { 
+					position: update.position,
+					...(update.id === noteId ? { statusId } : {})
+				}
+			});
+		}
+	});
 
 	return new Response(null, { status: 204 })
 }

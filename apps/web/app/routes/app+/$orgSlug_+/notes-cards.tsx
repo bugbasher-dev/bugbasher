@@ -12,14 +12,14 @@ import { Button } from '#app/components/ui/button.tsx'
 import { Card, CardContent } from '#app/components/ui/card.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { Input } from '#app/components/ui/input.tsx'
+import { PrioritySignal } from '#app/components/ui/priority-signal.tsx'
 import { Textarea } from '#app/components/ui/textarea.tsx'
 import {
 	Tooltip,
 	TooltipContent,
-	TooltipProvider,
 	TooltipTrigger,
 } from '#app/components/ui/tooltip.tsx'
-import { getNoteImgSrc, getUserImgSrc } from '#app/utils/misc.tsx'
+import { cn, getNoteImgSrc, getUserImgSrc } from '#app/utils/misc.tsx'
 import { loader } from './notes'
 
 type LoaderNote = {
@@ -83,6 +83,7 @@ export const NoteCard = ({
 	setEditingNote,
 }: NoteCardProps) => {
 	const [copied, setCopied] = useState(false)
+	const [tooltipOpen, setTooltipOpen] = useState(false)
 	const [editTitle, setEditTitle] = useState(note.title)
 	const [editContent, setEditContent] = useState(
 		note.content ? note.content.replace(/<[^>]*>/g, '') : '',
@@ -167,7 +168,11 @@ export const NoteCard = ({
 		const noteUrl = `${window.location.origin}${window.location.pathname}/${note.id}`
 		void navigator.clipboard.writeText(noteUrl)
 		setCopied(true)
-		setTimeout(() => setCopied(false), 1000)
+		setTooltipOpen(true)
+		setTimeout(() => {
+			setCopied(false)
+			setTooltipOpen(false)
+		}, 2000)
 	}
 
 	// Get the first media item for display (prioritize videos with thumbnails, then images)
@@ -202,56 +207,105 @@ export const NoteCard = ({
 	})()
 
 	return (
-		<Card
-			className="group flex h-full cursor-pointer flex-col overflow-hidden border py-0 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
-			onClick={handleCardClick}
-		>
-			<CardContent className="flex h-full flex-col p-0">
-				{/* Compact Media Header */}
-				<div className="relative h-32 overflow-hidden">
-					{firstMedia ? (
-						<>
-							<Img
-								src={
-									isVideo && firstVideo?.thumbnailKey
-										? getNoteImgSrc(firstVideo.thumbnailKey, organizationId)
-										: firstImage
-											? getNoteImgSrc(firstImage.objectKey, organizationId)
-											: ''
-								}
-								alt={
-									firstMedia.altText ||
-									(isVideo ? 'Video thumbnail' : 'Note image')
-								}
-								className="h-full w-full object-cover transition-all duration-300 group-hover:scale-105"
-								width={350}
-								height={128}
-							/>
+		<div className="group h-full">
+			<Card
+				className="relative h-full overflow-hidden transition-all border-none group-hover:bg-muted/30 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05),0px_1px_1px_0px_rgba(255,252,240,0.5)_inset,0px_0px_0px_1px_hsla(0,0%,100%,0.1)_inset,0px_0px_1px_0px_rgba(28,27,26,0.5)] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(0,0,0,0.1),0_2px_2px_0_rgba(0,0,0,0.1),0_4px_4px_0_rgba(0,0,0,0.1),0_8px_8px_0_rgba(0,0,0,0.1)] rounded-3xl cursor-pointer py-0"
+				onClick={handleCardClick}
+			>
+				{/* Background gradient overlay */}
+				<div className="absolute inset-0 bg-gradient-to-br opacity-30 group-hover:opacity-40 transition-opacity duration-500 ease-out pointer-events-none" />
 
-							{/* Minimal video play overlay */}
-							{isVideo && (
-								<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-									<div className="rounded-full bg-black/20 p-2 backdrop-blur-sm">
-										<Icon name="arrow-right" className="h-4 w-4 text-white" />
+				<CardContent className="relative flex h-full flex-col px-2 pt-2 pb-3">
+					{/* Enhanced Media Header */}
+					{!isKanbanView && <div className="relative h-[160px] w-full rounded-[16px] mb-4 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05),0px_1px_1px_0px_rgba(255,252,240,0.5)_inset,0px_0px_0px_1px_hsla(0,0%,100%,0.1)_inset,0px_0px_1px_0px_rgba(28,27,26,0.5)] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(0,0,0,0.1),0_2px_2px_0_rgba(0,0,0,0.1),0_4px_4px_0_rgba(0,0,0,0.1),0_8px_8px_0_rgba(0,0,0,0.1)]">
+						{firstMedia ? (
+							<>
+								<Img
+									src={
+										isVideo && firstVideo?.thumbnailKey
+											? getNoteImgSrc(firstVideo.thumbnailKey, organizationId)
+											: firstImage
+												? getNoteImgSrc(firstImage.objectKey, organizationId)
+												: ''
+									}
+									alt={
+										firstMedia.altText ||
+										(isVideo ? 'Video thumbnail' : 'Note image')
+									}
+									className="rounded-[16px] object-cover absolute h-full w-full inset-0 transition-all duration-300"
+									width={200}
+									height={200}
+								/>
+
+								{/* Enhanced overlay structure */}
+								<div className="absolute inset-0 rounded-[16px]">
+									<div className="absolute inset-0 rounded-[16px] shadow-[0px_0px_0px_1px_rgba(0,0,0,.07),0px_0px_0px_3px_#fff,0px_0px_0px_4px_rgba(0,0,0,.08)] dark:shadow-[0px_0px_0px_1px_rgba(0,0,0,.07),0px_0px_0px_3px_rgba(100,100,100,0.3),0px_0px_0px_4px_rgba(0,0,0,.08)]" />
+									<div className="absolute inset-0 rounded-[16px] dark:shadow-[0px_1px_1px_0px_rgba(0,0,0,0.15),0px_1px_1px_0px_rgba(0,0,0,0.15)_inset,0px_0px_0px_1px_rgba(0,0,0,0.15)_inset,0px_0px_1px_0px_rgba(0,0,0,0.15)]" />
+								</div>
+
+								{/* Video play overlay */}
+								{isVideo && (
+									<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 rounded-[16px]">
+										<div className="rounded-full bg-black/20 p-3 backdrop-blur-sm">
+											<Icon name="arrow-right" className="h-5 w-5 text-white" />
+										</div>
 									</div>
+								)}
+							</>
+						) : (
+							<div className="rounded-[16px] from-primary/5 to-primary/10 flex h-full items-center justify-center bg-gradient-to-br">
+								<Icon name="file-text" className="text-primary/40 h-8 w-8" />
+							</div>
+						)}
+
+						{/* Card action buttons - styled like attachment count */}
+						<div className="absolute top-1 right-1 flex gap-1 opacity-0 transition-all duration-300 group-hover:opacity-100 z-10">
+							{setEditingNote && (
+								<div className="pointer-events-auto">
+									<Tooltip delayDuration={0}>
+										<TooltipTrigger asChild>
+											<button
+												className="flex items-center bg-white/90 flex items-center gap-1.5 rounded border px-2 py-1.5 shadow-lg backdrop-blur-lg border-black/30 text-black"
+												onClick={handleStartEdit}
+											>
+												<Icon name="pencil" className="h-3 w-3" />
+											</button>
+										</TooltipTrigger>
+										<Portal>
+											<TooltipContent>
+												<p>Quick edit</p>
+											</TooltipContent>
+										</Portal>
+									</Tooltip>
 								</div>
 							)}
-
-							{/* Gradient overlay for better text readability */}
-							<div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-						</>
-					) : (
-						<div className="from-primary/5 to-primary/10 flex h-full items-center justify-center bg-gradient-to-br">
-							<Icon name="file-text" className="text-primary/40 h-6 w-6" />
+							<div className="pointer-events-auto">
+								<Tooltip delayDuration={0} open={tooltipOpen} onOpenChange={setTooltipOpen}>
+									<TooltipTrigger asChild>
+										<button
+											className="flex items-center bg-white/90 flex items-center gap-1.5 rounded rounded-tr-xl border px-2 py-1.5 shadow-lg backdrop-blur-sm border-black/30 text-black"
+											onClick={handleCopyLink}
+										>
+											{copied ? (
+												<Icon name="check" className="h-3 w-3" />
+											) : (
+												<Icon name="copy" className="h-3 w-3" />
+											)}
+										</button>
+									</TooltipTrigger>
+									<Portal>
+										<TooltipContent>
+											<p>{copied ? 'Link copied!' : 'Copy link'}</p>
+										</TooltipContent>
+									</Portal>
+								</Tooltip>
+							</div>
 						</div>
-					)}
 
-					{/* Status and Priority indicators - Top Left */}
-					{!isKanbanView && (
-						<div className="absolute top-2 left-2 flex items-center gap-1">
-							{/* Status indicator */}
-							{note.status && (
-								<div className="bg-muted flex items-center gap-1.5 rounded-full border border-white/20 px-2 py-1 shadow-sm backdrop-blur-sm">
+						{/* Status indicator - positioned over image */}
+						{!isKanbanView && note.status && (
+							<div className="absolute top-1 left-1 z-10 pointer-events-none">
+								<div className="bg-white/90 flex items-center gap-1.5 rounded rounded-tl-xl border px-2 py-1 shadow-sm backdrop-blur-sm border-black/30">
 									{(() => {
 										const status =
 											typeof note.status === 'string'
@@ -265,7 +319,7 @@ export const NoteCard = ({
 											/>
 										)
 									})()}
-									<span className="text-muted-foreground text-xs font-medium">
+									<span className="text-black text-xs font-medium">
 										{(() => {
 											const statusName =
 												typeof note.status === 'string'
@@ -275,198 +329,149 @@ export const NoteCard = ({
 										})()}
 									</span>
 								</div>
-							)}
-						</div>
-					)}
-
-					{/* Floating action buttons - only show on hover */}
-					<div className="absolute top-2 right-2 flex gap-1 opacity-0 transition-all duration-300 group-hover:opacity-100">
-						{setEditingNote && (
-							<Button
-								size="sm"
-								variant="secondary"
-								onClick={handleStartEdit}
-								aria-label="Edit note"
-							>
-								<Icon name="pencil" className="h-3 w-3" />
-							</Button>
+							</div>
 						)}
-						<Button size="sm" variant="secondary" onClick={handleCopyLink}>
-							{copied ? (
-								<Icon name="check" className="h-3 w-3" />
-							) : (
-								<Icon name="copy" className="h-3 w-3" />
-							)}
-						</Button>
-					</div>
+					</div>}
 
-					{/* Minimal media count indicators */}
-					{note.uploads.length > 0 && (
-						<div className="absolute bottom-2 left-2 flex gap-1">
-							{note.uploads.filter((u) => u.type === 'image').length > 0 && (
-								<div className="flex items-center gap-1 rounded bg-black/20 px-1.5 py-0.5 text-xs text-white backdrop-blur-sm">
-									<Icon name="image" className="h-2.5 w-2.5" />
-									<span>
-										{note.uploads.filter((u) => u.type === 'image').length}
-									</span>
-								</div>
-							)}
-							{note.uploads.filter((u) => u.type === 'video').length > 0 && (
-								<div className="flex items-center gap-1 rounded bg-black/20 px-1.5 py-0.5 text-xs text-white backdrop-blur-sm">
-									<Icon name="camera" className="h-2.5 w-2.5" />
-									<span>
-										{note.uploads.filter((u) => u.type === 'video').length}
-									</span>
-								</div>
-							)}
-						</div>
-					)}
-				</div>
-
-				{/* Content Section - Flex container */}
-				<div className="flex flex-1 flex-col">
-					{/* Main content area */}
-					<div className="flex-1 space-y-2 p-4 py-2">
-						{/* Title and Content */}
-						{isEditing ? (
-							<div className="space-y-2">
-								<div className="flex gap-2">
-									<Input
-										ref={titleInputRef}
-										value={editTitle}
-										onChange={(e) => setEditTitle(e.target.value)}
-										onKeyDown={handleKeyDown}
-										className="h-8 flex-1 px-2 font-medium"
-										placeholder="Note title..."
-									/>
-									<div className="flex gap-1">
-										<Button
-											size="sm"
-											onClick={handleSaveEdit}
-											className="h-8 w-8 p-0"
-											aria-label="Save changes"
-											disabled={fetcher.state !== 'idle'}
-										>
-											<Icon name="check" className="h-3 w-3" />
-										</Button>
-										<Button
-											size="sm"
-											variant="ghost"
-											onClick={handleCancelEdit}
-											className="h-8 w-8 p-0"
-											aria-label="Cancel editing"
-										>
-											<Icon name="x" className="h-3 w-3" />
-										</Button>
-									</div>
-								</div>
-								<Textarea
-									value={editContent}
-									onChange={(e) => setEditContent(e.target.value)}
+					{/* Title and Content Section */}
+					{isEditing ? (
+						<div className="space-y-2 px-1">
+							<div className="flex gap-1">
+								<Input
+									ref={titleInputRef}
+									value={editTitle}
+									onChange={(e) => setEditTitle(e.target.value)}
 									onKeyDown={handleKeyDown}
-									placeholder="Note content..."
-									className="min-h-16 resize-none text-sm"
-									rows={2}
+									className="h-8 flex-1 px-2 font-semibold"
+									placeholder="Note title..."
 								/>
-							</div>
-						) : (
-							<div className="space-y-0">
-								<div className="flex items-center gap-2">
-									{/* Priority indicator button */}
-									{note.priority && (
-										<Tooltip>
-											<TooltipTrigger asChild>
-												<Button
-													size="sm"
-													variant="secondary"
-													className="h-6 w-6 p-0"
-													onClick={(e) => e.stopPropagation()}
-												>
-													{(() => {
-														switch (note.priority) {
-															case 'urgent':
-																return (
-																	<Icon
-																		name="octagon-alert"
-																		className="h-4 w-4 text-red-600"
-																	/>
-																)
-															case 'high':
-																return (
-																	<Icon
-																		name="signal-high"
-																		className="h-4 w-4 text-red-500"
-																	/>
-																)
-															case 'medium':
-																return (
-																	<Icon
-																		name="signal-medium"
-																		className="h-4 w-4 text-yellow-500"
-																	/>
-																)
-															case 'low':
-																return (
-																	<Icon
-																		name="signal-low"
-																		className="h-4 w-4 text-green-500"
-																	/>
-																)
-															default:
-																return (
-																	<Icon
-																		name="minus"
-																		className="h-4 w-4 text-gray-400"
-																	/>
-																)
-														}
-													})()}
-												</Button>
-											</TooltipTrigger>
-											<Portal>
-												<TooltipContent>
-													<p className="capitalize">{note.priority} priority</p>
-												</TooltipContent>
-											</Portal>
-										</Tooltip>
-									)}
-									<h4 className="text-foreground group-hover:text-primary line-clamp-2 flex-1 text-sm leading-tight transition-colors duration-200">
-										{note.title}
-									</h4>
-								</div>
-								<p className="text-muted-foreground line-clamp-2 text-sm leading-relaxed">
-									{note.content
-										? note.content.replace(/<[^>]*>/g, '').substring(0, 100)
-										: 'No content'}
-									{note.content &&
-										note.content.replace(/<[^>]*>/g, '').length > 100 &&
-										'...'}
-								</p>
-							</div>
-						)}
-
-						{/* Minimal tags */}
-						{tags && tags.length > 0 && (
-							<div className="flex flex-wrap gap-1">
-								{tags.slice(0, 3).map((tag: any, index: number) => (
-									<span
-										key={index}
-										className="bg-primary/8 text-primary inline-flex items-center rounded-md px-2 py-0.5 text-xs"
+								<div className="flex gap-1 items-center">
+									<Button
+										size="icon"
+										onClick={handleSaveEdit}
+										className="h-6 w-6 p-0"
+										aria-label="Save changes"
+										disabled={fetcher.state !== 'idle'}
 									>
-										{typeof tag === 'string' ? tag : tag?.name || String(tag)}
-									</span>
-								))}
-								{tags.length > 3 && (
-									<span className="bg-muted text-muted-foreground rounded-md px-2 py-0.5 text-xs">
-										+{tags.length - 3}
-									</span>
-								)}
+										<Icon name="check" className="h-4 w-4" />
+									</Button>
+									<Button
+										size="icon"
+										variant="destructive"
+										onClick={handleCancelEdit}
+										className="h-6 w-6 p-0"
+										aria-label="Cancel editing"
+									>
+										<Icon name="x" className="h-4 w-4" />
+									</Button>
+								</div>
 							</div>
-						)}
-					</div>
+							<Textarea
+								value={editContent}
+								onChange={(e) => setEditContent(e.target.value)}
+								onKeyDown={handleKeyDown}
+								placeholder="Note content..."
+								className="min-h-16 max-h-20 resize-none text-sm"
+								rows={2}
+							/>
+						</div>
+					) : (
+						<div className={cn('px-1', isKanbanView && 'pt-2')}>
+							<div className="flex items-start justify-between gap-2 mb-2">
+								{/* Priority indicator */}
+								{note.priority && (
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button
+												size="sm"
+												variant="secondary"
+												className="h-6 w-6 p-0"
+												onClick={(e) => e.stopPropagation()}
+											>
+												{(() => {
+													switch (note.priority) {
+														case 'urgent':
+															return (
+																<Icon
+																	name="octagon-alert"
+																	className="h-4 w-4 text-muted-foreground stroke-3"
+																/>
+															)
+														case 'high':
+															return (
+																<PrioritySignal
+																	priority="high"
+																	className="h-4 w-4"
+																/>
+															)
+														case 'medium':
+															return (
+																<PrioritySignal
+																	priority="medium"
+																	className="h-4 w-4"
+																/>
+															)
+														case 'low':
+															return (
+																<PrioritySignal
+																	priority="low"
+																	className="h-4 w-4"
+																/>
+															)
+														default:
+															return (
+																<Icon
+																	name="minus"
+																	className="h-4 w-4 text-muted-foreground stroke-3"
+																/>
+															)
+													}
+												})()}
+											</Button>
+										</TooltipTrigger>
+										<Portal>
+											<TooltipContent>
+												<p className="capitalize">{note.priority} priority</p>
+											</TooltipContent>
+										</Portal>
+									</Tooltip>
+								)}
+								<h3 className="text-lg font-semibold leading-tight flex-1">
+									{note.title}
+								</h3>
+							</div>
+							{/* Content preview */}
+							{note.content && (
+								<p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
+									{note.content.replace(/<[^>]*>/g, '').substring(0, 120)}
+									{note.content.replace(/<[^>]*>/g, '').length > 120 && '...'}
+								</p>
+							)}
+						</div>
+					)}
 
-					<div className="mt-auto border-t font-mono">
-						<div className="flex items-center justify-between px-4 py-2">
+					{/* Tags section */}
+					{tags && tags.length > 0 && (
+						<div className="flex flex-wrap gap-1 px-1 mt-2">
+							{tags.slice(0, 2).map((tag: any, index: number) => (
+								<span
+									key={index}
+									className="bg-primary/10 text-primary inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
+								>
+									{typeof tag === 'string' ? tag : tag?.name || String(tag)}
+								</span>
+							))}
+							{tags.length > 2 && (
+								<span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs">
+									+{tags.length - 2}
+								</span>
+							)}
+						</div>
+					)}
+
+					{/* Footer */}
+					<div className="mt-auto pt-3 px-1">
+						<div className="flex items-center justify-between">
 							<div className="flex items-center gap-2">
 								<Avatar className="h-5 w-5">
 									<AvatarImage
@@ -485,15 +490,14 @@ export const NoteCard = ({
 									{createdBy.split(' ')[0]}
 								</span>
 							</div>
-
-							<span className="text-muted-foreground text-xs tracking-tighter">
+							<span className="text-muted-foreground text-xs">
 								{timeAgo}
 							</span>
 						</div>
 					</div>
-				</div>
-			</CardContent>
-		</Card>
+				</CardContent>
+			</Card>
+		</div>
 	)
 }
 

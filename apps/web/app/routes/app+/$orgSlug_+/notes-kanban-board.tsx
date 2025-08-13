@@ -185,11 +185,15 @@ export function NotesKanbanBoard({
 		bucket.push(n)
 	})
 	Object.values(grouped).forEach((arr) =>
-		arr.sort(
-			(a, b) =>
-				(a.position ?? Number.POSITIVE_INFINITY) -
-				(b.position ?? Number.POSITIVE_INFINITY),
-		),
+		arr.sort((a, b) => {
+      const posA = a.position ?? Number.POSITIVE_INFINITY;
+      const posB = b.position ?? Number.POSITIVE_INFINITY;
+      if (posA === posB) {
+        // Fallback to creation date if positions are equal
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }
+      return posA - posB;
+    }),
 	)
 
 	// --- DnD-kit setup ---
