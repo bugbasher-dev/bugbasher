@@ -25,6 +25,76 @@ async function getUserBase64Image(imageObjectKey: string) {
 	return Buffer.from(buffer).toString('base64')
 }
 
+// Types for tool definitions and requests
+interface ToolDefinition {
+	name: string
+	title: string
+	description: string
+	inputSchema: {
+		type: string
+		properties: Record<string, any>
+		required: string[]
+	}
+}
+
+interface ToolRequest {
+	tool: string
+	args: Record<string, any>
+}
+
+// Tool definitions that will be returned to MCP clients
+const TOOL_DEFINITIONS: ToolDefinition[] = [
+	{
+		name: 'find_user',
+		title: 'Find users',
+		description: 'Search for users in your organization by their name or username',
+		inputSchema: {
+			type: 'object',
+			properties: {
+				query: { type: 'string', description: 'Search query for user name or username' }
+			},
+			required: ['query']
+		}
+	},
+	{
+		name: 'get_user_notes',
+		title: 'Get notes',
+		description: 'Get the notes for a user in your organization',
+		inputSchema: {
+			type: 'object',
+			properties: {
+				username: { type: 'string', description: 'Username of the user whose notes to retrieve' }
+			},
+			required: ['username']
+		}
+	}
+]
+
+export async function loader({ request }: Route.LoaderArgs) {
+	const url = new URL(request.url)
+	const apiKey = url.searchParams.get('apiKey')
+
+	if (!apiKey) {
+		return new Response(JSON.stringify({ error: 'API key required' }), { 
+			status: 401,
+			headers: { 'Content-Type': 'application/json' }
+		})
+	}
+
+	const authData = await validateApiKey(apiKey)
+	if (!authData) {
+		return new Response(JSON.stringify({ error: 'Invalid API key' }), { 
+			status: 401,
+			headers: { 'Content-Type': 'application/json' }
+		})
+	}
+
+	// Return available tools
+	return new Response(JSON.stringify({ tools: TOOL_DEFINITIONS }), {
+		headers: { 'Content-Type': 'application/json' }
+	})
+}
+
 export async function action({ request }: Route.ActionArgs) {
 	const url = new URL(request.url)
 	const apiKey = url.searchParams.get('apiKey')
@@ -45,7 +115,7 @@ export async function action({ request }: Route.ActionArgs) {
 	}
 
 	try {
-		const body = await request.json()
+		const body = await request.json() as ToolRequest
 		const { tool, args } = body
 
 		if (tool === 'find_user') {
@@ -163,7 +233,7 @@ export async function action({ request }: Route.ActionArgs) {
 				})
 			}
 
-			const content = notes.map((note) => ({
+			const content = notes.map((note: any) => ({
 				type: 'text',
 				text: `${note.title}\n\n${note.content}\n\n---\nCreated: ${note.createdAt.toLocaleDateString()}${note.isPublic ? '' : ' (Private)'}`,
 			}))
