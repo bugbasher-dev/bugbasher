@@ -136,7 +136,7 @@ export const NoteCard = ({
 			formData.append('title', editTitle)
 			formData.append('content', editContent)
 
-			fetcher.submit(formData, {
+			void fetcher.submit(formData, {
 				method: 'POST',
 				action: `/app/${loaderData?.organization.slug}/notes/${note.id}/edit`,
 			})
