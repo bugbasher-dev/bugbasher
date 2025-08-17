@@ -122,25 +122,10 @@ jobs:
         run: npm run test:e2e:install
 
       - name: 🛠 Setup Database
-        run:
-          npx prisma migrate deploy --schema=packages/prisma/schema.prisma &&
+        run: |
+          npx prisma migrate deploy --schema=packages/prisma/schema.prisma
+          npx prisma db seed --schema=packages/prisma/schema.prisma
           npx prisma generate --sql --schema=packages/prisma/schema.prisma
-
-      - name: 🏦 Cache Database
-        id: db-cache
-        uses: actions/cache@v4
-        with:
-          path: packages/prisma/db/data.db
-          key:
-            db-cache-schema_${{ hashFiles('./packages/prisma/schema.prisma')
-            }}-migrations_${{
-            hashFiles('./packages/prisma/migrations/*/migration.sql') }}
-
-      - name: 🌱 Seed Database
-        if: steps.db-cache.outputs.cache-hit != 'true'
-        run:
-          npx prisma migrate reset --force
-          --schema=packages/prisma/schema.prisma
 
       - name: 🏗 Build
         run: npm run build
