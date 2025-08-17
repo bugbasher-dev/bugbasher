@@ -1,8 +1,6 @@
-'use client'
-
-import { useChat } from 'ai/react'
 import { SparklesIcon } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { ClientOnly } from "remix-utils/client-only"
+
 import {
 	Conversation,
 	ConversationContent,
@@ -20,11 +18,6 @@ import {
 	PromptInputToolbar,
 	PromptInputSubmit,
 } from '#app/components/ai-elements/prompt-input'
-import {
-	Reasoning,
-	ReasoningContent,
-	ReasoningTrigger,
-} from '#app/components/ai-elements/reasoning'
 import { Response } from '#app/components/ai-elements/response'
 import { Suggestions, Suggestion } from '#app/components/ai-elements/suggestion'
 
@@ -45,7 +38,9 @@ function MessageContentRenderer({
 	}
 
 	// Use the Response component for AI messages with markdown support
-	return <Response>{content}</Response>
+	return <ClientOnly fallback={<Loader />}
+		{() => <Response content={content} />}
+	</ClientOnly>
 }
 
 // Smart suggestions based on context and conversation state
