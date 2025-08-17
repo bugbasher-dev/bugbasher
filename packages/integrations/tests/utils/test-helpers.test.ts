@@ -131,9 +131,9 @@ describe('Test Helpers', () => {
 		it('should create test channels', () => {
 			const channels = createTestChannels(3)
 			expect(channels).toHaveLength(3)
-			expect(channels[0].name).toBe('Test Channel 1')
-			expect(channels[0].type).toBe('public')
-			expect(channels[1].type).toBe('private')
+			expect(channels[0]?.name).toBe('Test Channel 1')
+			expect(channels[0]?.type).toBe('public')
+			expect(channels[1]?.type).toBe('private')
 		})
 	})
 

@@ -113,7 +113,10 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 type LoaderData = {
-	users: (Omit<User, 'createdAt' | 'updatedAt' | 'banExpiresAt' | 'bannedAt'> & {
+	users: (Omit<
+		User,
+		'createdAt' | 'updatedAt' | 'banExpiresAt' | 'bannedAt'
+	> & {
 		createdAt: string
 		updatedAt: string
 		banExpiresAt: string | null

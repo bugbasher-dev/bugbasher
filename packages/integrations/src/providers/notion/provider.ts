@@ -378,7 +378,7 @@ export class NotionProvider extends BaseIntegrationProvider {
 		const connectionConfig = (
 			typeof connection.config === 'string'
 				? JSON.parse(connection.config)
-				: connection.config ?? {}
+				: (connection.config ?? {})
 		) as NotionConnectionConfig
 
 		// Extract database ID from the channel metadata URL
@@ -471,7 +471,7 @@ export class NotionProvider extends BaseIntegrationProvider {
 		const connectionConfig = (
 			typeof connection.config === 'string'
 				? JSON.parse(connection.config)
-				: connection.config ?? {}
+				: (connection.config ?? {})
 		) as NotionConnectionConfig
 
 		// Extract database ID from the channel metadata URL
