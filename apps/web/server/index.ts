@@ -315,12 +315,25 @@ app.all('/api/novu*', (req, res, next) => {
 
 		if (typeof reasonPhraseOrHeaders === 'string') {
 			if (maybeHeaders) {
-				return originalWriteHead.call(res, statusCode, reasonPhraseOrHeaders, maybeHeaders)
+				return (originalWriteHead as any).call(
+					res,
+					statusCode,
+					reasonPhraseOrHeaders,
+					maybeHeaders,
+				)
 			} else {
-				return originalWriteHead.call(res, statusCode, reasonPhraseOrHeaders)
+				return (originalWriteHead as any).call(
+					res,
+					statusCode,
+					reasonPhraseOrHeaders,
+				)
 			}
 		} else {
-			return originalWriteHead.call(res, statusCode, reasonPhraseOrHeaders)
+			return (originalWriteHead as any).call(
+				res,
+				statusCode,
+				reasonPhraseOrHeaders,
+			)
 		}
 	}
 
