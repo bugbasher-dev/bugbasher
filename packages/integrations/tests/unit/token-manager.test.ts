@@ -411,7 +411,7 @@ describe('TokenManager', () => {
 			id: 'integration-123',
 			organizationId: 'org-123',
 			providerName: 'slack',
-			providerType: 'productivity',
+			providerType: 'communication',
 			accessToken: 'encrypted-access',
 			refreshToken: 'encrypted-refresh',
 			tokenExpiresAt: new Date(),
