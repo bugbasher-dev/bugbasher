@@ -26,7 +26,7 @@ const MAX_SIZE = 1024 * 1024 * 3 // 3MB
 
 export async function loader({
 	request,
-}: LoaderFunctionArgs): Promise<Response> {
+}: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)
 	const user = await prisma.user.findUniqueOrThrow({
 		where: { id: userId },
@@ -41,9 +41,9 @@ export async function loader({
 		},
 	})
 
-	return Response.json({
+	return {
 		user,
-	})
+	}
 }
 
 export const profileUpdateActionIntent = 'update-profile'
@@ -53,7 +53,7 @@ export const deletePhotoActionIntent = 'delete-photo'
 
 export async function action({
 	request,
-}: ActionFunctionArgs): Promise<Response> {
+}: ActionFunctionArgs) {
 	const userId = await requireUserId(request)
 	const contentType = request.headers.get('content-type')
 

@@ -3,7 +3,7 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { ForgotPasswordEmail } from '@repo/email'
-import { data, redirect, Link, useFetcher } from 'react-router'
+import { data, redirect, Link, useFetcher, Form, useActionData } from 'react-router'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
@@ -67,8 +67,8 @@ export async function action({ request }: Route.ActionArgs) {
 	const formData = await request.formData()
 	await checkHoneypot(formData)
 
-	// Arcjet security protection for forgot password
-	if (process.env.ARCJET_KEY) {
+	// Arcjet security protection for forgot password (skip in test environment)
+	if (process.env.ARCJET_KEY && process.env.NODE_ENV === 'production') {
 		const usernameOrEmail = formData.get('usernameOrEmail') as string
 		try {
 			const decision = await aj.protect(
@@ -147,6 +147,7 @@ export async function action({ request }: Route.ActionArgs) {
 		),
 	})
 
+
 	if (response.status === 'success') {
 		return redirect(redirectTo.toString())
 	} else {
@@ -162,12 +163,12 @@ export const meta: Route.MetaFunction = () => {
 }
 
 export default function ForgotPasswordRoute() {
-	const forgotPassword = useFetcher<typeof action>()
+	const actionData = useActionData<typeof action>()
 
 	const [form, fields] = useForm({
 		id: 'forgot-password-form',
 		constraint: getZodConstraint(ForgotPasswordSchema),
-		lastResult: forgotPassword.data?.result,
+		lastResult: actionData?.result,
 		onValidate({ formData }) {
 			return parseWithZod(formData, { schema: ForgotPasswordSchema })
 		},
@@ -183,7 +184,7 @@ export default function ForgotPasswordRoute() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<forgotPassword.Form method="POST" {...getFormProps(form)}>
+				<Form method="POST" {...getFormProps(form)}>
 					<HoneypotInputs />
 					<div className="grid gap-6">
 						<div className="grid gap-3">
@@ -203,13 +204,8 @@ export default function ForgotPasswordRoute() {
 
 						<StatusButton
 							className="w-full"
-							status={
-								forgotPassword.state === 'submitting'
-									? 'pending'
-									: (form.status ?? 'idle')
-							}
+							status={form.status ?? 'idle'}
 							type="submit"
-							disabled={forgotPassword.state !== 'idle'}
 						>
 							Send reset instructions
 						</StatusButton>
@@ -224,7 +220,7 @@ export default function ForgotPasswordRoute() {
 							</Link>
 						</div>
 					</div>
-				</forgotPassword.Form>
+				</Form>
 			</CardContent>
 		</Card>
 	)

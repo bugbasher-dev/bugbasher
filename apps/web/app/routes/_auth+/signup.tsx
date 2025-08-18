@@ -102,38 +102,38 @@ export async function action(args: Route.ActionArgs) {
 				})
 				return
 			}
-			// Arcjet security protection
-			if (process.env.ARCJET_KEY) {
-				const email = formData.get('email') as string
-				try {
-					const decision = await aj.protect(args, { email })
+					// Arcjet security protection (skip in test environment)
+		if (process.env.ARCJET_KEY && process.env.NODE_ENV !== 'test') {
+			const email = formData.get('email') as string
+			try {
+				const decision = await aj.protect(args, { email })
 
-					if (decision.isDenied()) {
-						let errorMessage = 'Access denied'
+				if (decision.isDenied()) {
+					let errorMessage = 'Access denied'
 
-						if (decision.reason.isBot()) {
-							errorMessage = 'Forbidden'
-						} else if (decision.reason.isRateLimit()) {
-							errorMessage = 'Too many signup attempts - try again shortly'
-						} else if (decision.reason.isEmail()) {
-							// This is a generic error, but you could be more specific
-							// See https://docs.arcjet.com/email-validation/reference#checking-the-email-type
-							errorMessage = 'Invalid email address'
-						}
-
-						// Return early with error response
-						ctx.addIssue({
-							path: ['email'],
-							code: z.ZodIssueCode.custom,
-							message: errorMessage,
-						})
-						return
+					if (decision.reason.isBot()) {
+						errorMessage = 'Forbidden'
+					} else if (decision.reason.isRateLimit()) {
+						errorMessage = 'Too many signup attempts - try again shortly'
+					} else if (decision.reason.isEmail()) {
+						// This is a generic error, but you could be more specific
+						// See https://docs.arcjet.com/email-validation/reference#checking-the-email-type
+						errorMessage = 'Invalid email address'
 					}
-				} catch (error) {
-					// If Arcjet fails, log error but continue with signup process
-					console.error('Arcjet protection failed:', error)
+
+					// Return early with error response
+					ctx.addIssue({
+						path: ['email'],
+						code: z.ZodIssueCode.custom,
+						message: errorMessage,
+					})
+					return
 				}
+			} catch (error) {
+				// If Arcjet fails, log error but continue with signup process
+				console.error('Arcjet protection failed:', error)
 			}
+		}
 		}),
 		async: true,
 	})

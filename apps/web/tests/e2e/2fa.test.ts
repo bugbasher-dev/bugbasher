@@ -2,27 +2,37 @@ import { faker } from '@faker-js/faker'
 import { generateTOTP } from '#app/utils/totp.server.ts'
 import { expect, test } from '#tests/playwright-utils.ts'
 
-test.skip('Users can add 2FA to their account and use it when logging in', async ({
+test('Users can add 2FA to their account and use it when logging in', { timeout: 45000 }, async ({
 	page,
 	login,
 }) => {
 	const password = faker.internet.password()
 	const user = await login({ password })
-	await page.goto('/settings/profile')
+	await page.goto('/app/security')
 
-	await page.getByRole('link', { name: /Enable 2FA/i }).click()
+	// Wait for the page to be fully loaded
+	await page.waitForLoadState('networkidle')
 
-	await expect(page).toHaveURL(`/settings/profile/two-factor`)
 	const main = page.getByRole('main')
-	await main.getByRole('button', { name: /enable 2fa/i }).click()
-	const otpUriString = await main
-		.getByLabel(/One-Time Password URI/i)
-		.innerText()
+	const enable2FAButton = main.getByRole('button', { name: /Enable 2FA/i })
+	await expect(enable2FAButton).toBeVisible()
+	await enable2FAButton.click()
+
+	// Wait for the specific dialog title instead of generic dialog role
+	await expect(page.getByRole('heading', { name: 'Two-Factor Authentication' })).toBeVisible({ timeout: 10000 })
+	
+	// Wait for the authentication code input which should always be present
+	await expect(page.getByRole('textbox', { name: /Authentication Code/i })).toBeVisible({ timeout: 10000 })
+	
+	// Wait for the OTP URI element to be available before accessing its text
+	const otpUriElement = page.getByLabel(/One-time Password URI/i)
+	await expect(otpUriElement).toBeVisible({ timeout: 10000 })
+	const otpUriString = await otpUriElement.innerText()
 
 	const otpUri = new URL(otpUriString)
 	const options = Object.fromEntries(otpUri.searchParams)
 
-	await main.getByRole('textbox', { name: /code/i }).fill(
+	await page.getByRole('textbox', { name: /Authentication Code/i }).fill(
 		(
 			await generateTOTP({
 				...options,
@@ -31,26 +41,27 @@ test.skip('Users can add 2FA to their account and use it when logging in', async
 			})
 		).otp,
 	)
-	await main.getByRole('button', { name: /submit/i }).click()
+	await page.getByRole('button', { name: /Enable 2FA/i }).click()
+	// Wait specifically for the dialog heading (level 2) to be hidden, not the main page heading
+	await expect(page.getByRole('heading', { name: 'Two-Factor Authentication', level: 2 })).toBeHidden({ timeout: 15000 })
 
-	await expect(
-		page.getByText(/You have enabled two-factor authentication./i),
-	).toBeVisible()
-	await expect(page.getByRole('link', { name: /disable 2fa/i })).toBeVisible()
+	await expect(main.getByRole('button', { name: /Disable 2FA/i })).toBeVisible()
 
-	// Navigate to home page first, then logout
-	await page.goto('/')
+	// Logout
+	await page
+		.getByRole('button', { name: user.name ?? user.username })
+		.first()
+		.click()
 	await page.getByRole('button', { name: /log out/i }).click()
-	await expect(page).toHaveURL(`/`)
+	await expect(page.getByRole('link', { name: /login/i })).toBeVisible()
 
 	await page.goto('/login')
 	await expect(page).toHaveURL(`/login`)
 	await page.getByRole('textbox', { name: /username/i }).fill(user.username)
 	await page.getByLabel(/^password$/i).fill(password)
-	await page
-		.getByRole('button', { name: 'Login', exact: true })
-		.click({ force: true })
+	await page.getByRole('button', { name: 'Login', exact: true }).click()
 
+	await expect(page).toHaveURL(/\/verify/)
 	await page.getByRole('textbox', { name: /code/i }).fill(
 		(
 			await generateTOTP({
@@ -61,9 +72,22 @@ test.skip('Users can add 2FA to their account and use it when logging in', async
 		).otp,
 	)
 
-	await page.getByRole('button', { name: /submit/i }).click()
+	await page.getByRole('button', { name: /verify/i }).click()
 
-	await expect(
-		page.getByRole('link', { name: user.name ?? user.username }),
-	).toBeVisible()
+	await expect(page).toHaveURL('/')
+	
+	// Navigate to the app to verify the user is properly logged in
+	await page.goto('/app')
+	
+	// User should be redirected to organization creation page (authenticated area)
+	await expect(page).toHaveURL('/organizations/create')
+	
+	// Wait for the page to fully load
+	await page.waitForLoadState('networkidle')
+	
+	// Wait for the card with organization creation form to be visible
+	await expect(page.getByText('An organization is a workspace where teams collect, organize, and work together.')).toBeVisible({ timeout: 15000 })
+	
+	// Verify we're on the organization creation page by checking for the main heading
+	await expect(page.getByRole('heading', { name: 'Create a new organization' })).toBeVisible()
 })

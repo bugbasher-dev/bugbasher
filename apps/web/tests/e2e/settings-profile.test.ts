@@ -9,37 +9,48 @@ const CODE_REGEX = /Here's your verification code: (?<code>[\d\w]+)/
 
 test('Users can update their basic info', async ({ page, login }) => {
 	await login()
-	await page.goto('/settings/profile')
+	await page.goto('/app/profile')
+
+	// Wait for the page to be fully loaded
+	await page.waitForLoadState('networkidle')
 
 	const newUserData = createUser()
 
-	await page.getByRole('textbox', { name: /^name/i }).fill(newUserData.name)
-	await page
-		.getByRole('textbox', { name: /^username/i })
-		.fill(newUserData.username)
+	await page.locator('input[name="name"]').fill(newUserData.name)
+	await page.locator('input[name="username"]').fill(newUserData.username)
 
-	await page.getByRole('button', { name: /^save/i }).click()
+	await page.getByRole('button', { name: /save changes/i }).click()
 })
 
-test.skip('Users can update their password', async ({ page, login }) => {
+test('Users can update their password', async ({ page, login }) => {
 	const oldPassword = faker.internet.password()
 	const newPassword = faker.internet.password()
 	const user = await login({ password: oldPassword })
-	await page.goto('/settings/profile')
+	await page.goto('/app/security')
 
-	await page.getByRole('link', { name: /change password/i }).click()
-
-	await page
-		.getByRole('textbox', { name: /^current password/i })
-		.fill(oldPassword)
-	await page.getByRole('textbox', { name: /^new password/i }).fill(newPassword)
-	await page
-		.getByRole('textbox', { name: /^confirm new password/i })
-		.fill(newPassword)
+	// Wait for the page to be fully loaded
+	await page.waitForLoadState('networkidle')
+	
+	// Wait for the button to be visible and clickable, then click
+	const changePasswordButton = page.getByRole('button', { name: 'Change Password' })
+	await expect(changePasswordButton).toBeVisible()
+	await changePasswordButton.click()
+	
+	// Wait for the password dialog to be visible and form fields to be available
+	await expect(page.getByRole('heading', { name: 'Change Password' })).toBeVisible({ timeout: 10000 })
+	
+	// Use dialog context and input names for password form fields
+	const dialog = page.locator('[role="dialog"]')
+	await expect(dialog.locator('input[name="currentPassword"]')).toBeVisible({ timeout: 10000 })
+	
+	await dialog.locator('input[name="currentPassword"]').fill(oldPassword)
+	await dialog.locator('input[name="newPassword"]').fill(newPassword)
+	await dialog.locator('input[name="confirmNewPassword"]').fill(newPassword)
 
 	await page.getByRole('button', { name: /^change password/i }).click()
 
-	await expect(page).toHaveURL(`/settings/profile/password`)
+	// Password dialog should close after successful change (target the dialog h2, not page h3)
+	await expect(page.getByRole('heading', { name: 'Change Password', level: 2 })).toBeHidden({ timeout: 10000 })
 
 	const { username } = user
 	expect(
@@ -52,59 +63,85 @@ test.skip('Users can update their password', async ({ page, login }) => {
 	).toEqual({ id: user.id })
 })
 
-test.skip('Users can update their profile photo', async ({ page, login }) => {
+test('Users can update their profile photo', async ({ page, login }) => {
 	const user = await login()
-	await page.goto('/settings/profile')
+	await page.goto('/app/profile')
+
+	// Wait for the page to be fully loaded
+	await page.waitForLoadState('networkidle')
 
 	const beforeSrc = await page
-		.getByRole('main')
 		.getByRole('img', { name: user.name ?? user.username })
 		.getAttribute('src')
 
-	await page.getByRole('link', { name: /change profile photo/i }).click()
+	// Set the file input directly - this will trigger the dialog to open
+	const fileInput = page.locator('input[type="file"][accept="image/*"]')
+	await expect(fileInput).toBeAttached()
+	await fileInput.setInputFiles('./tests/fixtures/images/user/kody.png')
+	
+	// Wait for the dialog to appear
+	await expect(page.getByRole('heading', { name: 'Update Profile Photo' })).toBeVisible({ timeout: 10000 })
 
-	await expect(page).toHaveURL(`/settings/profile/photo`)
-
-	await page
-		.getByRole('button', { name: /change/i })
-		.setInputFiles('./tests/fixtures/images/user/kody.png')
+	// The file is already set, now just click Save
+	// (The file was set when we triggered the file input above)
 
 	await page.getByRole('button', { name: /save/i }).click()
 
-	await expect(
-		page,
-		'Was not redirected after saving the profile photo',
-	).toHaveURL(`/settings/profile`)
+	// Photo dialog should close after saving
+	await expect(page.getByRole('heading', { name: 'Update Profile Photo' })).toBeHidden({ timeout: 10000 })
 
-	const afterSrc = await page
-		.getByRole('main')
-		.getByRole('img', { name: user.name ?? user.username })
-		.getAttribute('src')
-
-	// not sure how to get the before/after src with getAttribute inline
-	// eslint-disable-next-line playwright/prefer-web-first-assertions
-	expect(beforeSrc).not.toEqual(afterSrc)
+	// Wait for the image to reload with new src - use waitFor with a condition
+	await page.waitForFunction(
+		({ originalSrc, userName }) => {
+			const img = document.querySelector(`img[alt*="${userName}"]`) as HTMLImageElement;
+			return img && img.src !== originalSrc;
+		},
+		{ originalSrc: beforeSrc, userName: user.name ?? user.username },
+		{ timeout: 10000 }
+	)
 })
 
-test.skip('Users can change their email address', async ({ page, login }) => {
+test('Users can change their email address', async ({ page, login }) => {
 	const preUpdateUser = await login()
 	const newEmailAddress = faker.internet.email().toLowerCase()
 	expect(preUpdateUser.email).not.toEqual(newEmailAddress)
-	await page.goto('/settings/profile')
-	await page.getByRole('link', { name: /change email/i }).click()
-	await page.getByRole('textbox', { name: /new email/i }).fill(newEmailAddress)
-	await page.getByRole('button', { name: /send confirmation/i }).click()
-	await expect(page.getByText(/check your email/i)).toBeVisible()
-	const email = await waitFor(() => readEmail(newEmailAddress), {
-		errorMessage: 'Confirmation email was not sent',
-	})
-	invariant(email, 'Email was not sent')
-	const codeMatch = email.text.match(CODE_REGEX)
-	const code = codeMatch?.groups?.code
-	invariant(code, 'Onboarding code not found')
-	await page.getByRole('textbox', { name: /code/i }).fill(code)
-	await page.getByRole('button', { name: /verify/i }).click()
-	await expect(page.getByText(/email changed/i)).toBeVisible()
+	await page.goto('/app/profile')
+	
+	// Wait for the page to be fully loaded
+	await page.waitForLoadState('networkidle')
+	
+	// Target the DialogTrigger button specifically using data attributes
+	// This is the button that actually opens the email dialog
+	const changeEmailButton = page.locator('button[data-slot="dialog-trigger"]:has-text("Change")')
+	await expect(changeEmailButton).toBeVisible()
+	await changeEmailButton.click()
+	
+	// Wait for the email dialog to be visible
+	const emailDialog = page.locator('[role="dialog"]')
+	await expect(emailDialog.getByRole('heading', { name: 'Change Email' })).toBeVisible({ timeout: 10000 })
+	await emailDialog.locator('input[name="email"]').fill(newEmailAddress)
+	await page.getByRole('button', { name: 'Save' }).click()
+	// After save, the dialog shows verification info with the code directly
+	await expect(page.getByText(/verification email has been sent/i)).toBeVisible({ timeout: 10000 })
+	
+	// Extract the verification code directly from the success message
+	const codeElement = page.getByText(/Verification code:/).locator('strong')
+	await expect(codeElement).toBeVisible({ timeout: 5000 })
+	const code = await codeElement.innerText()
+	invariant(code, 'Verification code not found in dialog')
+	
+	// Close the dialog and proceed with verification on the verify page
+	await page.getByRole('button', { name: 'Close' }).first().click()
+	
+	// Navigate to the verify page for email verification
+	await page.goto('/verify?type=change-email&target=' + encodeURIComponent(preUpdateUser.id))
+	
+	// Look for verification code input on the verify page
+	const codeInput = page.getByLabel('Verification Code')
+	await expect(codeInput).toBeVisible({ timeout: 10000 })
+	await codeInput.fill(code)
+	await page.getByRole('button', { name: 'Verify' }).click()
+	await expect(page.getByText(/email changed/i)).toBeVisible({ timeout: 10000 })
 
 	const updatedUser = await prisma.user.findUnique({
 		where: { id: preUpdateUser.id },

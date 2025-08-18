@@ -76,7 +76,9 @@ export async function action({ request }: Route.ActionArgs) {
 	const { password } = submission.value
 
 	await resetUserPassword({ username: resetPasswordUsername, password })
-	const verifySession = await verifySessionStorage.getSession()
+	const verifySession = await verifySessionStorage.getSession(
+		request.headers.get('cookie'),
+	)
 	return redirect('/login', {
 		headers: {
 			'set-cookie': await verifySessionStorage.destroySession(verifySession),

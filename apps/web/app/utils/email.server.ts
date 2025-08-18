@@ -39,17 +39,23 @@ export async function sendEmail({
 		...(react ? await renderReactEmail(react) : null),
 	}
 
-	// feel free to remove this condition once you've set up resend
-	if (!process.env.RESEND_API_KEY && !process.env.MOCKS) {
-		console.error(`RESEND_API_KEY not set and we're not in mocks mode.`)
-		console.error(
-			`To send emails, set the RESEND_API_KEY environment variable.`,
-		)
-		console.error(`Would have sent the following email:`, JSON.stringify(email))
-		return {
-			status: 'success',
-			data: { id: 'mocked' },
-		} as const
+	// FORCE HTTP REQUEST FOR TESTS - bypass the environment check
+	// This ensures MSW can intercept the request
+	if (process.env.NODE_ENV === 'test') {
+		console.log('🧪 TEST MODE: sendEmail called for:', options.to, 'subject:', options.subject)
+	} else {
+		// Production check - feel free to remove this condition once you've set up resend
+		if (!process.env.RESEND_API_KEY && !process.env.MOCKS) {
+			console.error(`RESEND_API_KEY not set and we're not in mocks mode.`)
+			console.error(
+				`To send emails, set the RESEND_API_KEY environment variable.`,
+			)
+			console.error(`Would have sent the following email:`, JSON.stringify(email))
+			return {
+				status: 'success',
+				data: { id: 'mocked' },
+			} as const
+		}
 	}
 
 	const response = await fetch('https://api.resend.com/emails', {

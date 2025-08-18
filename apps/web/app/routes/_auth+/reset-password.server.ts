@@ -5,7 +5,7 @@ import { verifySessionStorage } from '#app/utils/verification.server.ts'
 import { resetPasswordUsernameSessionKey } from './reset-password.tsx'
 import { type VerifyFunctionArgs } from './verify.server.ts'
 
-export async function handleVerification({ submission }: VerifyFunctionArgs) {
+export async function handleVerification({ request, submission }: VerifyFunctionArgs) {
 	invariant(
 		submission.status === 'success',
 		'Submission should be successful by now',
@@ -24,7 +24,9 @@ export async function handleVerification({ submission }: VerifyFunctionArgs) {
 		)
 	}
 
-	const verifySession = await verifySessionStorage.getSession()
+	const verifySession = await verifySessionStorage.getSession(
+		request.headers.get('cookie'),
+	)
 	verifySession.set(resetPasswordUsernameSessionKey, user.username)
 	return redirect('/reset-password', {
 		headers: {

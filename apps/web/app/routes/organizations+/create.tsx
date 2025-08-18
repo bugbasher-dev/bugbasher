@@ -356,7 +356,7 @@ function Step1({ actionData }: { actionData: any }) {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Create a new organization</CardTitle>
+				<CardTitle><h2>Create a new organization</h2></CardTitle>
 
 				<CardDescription>
 					An organization is a workspace where teams collect, organize, and work

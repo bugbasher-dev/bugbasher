@@ -203,7 +203,7 @@ jobs:
         uses: SebRollen/toml-action@v1.2.0
         id: app_name
         with:
-          file: 'fly.toml'
+          file: 'apps/web/fly.toml'
           field: 'app'
 
       - name: 🎈 Setup Fly

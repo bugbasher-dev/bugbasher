@@ -37,7 +37,9 @@ export async function handleNewSession(
 	const userHasTwoFactor = Boolean(verification)
 
 	if (userHasTwoFactor) {
-		const verifySession = await verifySessionStorage.getSession()
+		const verifySession = await verifySessionStorage.getSession(
+			request.headers.get('cookie'),
+		)
 		verifySession.set(unverifiedSessionIdKey, session.id)
 		verifySession.set(rememberKey, remember)
 		const redirectUrl = getRedirectToUrl({

@@ -36,7 +36,7 @@ export const handle: SEOHandle = {
 
 export async function loader({
 	request,
-}: LoaderFunctionArgs): Promise<Response> {
+}: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)
 	const user = await prisma.user.findUniqueOrThrow({
 		where: { id: userId },
@@ -120,7 +120,7 @@ export async function loader({
 		})
 	}
 
-	return Response.json({
+	return {
 		user,
 		hasPassword: Boolean(password),
 		isTwoFactorEnabled: Boolean(twoFactorVerification),
@@ -128,7 +128,7 @@ export async function loader({
 		qrCode,
 		otpUri,
 		passkeys,
-	})
+	}
 }
 
 type SecurityActionArgs = {
@@ -149,7 +149,7 @@ export const disable2FAActionIntent = 'disable-2fa'
 
 export async function action({
 	request,
-}: ActionFunctionArgs): Promise<Response> {
+}: ActionFunctionArgs) {
 	const userId = await requireUserId(request)
 	const formData = await request.formData()
 	const intent = formData.get('intent')
@@ -190,16 +190,13 @@ export async function action({
 
 // Mock function for passkey registration - in a real app, you'd use your passkey API
 async function registerPasskeyAction({}: SecurityActionArgs) {
-	return Response.json({ status: 'success' })
+	return { status: 'success' }
 }
 
 async function deletePasskeyAction({ formData, userId }: SecurityActionArgs) {
 	const passkeyId = formData.get('passkeyId')
 	if (typeof passkeyId !== 'string') {
-		return Response.json(
-			{ status: 'error', error: 'Invalid passkey ID' },
-			{ status: 400 },
-		)
+		throw new Response('Invalid passkey ID', { status: 400 })
 	}
 
 	await prisma.passkey.delete({
@@ -209,7 +206,7 @@ async function deletePasskeyAction({ formData, userId }: SecurityActionArgs) {
 		},
 	})
 
-	return Response.json({ status: 'success' })
+	return { status: 'success' }
 }
 
 export default function SecuritySettings() {

@@ -79,8 +79,8 @@ export async function action({ request }: Route.ActionArgs) {
 	const formData = await request.formData()
 	await checkHoneypot(formData)
 
-	// Arcjet security protection for login
-	if (process.env.ARCJET_KEY) {
+	// Arcjet security protection for login (skip in test environment)
+	if (process.env.ARCJET_KEY && process.env.NODE_ENV !== 'test') {
 		try {
 			const decision = await aj.protect({ request, context: {} })
 
