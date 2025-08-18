@@ -37,11 +37,11 @@ test('Users can update their password', async ({ page, login }) => {
 	await changePasswordButton.click()
 	
 	// Wait for the password dialog to be visible and form fields to be available
-	await expect(page.getByRole('heading', { name: 'Change Password' })).toBeVisible({ timeout: 10000 })
+	await expect(page.getByRole('heading', { name: 'Change Password' })).toBeVisible()
 	
 	// Use dialog context and input names for password form fields
-	const dialog = page.locator('[role="dialog"]')
-	await expect(dialog.locator('input[name="currentPassword"]')).toBeVisible({ timeout: 10000 })
+	const dialog = page.getByRole('dialog')
+	await expect(dialog.locator('input[name="currentPassword"]')).toBeVisible()
 	
 	await dialog.locator('input[name="currentPassword"]').fill(oldPassword)
 	await dialog.locator('input[name="newPassword"]').fill(newPassword)
@@ -50,7 +50,7 @@ test('Users can update their password', async ({ page, login }) => {
 	await page.getByRole('button', { name: /^change password/i }).click()
 
 	// Password dialog should close after successful change (target the dialog h2, not page h3)
-	await expect(page.getByRole('heading', { name: 'Change Password', level: 2 })).toBeHidden({ timeout: 10000 })
+	await expect(page.getByRole('heading', { name: 'Change Password', level: 2 })).toBeHidden()
 
 	const { username } = user
 	expect(
@@ -80,7 +80,7 @@ test('Users can update their profile photo', async ({ page, login }) => {
 	await fileInput.setInputFiles('./tests/fixtures/images/user/kody.png')
 	
 	// Wait for the dialog to appear
-	await expect(page.getByRole('heading', { name: 'Update Profile Photo' })).toBeVisible({ timeout: 10000 })
+	await expect(page.getByRole('heading', { name: 'Update Profile Photo' })).toBeVisible()
 
 	// The file is already set, now just click Save
 	// (The file was set when we triggered the file input above)
@@ -88,7 +88,7 @@ test('Users can update their profile photo', async ({ page, login }) => {
 	await page.getByRole('button', { name: /save/i }).click()
 
 	// Photo dialog should close after saving
-	await expect(page.getByRole('heading', { name: 'Update Profile Photo' })).toBeHidden({ timeout: 10000 })
+	await expect(page.getByRole('heading', { name: 'Update Profile Photo' })).toBeHidden()
 
 	// Wait for the image to reload with new src - use waitFor with a condition
 	await page.waitForFunction(
@@ -97,7 +97,7 @@ test('Users can update their profile photo', async ({ page, login }) => {
 			return img && img.src !== originalSrc;
 		},
 		{ originalSrc: beforeSrc, userName: user.name ?? user.username },
-		{ timeout: 10000 }
+		
 	)
 })
 
@@ -117,16 +117,16 @@ test('Users can change their email address', async ({ page, login }) => {
 	await changeEmailButton.click()
 	
 	// Wait for the email dialog to be visible
-	const emailDialog = page.locator('[role="dialog"]')
-	await expect(emailDialog.getByRole('heading', { name: 'Change Email' })).toBeVisible({ timeout: 10000 })
+	const emailDialog = page.getByRole('dialog')
+	await expect(emailDialog.getByRole('heading', { name: 'Change Email' })).toBeVisible()
 	await emailDialog.locator('input[name="email"]').fill(newEmailAddress)
 	await page.getByRole('button', { name: 'Save' }).click()
 	// After save, the dialog shows verification info with the code directly
-	await expect(page.getByText(/verification email has been sent/i)).toBeVisible({ timeout: 10000 })
+	await expect(page.getByText(/verification email has been sent/i)).toBeVisible()
 	
 	// Extract the verification code directly from the success message
 	const codeElement = page.getByText(/Verification code:/).locator('strong')
-	await expect(codeElement).toBeVisible({ timeout: 5000 })
+	await expect(codeElement).toBeVisible()
 	const code = await codeElement.innerText()
 	invariant(code, 'Verification code not found in dialog')
 	
@@ -138,10 +138,10 @@ test('Users can change their email address', async ({ page, login }) => {
 	
 	// Look for verification code input on the verify page
 	const codeInput = page.getByLabel('Verification Code')
-	await expect(codeInput).toBeVisible({ timeout: 10000 })
+	await expect(codeInput).toBeVisible()
 	await codeInput.fill(code)
 	await page.getByRole('button', { name: 'Verify' }).click()
-	await expect(page.getByText(/email changed/i)).toBeVisible({ timeout: 10000 })
+	await expect(page.getByText(/email changed/i)).toBeVisible()
 
 	const updatedUser = await prisma.user.findUnique({
 		where: { id: preUpdateUser.id },

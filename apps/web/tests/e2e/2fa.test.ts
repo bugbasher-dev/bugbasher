@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 import { generateTOTP } from '#app/utils/totp.server.ts'
 import { expect, test } from '#tests/playwright-utils.ts'
 
-test('Users can add 2FA to their account and use it when logging in', { timeout: 45000 }, async ({
+test('Users can add 2FA to their account and use it when logging in', async ({
 	page,
 	login,
 }) => {
@@ -19,14 +19,14 @@ test('Users can add 2FA to their account and use it when logging in', { timeout:
 	await enable2FAButton.click()
 
 	// Wait for the specific dialog title instead of generic dialog role
-	await expect(page.getByRole('heading', { name: 'Two-Factor Authentication' })).toBeVisible({ timeout: 10000 })
+	await expect(page.getByRole('heading', { name: 'Two-Factor Authentication' })).toBeVisible()
 	
 	// Wait for the authentication code input which should always be present
-	await expect(page.getByRole('textbox', { name: /Authentication Code/i })).toBeVisible({ timeout: 10000 })
+	await expect(page.getByRole('textbox', { name: /Authentication Code/i })).toBeVisible()
 	
 	// Wait for the OTP URI element to be available before accessing its text
 	const otpUriElement = page.getByLabel(/One-time Password URI/i)
-	await expect(otpUriElement).toBeVisible({ timeout: 10000 })
+	await expect(otpUriElement).toBeVisible()
 	const otpUriString = await otpUriElement.innerText()
 
 	const otpUri = new URL(otpUriString)
@@ -43,7 +43,7 @@ test('Users can add 2FA to their account and use it when logging in', { timeout:
 	)
 	await page.getByRole('button', { name: /Enable 2FA/i }).click()
 	// Wait specifically for the dialog heading (level 2) to be hidden, not the main page heading
-	await expect(page.getByRole('heading', { name: 'Two-Factor Authentication', level: 2 })).toBeHidden({ timeout: 15000 })
+	await expect(page.getByRole('heading', { name: 'Two-Factor Authentication', level: 2 })).toBeHidden()
 
 	await expect(main.getByRole('button', { name: /Disable 2FA/i })).toBeVisible()
 
@@ -86,7 +86,7 @@ test('Users can add 2FA to their account and use it when logging in', { timeout:
 	await page.waitForLoadState('networkidle')
 	
 	// Wait for the card with organization creation form to be visible
-	await expect(page.getByText('An organization is a workspace where teams collect, organize, and work together.')).toBeVisible({ timeout: 15000 })
+	await expect(page.getByText('An organization is a workspace where teams collect, organize, and work together.')).toBeVisible()
 	
 	// Verify we're on the organization creation page by checking for the main heading
 	await expect(page.getByRole('heading', { name: 'Create a new organization' })).toBeVisible()

@@ -164,7 +164,7 @@ test('completes onboarding after GitHub OAuth given valid user details', async (
 				'i',
 			),
 		),
-	).toBeVisible({ timeout: 15000 })
+	).toBeVisible()
 
 	// fields are pre-populated for the user, so we only need to accept
 	// terms of service and hit the 'crete an account' button
@@ -352,7 +352,7 @@ test('login as existing user', async ({ page, insertNewUser }) => {
 	// Wait for navigation or error message
 	try {
 		// Wait for either successful redirect to home page or stay on login page
-		await page.waitForURL('/', { timeout: 10000 })
+		await page.waitForURL('/')
 	} catch (error) {
 		// If we didn't redirect to home, we're probably still on login page
 		console.log('Login did not redirect to home page. Current URL:', page.url())
@@ -401,7 +401,7 @@ test('reset password with a link', async ({ page, insertNewUser }) => {
 		.click({ force: true })
 
 		// Wait for redirect to verify page after successful form submission  
-	await expect(page).toHaveURL(/\/verify\?/, { timeout: 8000 })
+	await expect(page).toHaveURL(/\/verify\?/)
 
 	const email = await readEmail(user.email)
 	invariant(email, 'Email not found')
@@ -447,7 +447,7 @@ test('reset password with a link', async ({ page, insertNewUser }) => {
 	await page.getByRole('button', { name: /reset password/i }).click()
 
 	// Wait for successful redirect to login page
-	await expect(page).toHaveURL('/login', { timeout: 10000 })
+	await expect(page).toHaveURL('/login')
 	
 	// Wait for login page to fully load
 	await page.waitForLoadState('networkidle')
@@ -460,7 +460,7 @@ test('reset password with a link', async ({ page, insertNewUser }) => {
 		.click({ force: true })
 
 	// Wait for login to complete and redirect to home page
-	await expect(page).toHaveURL(`/`, { timeout: 15000 })
+	await expect(page).toHaveURL(`/`)
 
 	await expect(page.getByRole('link', { name: /dashboard/i })).toBeVisible()
 })
@@ -484,7 +484,7 @@ test('reset password with a short code', async ({
 		.click({ force: true })
 	
 	// Wait for redirect to verify page after successful form submission
-	await expect(page).toHaveURL(/\/verify\?/, { timeout: 10000 })
+	await expect(page).toHaveURL(/\/verify\?/)
 
 	const email = await readEmail(user.email)
 	invariant(email, 'Email not found')
