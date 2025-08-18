@@ -130,7 +130,7 @@ export default async function handleRequest(...args: DocRequestArgs) {
 										"'self'",
 									],
 									'font-src': ["'self'"],
-									'frame-src': ["'self'"],
+									'frame-src': ["'self'", "builder.io"],
 									'img-src': ["'self'", 'data:'],
 									'script-src': [
 										"'strict-dynamic'",
