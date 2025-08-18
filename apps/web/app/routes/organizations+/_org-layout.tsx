@@ -19,7 +19,7 @@ export default function OrganizationLayout() {
 					<div>{rootData?.user?.name}</div>
 				</div>
 			</header>
-			<div className="bg-muted flex-1">
+			<div className="bg-muted/10 flex-1">
 				<Outlet />
 			</div>
 		</div>

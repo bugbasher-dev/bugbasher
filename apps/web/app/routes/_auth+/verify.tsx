@@ -94,7 +94,7 @@ export default function VerifyRoute({ actionData }: Route.ComponentProps) {
 
 	return (
 		<Card className="border-0 shadow-2xl">
-			<CardHeader className="text-center">
+			<CardHeader>
 				<CardTitle className="text-xl">{currentHeading.title}</CardTitle>
 				<CardDescription>{currentHeading.description}</CardDescription>
 			</CardHeader>

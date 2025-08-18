@@ -286,7 +286,7 @@ export default function NotificationBell() {
 		<Popover open={isOpen} onOpenChange={setIsOpen}>
 			<PopoverTrigger asChild>
 				<motion.button
-					className="relative flex h-8 w-8 items-center justify-center rounded-full border p-0.5"
+					className="relative flex h-8 w-8 items-center justify-center rounded-2xl border p-0.5"
 					whileHover={{ scale: 1.05 }}
 					whileTap={{ scale: 0.95 }}
 				>
@@ -308,15 +308,15 @@ export default function NotificationBell() {
 					<span className="sr-only">Toggle notifications</span>
 				</motion.button>
 			</PopoverTrigger>
-			<PopoverContent className="w-[400px] p-0" align="end">
+			<PopoverContent className="w-[400px] p-0 rounded-2xl" align="end">
 				<motion.div
 					initial="hidden"
 					animate="visible"
 					exit="hidden"
 					variants={containerVariants}
 				>
-					<Card className="border-0 p-0 shadow-none">
-						<CardHeader className="border-b px-2 py-0 pt-2 [.border-b]:pb-0">
+					<Card className="border-0 shadow-none">
+						<CardHeader className="p-2">
 							<div className="flex justify-between">
 								<div className="mt-1 flex-1">
 									<DropdownMenu>

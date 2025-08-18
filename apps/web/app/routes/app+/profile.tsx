@@ -91,7 +91,7 @@ export default function ProfileSettings() {
 	const data = useLoaderData()
 
 	return (
-		<div className="m-8 flex flex-1 flex-col gap-4">
+		<div className="my-8 flex flex-1 flex-col gap-4 md:m-8">
 			<AnnotatedLayout>
 				<PageTitle
 					title="Profile Settings"

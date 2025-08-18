@@ -54,7 +54,7 @@ export default function AdminFeedbackPage() {
 					Here you can see all the feedback submitted by users.
 				</p>
 			</div>
-			<div className="overflow-hidden rounded-lg border">
+			<div>
 				<Table>
 					<TableHeader>
 						<TableRow>

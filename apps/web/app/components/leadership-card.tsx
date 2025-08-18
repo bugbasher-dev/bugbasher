@@ -56,7 +56,7 @@ export function LeadershipCard({ leaders, className }: LeadershipCardProps) {
 					Team members who have created the most notes
 				</CardDescription>
 			</CardHeader>
-			<CardContent>
+			<CardContent className="h-full">
 				<div className="space-y-1">
 					<div className="text-muted-foreground grid grid-cols-2 gap-4 border-b pb-2 text-sm font-medium">
 						<div>Rank</div>

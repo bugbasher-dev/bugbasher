@@ -516,7 +516,7 @@ function ApiKeysCard({
 					)}
 				</div>
 			</CardContent>
-			<CardFooter className="border-t pt-4">
+			<CardFooter className="pt-4">
 				<Button onClick={onCreateClick} className="gap-2">
 					<Icon name="plus" className="h-4 w-4" />
 					Create API Key
@@ -693,7 +693,7 @@ export default function McpPage() {
 	}, [actionData])
 
 	return (
-		<div className="p-8">
+		<div className="py-8 md:p-8">
 			<div className="mb-8">
 				<PageTitle
 					title="MCP Server"

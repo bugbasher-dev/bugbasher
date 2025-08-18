@@ -257,7 +257,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 
 			{/* Management Cards */}
 			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-				<Card className="transition-shadow hover:shadow-md">
+				<Card className="transition-shadow">
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Users</CardTitle>
 						<svg
@@ -290,7 +290,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 					</CardContent>
 				</Card>
 
-				<Card className="transition-shadow hover:shadow-md">
+				<Card className="transition-shadow">
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Organizations</CardTitle>
 						<svg
@@ -322,7 +322,7 @@ export default function AdminDashboard({ loaderData }: Route.ComponentProps) {
 					</CardContent>
 				</Card>
 
-				<Card className="transition-shadow hover:shadow-md">
+				<Card className="transition-shadow">
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Cache</CardTitle>
 						<svg

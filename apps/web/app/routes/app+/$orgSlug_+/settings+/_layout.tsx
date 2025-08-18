@@ -7,7 +7,7 @@ export default function SettingsLayout() {
 	useLocation()
 
 	return (
-		<div className="p-8">
+		<div className="py-8 md:p-8">
 			<div className="mb-8">
 				<PageTitle
 					title="Settings"

@@ -14,6 +14,7 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
+	CardFooter,
 	CardHeader,
 	CardTitle,
 } from '#app/components/ui/card.tsx'
@@ -156,7 +157,7 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
 
 	return (
 		<Card className="border-0 shadow-2xl">
-			<CardHeader className="text-center">
+			<CardHeader>
 				<CardTitle className="text-xl">Welcome back</CardTitle>
 				<CardDescription>
 					Login with your social account or email
@@ -266,7 +267,10 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
 						</div>
 					</Form>
 
-					<div className="bg-muted -m-6 mt-0 rounded-lg p-4 text-center text-sm backdrop-blur-sm">
+					
+				</div>
+			</CardContent>
+			<CardFooter className="rounded-lg p-4 text-center text-sm">
 						Don&apos;t have an account?{' '}
 						<Link
 							to={
@@ -278,9 +282,7 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
 						>
 							Create account
 						</Link>
-					</div>
-				</div>
-			</CardContent>
+					</CardFooter>
 		</Card>
 	)
 }

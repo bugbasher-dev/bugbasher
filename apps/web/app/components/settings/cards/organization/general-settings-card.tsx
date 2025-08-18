@@ -72,11 +72,11 @@ export function GeneralSettingsCard({
 					</div>
 				</div>
 			</CardContent>
-			<CardFooter className="border-muted justify-end border-t pt-4">
+			<CardFooter className="justify-end">
 				<StatusButton
+					size="sm"
 					form={form.id}
 					type="submit"
-					variant="default"
 					name="intent"
 					value={organizationUpdateActionIntent}
 					status={

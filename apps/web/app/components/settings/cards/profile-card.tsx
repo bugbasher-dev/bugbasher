@@ -122,11 +122,11 @@ export function ProfileCard({ user }: ProfileCardProps) {
 					</div>
 				</div>
 			</CardContent>
-			<CardFooter className="border-muted justify-end border-t pt-4">
+			<CardFooter className="justify-end">
 				<StatusButton
+					size="sm"
 					form="edit-profile"
 					type="submit"
-					variant="outline"
 					name="intent"
 					value={profileUpdateActionIntent}
 					status={

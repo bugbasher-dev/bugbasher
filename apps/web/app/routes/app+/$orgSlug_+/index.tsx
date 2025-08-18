@@ -218,7 +218,7 @@ export default function OrganizationDashboard() {
 		rootData?.userOrganizations?.currentOrganization?.organization.slug || ''
 
 	return (
-		<div className="p-8">
+		<div className="py-8 md:p-8">
 			<PageTitle
 				title={`Welcome ${user?.name || 'User'}!`}
 				description="Welcome to your organization dashboard. Here you can manage your organization's settings and view analytics."

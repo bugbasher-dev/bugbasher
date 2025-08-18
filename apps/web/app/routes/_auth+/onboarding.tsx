@@ -286,7 +286,7 @@ export default function OnboardingRoute({
 
 	return (
 		<Card className="border-0 shadow-2xl">
-			<CardHeader className="text-center">
+			<CardHeader>
 				<CardTitle className="text-xl">
 					{inviteToken ? 'Complete your profile' : 'Welcome aboard!'}
 				</CardTitle>

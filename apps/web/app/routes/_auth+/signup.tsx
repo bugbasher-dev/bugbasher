@@ -12,6 +12,7 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
+	CardFooter,
 	CardHeader,
 	CardTitle,
 } from '#app/components/ui/card.tsx'
@@ -197,7 +198,7 @@ export default function SignupRoute({
 
 	return (
 		<Card className="border-0 shadow-2xl">
-			<CardHeader className="text-center">
+			<CardHeader>
 				<CardTitle className="text-xl">
 					{inviteToken ? 'Join organization' : 'Create an account'}
 				</CardTitle>
@@ -256,7 +257,11 @@ export default function SignupRoute({
 							</StatusButton>
 						</div>
 
-						<div className="bg-muted -m-6 mt-0 rounded-lg p-4 text-center text-sm backdrop-blur-sm">
+						
+					</Form>
+				</div>
+			</CardContent>
+			<CardFooter className="rounded-lg p-4 text-center text-sm">
 							Already have an account?{' '}
 							<Link
 								to={
@@ -268,10 +273,7 @@ export default function SignupRoute({
 							>
 								Sign in
 							</Link>
-						</div>
-					</Form>
-				</div>
-			</CardContent>
+						</CardFooter>
 		</Card>
 	)
 }

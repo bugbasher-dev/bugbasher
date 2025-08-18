@@ -132,3 +132,34 @@
 		}
 	}
 }
+
+/* Text hierarchy utilities inspired by ceramic design system */
+@utility text-label-1 {
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	font-weight: 600;
+}
+
+@utility text-label-2 {
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	font-weight: 500;
+}
+
+@utility text-body-2 {
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	font-weight: 400;
+}
+
+@utility text-label-3 {
+	font-size: 0.75rem;
+	line-height: 1rem;
+	font-weight: 500;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+@utility text-secondary {
+	color: var(--color-muted-foreground);
+}

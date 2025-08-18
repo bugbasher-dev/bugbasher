@@ -159,19 +159,19 @@ export function S3StorageCard({
 						className="space-y-4"
 					>
 						<div className="flex items-center justify-between">
-							<div className="space-y-0.5">
-								<Label htmlFor="s3-enabled">Enable Custom S3 Storage</Label>
+							<div className="space-y-1">
+								<Label className="flex items-center gap-2"><Switch
+								formId={form.id}
+								id={fields.s3Enabled.id}
+								name={fields.s3Enabled.name}
+								defaultChecked={organization.s3Config?.isEnabled}
+							/>Enable Custom S3 Storage</Label>
 								<p className="text-muted-foreground text-sm">
 									Use your own S3-compatible storage instead of the default
 									storage
 								</p>
 							</div>
-							<Switch
-								formId={form.id}
-								id={fields.s3Enabled.id}
-								name={fields.s3Enabled.name}
-								defaultChecked={organization.s3Config?.isEnabled}
-							/>
+							
 						</div>
 
 						{(fields.s3Enabled.value === 'on' ||
@@ -281,7 +281,7 @@ export function S3StorageCard({
 					</fetcher.Form>
 				</div>
 			</CardContent>
-			<CardFooter className="border-t pt-4">
+			<CardFooter className="justify-end">
 				<StatusButton
 					form={form.id}
 					type="submit"
@@ -292,7 +292,7 @@ export function S3StorageCard({
 						fetcher.state !== 'idle' ? 'pending' : (form.status ?? 'idle')
 					}
 				>
-					Save S3 Configuration
+					Save
 				</StatusButton>
 				{fields.s3Endpoint.value &&
 					fields.s3BucketName.value &&

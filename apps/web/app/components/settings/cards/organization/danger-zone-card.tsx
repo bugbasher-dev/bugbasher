@@ -71,16 +71,18 @@ export default function DangerZoneCard({
 									value={confirmationText}
 									onChange={(e) => setConfirmationText(e.target.value)}
 									placeholder={organization.name}
+									className="mt-2"
 								/>
 							</div>
 
-							<div className="flex items-center space-x-2">
+							<div className="flex space-x-2">
 								<Checkbox
 									id="understand"
 									checked={isConfirmed}
 									onCheckedChange={(checked) =>
 										setIsConfirmed(checked === true)
 									}
+									className="mt-1"
 								/>
 								<Label htmlFor="understand" className="text-sm">
 									I'll not be able to access the organization and its data

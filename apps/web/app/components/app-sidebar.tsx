@@ -59,7 +59,7 @@ function UpgradeAccountCard({
 					left in your trial. Get in touch with questions or feedback.
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="-mt-4 flex flex-col gap-1 p-2 pb-0">
+			<CardContent className="-mt-4 flex flex-col gap-1 p-2 pb-0 bg-transparent border-0 ring-0 shadow-none">
 				<Button
 					variant="secondary"
 					size="sm"

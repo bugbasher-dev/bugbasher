@@ -189,7 +189,7 @@ export default function AdminIpAddressesPage() {
 			</div>
 
 			{/* IP Addresses Table */}
-			<div className="rounded-md border">
+			<div>
 				<Table>
 					<TableHeader>
 						<TableRow>

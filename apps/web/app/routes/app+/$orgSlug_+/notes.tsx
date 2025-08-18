@@ -212,7 +212,7 @@ export default function NotesRoute({
 	}, [location.pathname, loaderData.organization.slug])
 
 	return (
-		<div className="m-8 flex h-full flex-col">
+		<div className="py-8 flex h-full flex-col md:p-8">
 			<div className="flex items-center justify-between pb-4">
 				<PageTitle
 					title={`Notes`}

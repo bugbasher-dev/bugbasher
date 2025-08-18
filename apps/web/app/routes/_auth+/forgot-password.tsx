@@ -12,6 +12,7 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
+	CardFooter,
 	CardHeader,
 	CardTitle,
 } from '#app/components/ui/card.tsx'
@@ -177,7 +178,7 @@ export default function ForgotPasswordRoute() {
 
 	return (
 		<Card className="border-0 shadow-2xl">
-			<CardHeader className="text-center">
+			<CardHeader>
 				<CardTitle className="text-xl">Forgot Password</CardTitle>
 				<CardDescription>
 					No worries, we'll send you reset instructions.
@@ -210,7 +211,11 @@ export default function ForgotPasswordRoute() {
 							Send reset instructions
 						</StatusButton>
 
-						<div className="bg-muted -m-6 mt-0 rounded-lg p-4 text-center text-sm backdrop-blur-sm">
+						
+					</div>
+				</Form>
+			</CardContent>
+			<CardFooter className="rounded-lg p-4 text-center text-sm">
 							Remember your password?{' '}
 							<Link
 								to="/login"
@@ -218,10 +223,7 @@ export default function ForgotPasswordRoute() {
 							>
 								Back to login
 							</Link>
-						</div>
-					</div>
-				</Form>
-			</CardContent>
+						</CardFooter>
 		</Card>
 	)
 }

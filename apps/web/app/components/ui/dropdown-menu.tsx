@@ -150,14 +150,7 @@ const DropdownMenuCheckboxItem = ({
 		<span className="absolute left-2 flex size-3.5 items-center justify-center">
 			<DropdownMenuPrimitive.ItemIndicator>
 				<span className="size-4">
-					<svg viewBox="0 0 8 8">
-						<path
-							d="M1,4 L3,6 L7,2"
-							stroke="black"
-							strokeWidth="1"
-							fill="none"
-						/>
-					</svg>
+					<Icon name="check" className="h-4 w-4" />
 				</span>
 			</DropdownMenuPrimitive.ItemIndicator>
 		</span>

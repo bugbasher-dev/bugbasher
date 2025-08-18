@@ -108,7 +108,7 @@ export default function ResetPasswordPage({
 
 	return (
 		<Card className="border-0 shadow-2xl">
-			<CardHeader className="text-center">
+			<CardHeader>
 				<CardTitle className="text-xl">Reset Password</CardTitle>
 				<CardDescription>
 					Hi, {loaderData.resetPasswordUsername}. Enter your new password below.
