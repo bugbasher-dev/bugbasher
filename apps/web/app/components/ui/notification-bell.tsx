@@ -308,7 +308,7 @@ export default function NotificationBell() {
 					<span className="sr-only">Toggle notifications</span>
 				</motion.button>
 			</PopoverTrigger>
-			<PopoverContent className="w-[400px] p-0 rounded-2xl" align="end">
+			<PopoverContent className="w-[400px] rounded-2xl p-0" align="end">
 				<motion.div
 					initial="hidden"
 					animate="visible"

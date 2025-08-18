@@ -30,19 +30,23 @@ test('Users can update their password', async ({ page, login }) => {
 
 	// Wait for the page to be fully loaded
 	await page.waitForLoadState('networkidle')
-	
+
 	// Wait for the button to be visible and clickable, then click
-	const changePasswordButton = page.getByRole('button', { name: 'Change Password' })
+	const changePasswordButton = page.getByRole('button', {
+		name: 'Change Password',
+	})
 	await expect(changePasswordButton).toBeVisible()
 	await changePasswordButton.click()
-	
+
 	// Wait for the password dialog to be visible and form fields to be available
-	await expect(page.getByRole('heading', { name: 'Change Password' })).toBeVisible()
-	
+	await expect(
+		page.getByRole('heading', { name: 'Change Password' }),
+	).toBeVisible()
+
 	// Use dialog context and input names for password form fields
 	const dialog = page.getByRole('dialog')
 	await expect(dialog.locator('input[name="currentPassword"]')).toBeVisible()
-	
+
 	await dialog.locator('input[name="currentPassword"]').fill(oldPassword)
 	await dialog.locator('input[name="newPassword"]').fill(newPassword)
 	await dialog.locator('input[name="confirmNewPassword"]').fill(newPassword)
@@ -50,7 +54,9 @@ test('Users can update their password', async ({ page, login }) => {
 	await page.getByRole('button', { name: /^change password/i }).click()
 
 	// Password dialog should close after successful change (target the dialog h2, not page h3)
-	await expect(page.getByRole('heading', { name: 'Change Password', level: 2 })).toBeHidden()
+	await expect(
+		page.getByRole('heading', { name: 'Change Password', level: 2 }),
+	).toBeHidden()
 
 	const { username } = user
 	expect(
@@ -78,9 +84,11 @@ test('Users can update their profile photo', async ({ page, login }) => {
 	const fileInput = page.locator('input[type="file"][accept="image/*"]')
 	await expect(fileInput).toBeAttached()
 	await fileInput.setInputFiles('./tests/fixtures/images/user/kody.png')
-	
+
 	// Wait for the dialog to appear
-	await expect(page.getByRole('heading', { name: 'Update Profile Photo' })).toBeVisible()
+	await expect(
+		page.getByRole('heading', { name: 'Update Profile Photo' }),
+	).toBeVisible()
 
 	// The file is already set, now just click Save
 	// (The file was set when we triggered the file input above)
@@ -88,16 +96,19 @@ test('Users can update their profile photo', async ({ page, login }) => {
 	await page.getByRole('button', { name: /save/i }).click()
 
 	// Photo dialog should close after saving
-	await expect(page.getByRole('heading', { name: 'Update Profile Photo' })).toBeHidden()
+	await expect(
+		page.getByRole('heading', { name: 'Update Profile Photo' }),
+	).toBeHidden()
 
 	// Wait for the image to reload with new src - use waitFor with a condition
 	await page.waitForFunction(
 		({ originalSrc, userName }) => {
-			const img = document.querySelector(`img[alt*="${userName}"]`) as HTMLImageElement;
-			return img && img.src !== originalSrc;
+			const img = document.querySelector(
+				`img[alt*="${userName}"]`,
+			) as HTMLImageElement
+			return img && img.src !== originalSrc
 		},
 		{ originalSrc: beforeSrc, userName: user.name ?? user.username },
-		
 	)
 })
 
@@ -106,36 +117,44 @@ test('Users can change their email address', async ({ page, login }) => {
 	const newEmailAddress = faker.internet.email().toLowerCase()
 	expect(preUpdateUser.email).not.toEqual(newEmailAddress)
 	await page.goto('/app/profile')
-	
+
 	// Wait for the page to be fully loaded
 	await page.waitForLoadState('networkidle')
-	
+
 	// Target the DialogTrigger button specifically using data attributes
 	// This is the button that actually opens the email dialog
-	const changeEmailButton = page.locator('button[data-slot="dialog-trigger"]:has-text("Change")')
+	const changeEmailButton = page.locator(
+		'button[data-slot="dialog-trigger"]:has-text("Change")',
+	)
 	await expect(changeEmailButton).toBeVisible()
 	await changeEmailButton.click()
-	
+
 	// Wait for the email dialog to be visible
 	const emailDialog = page.getByRole('dialog')
-	await expect(emailDialog.getByRole('heading', { name: 'Change Email' })).toBeVisible()
+	await expect(
+		emailDialog.getByRole('heading', { name: 'Change Email' }),
+	).toBeVisible()
 	await emailDialog.locator('input[name="email"]').fill(newEmailAddress)
 	await page.getByRole('button', { name: 'Save' }).click()
 	// After save, the dialog shows verification info with the code directly
-	await expect(page.getByText(/verification email has been sent/i)).toBeVisible()
-	
+	await expect(
+		page.getByText(/verification email has been sent/i),
+	).toBeVisible()
+
 	// Extract the verification code directly from the success message
 	const codeElement = page.getByText(/Verification code:/).locator('strong')
 	await expect(codeElement).toBeVisible()
 	const code = await codeElement.innerText()
 	invariant(code, 'Verification code not found in dialog')
-	
+
 	// Close the dialog and proceed with verification on the verify page
 	await page.getByRole('button', { name: 'Close' }).first().click()
-	
+
 	// Navigate to the verify page for email verification
-	await page.goto('/verify?type=change-email&target=' + encodeURIComponent(preUpdateUser.id))
-	
+	await page.goto(
+		'/verify?type=change-email&target=' + encodeURIComponent(preUpdateUser.id),
+	)
+
 	// Look for verification code input on the verify page
 	const codeInput = page.getByLabel('Verification Code')
 	await expect(codeInput).toBeVisible()

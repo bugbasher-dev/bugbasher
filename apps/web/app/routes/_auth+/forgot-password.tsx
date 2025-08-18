@@ -3,7 +3,14 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { ForgotPasswordEmail } from '@repo/email'
-import { data, redirect, Link, useFetcher, Form, useActionData } from 'react-router'
+import {
+	data,
+	redirect,
+	Link,
+	useFetcher,
+	Form,
+	useActionData,
+} from 'react-router'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
@@ -148,7 +155,6 @@ export async function action({ request }: Route.ActionArgs) {
 		),
 	})
 
-
 	if (response.status === 'success') {
 		return redirect(redirectTo.toString())
 	} else {
@@ -210,20 +216,15 @@ export default function ForgotPasswordRoute() {
 						>
 							Send reset instructions
 						</StatusButton>
-
-						
 					</div>
 				</Form>
 			</CardContent>
 			<CardFooter className="rounded-lg p-4 text-center text-sm">
-							Remember your password?{' '}
-							<Link
-								to="/login"
-								className="font-medium underline underline-offset-4"
-							>
-								Back to login
-							</Link>
-						</CardFooter>
+				Remember your password?{' '}
+				<Link to="/login" className="font-medium underline underline-offset-4">
+					Back to login
+				</Link>
+			</CardFooter>
 		</Card>
 	)
 }

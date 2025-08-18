@@ -62,8 +62,10 @@ export default function VerifiedDomainCard({
 		<Card className="w-full gap-0">
 			<CardHeader>
 				<div className="flex items-center justify-between">
-					<CardTitle className="text-lg font-medium"><Switch checked={isChecked} onCheckedChange={handleSwitchChange} />Verified domain</CardTitle>
-					
+					<CardTitle className="text-lg font-medium">
+						<Switch checked={isChecked} onCheckedChange={handleSwitchChange} />
+						Verified domain
+					</CardTitle>
 				</div>
 				<CardDescription className="text-muted-foreground text-sm">
 					When someone signs up using an email that matches your verified
@@ -72,7 +74,7 @@ export default function VerifiedDomainCard({
 				</CardDescription>
 			</CardHeader>
 			<div
-				className={`overflow-hidden transition-all duration-300 -mt-2 ${
+				className={`-mt-2 overflow-hidden transition-all duration-300 ${
 					isChecked ? 'max-h-50' : 'max-h-0'
 				}`}
 			>
@@ -81,7 +83,7 @@ export default function VerifiedDomainCard({
 					<input
 						{...getInputProps(fields.organizationId, { type: 'hidden' })}
 					/>
-					<CardContent className="py-2 mt-2">
+					<CardContent className="mt-2 py-2">
 						<Field
 							labelProps={{ children: 'Verified domain' }}
 							inputProps={{
@@ -92,9 +94,8 @@ export default function VerifiedDomainCard({
 							errors={fields.verifiedDomain.errors}
 						/>
 						<ErrorList id={form.errorId} errors={form.errors} />
-						
 					</CardContent>
-					<CardFooter className="flex gap-4 justify-between">
+					<CardFooter className="flex justify-between gap-4">
 						<div className="text-primary flex items-center text-xs">
 							<InfoIcon className="mt-0.5 mr-1 h-4 w-4 flex-shrink-0" />
 							<p className="text-muted-foreground">
@@ -105,9 +106,7 @@ export default function VerifiedDomainCard({
 								</a>
 							</p>
 						</div>
-						<Button type="submit">
-							Save
-						</Button>
+						<Button type="submit">Save</Button>
 					</CardFooter>
 				</Form>
 			</div>

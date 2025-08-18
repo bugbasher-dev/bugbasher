@@ -81,7 +81,9 @@ test('onboarding with link', async ({ page, getOnboardingData }) => {
 		.getByRole('textbox', { name: /^username/i })
 		.fill(onboardingData.username)
 
-	await page.getByRole('textbox', { name: /full name/i }).fill(onboardingData.name)
+	await page
+		.getByRole('textbox', { name: /full name/i })
+		.fill(onboardingData.name)
 
 	await page.getByLabel(/^password/i).fill(onboardingData.password)
 
@@ -97,15 +99,12 @@ test('onboarding with link', async ({ page, getOnboardingData }) => {
 
 	// After onboarding, user is redirected to organizations/create page
 	await expect(page).toHaveURL(`/organizations/create`)
-	
+
 	// Verify the welcome message appears indicating successful signup
 	await expect(page.getByText(/thanks for signing up/i)).toBeVisible()
 })
 
-test('onboarding with a short code', async ({
-	page,
-	getOnboardingData,
-}) => {
+test('onboarding with a short code', async ({ page, getOnboardingData }) => {
 	const onboardingData = getOnboardingData()
 
 	await page.goto('/signup')
@@ -146,17 +145,17 @@ test('completes onboarding after GitHub OAuth given valid user details', async (
 	).toBeNull()
 
 	await page.goto('/signup')
-	
+
 	// Wait for the page to be fully loaded
 	await page.waitForLoadState('networkidle')
-	
+
 	await page.getByRole('button', { name: /signup with github/i }).click()
 
 	await expect(page).toHaveURL(/\/onboarding\/github/)
-	
+
 	// Wait longer for the GitHub OAuth flow to complete and page to load
 	await page.waitForLoadState('networkidle')
-	
+
 	await expect(
 		page.getByText(
 			new RegExp(
@@ -391,7 +390,7 @@ test('reset password with a link', async ({ page, insertNewUser }) => {
 	await page.getByRole('link', { name: /forgot your password/i }).click()
 	await expect(page).toHaveURL('/forgot-password')
 
-		await expect(page.getByText(/forgot password/i)).toBeVisible()
+	await expect(page.getByText(/forgot password/i)).toBeVisible()
 
 	await page
 		.getByRole('textbox', { name: /username or email/i })
@@ -400,7 +399,7 @@ test('reset password with a link', async ({ page, insertNewUser }) => {
 		.getByRole('button', { name: /send reset instructions/i })
 		.click({ force: true })
 
-		// Wait for redirect to verify page after successful form submission  
+	// Wait for redirect to verify page after successful form submission
 	await expect(page).toHaveURL(/\/verify\?/)
 
 	const email = await readEmail(user.email)
@@ -413,14 +412,14 @@ test('reset password with a link', async ({ page, insertNewUser }) => {
 	await page.goto(resetPasswordUrl)
 
 	await expect(page).toHaveURL(/\/verify/)
-	
+
 	// Wait for the verify form to be fully loaded
 	await expect(page.getByRole('textbox', { name: /code/i })).toBeVisible()
-	
+
 	// Check if code is pre-filled, if not extract and fill it
 	const codeInput = page.getByRole('textbox', { name: /code/i })
 	const codeValue = await codeInput.inputValue()
-	
+
 	if (!codeValue) {
 		// Extract code from email if not pre-filled
 		const codeMatch = email.text.match(CODE_REGEX)
@@ -432,13 +431,13 @@ test('reset password with a link', async ({ page, insertNewUser }) => {
 	await page.getByRole('button', { name: /verify/i }).click()
 
 	await expect(page).toHaveURL(`/reset-password`)
-	
+
 	// Generate a stronger password that meets all requirements
 	const newPassword = 'NewPassword123!'
-	
+
 	// Wait for the form to be fully loaded
 	await page.waitForLoadState('networkidle')
-	
+
 	// Fill the password fields
 	await page.getByLabel(/^new password$/i).fill(newPassword)
 	await page.getByLabel(/^confirm password$/i).fill(newPassword)
@@ -448,10 +447,10 @@ test('reset password with a link', async ({ page, insertNewUser }) => {
 
 	// Wait for successful redirect to login page
 	await expect(page).toHaveURL('/login')
-	
+
 	// Wait for login page to fully load
 	await page.waitForLoadState('networkidle')
-	
+
 	// Try logging in with the new password directly
 	await page.getByRole('textbox', { name: /^username$/i }).fill(user.username)
 	await page.getByLabel(/^password$/i).fill(newPassword)
@@ -465,10 +464,7 @@ test('reset password with a link', async ({ page, insertNewUser }) => {
 	await expect(page.getByRole('link', { name: /dashboard/i })).toBeVisible()
 })
 
-test('reset password with a short code', async ({
-	page,
-	insertNewUser,
-}) => {
+test('reset password with a short code', async ({ page, insertNewUser }) => {
 	const user = await insertNewUser()
 	await page.goto('/login')
 
@@ -482,7 +478,7 @@ test('reset password with a short code', async ({
 	await page
 		.getByRole('button', { name: /send reset instructions/i })
 		.click({ force: true })
-	
+
 	// Wait for redirect to verify page after successful form submission
 	await expect(page).toHaveURL(/\/verify\?/)
 

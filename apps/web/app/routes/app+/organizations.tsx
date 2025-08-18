@@ -164,7 +164,7 @@ export default function OrganizationsPage() {
 
 	return (
 		<div className="flex flex-1 flex-col gap-4 py-4 pt-0">
-			<div className="md:container md:max-w-2xl py-8">
+			<div className="py-8 md:container md:max-w-2xl">
 				<div className="mb-8">
 					<PageTitle
 						title="Organizations"

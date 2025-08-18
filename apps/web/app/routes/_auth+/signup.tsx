@@ -103,38 +103,38 @@ export async function action(args: Route.ActionArgs) {
 				})
 				return
 			}
-					// Arcjet security protection (skip in test environment)
-		if (process.env.ARCJET_KEY && process.env.NODE_ENV !== 'test') {
-			const email = formData.get('email') as string
-			try {
-				const decision = await aj.protect(args, { email })
+			// Arcjet security protection (skip in test environment)
+			if (process.env.ARCJET_KEY && process.env.NODE_ENV !== 'test') {
+				const email = formData.get('email') as string
+				try {
+					const decision = await aj.protect(args, { email })
 
-				if (decision.isDenied()) {
-					let errorMessage = 'Access denied'
+					if (decision.isDenied()) {
+						let errorMessage = 'Access denied'
 
-					if (decision.reason.isBot()) {
-						errorMessage = 'Forbidden'
-					} else if (decision.reason.isRateLimit()) {
-						errorMessage = 'Too many signup attempts - try again shortly'
-					} else if (decision.reason.isEmail()) {
-						// This is a generic error, but you could be more specific
-						// See https://docs.arcjet.com/email-validation/reference#checking-the-email-type
-						errorMessage = 'Invalid email address'
+						if (decision.reason.isBot()) {
+							errorMessage = 'Forbidden'
+						} else if (decision.reason.isRateLimit()) {
+							errorMessage = 'Too many signup attempts - try again shortly'
+						} else if (decision.reason.isEmail()) {
+							// This is a generic error, but you could be more specific
+							// See https://docs.arcjet.com/email-validation/reference#checking-the-email-type
+							errorMessage = 'Invalid email address'
+						}
+
+						// Return early with error response
+						ctx.addIssue({
+							path: ['email'],
+							code: z.ZodIssueCode.custom,
+							message: errorMessage,
+						})
+						return
 					}
-
-					// Return early with error response
-					ctx.addIssue({
-						path: ['email'],
-						code: z.ZodIssueCode.custom,
-						message: errorMessage,
-					})
-					return
+				} catch (error) {
+					// If Arcjet fails, log error but continue with signup process
+					console.error('Arcjet protection failed:', error)
 				}
-			} catch (error) {
-				// If Arcjet fails, log error but continue with signup process
-				console.error('Arcjet protection failed:', error)
 			}
-		}
 		}),
 		async: true,
 	})
@@ -256,24 +256,22 @@ export default function SignupRoute({
 								Sign up
 							</StatusButton>
 						</div>
-
-						
 					</Form>
 				</div>
 			</CardContent>
 			<CardFooter className="rounded-lg p-4 text-center text-sm">
-							Already have an account?{' '}
-							<Link
-								to={
-									redirectTo
-										? `/login?redirectTo=${encodeURIComponent(redirectTo)}`
-										: '/login'
-								}
-								className="font-medium underline underline-offset-4"
-							>
-								Sign in
-							</Link>
-						</CardFooter>
+				Already have an account?{' '}
+				<Link
+					to={
+						redirectTo
+							? `/login?redirectTo=${encodeURIComponent(redirectTo)}`
+							: '/login'
+					}
+					className="font-medium underline underline-offset-4"
+				>
+					Sign in
+				</Link>
+			</CardFooter>
 		</Card>
 	)
 }

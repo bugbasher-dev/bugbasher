@@ -42,7 +42,12 @@ export async function sendEmail({
 	// FORCE HTTP REQUEST FOR TESTS - bypass the environment check
 	// This ensures MSW can intercept the request
 	if (process.env.NODE_ENV === 'test') {
-		console.log('🧪 TEST MODE: sendEmail called for:', options.to, 'subject:', options.subject)
+		console.log(
+			'🧪 TEST MODE: sendEmail called for:',
+			options.to,
+			'subject:',
+			options.subject,
+		)
 	} else {
 		// Production check - feel free to remove this condition once you've set up resend
 		if (!process.env.RESEND_API_KEY && !process.env.MOCKS) {
@@ -50,7 +55,10 @@ export async function sendEmail({
 			console.error(
 				`To send emails, set the RESEND_API_KEY environment variable.`,
 			)
-			console.error(`Would have sent the following email:`, JSON.stringify(email))
+			console.error(
+				`Would have sent the following email:`,
+				JSON.stringify(email),
+			)
 			return {
 				status: 'success',
 				data: { id: 'mocked' },

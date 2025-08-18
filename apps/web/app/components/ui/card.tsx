@@ -7,7 +7,7 @@ function Card({ className, ...props }: React.ComponentProps<'div'>) {
 		<section
 			data-slot="card"
 			className={cn(
-				'group flex flex-col rounded-2xl py-1 bg-muted/50',
+				'group bg-muted/50 flex flex-col rounded-2xl py-1',
 				className,
 			)}
 			{...props}
@@ -19,10 +19,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
 	return (
 		<header
 			data-slot="card-header"
-			className={cn(
-				'flex flex-col flex-wrap px-6 py-4',
-				className,
-			)}
+			className={cn('flex flex-col flex-wrap px-6 py-4', className)}
 			{...props}
 		/>
 	)
@@ -32,7 +29,10 @@ function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
 	return (
 		<h2
 			data-slot="card-title"
-			className={cn('flex flex-wrap items-center gap-x-2 gap-y-0.5 text-card-foreground font-medium', className)}
+			className={cn(
+				'text-card-foreground flex flex-wrap items-center gap-x-2 gap-y-0.5 font-medium',
+				className,
+			)}
 			{...props}
 		/>
 	)
@@ -42,7 +42,10 @@ function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
 	return (
 		<p
 			data-slot="card-description"
-			className={cn('mt-0.5 text-pretty text-sm text-muted-foreground', className)}
+			className={cn(
+				'text-muted-foreground mt-0.5 text-sm text-pretty',
+				className,
+			)}
 			{...props}
 		/>
 	)
@@ -65,7 +68,10 @@ function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
 	return (
 		<div
 			data-slot="card-content"
-			className={cn('overflow-hidden rounded-xl bg-card mx-1 ring-1 ring-border shadow-sm p-6', className)}
+			className={cn(
+				'bg-card ring-border mx-1 overflow-hidden rounded-xl p-6 shadow-sm ring-1',
+				className,
+			)}
 			{...props}
 		/>
 	)
@@ -75,13 +81,19 @@ function CardBody({ className, ...props }: React.ComponentProps<'div'>) {
 	return (
 		<div
 			data-slot="card-body"
-			className={cn('space-y-6 border-t border-border first:border-none p-5.5', className)}
+			className={cn(
+				'border-border space-y-6 border-t p-5.5 first:border-none',
+				className,
+			)}
 			{...props}
 		/>
 	)
 }
 
-function CardHeaderContent({ className, ...props }: React.ComponentProps<'div'>) {
+function CardHeaderContent({
+	className,
+	...props
+}: React.ComponentProps<'div'>) {
 	return (
 		<div
 			data-slot="card-header-content"

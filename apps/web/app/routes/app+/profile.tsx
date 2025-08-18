@@ -24,9 +24,7 @@ export const handle: SEOHandle = {
 // Photo upload schema
 const MAX_SIZE = 1024 * 1024 * 3 // 3MB
 
-export async function loader({
-	request,
-}: LoaderFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)
 	const user = await prisma.user.findUniqueOrThrow({
 		where: { id: userId },
@@ -51,9 +49,7 @@ export const changeEmailActionIntent = 'change-email'
 export const uploadPhotoActionIntent = 'upload-photo'
 export const deletePhotoActionIntent = 'delete-photo'
 
-export async function action({
-	request,
-}: ActionFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
 	const userId = await requireUserId(request)
 	const contentType = request.headers.get('content-type')
 

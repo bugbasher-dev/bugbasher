@@ -160,18 +160,20 @@ export function S3StorageCard({
 					>
 						<div className="flex items-center justify-between">
 							<div className="space-y-1">
-								<Label className="flex items-center gap-2"><Switch
-								formId={form.id}
-								id={fields.s3Enabled.id}
-								name={fields.s3Enabled.name}
-								defaultChecked={organization.s3Config?.isEnabled}
-							/>Enable Custom S3 Storage</Label>
+								<Label className="flex items-center gap-2">
+									<Switch
+										formId={form.id}
+										id={fields.s3Enabled.id}
+										name={fields.s3Enabled.name}
+										defaultChecked={organization.s3Config?.isEnabled}
+									/>
+									Enable Custom S3 Storage
+								</Label>
 								<p className="text-muted-foreground text-sm">
 									Use your own S3-compatible storage instead of the default
 									storage
 								</p>
 							</div>
-							
 						</div>
 
 						{(fields.s3Enabled.value === 'on' ||

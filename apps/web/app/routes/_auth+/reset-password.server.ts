@@ -5,7 +5,10 @@ import { verifySessionStorage } from '#app/utils/verification.server.ts'
 import { resetPasswordUsernameSessionKey } from './reset-password.tsx'
 import { type VerifyFunctionArgs } from './verify.server.ts'
 
-export async function handleVerification({ request, submission }: VerifyFunctionArgs) {
+export async function handleVerification({
+	request,
+	submission,
+}: VerifyFunctionArgs) {
 	invariant(
 		submission.status === 'success',
 		'Submission should be successful by now',

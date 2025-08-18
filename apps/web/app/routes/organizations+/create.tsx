@@ -284,7 +284,7 @@ export default function CreateOrganizationPage() {
 	]
 
 	return (
-		<div className="max-w-xl px-4 py-8 container">
+		<div className="container max-w-xl px-4 py-8">
 			{/* Progress indicator */}
 			<div className="mb-8 text-center">
 				<div className="mb-2 flex items-center justify-center gap-2">
@@ -356,7 +356,9 @@ function Step1({ actionData }: { actionData: any }) {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle><h2>Create a new organization</h2></CardTitle>
+				<CardTitle>
+					<h2>Create a new organization</h2>
+				</CardTitle>
 
 				<CardDescription>
 					An organization is a workspace where teams collect, organize, and work

@@ -266,23 +266,21 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
 							</StatusButton>
 						</div>
 					</Form>
-
-					
 				</div>
 			</CardContent>
 			<CardFooter className="rounded-lg p-4 text-center text-sm">
-						Don&apos;t have an account?{' '}
-						<Link
-							to={
-								redirectTo
-									? `/signup?redirectTo=${encodeURIComponent(redirectTo)}`
-									: '/signup'
-							}
-							className="font-medium underline underline-offset-4"
-						>
-							Create account
-						</Link>
-					</CardFooter>
+				Don&apos;t have an account?{' '}
+				<Link
+					to={
+						redirectTo
+							? `/signup?redirectTo=${encodeURIComponent(redirectTo)}`
+							: '/signup'
+					}
+					className="font-medium underline underline-offset-4"
+				>
+					Create account
+				</Link>
+			</CardFooter>
 		</Card>
 	)
 }

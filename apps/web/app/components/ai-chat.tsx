@@ -22,7 +22,7 @@ import {
 } from '#app/components/ai-elements/prompt-input'
 import { Response } from '#app/components/ai-elements/response'
 import { Suggestions, Suggestion } from '#app/components/ai-elements/suggestion'
-import { ClientOnly } from "remix-utils/client-only"
+import { ClientOnly } from 'remix-utils/client-only'
 
 interface AIChatProps {
 	noteId: string

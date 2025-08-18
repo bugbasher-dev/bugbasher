@@ -34,9 +34,7 @@ export const handle: SEOHandle = {
 	getSitemapEntries: () => null,
 }
 
-export async function loader({
-	request,
-}: LoaderFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)
 	const user = await prisma.user.findUniqueOrThrow({
 		where: { id: userId },
@@ -147,9 +145,7 @@ export const setPasswordActionIntent = 'set-password'
 export const enable2FAActionIntent = 'enable-2fa'
 export const disable2FAActionIntent = 'disable-2fa'
 
-export async function action({
-	request,
-}: ActionFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
 	const userId = await requireUserId(request)
 	const formData = await request.formData()
 	const intent = formData.get('intent')

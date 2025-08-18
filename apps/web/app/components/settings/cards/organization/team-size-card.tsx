@@ -68,7 +68,9 @@ export default function TeamSizeCard({
 				<input {...getInputProps(fields.organizationId, { type: 'hidden' })} />
 				<CardContent className="space-y-4">
 					<div className="space-y-2">
-						<Label htmlFor={fields.size.id} className="block mb-2">Organization Size</Label>
+						<Label htmlFor={fields.size.id} className="mb-2 block">
+							Organization Size
+						</Label>
 						<Select
 							name={fields.size.name}
 							defaultValue={organization.size || ''}
@@ -89,7 +91,9 @@ export default function TeamSizeCard({
 					<ErrorList errors={form.errors} id={form.errorId} />
 				</CardContent>
 				<CardFooter className="justify-end">
-					<Button size="sm" type="submit">Update</Button>
+					<Button size="sm" type="submit">
+						Update
+					</Button>
 				</CardFooter>
 			</Form>
 		</Card>
