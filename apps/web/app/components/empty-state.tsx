@@ -61,10 +61,9 @@ export function EmptyState({
 					</>
 				) : (
 					<div className="bg-background ring-border grid size-12 place-items-center rounded-xl shadow-lg ring-1 transition duration-500 group-hover:-translate-y-0.5 group-hover:duration-200">
-						{icons[0] &&
-							React.createElement(icons[0], {
-								className: 'w-6 h-6 text-muted-foreground',
-							})}
+						{icons[0] && (
+							<Icon name={icons[0]} className="text-muted-foreground h-6 w-6" />
+						)}
 					</div>
 				)}
 			</div>

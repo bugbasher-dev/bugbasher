@@ -107,7 +107,7 @@ export default function ResetPasswordPage({
 	})
 
 	return (
-		<Card className="border-0 shadow-2xl">
+		<Card className="bg-muted/80 border-0 shadow-2xl">
 			<CardHeader>
 				<CardTitle className="text-xl">Reset Password</CardTitle>
 				<CardDescription>

@@ -183,7 +183,7 @@ export default function ForgotPasswordRoute() {
 	})
 
 	return (
-		<Card className="border-0 shadow-2xl">
+		<Card className="bg-muted/80 border-0 shadow-2xl">
 			<CardHeader>
 				<CardTitle className="text-xl">Forgot Password</CardTitle>
 				<CardDescription>
@@ -219,7 +219,7 @@ export default function ForgotPasswordRoute() {
 					</div>
 				</Form>
 			</CardContent>
-			<CardFooter className="rounded-lg p-4 text-center text-sm">
+			<CardFooter className="block rounded-lg p-4 text-center text-sm">
 				Remember your password?{' '}
 				<Link to="/login" className="font-medium underline underline-offset-4">
 					Back to login

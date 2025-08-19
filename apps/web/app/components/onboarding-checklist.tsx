@@ -199,7 +199,7 @@ export function OnboardingChecklist({
 									</span>
 								) : (
 									step.actionConfig && (
-										<div className="opacity-0 transition-opacity group-hover:opacity-100">
+										<div>
 											{step.actionConfig.type === 'navigate' ? (
 												<Link
 													to={`/app/${orgSlug}${step.actionConfig.target}`}

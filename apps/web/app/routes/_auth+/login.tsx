@@ -156,7 +156,7 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
 	})
 
 	return (
-		<Card className="border-0 shadow-2xl">
+		<Card className="bg-muted/80 border-0 shadow-2xl">
 			<CardHeader>
 				<CardTitle className="text-xl">Welcome back</CardTitle>
 				<CardDescription>
@@ -268,7 +268,7 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
 					</Form>
 				</div>
 			</CardContent>
-			<CardFooter className="rounded-lg p-4 text-center text-sm">
+			<CardFooter className="block rounded-lg p-4 text-center text-sm">
 				Don&apos;t have an account?{' '}
 				<Link
 					to={

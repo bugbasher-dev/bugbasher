@@ -355,7 +355,7 @@ export default function NotificationBell() {
 									</DropdownMenuTrigger>
 									<DropdownMenuContent align="end">
 										<DropdownMenuItem onClick={handleReadAll}>
-											<Icon name="check-circled" className="h-4 w-4" />
+											<Icon name="check-circled" className="mr-2 h-4 w-4" />
 											Mark all as read
 										</DropdownMenuItem>
 									</DropdownMenuContent>

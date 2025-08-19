@@ -15,10 +15,12 @@ import {
 import { Button } from '#app/components/ui/button'
 import {
 	Card,
+	CardAction,
 	CardContent,
 	CardDescription,
 	CardFooter,
 	CardHeader,
+	CardHeaderContent,
 	CardTitle,
 } from '#app/components/ui/card'
 import { Checkbox } from '#app/components/ui/checkbox'
@@ -39,6 +41,8 @@ import { generateApiKey } from '#app/utils/api-key.server.ts'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { userHasOrgAccess } from '#app/utils/organizations.server.ts'
+import { EmptyState } from '#app/components/empty-state.tsx'
+import { cn } from '#app/utils/misc.tsx'
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
 	const { orgSlug } = params
@@ -453,46 +457,53 @@ function ApiKeysCard({
 }) {
 	return (
 		<Card>
-			<CardHeader>
-				<CardTitle className="flex items-center gap-2">
-					<Icon name="key" className="h-5 w-5" />
-					API Keys
-				</CardTitle>
-				<CardDescription>
-					Create and manage API keys to authenticate your MCP clients
-				</CardDescription>
+			<CardHeader className="grid grid-cols-[1fr_auto] items-start">
+				<CardHeaderContent>
+					<CardTitle className="flex items-center gap-2">
+						<Icon name="key" className="h-5 w-5" />
+						API Keys
+					</CardTitle>
+					<CardDescription>
+						Create and manage API keys to authenticate your MCP clients
+					</CardDescription>
+				</CardHeaderContent>
+				<CardAction>
+					<Button onClick={onCreateClick} className="gap-2">
+						<Icon name="plus" className="h-4 w-4" />
+						Create API Key
+					</Button>
+				</CardAction>
 			</CardHeader>
-			<CardContent className="space-y-4">
-				{actionData?.message && !actionData?.newApiKey && (
-					<div
-						className={`rounded p-3 ${actionData.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
-					>
-						{actionData.message}
-					</div>
+			<CardContent
+				className={cn(
+					apiKeys.length === 0 && 'border-0 p-0 shadow-none ring-0',
+					'space-y-4',
 				)}
-
+			>
 				{/* Existing API keys */}
 				<div className="space-y-3">
 					{apiKeys.map((apiKey: any) => (
 						<div
 							key={apiKey.id}
-							className="flex justify-between rounded-lg border p-4"
+							className="flex items-center justify-between rounded-lg border p-4"
 						>
-							<div className="flex-1">
-								<div className="font-medium">{apiKey.name}</div>
-								<div className="text-muted-foreground text-sm">
-									Created {new Date(apiKey.createdAt).toLocaleDateString()}
-									{apiKey.expiresAt && (
-										<span className="ml-2">
-											• Expires{' '}
-											{new Date(apiKey.expiresAt).toLocaleDateString()}
-										</span>
-									)}
+							<div className="flex flex-1 items-center justify-between">
+								<div>
+									<div className="font-medium">{apiKey.name}</div>
+									<div className="text-muted-foreground text-sm">
+										Created {new Date(apiKey.createdAt).toLocaleDateString()}
+										{apiKey.expiresAt && (
+											<span className="ml-2">
+												• Expires{' '}
+												{new Date(apiKey.expiresAt).toLocaleDateString()}
+											</span>
+										)}
+									</div>
 								</div>
-								<div className="bg-muted mt-2 flex items-center gap-2 rounded p-2 font-mono text-xs">
+								<div className="bg-muted mr-2 flex h-8 items-center gap-2 rounded p-4 py-0 font-mono text-xs">
 									<span>
 										{apiKey.key.substring(0, 8)}...
-										{apiKey.key.substring(apiKey.key.length - 4)}
+										{apiKey.key.substring(apiKey.key.length - 8)}
 									</span>
 								</div>
 							</div>
@@ -506,22 +517,15 @@ function ApiKeysCard({
 						</div>
 					))}
 					{apiKeys.length === 0 && (
-						<div className="text-muted-foreground py-8 text-center">
-							<Icon name="key" className="mx-auto mb-4 h-12 w-12 opacity-50" />
-							<p>No API keys created yet</p>
-							<p className="text-sm">
-								Create your first API key to get started
-							</p>
-						</div>
+						<EmptyState
+							title="No API keys created yet"
+							description="Create your first API key to get started"
+							icons={['key']}
+							className="m-0"
+						/>
 					)}
 				</div>
 			</CardContent>
-			<CardFooter className="pt-4">
-				<Button onClick={onCreateClick} className="gap-2">
-					<Icon name="plus" className="h-4 w-4" />
-					Create API Key
-				</Button>
-			</CardFooter>
 		</Card>
 	)
 }

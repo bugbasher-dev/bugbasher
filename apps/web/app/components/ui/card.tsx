@@ -27,7 +27,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
 
 function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
 	return (
-		<h2
+		<div
 			data-slot="card-title"
 			className={cn(
 				'text-card-foreground flex flex-wrap items-center gap-x-2 gap-y-0.5 font-medium',
