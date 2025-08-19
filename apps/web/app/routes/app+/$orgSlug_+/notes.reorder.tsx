@@ -3,7 +3,10 @@ import { prisma } from '#app/utils/db.server.ts'
 import { userHasOrgAccess } from '#app/utils/organizations.server.ts'
 
 // Helper function to calculate fractional position
-function getFractionalPosition(prevPosition: number | null, nextPosition: number | null): number {
+function getFractionalPosition(
+	prevPosition: number | null,
+	nextPosition: number | null,
+): number {
 	if (prevPosition === null && nextPosition === null) {
 		return 1.0 // First item
 	} else if (prevPosition === null) {
@@ -67,7 +70,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 		// Calculate the new fractional position
 		let newPosition: number
-		
+
 		if (notesInDestColumn.length === 0) {
 			// Empty column, use position 1.0
 			newPosition = 1.0
@@ -84,8 +87,8 @@ export const action: ActionFunction = async ({ request, params }) => {
 			const prevNote = notesInDestColumn[targetIndex - 1]
 			const nextNote = notesInDestColumn[targetIndex]
 			newPosition = getFractionalPosition(
-				prevNote?.position ?? null, 
-				nextNote?.position ?? null
+				prevNote?.position ?? null,
+				nextNote?.position ?? null,
 			)
 		}
 

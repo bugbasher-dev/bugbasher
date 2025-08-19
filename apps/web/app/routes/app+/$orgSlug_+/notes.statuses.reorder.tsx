@@ -3,7 +3,10 @@ import { prisma } from '#app/utils/db.server.ts'
 import { userHasOrgAccess } from '#app/utils/organizations.server.ts'
 
 // Helper function to calculate fractional position
-function getFractionalPosition(prevPosition: number | null, nextPosition: number | null): number {
+function getFractionalPosition(
+	prevPosition: number | null,
+	nextPosition: number | null,
+): number {
 	if (prevPosition === null && nextPosition === null) {
 		return 1.0 // First item
 	} else if (prevPosition === null) {
@@ -18,31 +21,30 @@ function getFractionalPosition(prevPosition: number | null, nextPosition: number
 export const action: ActionFunction = async ({ request, params }) => {
 	const orgSlug = params.orgSlug
 	if (!orgSlug) return new Response('Missing orgSlug', { status: 400 })
-	
+
 	const organization = await prisma.organization.findFirst({
 		select: { id: true },
 		where: { slug: orgSlug },
 	})
 	if (!organization)
 		return new Response('Organization not found', { status: 404 })
-	
+
 	await userHasOrgAccess(request, organization.id)
 
 	const formData = await request.formData()
 	const statusId = formData.get('statusId')?.toString()
 	const positionStr = formData.get('position')?.toString()
-	
+
 	if (!statusId || !positionStr)
 		return new Response('Missing fields', { status: 400 })
-	
+
 	const targetIndex = Number(positionStr)
 
 	// Validate statusId
 	const statusToMove = await prisma.organizationNoteStatus.findFirst({
 		where: { id: statusId, organizationId: organization.id },
 	})
-	if (!statusToMove) 
-		return new Response('Status not found', { status: 404 })
+	if (!statusToMove) return new Response('Status not found', { status: 404 })
 
 	// Use a transaction to calculate and update position
 	await prisma.$transaction(async (tx) => {
@@ -58,7 +60,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 		// Calculate the new fractional position
 		let newPosition: number
-		
+
 		if (allStatuses.length === 0) {
 			// Only one status, use position 1.0
 			newPosition = 1.0
@@ -75,8 +77,8 @@ export const action: ActionFunction = async ({ request, params }) => {
 			const prevStatus = allStatuses[targetIndex - 1]
 			const nextStatus = allStatuses[targetIndex]
 			newPosition = getFractionalPosition(
-				prevStatus?.position ?? null, 
-				nextStatus?.position ?? null
+				prevStatus?.position ?? null,
+				nextStatus?.position ?? null,
 			)
 		}
 

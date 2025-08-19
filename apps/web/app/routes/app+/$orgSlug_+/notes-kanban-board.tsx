@@ -76,13 +76,13 @@ function parseDragId(
 	id: unknown,
 ): { columnId: string; noteId?: string; isColumn?: boolean } | null {
 	if (!id || typeof id !== 'string') return null
-	
+
 	// Check if it's a column drag
 	if (id.startsWith(COLUMN_PREFIX)) {
 		const columnId = id.substring(COLUMN_PREFIX.length)
 		return { columnId, isColumn: true }
 	}
-	
+
 	// Check if it's a note drag
 	if (id.includes(SEPARATOR)) {
 		const [columnId, noteId] = id.split(SEPARATOR)
@@ -230,7 +230,7 @@ export function NotesKanbanBoard({
 		const info = parseDragId(ev.active.id)
 		if (info?.isColumn) {
 			// Column drag
-			const column = columns.find(c => c.id === info.columnId)
+			const column = columns.find((c) => c.id === info.columnId)
 			setActiveColumn(column ?? null)
 			setActiveNote(null)
 		} else if (info?.noteId && info.noteId !== '__placeholder') {
@@ -249,13 +249,13 @@ export function NotesKanbanBoard({
 		if (!over) return
 
 		const activeParsed = parseDragId(active.id)
-		
+
 		// Handle column drag over
 		if (activeParsed?.isColumn) {
 			// Column dragging - no preview needed for now
 			return
 		}
-		
+
 		// Handle note drag over (existing logic)
 		if (!activeNote) return
 
@@ -301,15 +301,17 @@ export function NotesKanbanBoard({
 		if (!over) return
 
 		const activeParsed = parseDragId(active.id)
-		
+
 		// Handle column reordering
 		if (activeParsed?.isColumn) {
 			const overParsed = parseDragId(over.id)
 			if (!overParsed?.isColumn) return
-			
-			const activeIndex = columns.findIndex(c => c.id === activeParsed.columnId)
-			const overIndex = columns.findIndex(c => c.id === overParsed.columnId)
-			
+
+			const activeIndex = columns.findIndex(
+				(c) => c.id === activeParsed.columnId,
+			)
+			const overIndex = columns.findIndex((c) => c.id === overParsed.columnId)
+
 			if (activeIndex !== overIndex && activeIndex !== -1 && overIndex !== -1) {
 				const formData = new FormData()
 				formData.append('statusId', activeParsed.columnId)
@@ -321,7 +323,7 @@ export function NotesKanbanBoard({
 			}
 			return
 		}
-		
+
 		// Handle note reordering (existing logic)
 		const overParsed = parseDragId(over.id)
 		const destColId = overParsed?.columnId ?? String(over.id)
@@ -375,12 +377,12 @@ export function NotesKanbanBoard({
 			if (!over) return
 			const activeInfo = parseDragId(active.id)
 			const overInfo = parseDragId(over.id)
-			
+
 			if (activeInfo?.isColumn && overInfo?.isColumn) {
 				const overColumn = columns.find((c) => c.id === overInfo.columnId)
 				return `Moving column over "${overColumn?.name}"`
 			}
-			
+
 			const destColumn = columns.find(
 				(c) => c.id === (overInfo?.columnId ?? over.id),
 			)
@@ -394,13 +396,13 @@ export function NotesKanbanBoard({
 			if (!over) return 'Item dropped'
 			const activeInfo = parseDragId(active.id)
 			const overInfo = parseDragId(over.id)
-			
+
 			if (activeInfo?.isColumn && overInfo?.isColumn) {
 				const activeColumn = columns.find((c) => c.id === activeInfo.columnId)
 				const overColumn = columns.find((c) => c.id === overInfo.columnId)
 				return `Column "${activeColumn?.name}" moved next to "${overColumn?.name}"`
 			}
-			
+
 			const destColumn = columns.find(
 				(c) => c.id === (overInfo?.columnId ?? over.id),
 			)
@@ -432,7 +434,7 @@ export function NotesKanbanBoard({
 			accessibility={{ announcements }}
 		>
 			<SortableContext
-				items={columns.map(col => makeColumnDragId(col.id))}
+				items={columns.map((col) => makeColumnDragId(col.id))}
 				strategy={horizontalListSortingStrategy}
 			>
 				<div className="flex snap-x snap-mandatory gap-2 overflow-x-auto py-2">
@@ -459,7 +461,7 @@ export function NotesKanbanBoard({
 								<NoteCard note={activeNote} organizationId={organizationId} />
 							</div>
 						) : activeColumn ? (
-							<div className="rotate-3 scale-105 shadow-2xl">
+							<div className="scale-105 rotate-3 shadow-2xl">
 								<KanbanColumn
 									column={activeColumn}
 									notes={grouped[activeColumn.id] ?? []}
@@ -586,11 +588,11 @@ function KanbanColumn({
 		displayNotes.splice(dragPosition, 0, previewNote)
 	}
 
-		return (
+	return (
 		<div
 			ref={setNodeRef}
 			className={`bg-muted/30 flex max-w-[320px] min-w-[320px] flex-shrink-0 snap-center flex-col rounded p-2 shadow-xs ${
-				isActive ? 'ring-2 ring-primary/50' : ''
+				isActive ? 'ring-primary/50 ring-2' : ''
 			}`}
 		>
 			{/* header ------------------------------------------------------- */}
