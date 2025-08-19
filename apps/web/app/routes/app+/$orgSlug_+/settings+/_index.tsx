@@ -546,41 +546,26 @@ export default function GeneralSettings() {
 
 	return (
 		<AnnotatedLayout>
-			<AnnotatedSection
-				title="General Settings"
-				description="Manage your organization's name, slug, and profile image."
-			>
+			<AnnotatedSection>
 				<GeneralSettingsCard organization={organization} />
 			</AnnotatedSection>
 
-			<AnnotatedSection
-				title="Additional Information"
-				description="Help us understand your organization better."
-			>
+			<AnnotatedSection>
 				<TeamSizeCard organization={organization} actionData={actionData} />
 			</AnnotatedSection>
 
-			<AnnotatedSection
-				title="Verified Domains"
-				description="Automatically add team members based on their email domain."
-			>
+			<AnnotatedSection>
 				<VerifiedDomainCard
 					organization={organization}
 					actionData={actionData}
 				/>
 			</AnnotatedSection>
 
-			<AnnotatedSection
-				title="Storage Configuration"
-				description="Configure custom S3-compatible storage for your organization's files."
-			>
+			<AnnotatedSection>
 				<S3StorageCard organization={organization} actionData={actionData} />
 			</AnnotatedSection>
 
-			<AnnotatedSection
-				title="Danger Zone"
-				description="Be careful, an organization deletion cannot be undone."
-			>
+			<AnnotatedSection>
 				<DangerZoneCard organization={organization} />
 			</AnnotatedSection>
 		</AnnotatedLayout>

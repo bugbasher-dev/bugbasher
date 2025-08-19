@@ -45,10 +45,11 @@ export function MarketingLayout({
 							'--sidebar-ring': '148 163 184', // slate-400
 						} as React.CSSProperties
 					}
+					className="dark:bg-muted/50"
 				>
 					<SiteHeader />
 					<div className="flex flex-1 flex-col">
-						<div className="bg-muted/50 @container/main flex flex-1 flex-col gap-2 px-4 md:px-2">
+						<div className="dark:bg-muted/50 @container/main flex flex-1 flex-col gap-2 px-4 md:px-2">
 							{children}
 						</div>
 					</div>

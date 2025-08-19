@@ -143,10 +143,7 @@ export default function IntegrationsSettings() {
 
 	return (
 		<AnnotatedLayout>
-			<AnnotatedSection
-				title="Integrations"
-				description="Connect your organization to third-party services like Slack, Teams, and more."
-			>
+			<AnnotatedSection>
 				<IntegrationsCard
 					integrations={integrations}
 					availableProviders={availableProviders}

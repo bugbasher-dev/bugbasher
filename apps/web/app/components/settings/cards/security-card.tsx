@@ -4,7 +4,13 @@ import { PasskeyManager } from '#app/components/settings/passkey-manager.tsx'
 import { PasswordForm } from '#app/components/settings/password-form.tsx'
 import { TwoFactorForm } from '#app/components/settings/two-factor-form.tsx'
 import { Button } from '#app/components/ui/button.tsx'
-import { Card, CardContent } from '#app/components/ui/card.tsx'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '#app/components/ui/card.tsx'
 import {
 	Dialog,
 	DialogContent,
@@ -52,6 +58,12 @@ export function SecurityCard({
 
 	return (
 		<Card className="w-full">
+			<CardHeader>
+				<CardTitle>Security Settings</CardTitle>
+				<CardDescription>
+					Manage your password and two-factor authentication settings.
+				</CardDescription>
+			</CardHeader>
 			<CardContent>
 				<div className="flex flex-col space-y-6">
 					{/* Password Section */}

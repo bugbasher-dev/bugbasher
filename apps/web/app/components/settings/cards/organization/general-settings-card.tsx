@@ -3,7 +3,14 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { useFetcher } from 'react-router'
 import { z } from 'zod'
 import { Field, ErrorList } from '#app/components/forms'
-import { Card, CardContent, CardFooter } from '#app/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from '#app/components/ui/card'
 import { StatusButton } from '#app/components/ui/status-button'
 import { OrganizationPhoto } from './organization-photo-card'
 
@@ -43,6 +50,12 @@ export function GeneralSettingsCard({
 
 	return (
 		<Card>
+			<CardHeader>
+				<CardTitle>General Settings</CardTitle>
+				<CardDescription>
+					Manage your organization's name, slug, and profile image.
+				</CardDescription>
+			</CardHeader>
 			<CardContent className="pt-6">
 				<div className="mb-6 flex flex-col gap-6 md:flex-row">
 					<div className="w-32 flex-shrink-0">

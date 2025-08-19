@@ -13,7 +13,7 @@ function Table({ className, ...props }: React.ComponentProps<'table'>) {
 }
 
 function TableHeader({ className, ...props }: React.ComponentProps<'thead'>) {
-	return <thead className={cn('bg-muted/30', className)} {...props} />
+	return <thead className={cn('bg-background', className)} {...props} />
 }
 
 function TableBody({ className, ...props }: React.ComponentProps<'tbody'>) {

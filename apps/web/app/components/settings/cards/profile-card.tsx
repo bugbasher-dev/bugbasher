@@ -7,7 +7,14 @@ import { z } from 'zod'
 import { ErrorList, Field } from '#app/components/forms.tsx'
 import { EmailChangeForm } from '#app/components/settings/email-form.tsx'
 import { Button } from '#app/components/ui/button.tsx'
-import { Card, CardContent, CardFooter } from '#app/components/ui/card.tsx'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from '#app/components/ui/card.tsx'
 import {
 	Dialog,
 	DialogContent,
@@ -54,6 +61,12 @@ export function ProfileCard({ user }: ProfileCardProps) {
 
 	return (
 		<Card className="w-full">
+			<CardHeader>
+				<CardTitle>Profile Settings</CardTitle>
+				<CardDescription>
+					Update your photo and personal details here.
+				</CardDescription>
+			</CardHeader>
 			<CardContent className="pt-6 pb-0">
 				<div className="mb-6 flex flex-col gap-6 md:flex-row">
 					<div className="w-32 flex-shrink-0">

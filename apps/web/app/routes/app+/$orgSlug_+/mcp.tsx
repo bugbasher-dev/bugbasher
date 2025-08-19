@@ -706,10 +706,7 @@ export default function McpPage() {
 			</div>
 
 			<AnnotatedLayout>
-				<AnnotatedSection
-					title="API Key Management"
-					description="Create and manage API keys to authenticate your MCP clients. Each key can have an optional expiration date."
-				>
+				<AnnotatedSection>
 					<ApiKeysCard
 						organization={organization}
 						apiKeys={apiKeys}
@@ -718,20 +715,14 @@ export default function McpPage() {
 					/>
 				</AnnotatedSection>
 
-				<AnnotatedSection
-					title="Client Setup"
-					description="Configuration examples for connecting popular AI assistants to your MCP server."
-				>
+				<AnnotatedSection>
 					<SetupInstructionsCard
 						organization={organization}
 						serverUrl={serverUrl}
 					/>
 				</AnnotatedSection>
 
-				<AnnotatedSection
-					title="Available Tools"
-					description="Tools and capabilities available through your MCP server connection."
-				>
+				<AnnotatedSection>
 					<AvailableToolsCard organization={organization} />
 				</AnnotatedSection>
 			</AnnotatedLayout>

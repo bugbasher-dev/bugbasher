@@ -354,17 +354,11 @@ export default function MembersSettings() {
 
 	return (
 		<AnnotatedLayout>
-			<AnnotatedSection
-				title="Members"
-				description="Manage the members of your organization."
-			>
+			<AnnotatedSection>
 				<MembersCard members={members} currentUserId={currentUserId} />
 			</AnnotatedSection>
 
-			<AnnotatedSection
-				title="Invitations"
-				description="Invite new members to your organization."
-			>
+			<AnnotatedSection>
 				<InvitationsCard
 					pendingInvitations={pendingInvitations}
 					inviteLink={inviteLink}

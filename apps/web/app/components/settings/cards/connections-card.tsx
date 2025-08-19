@@ -1,5 +1,11 @@
 import { Connections } from '#app/components/settings/connections.tsx'
-import { Card, CardContent } from '#app/components/ui/card.tsx'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '#app/components/ui/card.tsx'
 
 export const disconnectProviderActionIntent = 'disconnect-provider'
 
@@ -23,6 +29,10 @@ export function ConnectionsCard({ connections }: ConnectionsCardProps) {
 
 	return (
 		<Card className="w-full">
+			<CardHeader>
+				<CardTitle>Connected Accounts</CardTitle>
+				<CardDescription>Manage your connected accounts here.</CardDescription>
+			</CardHeader>
 			<CardContent>
 				<Connections data={{ connections }} />
 			</CardContent>

@@ -3,7 +3,13 @@ import { Form } from 'react-router'
 import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
 import { Badge } from '#app/components/ui/badge'
 import { Button } from '#app/components/ui/button'
-import { Card, CardContent } from '#app/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '#app/components/ui/card'
 import { Icon } from '#app/components/ui/icon'
 import {
 	Select,
@@ -105,6 +111,10 @@ export function OrganizationMembers({
 
 	return (
 		<Card>
+			<CardHeader>
+				<CardTitle>Members</CardTitle>
+				<CardDescription>Manage your organization's members.</CardDescription>
+			</CardHeader>
 			<CardContent>
 				<div className="space-y-3">
 					{members.map((member) => (

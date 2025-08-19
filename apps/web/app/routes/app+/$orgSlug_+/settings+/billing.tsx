@@ -151,10 +151,7 @@ export default function BillingSettings() {
 
 	return (
 		<AnnotatedLayout>
-			<AnnotatedSection
-				title="Billing & Subscription"
-				description="Manage your organization's subscription and billing settings."
-			>
+			<AnnotatedSection>
 				<BillingCard
 					organization={organization}
 					plansAndPrices={plansAndPrices}

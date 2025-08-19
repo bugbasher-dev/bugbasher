@@ -216,10 +216,7 @@ export default function SecuritySettings() {
 					description="Manage your password, two-factor authentication, connected accounts, and advanced security settings."
 				/>
 
-				<AnnotatedSection
-					title="Security"
-					description="Manage your password and two-factor authentication settings."
-				>
+				<AnnotatedSection>
 					<SecurityCard
 						hasPassword={data.hasPassword}
 						isTwoFactorEnabled={data.isTwoFactorEnabled}
@@ -230,17 +227,11 @@ export default function SecuritySettings() {
 					/>
 				</AnnotatedSection>
 
-				<AnnotatedSection
-					title="Connected accounts"
-					description="Sign up faster to your account by linking it to Google or Microsoft."
-				>
+				<AnnotatedSection>
 					<ConnectionsCard user={data.user} connections={data.connections} />
 				</AnnotatedSection>
 
-				<AnnotatedSection
-					title="Advanced"
-					description="Manage your sessions and delete your account data."
-				>
+				<AnnotatedSection>
 					<AdvancedSettingsCard user={data.user} />
 				</AnnotatedSection>
 			</AnnotatedLayout>

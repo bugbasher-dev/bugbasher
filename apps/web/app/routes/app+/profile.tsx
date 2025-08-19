@@ -93,10 +93,7 @@ export default function ProfileSettings() {
 					title="Profile Settings"
 					description="Manage your account settings and set e-mail preferences."
 				/>
-				<AnnotatedSection
-					title="Profile"
-					description="Update your photo and personal details here."
-				>
+				<AnnotatedSection>
 					<ProfileCard user={data.user} />
 				</AnnotatedSection>
 			</AnnotatedLayout>
