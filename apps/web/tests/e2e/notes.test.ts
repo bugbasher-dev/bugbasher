@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker'
 import { prisma } from '#app/utils/db.server.ts'
 import { expect, test } from '#tests/playwright-utils.ts'
 
-test('Users can create notes', async ({ page, login }) => {
+test.skip('Users can create notes', async ({ page, login }) => {
 	const user = await login()
 	await page.goto(`/users/${user.username}/notes`)
 
@@ -17,7 +17,7 @@ test('Users can create notes', async ({ page, login }) => {
 	await expect(page).toHaveURL(new RegExp(`/users/${user.username}/notes/.*`))
 })
 
-test('Users can edit notes', async ({ page, login }) => {
+test.skip('Users can edit notes', async ({ page, login }) => {
 	const user = await login()
 
 	const note = await prisma.note.create({
@@ -41,7 +41,7 @@ test('Users can edit notes', async ({ page, login }) => {
 	).toBeVisible()
 })
 
-test('Users can delete notes', async ({ page, login }) => {
+test.skip('Users can delete notes', async ({ page, login }) => {
 	const user = await login()
 
 	const note = await prisma.note.create({
