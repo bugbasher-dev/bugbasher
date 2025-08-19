@@ -44,43 +44,43 @@ function formatActivityMessage(log: {
 
 	switch (log.action) {
 		case 'viewed':
-			return `${userName} viewed the note`
+			return `<span class="font-bold">${userName}</span> viewed the note`
 		case 'created':
-			return `${userName} created the note`
+			return `<span class="font-bold">${userName}</span> created the note`
 		case 'updated':
 			const hasContentChange = metadata.contentChanged
 			const hasTitleChange = metadata.titleChanged
 			if (hasContentChange && hasTitleChange) {
-				return `${userName} updated the title and content`
+				return `<span class="font-bold">${userName}</span> updated the title and content`
 			} else if (hasTitleChange) {
-				return `${userName} updated the title`
+				return `<span class="font-bold">${userName}</span> updated the title`
 			} else if (hasContentChange) {
-				return `${userName} updated the content`
+				return `<span class="font-bold">${userName}</span> updated the content`
 			} else {
-				return `${userName} updated the note`
+				return `<span class="font-bold">${userName}</span> updated the note`
 			}
 		case 'deleted':
-			return `${userName} deleted the note`
+			return `<span class="font-bold">${userName}</span> deleted the note`
 		case 'sharing_changed':
 			const isPublic = metadata.isPublic
-			return `${userName} made the note ${isPublic ? 'public' : 'private'}`
+			return `<span class="font-bold">${userName}</span> made the note ${isPublic ? 'public' : 'private'}`
 		case 'access_granted':
-			return `${userName} granted access to ${targetUserName}`
+			return `<span class="font-bold">${userName}</span> granted access to ${targetUserName}`
 		case 'access_revoked':
-			return `${userName} revoked access from ${targetUserName}`
+			return `<span class="font-bold">${userName}</span> revoked access from ${targetUserName}`
 		case 'integration_connected':
 			const channelName = metadata.channelName || metadata.externalId
-			return `${userName} connected note to ${log.integration?.providerName} channel: ${channelName}`
+			return `<span class="font-bold">${userName}</span> connected note to ${log.integration?.providerName} channel: ${channelName}`
 		case 'integration_disconnected':
 			const disconnectedChannel = metadata.channelName || metadata.externalId
-			return `${userName} disconnected note from ${log.integration?.providerName} channel: ${disconnectedChannel}`
+			return `<span class="font-bold">${userName}</span> disconnected note from ${log.integration?.providerName} channel: ${disconnectedChannel}`
 		case 'comment_added':
 			const isReply = metadata.parentId
-			return `${userName} ${isReply ? 'replied to a comment' : 'added a comment'}`
+			return `<span class="font-bold">${userName}</span> ${isReply ? 'replied to a comment' : 'added a comment'}`
 		case 'comment_deleted':
-			return `${userName} deleted a comment`
+			return `<span class="font-bold">${userName}</span> deleted a comment`
 		default:
-			return `${userName} performed an action`
+			return `<span class="font-bold">${userName}</span> performed an action`
 	}
 }
 
@@ -107,28 +107,6 @@ function getActivityIcon(action: string) {
 			return 'mail'
 		default:
 			return 'clock'
-	}
-}
-
-function getActivityColor(action: string) {
-	switch (action) {
-		case 'deleted':
-		case 'access_revoked':
-		case 'integration_disconnected':
-		case 'comment_deleted':
-			return 'text-destructive bg-destructive/10 border-destructive/20'
-		case 'created':
-		case 'access_granted':
-		case 'integration_connected':
-		case 'comment_added':
-			return 'text-green-600 bg-green-50 border-green-200 dark:text-green-400 dark:bg-green-950 dark:border-green-800'
-		case 'updated':
-		case 'sharing_changed':
-			return 'text-blue-600 bg-blue-50 border-blue-200 dark:text-blue-400 dark:bg-blue-950 dark:border-blue-800'
-		case 'viewed':
-			return 'text-muted-foreground bg-muted border-border'
-		default:
-			return 'text-muted-foreground bg-muted border-border'
 	}
 }
 
@@ -174,7 +152,7 @@ export function ActivityLog({ activityLogs }: ActivityLogProps) {
 
 						<div className="flex items-start gap-3">
 							<div
-								className={`border-background bg-background relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 ${getActivityColor(log.action)}`}
+								className={`border-background bg-background relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-1 text-muted-foreground bg-muted border-border`}
 							>
 								<Icon
 									name={getActivityIcon(log.action)}
@@ -182,8 +160,12 @@ export function ActivityLog({ activityLogs }: ActivityLogProps) {
 								/>
 							</div>
 							<div className="min-w-0 flex-1 pt-1">
-								<p className="text-foreground text-sm leading-relaxed">
-									{formatActivityMessage(log)}
+								<p
+									className="text-foreground text-sm leading-relaxed"
+									dangerouslySetInnerHTML={{
+										__html: formatActivityMessage(log),
+									}}
+								>
 								</p>
 								<p className="text-muted-foreground mt-1 mb-4 text-xs">
 									{formatDistanceToNow(new Date(log.createdAt), {

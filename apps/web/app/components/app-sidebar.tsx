@@ -49,7 +49,7 @@ function UpgradeAccountCard({
 	if (!trialStatus.isActive || trialStatus.daysRemaining < 0) return null
 
 	return (
-		<Card className="bg-sidebar-accent border-sidebar-border mb-4 gap-1 p-2 shadow-md">
+		<Card className="bg-sidebar-accent dark:bg-sidebar-accent border-sidebar-border mb-4 gap-1 p-2 shadow-md">
 			<CardHeader className="p-2">
 				<CardDescription className="text-sidebar-foreground">
 					There are{' '}
