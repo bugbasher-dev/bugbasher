@@ -239,12 +239,6 @@ export const NoteCard = ({
 										height={200}
 									/>
 
-									{/* Enhanced overlay structure */}
-									<div className="absolute inset-0 rounded-[16px]">
-										<div className="absolute inset-0 rounded-[16px] shadow-[0px_0px_0px_1px_rgba(0,0,0,.07),0px_0px_0px_3px_#fff,0px_0px_0px_4px_rgba(0,0,0,.08)] dark:shadow-[0px_0px_0px_1px_rgba(0,0,0,.07),0px_0px_0px_3px_rgba(100,100,100,0.3),0px_0px_0px_4px_rgba(0,0,0,.08)]" />
-										<div className="absolute inset-0 rounded-[16px] dark:shadow-[0px_1px_1px_0px_rgba(0,0,0,0.15),0px_1px_1px_0px_rgba(0,0,0,0.15)_inset,0px_0px_0px_1px_rgba(0,0,0,0.15)_inset,0px_0px_1px_0px_rgba(0,0,0,0.15)]" />
-									</div>
-
 									{/* Video play overlay */}
 									{isVideo && (
 										<div className="absolute inset-0 flex items-center justify-center rounded-[16px] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
@@ -262,6 +256,12 @@ export const NoteCard = ({
 									<Icon name="file-text" className="text-primary/40 h-8 w-8" />
 								</div>
 							)}
+
+							{/* Enhanced overlay structure */}
+							<div className="absolute inset-0 rounded-[16px]">
+								<div className="absolute inset-0 rounded-[16px] shadow-[0px_0px_0px_1px_rgba(0,0,0,.07),0px_0px_0px_3px_#fff,0px_0px_0px_4px_rgba(0,0,0,.08)] dark:shadow-[0px_0px_0px_1px_rgba(0,0,0,.07),0px_0px_0px_3px_rgba(0,0,0,0.8),0px_0px_0px_4px_rgba(0,0,0,.08)]" />
+								<div className="absolute inset-0 rounded-[16px] dark:shadow-[0px_1px_1px_0px_rgba(0,0,0,0.15),0px_1px_1px_0px_rgba(0,0,0,0.15)_inset,0px_0px_0px_1px_rgba(0,0,0,0.15)_inset,0px_0px_1px_0px_rgba(0,0,0,0.15)]" />
+							</div>
 
 							{/* Card action buttons - styled like attachment count */}
 							<div className="absolute -top-[1px] -right-[1px] z-10 flex transition-all duration-300">
@@ -386,7 +386,7 @@ export const NoteCard = ({
 							/>
 						</div>
 					) : (
-						<div className={cn('px-0', isKanbanView && 'pt-1')}>
+						<div className={cn('px-2', isKanbanView && 'pt-1')}>
 							<div className="flex items-start justify-between gap-1">
 								{/* Priority indicator */}
 								{note.priority && (
@@ -480,7 +480,7 @@ export const NoteCard = ({
 					)}
 
 					{/* Footer */}
-					<div className="mt-auto px-1 pt-2 font-mono">
+					<div className="mt-auto px-2 pt-2 font-mono">
 						<div className="flex items-center justify-between">
 							<div className="flex items-center gap-2">
 								<Avatar className="h-5 w-5">

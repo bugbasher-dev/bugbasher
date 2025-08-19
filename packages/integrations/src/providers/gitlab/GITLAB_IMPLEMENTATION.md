@@ -188,7 +188,6 @@ Each note-to-project connection can be configured with:
 When a note is created or updated with a GitLab connection:
 
 1. **Format Issue Data:**
-
    - Title: Truncated note title (max 255 characters)
    - Description: Formatted with author info, note content, and link back to
      note
@@ -197,7 +196,6 @@ When a note is created or updated with a GitLab connection:
    - Assignee: Set from connection configuration
 
 2. **Create Issue:**
-
    - POST request to `/api/v4/projects/{projectId}/issues`
    - Includes all formatted issue data
    - Returns created issue with ID and web URL

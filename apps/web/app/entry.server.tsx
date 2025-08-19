@@ -51,7 +51,7 @@ export default async function handleRequest(...args: DocRequestArgs) {
 	const locale = await linguiServer.getLocale(request)
 	await loadCatalog(locale)
 
-	if (request.url.includes('/novu')) {
+	if (request.url.includes('/novu') || request.url.includes('builder.my')) {
 		return new Promise(async (resolve, reject) => {
 			let didError = false
 			// NOTE: this timing will only include things that are rendered in the shell

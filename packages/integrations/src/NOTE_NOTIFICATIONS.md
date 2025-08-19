@@ -250,13 +250,11 @@ await runAllDemos()
 ### Common Issues
 
 1. **No Notifications Sent**
-
    - Check if organization has active integrations
    - Verify note has connections to channels
    - Check integration logs for errors
 
 2. **Partial Notifications**
-
    - Some integrations may fail while others succeed
    - Check individual integration status
    - Review error logs for specific failures

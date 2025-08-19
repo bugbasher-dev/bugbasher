@@ -194,13 +194,11 @@ reporterAccountId?: string // Specific reporter account for this connection
 ### Setting Up a Bot User
 
 1. **Create a Service Account in Jira**
-
    - Create a dedicated user in Jira admin settings
    - Grant appropriate project permissions (minimum: Create Issues)
    - Recommended naming: `epic-stack-bot@yourcompany.com`
 
 2. **Find the Account ID**
-
    - Use the built-in user search utility in settings
    - Check user profile URL:
      `https://yourcompany.atlassian.net/jira/people/ACCOUNT_ID`
