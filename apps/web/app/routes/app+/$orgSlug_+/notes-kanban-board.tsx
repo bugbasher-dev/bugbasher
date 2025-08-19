@@ -17,6 +17,7 @@ import {
 import {
 	SortableContext,
 	verticalListSortingStrategy,
+	horizontalListSortingStrategy,
 	useSortable,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -64,13 +65,25 @@ type Column = { id: string; name: string; color?: string }
 
 const UNCATEGORISED = '__uncategorised'
 const SEPARATOR = ':::'
+const COLUMN_PREFIX = 'column-'
 function makeDragId(columnId: string, noteId: string) {
 	return `${columnId}${SEPARATOR}${noteId}`
 }
+function makeColumnDragId(columnId: string) {
+	return `${COLUMN_PREFIX}${columnId}`
+}
 function parseDragId(
 	id: unknown,
-): { columnId: string; noteId?: string } | null {
+): { columnId: string; noteId?: string; isColumn?: boolean } | null {
 	if (!id || typeof id !== 'string') return null
+	
+	// Check if it's a column drag
+	if (id.startsWith(COLUMN_PREFIX)) {
+		const columnId = id.substring(COLUMN_PREFIX.length)
+		return { columnId, isColumn: true }
+	}
+	
+	// Check if it's a note drag
 	if (id.includes(SEPARATOR)) {
 		const [columnId, noteId] = id.split(SEPARATOR)
 		return { columnId: columnId || '', noteId }
@@ -205,7 +218,9 @@ export function NotesKanbanBoard({
 		useSensor(KeyboardSensor),
 	)
 	const reorderFetcher = useFetcher()
+	const columnReorderFetcher = useFetcher()
 	const [activeNote, setActiveNote] = useState<Note | null>(null)
+	const [activeColumn, setActiveColumn] = useState<Column | null>(null)
 	const [dragDestination, setDragDestination] = useState<{
 		columnId: string
 		position?: number
@@ -213,19 +228,37 @@ export function NotesKanbanBoard({
 
 	function handleDragStart(ev: DragStartEvent) {
 		const info = parseDragId(ev.active.id)
-		if (info?.noteId && info.noteId !== '__placeholder') {
+		if (info?.isColumn) {
+			// Column drag
+			const column = columns.find(c => c.id === info.columnId)
+			setActiveColumn(column ?? null)
+			setActiveNote(null)
+		} else if (info?.noteId && info.noteId !== '__placeholder') {
+			// Note drag
 			setActiveNote(noteMap.get(info.noteId) ?? null)
+			setActiveColumn(null)
 		} else {
 			setActiveNote(null)
+			setActiveColumn(null)
 		}
 		setDragDestination(null)
 	}
 
 	function handleDragOver(ev: DragOverEvent) {
 		const { active, over } = ev
-		if (!over || !activeNote) return
+		if (!over) return
 
 		const activeParsed = parseDragId(active.id)
+		
+		// Handle column drag over
+		if (activeParsed?.isColumn) {
+			// Column dragging - no preview needed for now
+			return
+		}
+		
+		// Handle note drag over (existing logic)
+		if (!activeNote) return
+
 		const overParsed = parseDragId(over.id)
 		const destColId = overParsed?.columnId ?? String(over.id)
 		const overNoteId =
@@ -263,10 +296,33 @@ export function NotesKanbanBoard({
 	function handleDragEnd(ev: DragEndEvent) {
 		const { active, over } = ev
 		setActiveNote(null)
+		setActiveColumn(null)
 		setDragDestination(null)
 		if (!over) return
 
 		const activeParsed = parseDragId(active.id)
+		
+		// Handle column reordering
+		if (activeParsed?.isColumn) {
+			const overParsed = parseDragId(over.id)
+			if (!overParsed?.isColumn) return
+			
+			const activeIndex = columns.findIndex(c => c.id === activeParsed.columnId)
+			const overIndex = columns.findIndex(c => c.id === overParsed.columnId)
+			
+			if (activeIndex !== overIndex && activeIndex !== -1 && overIndex !== -1) {
+				const formData = new FormData()
+				formData.append('statusId', activeParsed.columnId)
+				formData.append('position', String(overIndex))
+				void columnReorderFetcher.submit(formData, {
+					method: 'post',
+					action: `/app/${orgSlug}/notes/statuses/reorder`,
+				})
+			}
+			return
+		}
+		
+		// Handle note reordering (existing logic)
 		const overParsed = parseDragId(over.id)
 		const destColId = overParsed?.columnId ?? String(over.id)
 		const overNoteId =
@@ -305,7 +361,10 @@ export function NotesKanbanBoard({
 	const announcements: Announcements = {
 		onDragStart({ active }) {
 			const info = parseDragId(active.id)
-			if (info?.noteId && info.noteId !== '__placeholder') {
+			if (info?.isColumn) {
+				const column = columns.find((c) => c.id === info.columnId)
+				return `Picked up column "${column?.name}"`
+			} else if (info?.noteId && info.noteId !== '__placeholder') {
 				const note = noteMap.get(info.noteId)
 				const column = columns.find((c) => c.id === info.columnId)
 				return `Picked up note "${note?.title}" from column "${column?.name}"`
@@ -316,6 +375,12 @@ export function NotesKanbanBoard({
 			if (!over) return
 			const activeInfo = parseDragId(active.id)
 			const overInfo = parseDragId(over.id)
+			
+			if (activeInfo?.isColumn && overInfo?.isColumn) {
+				const overColumn = columns.find((c) => c.id === overInfo.columnId)
+				return `Moving column over "${overColumn?.name}"`
+			}
+			
 			const destColumn = columns.find(
 				(c) => c.id === (overInfo?.columnId ?? over.id),
 			)
@@ -326,9 +391,16 @@ export function NotesKanbanBoard({
 			return 'Moving item'
 		},
 		onDragEnd({ active, over }) {
-			if (!over) return 'Note dropped'
+			if (!over) return 'Item dropped'
 			const activeInfo = parseDragId(active.id)
 			const overInfo = parseDragId(over.id)
+			
+			if (activeInfo?.isColumn && overInfo?.isColumn) {
+				const activeColumn = columns.find((c) => c.id === activeInfo.columnId)
+				const overColumn = columns.find((c) => c.id === overInfo.columnId)
+				return `Column "${activeColumn?.name}" moved next to "${overColumn?.name}"`
+			}
+			
 			const destColumn = columns.find(
 				(c) => c.id === (overInfo?.columnId ?? over.id),
 			)
@@ -354,24 +426,31 @@ export function NotesKanbanBoard({
 			onDragEnd={handleDragEnd}
 			onDragCancel={() => {
 				setActiveNote(null)
+				setActiveColumn(null)
 				setDragDestination(null)
 			}}
 			accessibility={{ announcements }}
 		>
-			<div className="flex snap-x snap-mandatory gap-2 overflow-x-auto py-2">
-				{columns.map((col) => (
-					<KanbanColumn
-						key={col.id}
-						column={col}
-						notes={grouped[col.id] ?? []}
-						orgSlug={orgSlug}
-						activeNote={activeNote}
-						dragDestination={dragDestination}
-						organizationId={organizationId}
-					/>
-				))}
-				<NewColumnButton orgSlug={orgSlug} />
-			</div>
+			<SortableContext
+				items={columns.map(col => makeColumnDragId(col.id))}
+				strategy={horizontalListSortingStrategy}
+			>
+				<div className="flex snap-x snap-mandatory gap-2 overflow-x-auto py-2">
+					{columns.map((col) => (
+						<SortableKanbanColumn
+							key={col.id}
+							column={col}
+							notes={grouped[col.id] ?? []}
+							orgSlug={orgSlug}
+							activeNote={activeNote}
+							dragDestination={dragDestination}
+							organizationId={organizationId}
+							isActive={activeColumn?.id === col.id}
+						/>
+					))}
+					<NewColumnButton orgSlug={orgSlug} />
+				</div>
+			</SortableContext>
 			{typeof window !== 'undefined' &&
 				createPortal(
 					<DragOverlay>
@@ -379,11 +458,81 @@ export function NotesKanbanBoard({
 							<div className="rotate-3 shadow-lg">
 								<NoteCard note={activeNote} organizationId={organizationId} />
 							</div>
+						) : activeColumn ? (
+							<div className="rotate-3 scale-105 shadow-2xl">
+								<KanbanColumn
+									column={activeColumn}
+									notes={grouped[activeColumn.id] ?? []}
+									orgSlug={orgSlug}
+									activeNote={null}
+									dragDestination={null}
+									organizationId={organizationId}
+								/>
+							</div>
 						) : null}
 					</DragOverlay>,
 					document.body,
 				)}
 		</DndContext>
+	)
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Sortable Column Wrapper                                                   */
+/* -------------------------------------------------------------------------- */
+
+function SortableKanbanColumn({
+	column,
+	notes,
+	orgSlug,
+	activeNote,
+	dragDestination,
+	organizationId,
+	isActive,
+}: {
+	column: Column
+	notes: Note[]
+	orgSlug: string
+	activeNote: Note | null
+	dragDestination: { columnId: string; position?: number } | null
+	organizationId: string
+	isActive: boolean
+}) {
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({
+		id: makeColumnDragId(column.id),
+		data: {
+			type: 'Column',
+			column,
+		},
+	})
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+		opacity: isDragging ? 0.5 : 1,
+		zIndex: isDragging ? 1000 : 'auto',
+	}
+
+	return (
+		<div ref={setNodeRef} style={style}>
+			<KanbanColumn
+				column={column}
+				notes={notes}
+				orgSlug={orgSlug}
+				activeNote={activeNote}
+				dragDestination={dragDestination}
+				organizationId={organizationId}
+				dragHandleProps={{ ...attributes, ...listeners }}
+				isActive={isActive}
+			/>
+		</div>
 	)
 }
 
@@ -398,6 +547,8 @@ function KanbanColumn({
 	activeNote,
 	dragDestination,
 	organizationId,
+	dragHandleProps,
+	isActive,
 }: {
 	column: Column
 	notes: Note[]
@@ -405,6 +556,8 @@ function KanbanColumn({
 	activeNote: Note | null
 	dragDestination: { columnId: string; position?: number } | null
 	organizationId: string
+	dragHandleProps?: React.HTMLAttributes<HTMLDivElement>
+	isActive?: boolean
 }) {
 	const { setNodeRef } = useDroppable({ id: column.id })
 	const renameFetcher = useFetcher()
@@ -433,13 +586,25 @@ function KanbanColumn({
 		displayNotes.splice(dragPosition, 0, previewNote)
 	}
 
-	return (
+		return (
 		<div
 			ref={setNodeRef}
-			className="bg-muted/30 flex max-w-[320px] min-w-[320px] flex-shrink-0 snap-center flex-col rounded p-2 shadow-xs"
+			className={`bg-muted/30 flex max-w-[320px] min-w-[320px] flex-shrink-0 snap-center flex-col rounded p-2 shadow-xs ${
+				isActive ? 'ring-2 ring-primary/50' : ''
+			}`}
 		>
 			{/* header ------------------------------------------------------- */}
 			<div className="group mb-1 flex w-full items-center gap-2 font-semibold">
+				{/* Drag handle for column */}
+				{dragHandleProps && (
+					<div
+						{...dragHandleProps}
+						className="cursor-grab touch-none opacity-50 hover:opacity-100 active:cursor-grabbing"
+						title="Drag to reorder column"
+					>
+						<Icon name="grip-vertical" size="sm" />
+					</div>
+				)}
 				{editing ? (
 					<EditColumnForm
 						column={column}

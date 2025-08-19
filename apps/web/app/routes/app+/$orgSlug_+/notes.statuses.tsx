@@ -28,12 +28,12 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 	})
 	if (existing) return new Response('Already exists', { status: 409 })
 
-	// Determine next position
+	// Determine next position (always append at end)
 	const maxPos = await prisma.organizationNoteStatus.aggregate({
 		where: { organizationId: organization.id },
 		_max: { position: true },
 	})
-	const nextPosition = (maxPos._max.position ?? 0) + 1
+	const nextPosition = (maxPos._max.position ?? 0) + 1.0
 
 	const created = await prisma.organizationNoteStatus.create({
 		data: {

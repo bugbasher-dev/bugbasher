@@ -233,17 +233,17 @@ model OrganizationImage {
 }
 
 model OrganizationS3Config {
-  id             String       @id @default(cuid())
-  isEnabled      Boolean      @default(false)
-  endpoint       String
-  bucketName     String
-  accessKeyId    String
-  secretAccessKey String      // This should be encrypted in production
-  region         String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  organizationId String       @unique
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  id              String       @id @default(cuid())
+  isEnabled       Boolean      @default(false)
+  endpoint        String
+  bucketName      String
+  accessKeyId     String
+  secretAccessKey String // This should be encrypted in production
+  region          String
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  organizationId  String       @unique
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }
 
 model OrganizationInvitation {
@@ -298,15 +298,15 @@ model OrganizationNote {
   title                  String
   content                String
   isPublic               Boolean                     @default(true)
-  priority               String?                     // "low", "medium", "high"
-  tags                   String?                     // JSON array of tags stored as string
+  priority               String? // "low", "medium", "high"
+  tags                   String? // JSON array of tags stored as string
   createdAt              DateTime                    @default(now())
   updatedAt              DateTime                    @updatedAt
   organizationId         String
   createdById            String
   statusId               String? // Kanban column FK, null = Uncategorized
   status                 OrganizationNoteStatus?     @relation(fields: [statusId], references: [id], onDelete: SetNull)
-  position               Int? // Ordering within status
+  position               Float? // Ordering within status
   noteAccess             NoteAccess[]
   activityLogs           NoteActivityLog[]
   comments               NoteComment[]
@@ -539,7 +539,7 @@ model OrganizationNoteStatus {
   organizationId    String
   name              String
   color             String?            @default("#6b7280") // Default gray color
-  position          Int?
+  position          Float?
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   organization      Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -566,23 +566,23 @@ model Feedback {
 }
 
 model IpAddress {
-  id              String            @id @default(cuid())
-  ip              String            @unique
+  id              String          @id @default(cuid())
+  ip              String          @unique
   country         String?
   region          String?
   city            String?
-  isBlacklisted   Boolean           @default(false)
+  isBlacklisted   Boolean         @default(false)
   blacklistReason String?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
   blacklistedAt   DateTime?
   blacklistedById String?
-  blacklistedBy   User?             @relation("IpBlacklists", fields: [blacklistedById], references: [id])
+  blacklistedBy   User?           @relation("IpBlacklists", fields: [blacklistedById], references: [id])
   // Simple tracking fields instead of storing every request
-  requestCount    Int               @default(0)
+  requestCount    Int             @default(0)
   lastRequestAt   DateTime?
   lastUserAgent   String?
-  suspiciousScore Int               @default(0) // For future fraud detection
+  suspiciousScore Int             @default(0) // For future fraud detection
   ipAddressUsers  IpAddressUser[]
 
   @@index([ip])
@@ -591,14 +591,14 @@ model IpAddress {
 }
 
 model IpAddressUser {
-  id          String    @id @default(cuid())
-  userId      String
-  ipAddressId String
-  firstSeenAt DateTime  @default(now())
-  lastSeenAt  DateTime  @default(now())
-  requestCount Int      @default(1)
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  ipAddress   IpAddress @relation(fields: [ipAddressId], references: [id], onDelete: Cascade)
+  id           String    @id @default(cuid())
+  userId       String
+  ipAddressId  String
+  firstSeenAt  DateTime  @default(now())
+  lastSeenAt   DateTime  @default(now())
+  requestCount Int       @default(1)
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipAddress    IpAddress @relation(fields: [ipAddressId], references: [id], onDelete: Cascade)
 
   @@unique([userId, ipAddressId])
   @@index([userId])
