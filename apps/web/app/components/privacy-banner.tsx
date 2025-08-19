@@ -10,8 +10,8 @@ export function CookieConsentBanner({ consent }: { consent: boolean | null }) {
 	}
 
 	return (
-		<div className="fixed bottom-0 left-0 z-10 box-border flex w-full flex-row justify-center gap-5 p-5">
-			<div className="flex h-full w-full max-w-full items-end justify-start">
+		<div className="fixed bottom-0 left-0 z-10 box-border flex flex-row justify-center gap-5 p-5">
+			<div className="flex items-end justify-start">
 				<div className="relative z-[100] flex max-h-[calc(100vh-40px)] flex-col gap-3">
 					<div className="w-full max-w-[360px] overflow-scroll rounded-2xl border bg-white shadow-xs">
 						<div className="p-5">
