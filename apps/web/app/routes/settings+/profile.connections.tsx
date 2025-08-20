@@ -12,9 +12,9 @@ import {
 	TooltipTrigger,
 	Icon,
 	StatusButton,
-	ProviderConnectionForm,
 } from '@repo/ui'
 import {
+	ProviderConnectionForm,
 	type ProviderName,
 	ProviderNameSchema,
 	providerIcons,

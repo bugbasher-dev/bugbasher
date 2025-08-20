@@ -1,5 +1,9 @@
 import { Connections } from '#app/components/settings/connections.tsx'
 import {
+	ProviderConnectionForm,
+	providerNames,
+} from '#app/utils/connections.tsx'
+import {
 	Card,
 	CardContent,
 	CardDescription,
@@ -25,8 +29,6 @@ interface ConnectionsCardProps {
 }
 
 export function ConnectionsCard({ connections }: ConnectionsCardProps) {
-	if (connections.length === 0) return null
-
 	return (
 		<Card className="w-full">
 			<CardHeader>
@@ -35,6 +37,18 @@ export function ConnectionsCard({ connections }: ConnectionsCardProps) {
 			</CardHeader>
 			<CardContent>
 				<Connections data={{ connections }} />
+				<div className="border-border mt-5 flex flex-col gap-5 border-t-2 border-b-2 py-3">
+					<h3 className="text-center text-sm font-medium">
+						Add more connections
+					</h3>
+					{providerNames.map((providerName) => (
+						<ProviderConnectionForm
+							key={providerName}
+							type="Connect"
+							providerName={providerName}
+						/>
+					))}
+				</div>
 			</CardContent>
 		</Card>
 	)
