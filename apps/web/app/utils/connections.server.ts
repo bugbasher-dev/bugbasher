@@ -6,6 +6,7 @@ import { type Timings } from './timing.server.ts'
 
 export const providers: Record<ProviderName, AuthProvider> = {
 	github: new GitHubProvider(),
+	google: new GitHubProvider(),
 }
 
 export function handleMockAction(providerName: ProviderName, request: Request) {

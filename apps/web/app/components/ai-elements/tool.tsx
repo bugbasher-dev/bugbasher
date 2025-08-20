@@ -7,6 +7,7 @@ import {
 	CollapsibleTrigger,
 } from '@repo/ui'
 import {
+	CheckCircleIcon,
 	ChevronDownIcon,
 	CircleIcon,
 	ClockIcon,

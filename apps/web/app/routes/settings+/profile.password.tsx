@@ -7,6 +7,7 @@ import { ErrorList, Field } from '#app/components/forms.tsx'
 
 import { Button, Icon, StatusButton } from '@repo/ui'
 import {
+	checkIsCommonPassword,
 	getPasswordHash,
 	requireUserId,
 	verifyUserPassword,

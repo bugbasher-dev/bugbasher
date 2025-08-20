@@ -10,7 +10,7 @@ import {
 	CarouselContent,
 	CarouselItem,
 	useCarousel as useCarouselApi,
-} from '#app/components/ui/carousel'
+} from '@repo/ui'
 
 import { cn } from '#app/utils/misc'
 

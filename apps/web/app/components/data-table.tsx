@@ -417,7 +417,7 @@ export function DataTable({
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="outline" size="sm">
-								<Icon name="layout-columns" />
+								<Icon name="activity" />
 								<span className="hidden lg:inline">Customize Columns</span>
 								<span className="lg:hidden">Columns</span>
 								<Icon name="chevron-down" />

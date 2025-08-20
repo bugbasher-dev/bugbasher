@@ -11,7 +11,11 @@ import { ErrorList } from '#app/components/forms.tsx'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { Button, Icon, StatusButton } from '@repo/ui'
-import { useDoubleCheck, useIsPending } from '#app/utils/misc.tsx'
+import {
+	getUserImgSrc,
+	useDoubleCheck,
+	useIsPending,
+} from '#app/utils/misc.tsx'
 import { uploadProfileImage } from '#app/utils/storage.server.ts'
 import { type Route } from './+types/profile.photo.ts'
 import { type BreadcrumbHandle } from './profile.tsx'

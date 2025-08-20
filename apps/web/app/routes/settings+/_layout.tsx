@@ -9,6 +9,7 @@ import {
 	Icon,
 } from '@repo/ui'
 import {
+	Link,
 	Outlet,
 	useLocation,
 	useParams,

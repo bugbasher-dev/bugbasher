@@ -10,6 +10,7 @@ import {
 	PasswordSchema,
 	PasswordAndConfirmPasswordSchema,
 } from '#app/utils/user-validation.ts'
+import { changePasswordActionIntent } from './cards/security-card'
 
 export const ChangePasswordSchema = z
 	.object({
