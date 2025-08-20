@@ -6,18 +6,12 @@ import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { ErrorList, OTPField } from '#app/components/forms.tsx'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '#app/components/ui/card.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { type Route } from './+types/verify.ts'
 import { validateRequest } from './verify.server.ts'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, StatusButton } from '@repo/ui'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,

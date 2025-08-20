@@ -8,8 +8,8 @@ import {
 	CommandItem,
 	CommandList,
 	CommandShortcut,
-} from '#app/components/ui/command'
-import { Icon } from '#app/components/ui/icon'
+	Icon,
+} from '@repo/ui'
 import { type loader as rootLoader } from '#app/root.tsx'
 
 interface Note {

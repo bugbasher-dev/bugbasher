@@ -2,18 +2,19 @@ import { invariantResponse } from '@epic-web/invariant'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { useState } from 'react'
 import { data, useFetcher } from 'react-router'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+
+import { requireUserId } from '#app/utils/auth.server.ts'
+import { resolveConnectionData } from '#app/utils/connections.server.ts'
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from '#app/components/ui/tooltip.tsx'
-import { requireUserId } from '#app/utils/auth.server.ts'
-import { resolveConnectionData } from '#app/utils/connections.server.ts'
-import {
+	Icon,
+	StatusButton,
 	ProviderConnectionForm,
+} from '@repo/ui'
+import {
 	type ProviderName,
 	ProviderNameSchema,
 	providerIcons,

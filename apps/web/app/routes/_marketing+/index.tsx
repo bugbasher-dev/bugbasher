@@ -1,15 +1,11 @@
 import { Trans } from '@lingui/macro'
 import { useRouteLoaderData } from 'react-router'
 import { CookieConsentBanner } from '#app/components/privacy-banner.tsx'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '#app/components/ui/tooltip.tsx'
+
 import { cn } from '#app/utils/misc.tsx'
 import { type Route } from './+types/index.ts'
 import { logos } from './logos/logos.ts'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/ui'
 
 export const meta: Route.MetaFunction = () => [{ title: 'Epic Notes' }]
 

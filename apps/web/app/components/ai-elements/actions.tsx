@@ -1,13 +1,8 @@
 'use client'
 
 import { type ComponentProps } from 'react'
-import { Button } from '#app/components/ui/button'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '#app/components/ui/tooltip'
+import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/ui'
+
 import { cn } from '#app/utils/misc'
 
 export type ActionsProps = ComponentProps<'div'>

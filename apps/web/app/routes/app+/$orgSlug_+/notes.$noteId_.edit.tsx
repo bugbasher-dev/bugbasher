@@ -1,6 +1,6 @@
 import { invariantResponse } from '@epic-web/invariant'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
-import { SheetHeader, SheetTitle } from '#app/components/ui/sheet.tsx'
+import { SheetHeader, SheetTitle } from '@repo/ui'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { userHasOrgAccess } from '#app/utils/organizations.server.ts'

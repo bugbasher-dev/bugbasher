@@ -1,21 +1,14 @@
 'use client'
 
 import { Loader2Icon, SendIcon, SquareIcon, XIcon } from 'lucide-react'
+import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Textarea } from '@repo/ui'
 import {
 	type ComponentProps,
 	type HTMLAttributes,
 	type KeyboardEventHandler,
 	Children,
 } from 'react'
-import { Button } from '#app/components/ui/button'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '#app/components/ui/select'
-import { Textarea } from '#app/components/ui/textarea'
+
 import { cn } from '#app/utils/misc'
 type ChatStatus = 'idle' | 'submitted' | 'streaming' | 'error'
 

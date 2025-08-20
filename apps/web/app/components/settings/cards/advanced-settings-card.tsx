@@ -1,16 +1,16 @@
 import { Link } from 'react-router'
 import {
-	SignOutOfSessions,
-	DeleteData,
-} from '#app/components/settings/account-management.tsx'
-import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
+	Icon,
+} from '@repo/ui'
+import {
+	DeleteData,
+	SignOutOfSessions,
+} from '#app/components/settings/account-management.tsx'
 
 export const signOutOfSessionsActionIntent = 'sign-out-of-sessions'
 export const deleteDataActionIntent = 'delete-data'

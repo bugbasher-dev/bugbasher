@@ -1,6 +1,7 @@
 'use client'
 
 import { CheckIcon, CopyIcon } from 'lucide-react'
+import { Button } from '@repo/ui'
 import {
 	type ComponentProps,
 	type HTMLAttributes,
@@ -14,7 +15,7 @@ import {
 	oneDark,
 	oneLight,
 } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { Button } from '#app/components/ui/button'
+
 import { cn } from '#app/utils/misc'
 
 type CodeBlockContextType = {

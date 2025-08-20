@@ -3,26 +3,30 @@ import { useNotifications, useNovu } from '@novu/react/hooks'
 import { motion, AnimatePresence } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
-import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar'
-import { Badge } from '../ui/badge'
-import { Button } from '../ui/button'
-import { Card, CardContent, CardHeader } from '../ui/card'
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '../ui/dropdown-menu'
-import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover'
-import { ScrollArea } from '../ui/scroll-area'
 
 import {
+	Avatar,
+	AvatarImage,
+	AvatarFallback,
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	Popover,
+	PopoverTrigger,
+	PopoverContent,
+	ScrollArea,
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from '../ui/tooltip'
-import { Icon } from './icon'
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+	Icon,
+} from '@repo/ui'
 
 interface Action {
 	label: string

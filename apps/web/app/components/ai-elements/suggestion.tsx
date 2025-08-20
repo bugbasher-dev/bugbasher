@@ -1,8 +1,8 @@
 'use client'
 
 import { type ComponentProps } from 'react'
-import { Button } from '#app/components/ui/button'
-import { ScrollArea, ScrollBar } from '#app/components/ui/scroll-area'
+import { Button, ScrollArea, ScrollBar } from '@repo/ui'
+
 import { cn } from '#app/utils/misc'
 
 export type SuggestionsProps = ComponentProps<typeof ScrollArea>

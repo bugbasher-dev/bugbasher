@@ -2,25 +2,24 @@
 
 import { ChevronDownIcon } from 'lucide-react'
 import {
+	Button,
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+	Input,
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@repo/ui'
+import {
 	type ComponentProps,
 	type ReactNode,
 	createContext,
 	useContext,
 	useState,
 } from 'react'
-import { Button } from '#app/components/ui/button'
-import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
-} from '#app/components/ui/collapsible'
-import { Input } from '#app/components/ui/input'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '#app/components/ui/tooltip'
+
 import { cn } from '#app/utils/misc'
 
 export type WebPreviewContextValue = {

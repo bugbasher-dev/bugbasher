@@ -3,11 +3,9 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { data, redirect, Form, Link } from 'react-router'
 import { ErrorList, Field } from '#app/components/forms.tsx'
-import { Button } from '#app/components/ui/button.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+
+import { Button, Icon, StatusButton } from '@repo/ui'
 import {
-	checkIsCommonPassword,
 	getPasswordHash,
 	requireUserId,
 } from '#app/utils/auth.server.ts'

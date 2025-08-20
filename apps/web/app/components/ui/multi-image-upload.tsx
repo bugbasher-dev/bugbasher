@@ -6,8 +6,7 @@ import {
 } from '@conform-to/react'
 import { Label } from '@radix-ui/react-label'
 import React, { useState, useRef, useCallback } from 'react'
-import { Button } from '#app/components/ui/button.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
+import { Button, Icon } from '@repo/ui'
 import { type ImageFieldset } from '#app/routes/app+/$orgSlug_+/__org-note-editor.tsx'
 import { cn, getNoteImgSrc } from '#app/utils/misc.tsx'
 

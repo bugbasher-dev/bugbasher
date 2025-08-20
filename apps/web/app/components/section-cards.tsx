@@ -1,13 +1,15 @@
-import { Badge } from '#app/components/ui/badge'
+
+
 import {
+	Badge,
 	Card,
 	CardAction,
 	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card'
-import { Icon } from '#app/components/ui/icon.tsx'
+	Icon,
+} from '@repo/ui'
 
 export function SectionCards() {
 	return (

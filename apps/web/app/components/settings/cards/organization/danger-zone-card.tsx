@@ -1,14 +1,11 @@
 import { useState } from 'react'
-import { Form } from 'react-router'
-import { Button } from '#app/components/ui/button'
 import {
+	Button,
 	Card,
 	CardContent,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card'
-import { Checkbox } from '#app/components/ui/checkbox'
-import {
+	Checkbox,
 	Dialog,
 	DialogContent,
 	DialogDescription,
@@ -16,9 +13,10 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '#app/components/ui/dialog'
-import { Input } from '#app/components/ui/input'
-import { Label } from '#app/components/ui/label'
+	Input,
+	Label,
+} from '@repo/ui'
+import { Form } from 'react-router'
 
 export default function DangerZoneCard({
 	organization,

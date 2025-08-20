@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { useFetcher } from 'react-router'
-import { Button } from '#app/components/ui/button.tsx'
+
 import {
+	Button,
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogDescription,
-} from '#app/components/ui/dialog.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { Textarea } from '#app/components/ui/textarea.tsx'
+	Textarea,
+	Icon,
+} from '@repo/ui'
 
 type FeedbackModalProps = {
 	isOpen: boolean

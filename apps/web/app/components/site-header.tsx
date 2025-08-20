@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import { Button } from '#app/components/ui/button'
-import { Separator } from '#app/components/ui/separator'
-import { SidebarTrigger } from '#app/components/ui/sidebar'
+
 import { useGlobalHotkeys } from '#app/hooks/use-hotkeys'
 import { CommandMenu } from './command-menu'
-import { Icon } from './ui/icon'
+import { Button, Separator, SidebarTrigger, Icon } from '@repo/ui'
 import NotificationBell from './ui/notification-bell'
 
 export function SiteHeader() {

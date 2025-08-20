@@ -15,10 +15,10 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card.tsx'
-import { Input } from '#app/components/ui/input.tsx'
-import { Label } from '#app/components/ui/label.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+	Input,
+	Label,
+	StatusButton,
+} from '@repo/ui'
 import arcjet from '#app/utils/arcjet.server.ts'
 import { requireAnonymous } from '#app/utils/auth.server.ts'
 import {

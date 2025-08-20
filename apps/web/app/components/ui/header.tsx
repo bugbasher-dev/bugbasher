@@ -4,8 +4,7 @@ import { cn } from '#app/utils/misc.tsx'
 import { useOptionalUserOrganizations } from '#app/utils/organizations.ts'
 import { useOptionalUser } from '#app/utils/user.ts'
 import { Logo } from '../icons/logo'
-import { Button } from './button'
-import { Icon } from './icon'
+import { Button, Icon } from '@repo/ui'
 
 const menuItems = [
 	{ name: 'Features', href: '#link' },

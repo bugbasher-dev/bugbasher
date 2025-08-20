@@ -5,16 +5,7 @@ import { HoneypotInputs } from 'remix-utils/honeypot/react'
 
 import { z } from 'zod'
 import { CheckboxField, ErrorList } from '#app/components/forms.tsx'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '#app/components/ui/card.tsx'
-import { Input } from '#app/components/ui/input.tsx'
-import { Label } from '#app/components/ui/label.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+
 import {
 	checkIsCommonPassword,
 	requireAnonymous,
@@ -33,6 +24,17 @@ import {
 } from '#app/utils/user-validation.ts'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
 import { type Route } from './+types/onboarding.ts'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+	Input,
+	Label,
+	StatusButton,
+	Icon,
+} from '@repo/ui'
 
 export const onboardingEmailSessionKey = 'onboardingEmail'
 export const onboardingInviteTokenSessionKey = 'onboardingInviteToken'

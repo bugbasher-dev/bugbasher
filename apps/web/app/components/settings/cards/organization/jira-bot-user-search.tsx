@@ -1,16 +1,18 @@
 import { useState } from 'react'
-import { toast } from 'sonner'
-import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
-import { Button } from '#app/components/ui/button'
 import {
+	Avatar,
+	AvatarFallback,
+	AvatarImage,
+	Button,
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card'
-import { Input } from '#app/components/ui/input'
-import { Label } from '#app/components/ui/label'
+	Input,
+	Label,
+} from '@repo/ui'
+import { toast } from 'sonner'
 
 // Jira user interface
 interface JiraUser {

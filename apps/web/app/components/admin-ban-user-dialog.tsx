@@ -1,20 +1,20 @@
 import { useState } from 'react'
 import { Form, useSubmit } from 'react-router'
 
-import { Button } from '#app/components/ui/button'
-import { Checkbox } from '#app/components/ui/checkbox'
 import {
+	Button,
+	Checkbox,
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '#app/components/ui/dialog'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { Input } from '#app/components/ui/input'
-import { Label } from '#app/components/ui/label'
-import { Textarea } from '#app/components/ui/textarea'
+	Input,
+	Label,
+	Textarea,
+	Icon,
+} from '@repo/ui'
 
 interface BanUserDialogProps {
 	user: {

@@ -7,13 +7,11 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card.tsx'
-import {
 	ChartContainer,
 	ChartTooltip,
 	ChartTooltipContent,
 	type ChartConfig,
-} from '#app/components/ui/chart.tsx'
+} from '@repo/ui'
 
 const chartConfig = {
 	notes: {

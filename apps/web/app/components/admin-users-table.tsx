@@ -10,36 +10,34 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from '@tanstack/react-table'
-import { useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
-
-import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
-import { Badge } from '#app/components/ui/badge'
-import { Button } from '#app/components/ui/button'
 import {
+	Avatar,
+	AvatarFallback,
+	AvatarImage,
+	Badge,
+	Button,
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
-} from '#app/components/ui/dropdown-menu'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { Input } from '#app/components/ui/input'
-import { Label } from '#app/components/ui/label'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '#app/components/ui/select'
-import {
+	Icon,
+	Input,
+	Label,
 	Table,
 	TableBody,
 	TableCell,
 	TableHead,
 	TableHeader,
 	TableRow,
-} from '#app/components/ui/table'
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@repo/ui'
+import { useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router'
+
 import { getUserImgSrc } from '#app/utils/misc.tsx'
 
 export interface AdminUser {

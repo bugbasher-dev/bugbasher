@@ -2,31 +2,12 @@ import * as SheetPrimitive from '@radix-ui/react-dialog'
 import * as React from 'react'
 
 import { cn } from '../utils/cn'
+import { Icon } from './icon'
 
 // Icon dependency injection interface
 interface SheetIconProps {
 	name: string
 	className?: string
-}
-
-interface SheetContextValue {
-	IconComponent?: React.ComponentType<SheetIconProps>
-}
-
-const SheetContext = React.createContext<SheetContextValue>({})
-
-function SheetProvider({
-	children,
-	IconComponent,
-}: {
-	children: React.ReactNode
-	IconComponent?: React.ComponentType<SheetIconProps>
-}) {
-	return (
-		<SheetContext.Provider value={{ IconComponent }}>
-			{children}
-		</SheetContext.Provider>
-	)
 }
 
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
@@ -75,7 +56,6 @@ function SheetContent({
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
 	side?: 'top' | 'right' | 'bottom' | 'left'
 }) {
-	const { IconComponent } = React.useContext(SheetContext)
 
 	return (
 		<SheetPortal>
@@ -97,12 +77,10 @@ function SheetContent({
 				{...props}
 			>
 				{children}
-				{IconComponent && (
-					<SheetPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
-						<IconComponent name="x" className="size-4" />
-						<span className="sr-only">Close</span>
-					</SheetPrimitive.Close>
-				)}
+				<SheetPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
+					<Icon name="x" className="size-4" />
+					<span className="sr-only">Close</span>
+				</SheetPrimitive.Close>
 			</SheetPrimitive.Content>
 		</SheetPortal>
 	)
@@ -163,5 +141,4 @@ export {
 	SheetFooter,
 	SheetTitle,
 	SheetDescription,
-	SheetProvider,
 }

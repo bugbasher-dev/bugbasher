@@ -1,9 +1,10 @@
 'use client'
 
 import * as React from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui'
 
 import { Link, useSubmit } from 'react-router'
-import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
+
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -12,13 +13,11 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuShortcut,
 	DropdownMenuTrigger,
-} from '#app/components/ui/dropdown-menu'
-import { Icon } from '#app/components/ui/icon'
-import {
+	Icon,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-} from '#app/components/ui/sidebar'
+} from '@repo/ui'
 import { useUserOrganizations } from '#app/utils/organizations'
 
 export function TeamSwitcher() {

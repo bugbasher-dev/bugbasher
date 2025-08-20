@@ -1,7 +1,12 @@
 'use client'
 
 import {
-	CheckCircleIcon,
+	Badge,
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from '@repo/ui'
+import {
 	ChevronDownIcon,
 	CircleIcon,
 	ClockIcon,
@@ -9,12 +14,7 @@ import {
 	XCircleIcon,
 } from 'lucide-react'
 import { type ComponentProps, type ReactNode } from 'react'
-import { Badge } from '#app/components/ui/badge'
-import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
-} from '#app/components/ui/collapsible'
+
 import { cn } from '#app/utils/misc'
 type ToolUIPart = {
 	type: 'tool-code'

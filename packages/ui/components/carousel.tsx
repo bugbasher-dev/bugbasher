@@ -5,21 +5,12 @@ import * as React from 'react'
 
 import { Button } from './button'
 import { cn } from '../utils/cn'
+import { Icon } from './icon'
 
 type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
 type CarouselOptions = UseCarouselParameters[0]
 type CarouselPlugin = UseCarouselParameters[1]
-
-// Icon dependency injection interface
-interface CarouselIconProps {
-	name: string
-	className?: string
-}
-
-interface CarouselContextValue {
-	IconComponent?: React.ComponentType<CarouselIconProps>
-}
 
 type CarouselProps = {
 	opts?: CarouselOptions
@@ -35,7 +26,7 @@ type CarouselContextProps = {
 	scrollNext: () => void
 	canScrollPrev: boolean
 	canScrollNext: boolean
-} & CarouselProps & CarouselContextValue
+} & CarouselProps
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null)
 
@@ -58,9 +49,8 @@ function Carousel({
 	plugins,
 	className,
 	children,
-	IconComponent,
 	...props
-}: React.ComponentProps<'div'> & CarouselProps & { IconComponent?: React.ComponentType<CarouselIconProps> }) {
+}: React.ComponentProps<'div'> & CarouselProps) {
 	const [carouselRef, api] = useEmblaCarousel(
 		{
 			...opts,
@@ -126,7 +116,6 @@ function Carousel({
 				scrollNext,
 				canScrollPrev,
 				canScrollNext,
-				IconComponent,
 			}}
 		>
 			<div
@@ -188,7 +177,7 @@ function CarouselPrevious({
 	size = 'icon',
 	...props
 }: React.ComponentProps<typeof Button>) {
-	const { orientation, scrollPrev, canScrollPrev, IconComponent } = useCarousel()
+	const { orientation, scrollPrev, canScrollPrev } = useCarousel()
 
 	return (
 		<Button
@@ -206,11 +195,7 @@ function CarouselPrevious({
 			onClick={scrollPrev}
 			{...props}
 		>
-			{IconComponent ? (
-				<IconComponent name="arrow-left" className="size-4" />
-			) : (
-				<span className="text-sm">‹</span>
-			)}
+			<Icon name="arrow-left" className="size-4" />
 			<span className="sr-only">Previous slide</span>
 		</Button>
 	)
@@ -222,7 +207,7 @@ function CarouselNext({
 	size = 'icon',
 	...props
 }: React.ComponentProps<typeof Button>) {
-	const { orientation, scrollNext, canScrollNext, IconComponent } = useCarousel()
+	const { orientation, scrollNext, canScrollNext } = useCarousel()
 
 	return (
 		<Button
@@ -240,11 +225,7 @@ function CarouselNext({
 			onClick={scrollNext}
 			{...props}
 		>
-			{IconComponent ? (
-				<IconComponent name="arrow-right" className="size-4" />
-			) : (
-				<span className="text-sm">›</span>
-			)}
+			<Icon name="arrow-right" className="size-4" />
 			<span className="sr-only">Next slide</span>
 		</Button>
 	)

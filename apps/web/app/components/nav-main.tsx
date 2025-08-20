@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { Link } from 'react-router'
-import { Icon } from '#app/components/ui/icon'
+
 import {
 	SidebarGroup,
 	SidebarGroupContent,
@@ -10,7 +10,8 @@ import {
 	SidebarMenuSub,
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
-} from '#app/components/ui/sidebar'
+	Icon,
+} from '@repo/ui'
 
 export function NavMain({
 	items,

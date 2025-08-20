@@ -1,3 +1,4 @@
+import { Button, ColorPicker, Input, StatusButton, Icon } from '@repo/ui'
 import {
 	DndContext,
 	KeyboardSensor,
@@ -24,11 +25,7 @@ import { CSS } from '@dnd-kit/utilities'
 import React, { useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useFetcher, useFetchers } from 'react-router'
-import { Button } from '#app/components/ui/button.tsx'
-import { ColorPicker } from '#app/components/ui/color-picker.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { Input } from '#app/components/ui/input.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+
 import { useDoubleCheck } from '#app/utils/misc.tsx'
 import { NoteCard } from './notes-cards.tsx'
 

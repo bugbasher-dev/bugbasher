@@ -11,9 +11,7 @@ import {
 import {
 	AnnotatedLayout,
 	AnnotatedSection,
-} from '#app/components/ui/annotated-layout'
-import { Button } from '#app/components/ui/button'
-import {
+	Button,
 	Card,
 	CardAction,
 	CardContent,
@@ -22,21 +20,19 @@ import {
 	CardHeader,
 	CardHeaderContent,
 	CardTitle,
-} from '#app/components/ui/card'
-import { Checkbox } from '#app/components/ui/checkbox'
-import {
+	Checkbox,
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '#app/components/ui/dialog'
-import { Icon } from '#app/components/ui/icon'
-import { Input } from '#app/components/ui/input'
-import { Label } from '#app/components/ui/label'
-import { PageTitle } from '#app/components/ui/page-title'
-import { Textarea } from '#app/components/ui/textarea'
+	Input,
+	Label,
+	PageTitle,
+	Textarea,
+	Icon,
+} from '@repo/ui'
 import { generateApiKey } from '#app/utils/api-key.server.ts'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'

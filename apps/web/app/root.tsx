@@ -1,4 +1,5 @@
 import { NovuProvider } from '@novu/react/hooks'
+import { EpicToaster, TooltipProvider } from '@repo/ui'
 import { OpenImgContextProvider } from 'openimg/react'
 import {
 	data,
@@ -18,9 +19,7 @@ import { GeneralErrorBoundary } from './components/error-boundary.tsx'
 import { ImpersonationBanner } from './components/impersonation-banner.tsx'
 import { CookieConsentBanner } from './components/privacy-banner.tsx'
 import { useToast } from './components/toaster.tsx'
-import { href as iconsHref } from './components/ui/icon.tsx'
-import { EpicToaster } from './components/ui/sonner.tsx'
-import { TooltipProvider } from './components/ui/tooltip.tsx'
+import iconsHref from './components/ui/icons/sprite.svg?url'
 import { linguiServer, localeCookie } from './modules/lingui/lingui.server.ts'
 import { useOptionalTheme } from './routes/resources+/theme-switch.tsx'
 import tailwindStyleSheetUrl from './styles/tailwind.css?url'

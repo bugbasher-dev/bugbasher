@@ -1,4 +1,5 @@
 import { invariant } from '@epic-web/invariant'
+import { AnnotatedLayout, AnnotatedSection } from '@repo/ui'
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
@@ -6,10 +7,7 @@ import {
 } from 'react-router'
 
 import { BillingCard } from '#app/components/settings/cards/organization/billing-card'
-import {
-	AnnotatedLayout,
-	AnnotatedSection,
-} from '#app/components/ui/annotated-layout'
+
 import { requireUserId } from '#app/utils/auth.server'
 import { prisma } from '#app/utils/db.server'
 import {

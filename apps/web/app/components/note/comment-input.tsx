@@ -4,13 +4,13 @@ import { useEditor, EditorContent, type Editor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, { useEffect, useState } from 'react'
 import { cn } from '#app/utils/misc.js'
-import { Button } from '../ui/button'
-import { Card, CardContent, CardFooter } from '../ui/card'
+
 import { CommentImagePreview } from './comment-image-preview'
 import { CommentImageUpload } from './comment-image-upload'
 import { EmojiPickerButton } from './emoji-picker-button'
 import { default as getEmojiSuggestion } from './emoji-suggestions'
 import getSuggestions from './suggestions'
+import { Button, Card, CardContent, CardFooter } from '@repo/ui'
 
 export interface MentionUser {
 	id: string

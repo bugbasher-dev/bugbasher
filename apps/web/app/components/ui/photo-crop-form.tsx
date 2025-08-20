@@ -6,8 +6,7 @@ import ReactCrop, {
 	type PixelCrop,
 } from 'react-image-crop'
 import { useFetcher } from 'react-router'
-import { Button } from '#app/components/ui/button.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+import { Button, StatusButton } from '@repo/ui'
 import 'react-image-crop/dist/ReactCrop.css'
 
 export interface PhotoCropFormConfig {

@@ -5,8 +5,8 @@ import {
 	Form,
 	useLoaderData,
 } from 'react-router'
-import { Button } from '#app/components/ui/button.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
+import { Button, Icon } from '@repo/ui'
+
 import { prisma } from '#app/utils/db.server.ts'
 import {
 	createCheckoutSession,

@@ -1,8 +1,9 @@
 import * as React from 'react'
+
 import { Link } from 'react-router'
-import { Button } from '#app/components/ui/button'
+
 import { cn } from '#app/utils/misc.tsx'
-import { Icon, type IconName } from './ui/icon'
+import { Button, Icon, type IconName } from '@repo/ui'
 
 interface EmptyStateProps {
 	title: string
@@ -25,12 +26,13 @@ export function EmptyState({
 	return (
 		<div
 			className={cn(
-				'bg-background border-border hover:border-border/80 text-center',
-				'w-full rounded-xl border-2 border-dashed p-14',
-				'group hover:bg-muted/50 transition duration-500 hover:duration-200',
+				'dark:bg-background bg-muted text-center',
+				'w-full rounded-xl p-1',
+				'',
 				className,
 			)}
 		>
+			<div className="p-14 bg-background dark:bg-muted/50 rounded-xl hover:dark:bg-muted/70 group transition duration-500 hover:duration-200">
 			<div className="isolate flex justify-center">
 				{icons.length === 3 ? (
 					<>
@@ -76,6 +78,7 @@ export function EmptyState({
 					<Link to={action.href}>{action.label}</Link>
 				</Button>
 			)}
+			</div>
 		</div>
 	)
 }

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useFetcher } from 'react-router'
-import { Button } from '#app/components/ui/button.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
+
+import { Button, Icon } from '@repo/ui'
 
 interface AIContentGeneratorProps {
 	title: string

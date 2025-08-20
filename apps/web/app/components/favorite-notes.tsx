@@ -6,9 +6,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from '#app/components/ui/dropdown-menu'
-import { Icon } from '#app/components/ui/icon'
-import {
+	Icon,
 	SidebarGroup,
 	SidebarGroupLabel,
 	SidebarMenu,
@@ -16,7 +14,8 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 	useSidebar,
-} from '#app/components/ui/sidebar'
+} from '@repo/ui'
+
 import { FileTextIcon } from './icons/file-text-icon'
 
 interface FavoriteNote {

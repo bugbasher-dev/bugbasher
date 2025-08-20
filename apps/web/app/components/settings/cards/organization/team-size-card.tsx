@@ -1,25 +1,23 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
-import { getZodConstraint, parseWithZod } from '@conform-to/zod'
-import { Form } from 'react-router'
-import { z } from 'zod'
-import { ErrorList } from '#app/components/forms'
-import { Button } from '#app/components/ui/button'
 import {
+	Button,
 	Card,
 	CardContent,
 	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card'
-import { Label } from '#app/components/ui/label'
-import {
+	Label,
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '#app/components/ui/select'
+} from '@repo/ui'
+import { getZodConstraint, parseWithZod } from '@conform-to/zod'
+import { Form } from 'react-router'
+import { z } from 'zod'
+import { ErrorList } from '#app/components/forms'
 
 export const TeamSizeSchema = z.object({
 	size: z.string().min(1, 'Team size is required'),

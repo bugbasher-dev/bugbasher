@@ -8,7 +8,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-} from '#app/components/ui/sidebar'
+} from '@repo/ui'
 
 type NavItem = {
 	title: string

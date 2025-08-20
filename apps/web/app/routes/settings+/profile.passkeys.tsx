@@ -3,11 +3,11 @@ import { formatDistanceToNow } from 'date-fns'
 import { useState } from 'react'
 import { Form, useRevalidator } from 'react-router'
 import { z } from 'zod'
-import { Button } from '#app/components/ui/button.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
+
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { type Route } from './+types/profile.passkeys.ts'
+import { Button, Icon } from '@repo/ui'
 
 export const handle = {
 	breadcrumb: <Icon name="passkey">Passkeys</Icon>,

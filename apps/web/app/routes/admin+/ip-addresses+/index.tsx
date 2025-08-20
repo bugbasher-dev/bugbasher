@@ -5,9 +5,9 @@ import {
 	type ActionFunctionArgs,
 	Link,
 } from 'react-router'
-import { Badge } from '#app/components/ui/badge'
-import { Button } from '#app/components/ui/button'
 import {
+	Badge,
+	Button,
 	Dialog,
 	DialogContent,
 	DialogDescription,
@@ -15,17 +15,16 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '#app/components/ui/dialog'
-import { Label } from '#app/components/ui/label'
-import {
+	Label,
 	Table,
 	TableBody,
 	TableCell,
 	TableHead,
 	TableHeader,
 	TableRow,
-} from '#app/components/ui/table'
-import { Textarea } from '#app/components/ui/textarea'
+	Textarea,
+} from '@repo/ui'
+
 import { getUserId } from '#app/utils/auth.server'
 import { prisma } from '#app/utils/db.server'
 import { blacklistIp, unblacklistIp } from '#app/utils/ip-tracking.server'

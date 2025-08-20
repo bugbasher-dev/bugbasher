@@ -8,12 +8,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from './tooltip'
-
-// Icon dependency injection interface
-interface StatusButtonIconProps {
-	name: string
-	className?: string
-}
+import { Icon } from './icon'
 
 interface StatusButtonProps extends React.ComponentProps<'button'>, ButtonVariant {
 	status: 'pending' | 'success' | 'error' | 'idle'
@@ -24,7 +19,6 @@ interface StatusButtonProps extends React.ComponentProps<'button'>, ButtonVarian
 	errorText?: string
 	successDuration?: number
 	onStatusChange?: (status: 'idle') => void
-	IconComponent?: React.ComponentType<StatusButtonIconProps>
 }
 
 export const StatusButton = ({
@@ -38,7 +32,6 @@ export const StatusButton = ({
 	errorText,
 	successDuration = 1000,
 	onStatusChange,
-	IconComponent,
 	...props
 }: StatusButtonProps) => {
 	const [internalStatus, setInternalStatus] = useState<typeof status>(status)
@@ -69,35 +62,25 @@ export const StatusButton = ({
 	const getButtonContent = () => {
 		switch (internalStatus) {
 			case 'pending':
-				return delayedPending && IconComponent ? (
+				return delayedPending ? (
 					<>
-						<IconComponent name="loader" className="h-4 w-4 animate-spin" />
+						<Icon name="loader" className="h-4 w-4 animate-spin" />
 						{pendingText || children}
 					</>
 				) : (
 					children
 				)
 			case 'success':
-				return IconComponent ? (
+				return (
 					<>
-						<IconComponent name="check" className="h-4 w-4" />
-						{successText || children}
-					</>
-				) : (
-					<>
-						<span className="text-green-600">✓</span>
+						<Icon name="check" className="h-4 w-4" />
 						{successText || children}
 					</>
 				)
 			case 'error':
-				return IconComponent ? (
+				return (
 					<>
-						<IconComponent name="x" className="h-4 w-4" />
-						{errorText || children}
-					</>
-				) : (
-					<>
-						<span className="text-red-600">✕</span>
+						<Icon name="x" className="h-4 w-4" />
 						{errorText || children}
 					</>
 				)

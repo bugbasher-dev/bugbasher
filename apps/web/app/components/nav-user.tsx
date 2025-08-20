@@ -1,6 +1,7 @@
 import { useRef } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui'
 import { Link, Form, useFetcher } from 'react-router'
-import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
+
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -11,14 +12,12 @@ import {
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
-} from '#app/components/ui/dropdown-menu'
-import { Icon } from '#app/components/ui/icon'
-import {
+	Icon,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
 	useSidebar,
-} from '#app/components/ui/sidebar'
+} from '@repo/ui'
 import { useOptimisticThemeMode } from '#app/routes/resources+/theme-switch'
 import { useOptionalRequestInfo } from '#app/utils/request-info'
 import { BuildingIcon } from './icons/building-icon'

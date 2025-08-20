@@ -17,11 +17,11 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { Input } from '#app/components/ui/input.tsx'
-import { Label } from '#app/components/ui/label.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+	Input,
+	Label,
+	StatusButton,
+	Icon,
+} from '@repo/ui'
 import arcjet from '#app/utils/arcjet.server.ts'
 import { login, requireAnonymous } from '#app/utils/auth.server.ts'
 import {

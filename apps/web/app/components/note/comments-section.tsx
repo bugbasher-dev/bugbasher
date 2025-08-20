@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useRevalidator } from 'react-router'
-import { Icon } from '../ui/icon'
 import CommentInput, { type MentionUser } from './comment-input'
 import { CommentItem } from './comment-item'
+import { Icon } from '@repo/ui'
 
 interface CommentUser {
 	id: string

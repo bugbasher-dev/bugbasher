@@ -1,19 +1,15 @@
 import { generateTOTP, getTOTPAuthUri } from '@epic-web/totp'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import * as QRCode from 'qrcode'
+import { AnnotatedLayout, AnnotatedSection, PageTitle } from '@repo/ui'
 import {
-	useLoaderData,
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
 } from 'react-router'
 import { AdvancedSettingsCard } from '#app/components/settings/cards/advanced-settings-card.tsx'
 import { ConnectionsCard } from '#app/components/settings/cards/connections-card.tsx'
 import { SecurityCard } from '#app/components/settings/cards/security-card.tsx'
-import {
-	AnnotatedLayout,
-	AnnotatedSection,
-} from '#app/components/ui/annotated-layout.tsx'
-import { PageTitle } from '#app/components/ui/page-title.tsx'
+
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import {
@@ -29,6 +25,7 @@ import {
 } from '../settings+/actions/security.actions'
 import { twoFAVerificationType } from '../settings+/profile.two-factor'
 import { twoFAVerifyVerificationType } from '../settings+/profile.two-factor.verify'
+import { useLoaderData } from 'react-router'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,
@@ -206,7 +203,7 @@ async function deletePasskeyAction({ formData, userId }: SecurityActionArgs) {
 }
 
 export default function SecuritySettings() {
-	const data = useLoaderData()
+	const data = useLoaderData<typeof loader>()
 
 	return (
 		<div className="my-8 flex flex-1 flex-col gap-4 md:m-8">

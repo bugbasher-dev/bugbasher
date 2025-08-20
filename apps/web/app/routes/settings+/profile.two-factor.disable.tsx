@@ -1,7 +1,7 @@
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { useFetcher } from 'react-router'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+
+
 import { requireRecentVerification } from '#app/routes/_auth+/verify.server.ts'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
@@ -10,6 +10,7 @@ import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { type Route } from './+types/profile.two-factor.disable.ts'
 import { type BreadcrumbHandle } from './profile.tsx'
 import { twoFAVerificationType } from './profile.two-factor.tsx'
+import { Icon, StatusButton } from '@repo/ui'
 
 export const handle: BreadcrumbHandle & SEOHandle = {
 	breadcrumb: <Icon name="unlock">Disable</Icon>,

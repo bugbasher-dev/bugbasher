@@ -2,31 +2,12 @@ import * as SelectPrimitive from '@radix-ui/react-select'
 import * as React from 'react'
 
 import { cn } from '../utils/cn'
+import { Icon } from './icon'
 
 // Icon dependency injection interface
 interface SelectIconProps {
 	name: string
 	className?: string
-}
-
-interface SelectContextValue {
-	IconComponent?: React.ComponentType<SelectIconProps>
-}
-
-const SelectContext = React.createContext<SelectContextValue>({})
-
-function SelectProvider({
-	children,
-	IconComponent,
-}: {
-	children: React.ReactNode
-	IconComponent?: React.ComponentType<SelectIconProps>
-}) {
-	return (
-		<SelectContext.Provider value={{ IconComponent }}>
-			{children}
-		</SelectContext.Provider>
-	)
 }
 
 function Select({
@@ -55,8 +36,6 @@ function SelectTrigger({
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
 	size?: 'sm' | 'default'
 }) {
-	const { IconComponent } = React.useContext(SelectContext)
-
 	return (
 		<SelectPrimitive.Trigger
 			data-slot="select-trigger"
@@ -68,11 +47,9 @@ function SelectTrigger({
 			{...props}
 		>
 			{children}
-			{IconComponent && (
-				<SelectPrimitive.Icon asChild>
-					<IconComponent name="chevron-down" className="size-4 opacity-50" />
-				</SelectPrimitive.Icon>
-			)}
+			<SelectPrimitive.Icon asChild>
+				<Icon name="chevron-down" className="size-4 opacity-50" />
+			</SelectPrimitive.Icon>
 		</SelectPrimitive.Trigger>
 	)
 }
@@ -130,8 +107,6 @@ function SelectItem({
 	children,
 	...props
 }: React.ComponentProps<typeof SelectPrimitive.Item>) {
-	const { IconComponent } = React.useContext(SelectContext)
-
 	return (
 		<SelectPrimitive.Item
 			data-slot="select-item"
@@ -143,11 +118,7 @@ function SelectItem({
 		>
 			<span className="absolute right-2 flex size-3.5 items-center justify-center">
 				<SelectPrimitive.ItemIndicator>
-					{IconComponent ? (
-						<IconComponent name="check" className="size-4" />
-					) : (
-						<span className="size-1 bg-current rounded-full" />
-					)}
+					<Icon name="check" className="size-4" />
 				</SelectPrimitive.ItemIndicator>
 			</span>
 			<SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
@@ -172,8 +143,6 @@ function SelectScrollUpButton({
 	className,
 	...props
 }: React.ComponentProps<typeof SelectPrimitive.ScrollUpButton>) {
-	const { IconComponent } = React.useContext(SelectContext)
-
 	return (
 		<SelectPrimitive.ScrollUpButton
 			data-slot="select-scroll-up-button"
@@ -183,11 +152,7 @@ function SelectScrollUpButton({
 			)}
 			{...props}
 		>
-			{IconComponent ? (
-				<IconComponent name="chevron-up" className="size-4" />
-			) : (
-				<div className="w-0 h-0 border-l-4 border-r-4 border-b-4 border-l-transparent border-r-transparent border-b-current" />
-			)}
+			<Icon name="chevron-up" className="size-4" />
 		</SelectPrimitive.ScrollUpButton>
 	)
 }
@@ -196,8 +161,6 @@ function SelectScrollDownButton({
 	className,
 	...props
 }: React.ComponentProps<typeof SelectPrimitive.ScrollDownButton>) {
-	const { IconComponent } = React.useContext(SelectContext)
-
 	return (
 		<SelectPrimitive.ScrollDownButton
 			data-slot="select-scroll-down-button"
@@ -207,11 +170,7 @@ function SelectScrollDownButton({
 			)}
 			{...props}
 		>
-			{IconComponent ? (
-				<IconComponent name="chevron-down" className="size-4" />
-			) : (
-				<div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-current" />
-			)}
+			<Icon name="chevron-down" className="size-4" />
 		</SelectPrimitive.ScrollDownButton>
 	)
 }
@@ -222,7 +181,6 @@ export {
 	SelectGroup,
 	SelectItem,
 	SelectLabel,
-	SelectProvider,
 	SelectScrollDownButton,
 	SelectScrollUpButton,
 	SelectSeparator,

@@ -7,29 +7,27 @@ import {
 	type FieldMetadata,
 	FormProvider,
 } from '@conform-to/react'
-import { getZodConstraint, parseWithZod } from '@conform-to/zod'
-import { useState } from 'react'
-import { Form } from 'react-router'
-import { z } from 'zod'
-import { ErrorList, Field } from '#app/components/forms'
-import { Badge } from '#app/components/ui/badge'
-import { Button } from '#app/components/ui/button'
 import {
+	Badge,
+	Button,
 	Card,
 	CardContent,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card'
-import { Icon } from '#app/components/ui/icon'
-import { Input } from '#app/components/ui/input'
-import {
+	Icon,
+	Input,
+	Separator,
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '#app/components/ui/select'
-import { Separator } from '#app/components/ui/separator'
+} from '@repo/ui'
+import { getZodConstraint, parseWithZod } from '@conform-to/zod'
+import { useState } from 'react'
+import { Form } from 'react-router'
+import { z } from 'zod'
+import { ErrorList, Field } from '#app/components/forms'
 
 const roles = [
 	{

@@ -15,31 +15,14 @@ import {
 	DialogFooter,
 	DialogTrigger,
 } from './dialog'
-
-// Icon dependency injection interface
-interface ImageCropperIconProps {
-	name: string
-	className?: string
-}
-
-interface ImageCropperContextValue {
-	IconComponent?: React.ComponentType<ImageCropperIconProps>
-}
-
-const ImageCropperContext = React.createContext<ImageCropperContextValue>({})
+import { Icon } from './icon'
 
 function ImageCropperProvider({
 	children,
-	IconComponent,
 }: {
 	children: React.ReactNode
-	IconComponent?: React.ComponentType<ImageCropperIconProps>
 }) {
-	return (
-		<ImageCropperContext.Provider value={{ IconComponent }}>
-			{children}
-		</ImageCropperContext.Provider>
-	)
+	return <>{children}</>
 }
 
 interface ImageCropperProps {
@@ -50,7 +33,6 @@ interface ImageCropperProps {
 	children: React.ReactNode
 	aspect?: number
 	className?: string
-	IconComponent?: React.ComponentType<ImageCropperIconProps>
 }
 
 export function ImageCropper({
@@ -61,7 +43,6 @@ export function ImageCropper({
 	children,
 	aspect = 1,
 	className = '',
-	IconComponent,
 }: ImageCropperProps) {
 	const imgRef = React.useRef<HTMLImageElement | null>(null)
 	const [crop, setCrop] = React.useState<Crop>()
@@ -150,7 +131,7 @@ export function ImageCropper({
 	}
 
 	return (
-		<ImageCropperProvider IconComponent={IconComponent}>
+		<ImageCropperProvider>
 			<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
 				<DialogTrigger asChild className={className}>
 					{children}
@@ -195,8 +176,6 @@ function ImageCropperFooter({
 	onCrop: () => void
 	disabled: boolean
 }) {
-	const { IconComponent } = React.useContext(ImageCropperContext)
-
 	return (
 		<DialogFooter className="justify-center p-6 pt-0">
 			<DialogClose asChild>
@@ -207,11 +186,7 @@ function ImageCropperFooter({
 					variant="outline"
 					onClick={onCancel}
 				>
-					{IconComponent ? (
-						<IconComponent name="trash-2" className="mr-1.5 size-4" />
-					) : (
-						<span className="mr-1.5">🗑️</span>
-					)}
+					<Icon name="trash-2" className="mr-1.5 size-4" />
 					Cancel
 				</Button>
 			</DialogClose>
@@ -222,11 +197,7 @@ function ImageCropperFooter({
 				onClick={onCrop}
 				disabled={disabled}
 			>
-				{IconComponent ? (
-					<IconComponent name="pencil" className="mr-1.5 size-4" />
-				) : (
-					<span className="mr-1.5">✏️</span>
-				)}
+				<Icon name="pencil" className="mr-1.5 size-4" />
 				Apply Crop
 			</Button>
 		</DialogFooter>

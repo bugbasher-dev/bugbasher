@@ -1,5 +1,5 @@
 import { formatDistanceToNow } from 'date-fns'
-import { Icon } from '#app/components/ui/icon.tsx'
+import { Icon } from '@repo/ui'
 
 type ActivityLog = {
 	id: string

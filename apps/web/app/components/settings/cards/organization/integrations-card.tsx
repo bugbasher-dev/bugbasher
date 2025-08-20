@@ -1,16 +1,17 @@
 import { useState } from 'react'
-import { useFetcher, Form } from 'react-router'
-import { Badge } from '#app/components/ui/badge'
-import { Button } from '#app/components/ui/button'
 import {
+	Badge,
+	Button,
 	Card,
 	CardContent,
 	CardHeader,
 	CardTitle,
 	CardDescription,
-} from '#app/components/ui/card'
-import { Icon } from '#app/components/ui/icon'
-import { StatusButton } from '#app/components/ui/status-button'
+	Icon,
+	StatusButton,
+} from '@repo/ui'
+import { useFetcher, Form } from 'react-router'
+
 import { JiraIntegrationSettings } from './jira-integration-settings'
 
 export const connectIntegrationActionIntent = 'connect-integration'

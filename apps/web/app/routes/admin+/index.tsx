@@ -1,11 +1,7 @@
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui'
 import { Link } from 'react-router'
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from '#app/components/ui/card'
+
 import { prisma } from '#app/utils/db.server.ts'
 import { requireUserWithRole } from '#app/utils/permissions.server.ts'
 import { type Route } from './+types/index.ts'

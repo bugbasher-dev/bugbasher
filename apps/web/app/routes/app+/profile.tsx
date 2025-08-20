@@ -1,21 +1,18 @@
 import { parseFormData } from '@mjackson/form-data-parser'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
+import { AnnotatedLayout, AnnotatedSection, PageTitle } from '@repo/ui'
 import {
-	useLoaderData,
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
 } from 'react-router'
 import { ProfileCard } from '#app/components/settings/cards/profile-card.tsx'
-import {
-	AnnotatedLayout,
-	AnnotatedSection,
-} from '#app/components/ui/annotated-layout.tsx'
-import { PageTitle } from '#app/components/ui/page-title.tsx'
+
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { changeEmailAction } from '../settings+/actions/email.actions'
 import { photoAction } from '../settings+/actions/photo.actions'
 import { profileUpdateAction } from '../settings+/actions/profile.actions'
+import { useLoaderData } from 'react-router'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,
@@ -84,7 +81,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function ProfileSettings() {
-	const data = useLoaderData()
+	const data = useLoaderData<typeof loader>()
 
 	return (
 		<div className="my-8 flex flex-1 flex-col gap-4 md:m-8">

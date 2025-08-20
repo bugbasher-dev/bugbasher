@@ -1,25 +1,26 @@
 import { useState } from 'react'
-import { useNavigate, useSubmit } from 'react-router'
-
-import { BanUserDialog } from '#app/components/admin-ban-user-dialog'
-import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
-import { Badge } from '#app/components/ui/badge'
-import { Button } from '#app/components/ui/button'
 import {
+	Avatar,
+	AvatarFallback,
+	AvatarImage,
+	Badge,
+	Button,
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { Separator } from '#app/components/ui/separator'
-import {
+	Separator,
 	Tabs,
 	TabsContent,
 	TabsList,
 	TabsTrigger,
-} from '#app/components/ui/tabs'
+	Icon,
+} from '@repo/ui'
+import { useNavigate, useSubmit } from 'react-router'
+
+import { BanUserDialog } from '#app/components/admin-ban-user-dialog'
+
 import { getUserImgSrc } from '#app/utils/misc.tsx'
 import { type getIpAddressesByUser } from '#app/utils/ip-tracking.server'
 

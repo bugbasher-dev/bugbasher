@@ -4,15 +4,16 @@ import { Link, Form } from 'react-router'
 import { getUserImgSrc } from '#app/utils/misc.tsx'
 import { useCurrentOrganization } from '#app/utils/organizations.ts'
 import { useUser } from '#app/utils/user.ts'
-import { Button } from './ui/button'
+
 import {
+	Button,
 	DropdownMenu,
 	DropdownMenuTrigger,
 	DropdownMenuPortal,
 	DropdownMenuContent,
 	DropdownMenuItem,
-} from './ui/dropdown-menu'
-import { Icon } from './ui/icon'
+	Icon,
+} from '@repo/ui'
 
 export function UserDropdown() {
 	const user = useUser()

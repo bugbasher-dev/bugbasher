@@ -2,14 +2,8 @@ import { Img } from 'openimg/react'
 import { useState, useRef } from 'react'
 
 import { OrganizationPhotoForm } from '#app/components/settings/organization-photo-form.tsx'
-import { Button } from '#app/components/ui/button.tsx'
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from '#app/components/ui/dialog.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
+
+import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Icon } from '@repo/ui'
 
 export const uploadOrgPhotoActionIntent = 'upload-org-photo'
 export const deleteOrgPhotoActionIntent = 'delete-org-photo'

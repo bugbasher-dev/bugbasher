@@ -1,13 +1,7 @@
 import { useLoaderData } from 'react-router'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@repo/ui'
 import { type Feedback, type Organization, type User } from '@prisma/client'
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '#app/components/ui/table'
+
 import { prisma } from '#app/utils/db.server'
 import { requireUserWithRole } from '#app/utils/permissions.server'
 

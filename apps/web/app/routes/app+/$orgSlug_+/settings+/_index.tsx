@@ -1,4 +1,5 @@
 import { parseWithZod } from '@conform-to/zod'
+import { AnnotatedLayout, AnnotatedSection } from '@repo/ui'
 import { invariant } from '@epic-web/invariant'
 import { parseFormData } from '@mjackson/form-data-parser'
 import {
@@ -26,10 +27,7 @@ import TeamSizeCard, {
 import VerifiedDomainCard, {
 	VerifiedDomainSchema,
 } from '#app/components/settings/cards/organization/verified-domain-card'
-import {
-	AnnotatedLayout,
-	AnnotatedSection,
-} from '#app/components/ui/annotated-layout'
+
 import { requireUserId } from '#app/utils/auth.server'
 import { prisma } from '#app/utils/db.server'
 import { encrypt } from '#app/utils/encryption.server'

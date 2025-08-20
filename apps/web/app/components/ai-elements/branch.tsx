@@ -1,6 +1,7 @@
 'use client'
 
 import { type UIMessage } from 'ai'
+import { Button } from '@repo/ui'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import {
 	type ComponentProps,
@@ -11,7 +12,7 @@ import {
 	useEffect,
 	useState,
 } from 'react'
-import { Button } from '#app/components/ui/button'
+
 import { cn } from '#app/utils/misc'
 
 type BranchContextType = {

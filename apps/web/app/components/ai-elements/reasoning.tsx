@@ -1,6 +1,7 @@
 'use client'
 
 import { useControllableState } from '@radix-ui/react-use-controllable-state'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@repo/ui'
 import { BrainIcon, ChevronDownIcon } from 'lucide-react'
 import {
 	type ComponentProps,
@@ -10,11 +11,7 @@ import {
 	useEffect,
 	useState,
 } from 'react'
-import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
-} from '#app/components/ui/collapsible'
+
 import { cn } from '#app/utils/misc'
 import { Response } from './response'
 

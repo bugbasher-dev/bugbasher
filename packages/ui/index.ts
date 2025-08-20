@@ -60,7 +60,6 @@ export {
 	SelectGroup,
 	SelectItem,
 	SelectLabel,
-	SelectProvider,
 	SelectScrollDownButton,
 	SelectScrollUpButton,
 	SelectSeparator,
@@ -107,7 +106,6 @@ export {
 	SheetFooter,
 	SheetTitle,
 	SheetDescription,
-	SheetProvider,
 } from './components/sheet'
 
 // UI utility components
@@ -117,7 +115,7 @@ export { ColorPicker } from './components/color-picker'
 export { StatusButton } from './components/status-button'
 export { SquarePenIcon, type SquarePenIconHandle } from './components/square-pen-icon'
 export { PrioritySignal } from './components/priority-signal'
-export { ImageCropper, ImageCropperProvider, centerAspectCrop } from './components/image-cropper'
+export { ImageCropper, centerAspectCrop } from './components/image-cropper'
 
 // Complex interactive components
 export {
@@ -139,7 +137,6 @@ export {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 	BreadcrumbEllipsis,
-	BreadcrumbProvider,
 } from './components/breadcrumb'
 
 export {
@@ -158,7 +155,6 @@ export {
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
 	DropdownMenuRadioGroup,
-	DropdownMenuProvider,
 } from './components/dropdown-menu'
 
 export {
@@ -171,7 +167,6 @@ export {
 	CommandItem,
 	CommandShortcut,
 	CommandSeparator,
-	CommandProvider,
 } from './components/command'
 
 // Advanced data visualization components

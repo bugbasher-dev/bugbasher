@@ -1,12 +1,14 @@
 import { cn, getUserImgSrc } from '#app/utils/misc.tsx'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import {
+	Avatar,
+	AvatarFallback,
+	AvatarImage,
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from './ui/card'
+} from '@repo/ui'
 
 interface LeadershipUser {
 	id: string

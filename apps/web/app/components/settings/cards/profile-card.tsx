@@ -6,25 +6,24 @@ import { useFetcher } from 'react-router'
 import { z } from 'zod'
 import { ErrorList, Field } from '#app/components/forms.tsx'
 import { EmailChangeForm } from '#app/components/settings/email-form.tsx'
-import { Button } from '#app/components/ui/button.tsx'
+
+import { NameSchema, UsernameSchema } from '#app/utils/user-validation.ts'
+import { ProfilePhoto } from './profile-photo'
 import {
+	Button,
 	Card,
 	CardContent,
 	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card.tsx'
-import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '#app/components/ui/dialog.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
-import { NameSchema, UsernameSchema } from '#app/utils/user-validation.ts'
-import { ProfilePhoto } from './profile-photo'
+	StatusButton,
+} from '@repo/ui'
 
 export const ProfileFormSchema = z.object({
 	name: NameSchema.nullable().default(null),

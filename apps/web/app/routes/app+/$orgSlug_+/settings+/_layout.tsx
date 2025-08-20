@@ -1,6 +1,7 @@
 import { Outlet, useLocation, useRouteLoaderData } from 'react-router'
-import { PageTitle } from '#app/components/ui/page-title.tsx'
+
 import { type loader as rootLoader } from '#app/root.tsx'
+import { PageTitle } from '@repo/ui'
 
 export default function SettingsLayout() {
 	useRouteLoaderData<typeof rootLoader>('root')

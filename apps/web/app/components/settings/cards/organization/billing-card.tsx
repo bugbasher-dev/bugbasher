@@ -1,16 +1,17 @@
 import { type Organization } from '@prisma/client'
 import { Form, Link } from 'react-router'
-import { Badge } from '#app/components/ui/badge.tsx'
-import { Button } from '#app/components/ui/button.tsx'
+
+import { type getPlansAndPrices } from '#app/utils/payments.server.ts'
 import {
+	Badge,
+	Button,
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { type getPlansAndPrices } from '#app/utils/payments.server.ts'
+	Icon,
+} from '@repo/ui'
 
 const PLANS = {
 	Base: {

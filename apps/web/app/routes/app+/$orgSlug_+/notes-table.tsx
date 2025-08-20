@@ -9,16 +9,17 @@ import {
 import { formatDistanceToNow } from 'date-fns'
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router'
-import { Button } from '#app/components/ui/button.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
+
 import {
+	Button,
 	Table,
 	TableBody,
 	TableCell,
 	TableHead,
 	TableHeader,
 	TableRow,
-} from '#app/components/ui/table.tsx'
+	Icon,
+} from '@repo/ui'
 
 export type Note = {
 	id: string

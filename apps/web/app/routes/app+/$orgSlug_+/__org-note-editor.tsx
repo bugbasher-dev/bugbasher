@@ -1,3 +1,4 @@
+import { Button, StatusButton } from '@repo/ui'
 import {
 	FormProvider,
 	getFormProps,
@@ -15,9 +16,8 @@ import {
 	ContentEditor,
 	type ContentEditorRef,
 } from '#app/components/note/content-editor.tsx'
-import { Button } from '#app/components/ui/button.tsx'
+
 import { MultiMediaUpload } from '#app/components/ui/multi-media-upload.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { useIsPending } from '#app/utils/misc.tsx'
 
 const titleMinLength = 1

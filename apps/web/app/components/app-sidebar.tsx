@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import { Button, Card, CardContent, CardDescription, CardHeader } from '@repo/ui'
 import * as React from 'react'
 
 import { useLocation, useRouteLoaderData, Link } from 'react-router'
@@ -11,19 +12,13 @@ import { NavMain } from '#app/components/nav-main'
 import { NavUser } from '#app/components/nav-user'
 import { OnboardingChecklist } from '#app/components/onboarding-checklist'
 import { TeamSwitcher } from '#app/components/team-switcher'
-import { Button } from '#app/components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-} from '#app/components/ui/card'
+
 import {
 	Sidebar,
 	SidebarContent,
 	SidebarFooter,
 	SidebarHeader,
-} from '#app/components/ui/sidebar'
+} from '@repo/ui'
 import { type loader as rootLoader } from '#app/root.tsx'
 import { type OnboardingProgressData } from '#app/utils/onboarding'
 import FeedbackModal from './core/feedback-modal'

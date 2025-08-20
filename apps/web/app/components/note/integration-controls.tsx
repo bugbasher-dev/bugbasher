@@ -1,25 +1,23 @@
 import { useState } from 'react'
-import * as React from 'react'
-import { useFetcher } from 'react-router'
-import { Badge } from '#app/components/ui/badge'
-import { Button } from '#app/components/ui/button'
 import {
+	Badge,
+	Button,
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '#app/components/ui/dialog'
-import { Icon } from '#app/components/ui/icon'
-import {
+	Icon,
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '#app/components/ui/select'
-import { StatusButton } from '#app/components/ui/status-button'
+	StatusButton,
+} from '@repo/ui'
+import * as React from 'react'
+import { useFetcher } from 'react-router'
 
 export const connectNoteActionIntent = 'connect-note-to-channel'
 export const disconnectNoteActionIntent = 'disconnect-note-from-channel'

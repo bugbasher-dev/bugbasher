@@ -1,4 +1,15 @@
 import { Img } from 'openimg/react'
+import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+	Input,
+	PageTitle,
+	Icon,
+} from '@repo/ui'
 import { useState } from 'react'
 import {
 	type LoaderFunctionArgs,
@@ -7,17 +18,7 @@ import {
 	useLoaderData,
 	Form,
 } from 'react-router'
-import { Badge } from '#app/components/ui/badge'
-import { Button } from '#app/components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from '#app/components/ui/card'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { Input } from '#app/components/ui/input'
-import { PageTitle } from '#app/components/ui/page-title'
+
 import { requireUserId } from '#app/utils/auth.server'
 import { prisma } from '#app/utils/db.server'
 import {

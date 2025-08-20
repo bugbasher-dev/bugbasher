@@ -7,10 +7,11 @@ import {
 	useLoaderData,
 	useRouteLoaderData,
 } from 'react-router'
+import { PageTitle } from '@repo/ui'
 import { LeadershipCard } from '#app/components/leadership-card.tsx'
 import { NotesChart } from '#app/components/notes-chart'
 import { OnboardingChecklist } from '#app/components/onboarding-checklist'
-import { PageTitle } from '#app/components/ui/page-title.tsx'
+
 import { type loader as rootLoader } from '#app/root.tsx'
 import { requireUserId } from '#app/utils/auth.server'
 import { prisma } from '#app/utils/db.server'

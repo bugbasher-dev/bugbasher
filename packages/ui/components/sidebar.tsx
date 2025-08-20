@@ -20,6 +20,7 @@ import {
 	TooltipTrigger,
 } from './tooltip'
 import { cn } from '../utils/cn'
+import { Icon } from './icon'
 
 const SIDEBAR_WIDTH = '16rem'
 const SIDEBAR_WIDTH_MOBILE = '18rem'
@@ -30,10 +31,6 @@ const SIDEBAR_KEYBOARD_SHORTCUT = 'b'
 interface SidebarIconProps {
 	name: string
 	className?: string
-}
-
-interface SidebarContextValue {
-	IconComponent?: React.ComponentType<SidebarIconProps>
 }
 
 interface SidebarPersistenceCallbacks {
@@ -48,7 +45,7 @@ type SidebarContextProps = {
 	isMobile: boolean
 	openMobile: boolean
 	setOpenMobile: (value: boolean | ((value: boolean) => boolean)) => void
-} & SidebarContextValue
+}
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null)
 
@@ -70,7 +67,6 @@ function SidebarProvider({
 	children,
 	isMobile = false,
 	persistenceCallbacks,
-	IconComponent,
 	...props
 }: React.ComponentProps<'div'> & {
 	defaultOpen?: boolean
@@ -78,7 +74,6 @@ function SidebarProvider({
 	onOpenChange?: (open: boolean) => void
 	isMobile?: boolean
 	persistenceCallbacks?: SidebarPersistenceCallbacks
-	IconComponent?: React.ComponentType<SidebarIconProps>
 }) {
 	const [openMobile, setOpenMobile] = React.useState(false)
 
@@ -158,9 +153,8 @@ function SidebarProvider({
 			openMobile,
 			setOpenMobile,
 			toggleSidebar,
-			IconComponent,
 		}),
-		[displayOpen, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar, IconComponent],
+		[displayOpen, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
 	)
 
 	return (
@@ -295,7 +289,7 @@ function SidebarTrigger({
 	onClick,
 	...props
 }: React.ComponentProps<typeof Button>) {
-	const { toggleSidebar, IconComponent } = useSidebar()
+	const { toggleSidebar } = useSidebar()
 
 	return (
 		<Button
@@ -310,11 +304,7 @@ function SidebarTrigger({
 			}}
 			{...props}
 		>
-			{IconComponent ? (
-				<IconComponent name="panel-left" className="size-5" />
-			) : (
-				<span className="text-sm">☰</span>
-			)}
+			<Icon name="panel-left" className="size-5" />
 			<span className="sr-only">Toggle Sidebar</span>
 		</Button>
 	)

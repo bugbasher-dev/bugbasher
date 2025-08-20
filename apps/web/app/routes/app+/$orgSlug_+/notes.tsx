@@ -12,16 +12,9 @@ import {
 } from 'react-router'
 import { EmptyState } from '#app/components/empty-state.tsx'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
-import { Button } from '#app/components/ui/button.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { PageTitle } from '#app/components/ui/page-title.tsx'
-import { Sheet, SheetContent } from '#app/components/ui/sheet.tsx'
-import { Tabs, TabsList, TabsTrigger } from '#app/components/ui/tabs.tsx'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from '#app/components/ui/tooltip.tsx'
+
+import { Sheet, SheetContent, Icon } from '@repo/ui'
+
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import {
@@ -151,6 +144,16 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 import { NotesKanbanBoard } from './notes-kanban-board.tsx'
+import {
+	Button,
+	PageTitle,
+	Tabs,
+	TabsList,
+	TabsTrigger,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@repo/ui'
 
 export default function NotesRoute({
 	loaderData,

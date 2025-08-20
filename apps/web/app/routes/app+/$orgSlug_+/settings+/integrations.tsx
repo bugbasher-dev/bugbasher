@@ -1,4 +1,5 @@
 import { invariant } from '@epic-web/invariant'
+import { AnnotatedLayout, AnnotatedSection } from '@repo/ui'
 import { integrationManager, getAvailableProviders } from '@repo/integrations'
 import {
 	type ActionFunctionArgs,
@@ -11,10 +12,7 @@ import {
 	connectIntegrationActionIntent,
 	disconnectIntegrationActionIntent,
 } from '#app/components/settings/cards/organization/integrations-card'
-import {
-	AnnotatedLayout,
-	AnnotatedSection,
-} from '#app/components/ui/annotated-layout'
+
 import { requireUserId } from '#app/utils/auth.server'
 import { prisma } from '#app/utils/db.server'
 import { redirectWithToast } from '#app/utils/toast.server'

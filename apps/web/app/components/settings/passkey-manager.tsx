@@ -3,9 +3,9 @@ import { formatDistanceToNow } from 'date-fns'
 import { useState } from 'react'
 import { Form, useRevalidator } from 'react-router'
 import { z } from 'zod'
-import { Button } from '#app/components/ui/button.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
+
 import { deletePasskeyActionIntent } from '#app/routes/app+/security.tsx'
+import { Button, Icon } from '@repo/ui'
 
 // Registration options schema for passkeys
 const RegistrationOptionsSchema = z.object({

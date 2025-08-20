@@ -3,21 +3,19 @@ import { useState } from 'react'
 import { PasskeyManager } from '#app/components/settings/passkey-manager.tsx'
 import { PasswordForm } from '#app/components/settings/password-form.tsx'
 import { TwoFactorForm } from '#app/components/settings/two-factor-form.tsx'
-import { Button } from '#app/components/ui/button.tsx'
 import {
+	Button,
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card.tsx'
-import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '#app/components/ui/dialog.tsx'
+} from '@repo/ui'
 
 export const changePasswordActionIntent = 'change-password'
 export const setPasswordActionIntent = 'set-password'

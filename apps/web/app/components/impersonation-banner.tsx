@@ -1,6 +1,6 @@
 import { Form } from 'react-router'
-import { Button } from '#app/components/ui/button'
-import { Icon } from '#app/components/ui/icon.tsx'
+import { Button, Icon } from '@repo/ui'
+
 import { type ImpersonationInfo } from '#app/utils/impersonation.server.ts'
 
 interface ImpersonationBannerProps {

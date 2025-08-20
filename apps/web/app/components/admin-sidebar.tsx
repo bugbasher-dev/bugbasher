@@ -11,7 +11,7 @@ import {
 	SidebarContent,
 	SidebarFooter,
 	SidebarHeader,
-} from '#app/components/ui/sidebar'
+} from '@repo/ui'
 import { type loader as rootLoader } from '#app/root.tsx'
 import { GlobeIcon } from './icons/globe-icon'
 import { Logo } from './icons/logo'

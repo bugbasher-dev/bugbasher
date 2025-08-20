@@ -1,15 +1,16 @@
 import { useState } from 'react'
-import { useFetcher } from 'react-router'
-import { Button } from '#app/components/ui/button'
 import {
+	Button,
 	Card,
 	CardContent,
 	CardHeader,
 	CardTitle,
 	CardDescription,
-} from '#app/components/ui/card'
-import { Label } from '#app/components/ui/label'
-import { Switch } from '#app/components/ui/switch'
+	Label,
+	Switch,
+} from '@repo/ui'
+import { useFetcher } from 'react-router'
+
 import { JiraBotUserSearch } from './jira-bot-user-search'
 
 interface Integration {

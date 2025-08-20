@@ -1,11 +1,10 @@
 import { useFetcher } from 'react-router'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
 import {
 	deleteDataActionIntent,
 	signOutOfSessionsActionIntent,
 } from '#app/routes/app+/security.tsx'
 import { useDoubleCheck } from '#app/utils/misc.tsx'
+import { Icon, StatusButton } from '@repo/ui'
 
 interface SignOutOfSessionsProps {
 	data: {

@@ -6,7 +6,17 @@ import { formatDistanceToNow } from 'date-fns'
 import { Img } from 'openimg/react'
 import { useRef, useEffect, useState } from 'react'
 import {
-	data,
+	Button,
+	Tabs,
+	TabsList,
+	TabsTrigger,
+	TabsContent,
+	SheetHeader,
+	SheetTitle,	
+	Icon,
+	StatusButton,
+} from '@repo/ui'
+import {
 	Form,
 	Link,
 	useLoaderData,
@@ -21,16 +31,7 @@ import { ActivityLog } from '#app/components/note/activity-log.tsx'
 import { CommentsSection } from '#app/components/note/comments-section.tsx'
 import { IntegrationControls } from '#app/components/note/integration-controls'
 import { ShareNoteButton } from '#app/components/note/share-note-button.tsx'
-import { Button } from '#app/components/ui/button.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { SheetHeader, SheetTitle } from '#app/components/ui/sheet.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
-import {
-	Tabs,
-	TabsList,
-	TabsTrigger,
-	TabsContent,
-} from '#app/components/ui/tabs.tsx'
+
 import {
 	logNoteActivity,
 	getNoteActivityLogs,
@@ -40,6 +41,7 @@ import { prisma } from '#app/utils/db.server.ts'
 import { getNoteImgSrc, useIsPending } from '#app/utils/misc.tsx'
 import { userHasOrgAccess } from '#app/utils/organizations.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
+import { data } from 'react-router'
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)

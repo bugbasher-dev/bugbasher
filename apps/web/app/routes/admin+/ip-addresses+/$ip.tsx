@@ -1,21 +1,20 @@
 import { prisma } from '@repo/prisma'
-import { Link, useLoaderData, type LoaderFunctionArgs } from 'react-router'
-import { Badge } from '#app/components/ui/badge'
-import { Button } from '#app/components/ui/button'
 import {
+	Badge,
+	Button,
 	Card,
 	CardContent,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card'
-import {
 	Table,
 	TableBody,
 	TableCell,
 	TableHead,
 	TableHeader,
 	TableRow,
-} from '#app/components/ui/table'
+} from '@repo/ui'
+import { Link, useLoaderData, type LoaderFunctionArgs } from 'react-router'
+
 import { getUsersByIpAddress } from '#app/utils/ip-tracking.server'
 import { requireUserWithRole } from '#app/utils/permissions.server'
 

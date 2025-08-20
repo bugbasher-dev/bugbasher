@@ -1,21 +1,20 @@
 import {
-	Link,
+	Avatar,
+	AvatarImage,
+	AvatarFallback,
+	Button,
+	buttonVariants,
+	DropdownMenu,
+	DropdownMenuTrigger,
+	Icon,
+} from '@repo/ui'
+import {
 	Outlet,
 	useLocation,
 	useParams,
 	useRouteLoaderData,
 } from 'react-router'
-import {
-	Avatar,
-	AvatarImage,
-	AvatarFallback,
-} from '#app/components/ui/avatar.tsx'
-import { Button, buttonVariants } from '#app/components/ui/button.tsx'
-import {
-	DropdownMenu,
-	DropdownMenuTrigger,
-} from '#app/components/ui/dropdown-menu.js'
-import { Icon } from '#app/components/ui/icon.tsx'
+
 import { cn, getUserImgSrc } from '#app/utils/misc.js'
 
 const AccountSettingsPage = () => {

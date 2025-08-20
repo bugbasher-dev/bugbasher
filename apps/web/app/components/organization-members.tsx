@@ -1,23 +1,24 @@
 import { useState } from 'react'
-import { Form } from 'react-router'
-import { Avatar, AvatarFallback, AvatarImage } from '#app/components/ui/avatar'
-import { Badge } from '#app/components/ui/badge'
-import { Button } from '#app/components/ui/button'
 import {
+	Avatar,
+	AvatarFallback,
+	AvatarImage,
+	Badge,
+	Button,
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card'
-import { Icon } from '#app/components/ui/icon'
-import {
+	Icon,
 	Select,
-	SelectTrigger,
-	SelectValue,
 	SelectContent,
 	SelectItem,
-} from '#app/components/ui/select'
+	SelectTrigger,
+	SelectValue,
+} from '@repo/ui'
+import { Form } from 'react-router'
+
 import { getUserImgSrc } from '#app/utils/misc'
 
 interface OrganizationMember {

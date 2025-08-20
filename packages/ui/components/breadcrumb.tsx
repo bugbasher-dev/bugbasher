@@ -2,32 +2,7 @@ import { Slot } from '@radix-ui/react-slot'
 import * as React from 'react'
 
 import { cn } from '../utils/cn'
-
-// Icon dependency injection interface
-interface BreadcrumbIconProps {
-	name: string
-	className?: string
-}
-
-interface BreadcrumbContextValue {
-	IconComponent?: React.ComponentType<BreadcrumbIconProps>
-}
-
-const BreadcrumbContext = React.createContext<BreadcrumbContextValue>({})
-
-function BreadcrumbProvider({
-	children,
-	IconComponent,
-}: {
-	children: React.ReactNode
-	IconComponent?: React.ComponentType<BreadcrumbIconProps>
-}) {
-	return (
-		<BreadcrumbContext.Provider value={{ IconComponent }}>
-			{children}
-		</BreadcrumbContext.Provider>
-	)
-}
+import { Icon } from './icon'
 
 function Breadcrumb({ ...props }: React.ComponentProps<'nav'>) {
 	return <nav aria-label="breadcrumb" data-slot="breadcrumb" {...props} />
@@ -92,8 +67,6 @@ function BreadcrumbSeparator({
 	className,
 	...props
 }: React.ComponentProps<'li'>) {
-	const { IconComponent } = React.useContext(BreadcrumbContext)
-
 	return (
 		<li
 			data-slot="breadcrumb-separator"
@@ -103,11 +76,7 @@ function BreadcrumbSeparator({
 			{...props}
 		>
 			{children ?? (
-				IconComponent ? (
-					<IconComponent name="chevron-right" />
-				) : (
-					<span className="text-sm">›</span>
-				)
+				<Icon name="chevron-right" />
 			)}
 		</li>
 	)
@@ -117,7 +86,6 @@ function BreadcrumbEllipsis({
 	className,
 	...props
 }: React.ComponentProps<'span'>) {
-	const { IconComponent } = React.useContext(BreadcrumbContext)
 
 	return (
 		<span
@@ -127,11 +95,7 @@ function BreadcrumbEllipsis({
 			className={cn('flex size-9 items-center justify-center', className)}
 			{...props}
 		>
-			{IconComponent ? (
-				<IconComponent name="width" className="size-4" />
-			) : (
-				<span className="text-sm">⋯</span>
-			)}
+			<Icon name="width" className="size-4" />
 			<span className="sr-only">More</span>
 		</span>
 	)
@@ -145,5 +109,4 @@ export {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 	BreadcrumbEllipsis,
-	BreadcrumbProvider,
 }

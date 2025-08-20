@@ -3,24 +3,25 @@ import { formatDistanceToNow } from 'date-fns'
 import { Img } from 'openimg/react'
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useRouteLoaderData, useFetcher } from 'react-router'
+
+import { Icon } from '@repo/ui'
+
+import { cn, getNoteImgSrc, getUserImgSrc } from '#app/utils/misc.tsx'
+import { type loader } from './notes'
 import {
 	Avatar,
 	AvatarFallback,
 	AvatarImage,
-} from '#app/components/ui/avatar.tsx'
-import { Button } from '#app/components/ui/button.tsx'
-import { Card, CardContent } from '#app/components/ui/card.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { Input } from '#app/components/ui/input.tsx'
-import { PrioritySignal } from '#app/components/ui/priority-signal.tsx'
-import { Textarea } from '#app/components/ui/textarea.tsx'
-import {
+	Button,
+	Card,
+	CardContent,
+	Input,
+	PrioritySignal,
+	Textarea,
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
-} from '#app/components/ui/tooltip.tsx'
-import { cn, getNoteImgSrc, getUserImgSrc } from '#app/utils/misc.tsx'
-import { type loader } from './notes'
+} from '@repo/ui'
 
 type LoaderNote = {
 	id: string
@@ -210,7 +211,7 @@ export const NoteCard = ({
 	return (
 		<div className="group h-full">
 			<Card
-				className="group-hover:bg-muted/30 relative h-full cursor-pointer overflow-hidden rounded-3xl border-none py-0 shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05),0px_1px_1px_0px_rgba(255,252,240,0.5)_inset,0px_0px_0px_1px_hsla(0,0%,100%,0.1)_inset,0px_0px_1px_0px_rgba(28,27,26,0.5)] transition-all dark:shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(0,0,0,0.1),0_2px_2px_0_rgba(0,0,0,0.1),0_4px_4px_0_rgba(0,0,0,0.1),0_8px_8px_0_rgba(0,0,0,0.1)]"
+				className="group-hover:bg-muted/30 relative h-full cursor-pointer overflow-hidden border-none shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05),0px_1px_1px_0px_rgba(255,252,240,0.5)_inset,0px_0px_0px_1px_hsla(0,0%,100%,0.1)_inset,0px_0px_1px_0px_rgba(28,27,26,0.5)] transition-all dark:shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(0,0,0,0.1),0_2px_2px_0_rgba(0,0,0,0.1),0_4px_4px_0_rgba(0,0,0,0.1),0_8px_8px_0_rgba(0,0,0,0.1)]"
 				onClick={handleCardClick}
 			>
 				{/* Background gradient overlay */}
@@ -219,7 +220,7 @@ export const NoteCard = ({
 				<CardContent className="relative mx-0 flex h-full flex-col border-0 bg-transparent px-2 pt-2 pb-3 shadow-none ring-0">
 					{/* Enhanced Media Header */}
 					{!isKanbanView && (
-						<div className="relative mb-2 h-[160px] w-full rounded-[16px] shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05),0px_1px_1px_0px_rgba(255,252,240,0.5)_inset,0px_0px_0px_1px_hsla(0,0%,100%,0.1)_inset,0px_0px_1px_0px_rgba(28,27,26,0.5)] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(0,0,0,0.1),0_2px_2px_0_rgba(0,0,0,0.1),0_4px_4px_0_rgba(0,0,0,0.1),0_8px_8px_0_rgba(0,0,0,0.1)]">
+						<div className="relative mb-2 h-[160px] w-full rounded-xl shadow-[0px_1px_1px_0px_rgba(0,0,0,0.05),0px_1px_1px_0px_rgba(255,252,240,0.5)_inset,0px_0px_0px_1px_hsla(0,0%,100%,0.1)_inset,0px_0px_1px_0px_rgba(28,27,26,0.5)] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(255,255,255,0.03)_inset,0_0_0_1px_rgba(0,0,0,0.1),0_2px_2px_0_rgba(0,0,0,0.1),0_4px_4px_0_rgba(0,0,0,0.1),0_8px_8px_0_rgba(0,0,0,0.1)]">
 							{firstMedia ? (
 								<>
 									<Img
@@ -234,14 +235,14 @@ export const NoteCard = ({
 											firstMedia.altText ||
 											(isVideo ? 'Video thumbnail' : 'Note image')
 										}
-										className="absolute inset-0 h-full w-full rounded-[16px] object-cover transition-all duration-300"
+										className="absolute inset-0 h-full w-full rounded-xl object-cover transition-all duration-300"
 										width={200}
 										height={200}
 									/>
 
 									{/* Video play overlay */}
 									{isVideo && (
-										<div className="absolute inset-0 flex items-center justify-center rounded-[16px] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+										<div className="absolute inset-0 flex items-center justify-center rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100">
 											<div className="rounded-full bg-black/20 p-3 backdrop-blur-sm">
 												<Icon
 													name="arrow-right"
@@ -252,15 +253,15 @@ export const NoteCard = ({
 									)}
 								</>
 							) : (
-								<div className="from-primary/5 to-primary/10 flex h-full items-center justify-center rounded-[16px] bg-gradient-to-br">
+								<div className="from-primary/5 to-primary/10 flex h-full items-center justify-center rounded-xl bg-gradient-to-br">
 									<Icon name="file-text" className="text-primary/40 h-8 w-8" />
 								</div>
 							)}
 
 							{/* Enhanced overlay structure */}
-							<div className="absolute inset-0 rounded-[16px]">
-								<div className="absolute inset-0 rounded-[16px] shadow-[0px_0px_0px_1px_rgba(0,0,0,.07),0px_0px_0px_3px_#fff,0px_0px_0px_4px_rgba(0,0,0,.08)] dark:shadow-[0px_0px_0px_1px_rgba(0,0,0,.07),0px_0px_0px_3px_rgba(0,0,0,0.8),0px_0px_0px_4px_rgba(0,0,0,.08)]" />
-								<div className="absolute inset-0 rounded-[16px] dark:shadow-[0px_1px_1px_0px_rgba(0,0,0,0.15),0px_1px_1px_0px_rgba(0,0,0,0.15)_inset,0px_0px_0px_1px_rgba(0,0,0,0.15)_inset,0px_0px_1px_0px_rgba(0,0,0,0.15)]" />
+							<div className="absolute inset-0 rounded-xl">
+								<div className="absolute inset-0 rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,.07),0px_0px_0px_3px_#fff,0px_0px_0px_4px_rgba(0,0,0,.08)] dark:shadow-[0px_0px_0px_1px_rgba(0,0,0,.07),0px_0px_0px_3px_rgba(0,0,0,0.8),0px_0px_0px_4px_rgba(0,0,0,.08)]" />
+								<div className="absolute inset-0 rounded-xl dark:shadow-[0px_1px_1px_0px_rgba(0,0,0,0.15),0px_1px_1px_0px_rgba(0,0,0,0.15)_inset,0px_0px_0px_1px_rgba(0,0,0,0.15)_inset,0px_0px_1px_0px_rgba(0,0,0,0.15)]" />
 							</div>
 
 							{/* Card action buttons - styled like attachment count */}

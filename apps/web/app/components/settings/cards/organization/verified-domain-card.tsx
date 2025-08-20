@@ -1,20 +1,20 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
-import { getZodConstraint, parseWithZod } from '@conform-to/zod'
-import { InfoIcon } from 'lucide-react'
-import { useState } from 'react'
-import { Form, useFetcher } from 'react-router'
-import { z } from 'zod'
-import { ErrorList, Field } from '#app/components/forms'
-import { Button } from '#app/components/ui/button'
 import {
+	Button,
 	Card,
 	CardContent,
 	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '#app/components/ui/card'
-import { Switch } from '#app/components/ui/switch'
+	Switch,
+} from '@repo/ui'
+import { getZodConstraint, parseWithZod } from '@conform-to/zod'
+import { InfoIcon } from 'lucide-react'
+import { useState } from 'react'
+import { Form, useFetcher } from 'react-router'
+import { z } from 'zod'
+import { ErrorList, Field } from '#app/components/forms'
 
 export const VerifiedDomainSchema = z.object({
 	verifiedDomain: z.string().min(1, 'Domain is required'),

@@ -2,31 +2,12 @@ import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import * as React from 'react'
 
 import { cn } from '../utils/cn'
+import { Icon } from './icon'
 
 // Icon dependency injection interface
 interface DropdownMenuIconProps {
 	name: string
 	className?: string
-}
-
-interface DropdownMenuContextValue {
-	IconComponent?: React.ComponentType<DropdownMenuIconProps>
-}
-
-const DropdownMenuContext = React.createContext<DropdownMenuContextValue>({})
-
-function DropdownMenuProvider({
-	children,
-	IconComponent,
-}: {
-	children: React.ReactNode
-	IconComponent?: React.ComponentType<DropdownMenuIconProps>
-}) {
-	return (
-		<DropdownMenuContext.Provider value={{ IconComponent }}>
-			{children}
-		</DropdownMenuContext.Provider>
-	)
 }
 
 function DropdownMenu(
@@ -105,8 +86,6 @@ const DropdownMenuSubTrigger = ({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger> & {
 	inset?: boolean
 }) => {
-	const { IconComponent } = React.useContext(DropdownMenuContext)
-
 	return (
 		<DropdownMenuPrimitive.SubTrigger
 			data-slot="dropdown-menu-sub-trigger"
@@ -120,11 +99,7 @@ const DropdownMenuSubTrigger = ({
 		>
 			{children}
 			<span className="ml-auto">
-				{IconComponent ? (
-					<IconComponent name="chevron-right" className="size-4 items-center" />
-				) : (
-					<span className="text-sm">›</span>
-				)}
+				<Icon name="chevron-right" className="size-4 items-center" />
 			</span>
 		</DropdownMenuPrimitive.SubTrigger>
 	)
@@ -171,8 +146,6 @@ const DropdownMenuCheckboxItem = ({
 	checked,
 	...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>) => {
-	const { IconComponent } = React.useContext(DropdownMenuContext)
-
 	return (
 		<DropdownMenuPrimitive.CheckboxItem
 			data-slot="dropdown-menu-checkbox-item"
@@ -186,11 +159,7 @@ const DropdownMenuCheckboxItem = ({
 			<span className="absolute left-2 flex size-3.5 items-center justify-center">
 				<DropdownMenuPrimitive.ItemIndicator>
 					<span className="size-4">
-						{IconComponent ? (
-							<IconComponent name="check" className="h-4 w-4" />
-						) : (
-							<span className="text-xs">✓</span>
-						)}
+						<Icon name="check" className="h-4 w-4" />
 					</span>
 				</DropdownMenuPrimitive.ItemIndicator>
 			</span>
@@ -279,5 +248,4 @@ export {
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
 	DropdownMenuRadioGroup,
-	DropdownMenuProvider,
 }

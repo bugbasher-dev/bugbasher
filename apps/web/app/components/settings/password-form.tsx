@@ -3,10 +3,9 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { useFetcher } from 'react-router'
 import { z } from 'zod'
 import { ErrorList, Field } from '#app/components/forms.tsx'
-import { Button } from '#app/components/ui/button.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+
+import { Button, StatusButton } from '@repo/ui'
 import {
-	changePasswordActionIntent,
 	setPasswordActionIntent,
 } from '#app/routes/app+/security.tsx'
 import {

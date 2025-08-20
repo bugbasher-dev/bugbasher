@@ -3,10 +3,10 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { useFetcher } from 'react-router'
 import { z } from 'zod'
 import { ErrorList, Field } from '#app/components/forms.tsx'
-import { Button } from '#app/components/ui/button.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+
 import { changeEmailActionIntent } from '#app/routes/app+/profile.tsx'
 import { EmailSchema } from '#app/utils/user-validation.ts'
+import { Button, StatusButton } from '@repo/ui'
 
 export const ChangeEmailSchema = z.object({
 	email: EmailSchema,

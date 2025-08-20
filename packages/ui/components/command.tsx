@@ -9,32 +9,7 @@ import {
 	DialogTitle,
 } from './dialog'
 import { cn } from '../utils/cn'
-
-// Icon dependency injection interface
-interface CommandIconProps {
-	name: string
-	className?: string
-}
-
-interface CommandContextValue {
-	IconComponent?: React.ComponentType<CommandIconProps>
-}
-
-const CommandContext = React.createContext<CommandContextValue>({})
-
-function CommandProvider({
-	children,
-	IconComponent,
-}: {
-	children: React.ReactNode
-	IconComponent?: React.ComponentType<CommandIconProps>
-}) {
-	return (
-		<CommandContext.Provider value={{ IconComponent }}>
-			{children}
-		</CommandContext.Provider>
-	)
-}
+import { Icon } from './icon'
 
 function Command({
 	className,
@@ -87,18 +62,12 @@ function CommandInput({
 	className,
 	...props
 }: React.ComponentProps<typeof CommandPrimitive.Input>) {
-	const { IconComponent } = React.useContext(CommandContext)
-
 	return (
 		<div
 			data-slot="command-input-wrapper"
 			className="flex h-9 items-center gap-2 border-b px-3"
 		>
-			{IconComponent ? (
-				<IconComponent name="search" className="size-4 shrink-0 opacity-50" />
-			) : (
-				<span className="text-muted-foreground text-sm">🔍</span>
-			)}
+			<Icon name="search" className="size-4 shrink-0 opacity-50" />
 			<CommandPrimitive.Input
 				data-slot="command-input"
 				className={cn(
@@ -210,5 +179,4 @@ export {
 	CommandItem,
 	CommandShortcut,
 	CommandSeparator,
-	CommandProvider,
 }

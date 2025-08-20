@@ -3,16 +3,17 @@ import { Link, useFetcher } from 'react-router'
 import { type OnboardingProgressData } from '#app/utils/onboarding'
 import { ListTodoIcon, type ListTodoIconHandle } from './icons/list-todo'
 import { ShineBorder } from './magic-ui/shine-border'
-import { Button } from './ui/button'
+
 import {
+	Button,
 	Card,
 	CardHeader,
 	CardHeaderContent,
 	CardAction,
 	CardContent,
-} from './ui/card'
-import { Icon } from './ui/icon'
-import { Progress } from './ui/progress'
+	Progress,
+	Icon,
+} from '@repo/ui'
 
 interface OnboardingChecklistProps {
 	progress: OnboardingProgressData
