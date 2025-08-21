@@ -1,10 +1,10 @@
-import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from '@remix-run/node'
+import { type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router'
 import { z } from 'zod'
 import { prisma } from '#app/utils/db.server'
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const flags = await prisma.configFlag.findMany()
-  return json({ flags })
+  return { flags }
 }
 
 const schema = z.object({
