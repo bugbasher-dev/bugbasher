@@ -1,9 +1,9 @@
-import { useFetcher, useLoaderData } from '@remix-run/react'
-import { type loader } from '#app/routes/admin+/feature-flags'
-import { Button, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Card, CardHeader, CardContent, CardTitle, Table, TableHeader, TableRow, TableHead, TableBody, TableCell, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, Switch, DatePicker } from '@repo/ui'
+import { Button, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Card, CardHeader, CardContent, CardTitle, Table, TableHeader, TableRow, TableHead, TableBody, TableCell, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, Switch } from '@repo/ui'
 import { useState } from 'react'
+import { useFetcher, useLoaderData } from 'react-router'
+import { type loader } from '#app/routes/admin+/feature-flags'
 
-function FeatureFlagDialog({ flag, children }: { flag?: typeof useLoaderData<typeof loader>['flags'][0], children: React.ReactNode }) {
+function FeatureFlagDialog({ flag, children }: { flag?: any, children: React.ReactNode }) {
   const fetcher = useFetcher()
   const [level, setLevel] = useState(flag?.level ?? 'system')
   const [type, setType] = useState(typeof flag?.value === 'number' ? 'number' : typeof flag?.value === 'boolean' ? 'boolean' : 'string')
@@ -40,7 +40,18 @@ function FeatureFlagDialog({ flag, children }: { flag?: typeof useLoaderData<typ
             {type === 'string' && <Input name="value" placeholder="Flag Value" required defaultValue={flag?.value as string ?? ''} />}
             {type === 'number' && <Input name="value" type="number" placeholder="Flag Value" required defaultValue={flag?.value as number ?? 0} />}
             {type === 'boolean' && <Switch name="value" defaultChecked={flag?.value as boolean ?? false} />}
-            {type === 'date' && <DatePicker name="value" defaultValue={flag?.value ? new Date(flag.value as string) : new Date()} />}
+            {type === 'date' && (
+              <input
+                type="date"
+                name="value"
+                defaultValue={
+                  flag?.value
+                    ? new Date(flag.value as string).toISOString().slice(0, 10)
+                    : new Date().toISOString().slice(0, 10)
+                }
+              />
+            )}
+            
             <Select name="level" required defaultValue={flag?.level} onValueChange={setLevel}>
               <SelectTrigger>
                 <SelectValue placeholder="Level" />
