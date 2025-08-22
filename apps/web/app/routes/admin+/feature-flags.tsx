@@ -39,7 +39,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const result = schema.safeParse(values)
   if (!result.success) {
-    return json({ errors: result.error.flatten().fieldErrors }, { status: 400 })
+    return Response.json({ errors: result.error.flatten().fieldErrors }, { status: 400 })
   }
 
   let value: any
@@ -71,7 +71,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (_action === 'update') {
     if (!result.data.id) {
-      return json({ errors: { id: ['ID is required for update'] } }, { status: 400 })
+      return Response.json({ errors: { id: ['ID is required for update'] } }, { status: 400 })
     }
     await prisma.configFlag.update({
       where: { id: result.data.id },
@@ -87,14 +87,14 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (_action === 'delete') {
     if (!result.data.id) {
-      return json({ errors: { id: ['ID is required for delete'] } }, { status: 400 })
+      return Response.json({ errors: { id: ['ID is required for delete'] } }, { status: 400 })
     }
     await prisma.configFlag.delete({
       where: { id: result.data.id },
     })
   }
 
-  return json({ ok: true })
+  return Response.json({ ok: true })
 }
 
 import { FeatureFlags } from '#app/components/admin/feature-flags'
