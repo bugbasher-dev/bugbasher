@@ -19,6 +19,8 @@ import {
 	getOnboardingProgress,
 	autoDetectCompletedSteps,
 } from '#app/utils/onboarding'
+// import { DataTable } from '#app/components/data-table.tsx'
+// import data from '#app/dashboard/data.json'
 
 const novu = new Novu({
 	secretKey: process.env.NOVU_SECRET_KEY,
@@ -245,7 +247,7 @@ export default function OrganizationDashboard() {
 					<LeadershipCard className="order-2 mt-8 md:w-1/2" leaders={leaders} />
 				)}
 
-				<div className="mt-8 md:w-1/2">
+				<div className="mt-8 lg:w-1/2 w-full">
 					<NotesChart data={chartData} daysShown={daysToShow} />
 					{onboardingProgress &&
 						!onboardingProgress.isCompleted &&
@@ -254,6 +256,9 @@ export default function OrganizationDashboard() {
 						)}
 				</div>
 			</div>
+			{/* <div className="mt-16">
+				<DataTable data={data} />
+			</div> */}
 		</div>
 	)
 }

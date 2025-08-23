@@ -10,6 +10,8 @@ import {
 	type UniqueIdentifier,
 } from '@dnd-kit/core'
 import {
+	Avatar,
+	AvatarFallback,
 	Badge,
 	Button,
 	Checkbox,
@@ -24,16 +26,8 @@ import {
 	Input,
 	Label,
 	Separator,
-	Table,
-	TableBody,
 	TableCell,
-	TableHead,
-	TableHeader,
 	TableRow,
-	Tabs,
-	TabsContent,
-	TabsList,
-	TabsTrigger,
 	type ChartConfig,
 	ChartContainer,
 	ChartTooltip,
@@ -50,6 +44,14 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 	Icon,
+	cn,
+	Card,
+	CardTitle,
+	CardDescription,
+	CardHeader,
+	CardContent,
+	CardHeaderContent,
+	CardAction,
 } from '@repo/ui'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import {
@@ -81,6 +83,39 @@ import { z } from 'zod'
 
 import { useIsMobile } from '#app/hooks/use-mobile'
 
+// Helper function to get initials from a name
+function getInitials(name: string): string {
+	return name
+		.split(' ')
+		.map((part) => part.charAt(0))
+		.join('')
+		.toUpperCase()
+}
+
+// Available reviewers list
+const AVAILABLE_REVIEWERS = [
+	'Eddie Lake',
+	'Jamik Tashpulatov',
+	'Maya Johnson',
+	'Carlos Rodriguez',
+	'Sarah Chen',
+	'Raj Patel',
+	'Leila Ahmadi',
+	'Thomas Wilson',
+	'Sophia Martinez',
+	'Alex Thompson',
+	'Nina Patel',
+	'David Kim',
+	'Maria Garcia',
+	'James Wilson',
+	'Priya Singh',
+	'Sarah Johnson',
+	'Michael Chen',
+	'Lisa Wong',
+	'Daniel Park',
+	'Emma Davis',
+]
+
 export const schema = z.object({
 	id: z.number(),
 	header: z.string(),
@@ -88,7 +123,7 @@ export const schema = z.object({
 	status: z.string(),
 	target: z.string(),
 	limit: z.string(),
-	reviewer: z.string(),
+	reviewers: z.array(z.string()),
 })
 
 // Create a separate component for the drag handle
@@ -181,7 +216,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 	},
 	{
 		accessorKey: 'target',
-		header: () => <div className="w-full text-right">Target</div>,
+		header: () => <div className="w-full">Target</div>,
 		cell: ({ row }) => (
 			<form
 				onSubmit={(e) => {
@@ -197,7 +232,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 					Target
 				</Label>
 				<Input
-					className="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent text-right shadow-none focus-visible:border dark:bg-transparent"
+					className="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent shadow-none focus-visible:border dark:bg-transparent"
 					defaultValue={row.original.target}
 					id={`${row.original.id}-target`}
 				/>
@@ -206,7 +241,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 	},
 	{
 		accessorKey: 'limit',
-		header: () => <div className="w-full text-right">Limit</div>,
+		header: () => <div className="w-full">Limit</div>,
 		cell: ({ row }) => (
 			<form
 				onSubmit={(e) => {
@@ -222,7 +257,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 					Limit
 				</Label>
 				<Input
-					className="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent text-right shadow-none focus-visible:border dark:bg-transparent"
+					className="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent shadow-none focus-visible:border dark:bg-transparent"
 					defaultValue={row.original.limit}
 					id={`${row.original.id}-limit`}
 				/>
@@ -230,36 +265,69 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 		),
 	},
 	{
-		accessorKey: 'reviewer',
-		header: 'Reviewer',
+		accessorKey: 'reviewers',
+		header: 'Reviewers',
 		cell: ({ row }) => {
-			const isAssigned = row.original.reviewer !== 'Assign reviewer'
+			const reviewers = row.original.reviewers || []
+			const availableReviewers = AVAILABLE_REVIEWERS.filter(
+				(reviewer) => !reviewers.includes(reviewer)
+			)
 
-			if (isAssigned) {
-				return row.original.reviewer
+			const addReviewer = (newReviewer: string) => {
+				// Here you would typically update the data state
+				// For now, we'll just show a toast
+				toast.success(`Added ${newReviewer} as reviewer`)
 			}
 
 			return (
-				<>
-					<Label htmlFor={`${row.original.id}-reviewer`} className="sr-only">
-						Reviewer
-					</Label>
-					<Select>
-						<SelectTrigger
-							className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-							size="sm"
-							id={`${row.original.id}-reviewer`}
-						>
-							<SelectValue placeholder="Assign reviewer" />
-						</SelectTrigger>
-						<SelectContent align="end">
-							<SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
-							<SelectItem value="Jamik Tashpulatov">
-								Jamik Tashpulatov
-							</SelectItem>
-						</SelectContent>
-					</Select>
-				</>
+				<div className="flex items-center gap-1 max-w-44">
+					{/* Existing reviewer avatars */}
+					{reviewers.map((reviewer) => (
+						<Avatar key={reviewer} className="size-7 border-2 border-background">
+							<AvatarFallback className="text-xs bg-primary/10 text-primary font-medium">
+								{getInitials(reviewer)}
+							</AvatarFallback>
+						</Avatar>
+					))}
+					
+					{/* Plus button to add new reviewer */}
+					{availableReviewers.length > 0 && (
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon"
+									className="size-7 rounded-full border-2 border-dashed border-muted-foreground/30 text-muted-foreground hover:border-primary/50 hover:text-primary hover:bg-primary/5"
+								>
+									<Icon name="plus" className="size-3" />
+									<span className="sr-only">Add reviewer</span>
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end" className="w-48">
+								{availableReviewers.map((reviewer) => (
+									<DropdownMenuItem
+										key={reviewer}
+										onSelect={() => addReviewer(reviewer)}
+									>
+										<div className="flex items-center gap-2">
+											<Avatar className="size-6">
+												<AvatarFallback className="text-xs bg-primary/10 text-primary font-medium">
+													{getInitials(reviewer)}
+												</AvatarFallback>
+											</Avatar>
+											{reviewer}
+										</div>
+									</DropdownMenuItem>
+								))}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					)}
+					
+					{/* Show message if no reviewers and no available reviewers */}
+					{reviewers.length === 0 && availableReviewers.length === 0 && (
+						<span className="text-muted-foreground text-sm">All assigned</span>
+					)}
+				</div>
 			)
 		},
 	},
@@ -333,7 +401,7 @@ function DraggableRowStyled({ row }: { row: Row<z.infer<typeof schema>> }) {
 			{row.getVisibleCells().map((cell) => (
 				<td
 					key={cell.id}
-					className="overflow-hidden border-0 px-4 py-4 text-left"
+					className="overflow-hidden border-0 px-2 py-2 text-left"
 				>
 					{flexRender(cell.column.columnDef.cell, cell.getContext())}
 				</td>
@@ -408,85 +476,61 @@ export function DataTable({
 	}
 
 	return (
-		<Tabs
-			defaultValue="outline"
-			className="w-full flex-col justify-start gap-6"
-		>
-			<div className="flex items-center justify-between px-4 lg:px-6">
-				<Label htmlFor="view-selector" className="sr-only">
-					View
-				</Label>
-				<Select defaultValue="outline">
-					<SelectTrigger
-						className="flex w-fit @4xl/main:hidden"
-						size="sm"
-						id="view-selector"
-					>
-						<SelectValue placeholder="Select a view" />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="outline">Outline</SelectItem>
-						<SelectItem value="past-performance">Past Performance</SelectItem>
-						<SelectItem value="key-personnel">Key Personnel</SelectItem>
-						<SelectItem value="focus-documents">Focus Documents</SelectItem>
-					</SelectContent>
-				</Select>
-				<TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
-					<TabsTrigger value="outline">Outline</TabsTrigger>
-					<TabsTrigger value="past-performance">
-						Past Performance <Badge variant="secondary">3</Badge>
-					</TabsTrigger>
-					<TabsTrigger value="key-personnel">
-						Key Personnel <Badge variant="secondary">2</Badge>
-					</TabsTrigger>
-					<TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
-				</TabsList>
+		<Card>
+			<CardHeader className="md:grid md:grid-cols-[1fr_auto] items-start">
+				<CardHeaderContent>
+					<CardTitle>
+						Data Table
+					</CardTitle>
+					<CardDescription>
+						Data Table is a table that displays data in a grid format.
+					</CardDescription>
+				</CardHeaderContent>
+				<CardAction className="flex items-center gap-2 pt-2 md:pt-0">
 				<div className="flex items-center gap-2">
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant="outline" size="sm">
-								<Icon name="activity" />
-								<span className="hidden lg:inline">Customize Columns</span>
-								<span className="lg:hidden">Columns</span>
-								<Icon name="chevron-down" />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end" className="w-56">
-							{table
-								.getAllColumns()
-								.filter(
-									(column) =>
-										typeof column.accessorFn !== 'undefined' &&
-										column.getCanHide(),
-								)
-								.map((column) => {
-									return (
-										<DropdownMenuCheckboxItem
-											key={column.id}
-											className="capitalize"
-											checked={column.getIsVisible()}
-											onCheckedChange={(value) =>
-												column.toggleVisibility(!!value)
-											}
-										>
-											{column.id}
-										</DropdownMenuCheckboxItem>
-									)
-								})}
-						</DropdownMenuContent>
-					</DropdownMenu>
-					<Button variant="outline" size="sm">
-						<Icon name="plus" />
-						<span className="hidden lg:inline">Add Section</span>
-					</Button>
-				</div>
-			</div>
-			<TabsContent
-				value="outline"
-				className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
-			>
-				<section className="bg-muted dark:bg-background relative isolate mx-auto flex max-w-none flex-col overflow-hidden rounded-2xl p-1.5">
-					<div className="before:from-muted after:from-muted relative isolate order-1 -m-1 before:absolute before:top-0 before:left-0 before:z-10 before:h-12 before:w-4 before:bg-gradient-to-r before:to-transparent after:absolute after:top-0 after:right-0 after:z-10 after:h-12 after:w-4 after:bg-gradient-to-l after:to-transparent">
+		 			<DropdownMenu>
+		 				<DropdownMenuTrigger asChild>
+		 					<Button variant="outline" size="sm">
+		 						<Icon name="activity" />
+		 						<span className="hidden lg:inline">Customize Columns</span>
+		 						<span className="lg:hidden">Columns</span>
+		 						<Icon name="chevron-down" />
+		 					</Button>
+		 				</DropdownMenuTrigger>
+		 				<DropdownMenuContent align="end" className="w-56">
+		 					{table
+		 						.getAllColumns()
+		 						.filter(
+		 							(column) =>
+		 								typeof column.accessorFn !== 'undefined' &&
+		 								column.getCanHide(),
+		 						)
+		 						.map((column) => {
+		 							return (
+		 								<DropdownMenuCheckboxItem
+		 									key={column.id}
+		 									className="capitalize"
+		 									checked={column.getIsVisible()}
+		 									onCheckedChange={(value) =>
+		 										column.toggleVisibility(!!value)
+		 									}
+		 								>
+		 									{column.id}
+		 								</DropdownMenuCheckboxItem>
+		 							)
+		 						})}
+		 				</DropdownMenuContent>
+		 			</DropdownMenu>
+		 			<Button variant="outline" size="sm">
+		 				<Icon name="plus" />
+		 				<span className="hidden lg:inline">Add Section</span>
+		 			</Button>
+		 		</div>
+				</CardAction>
+			</CardHeader>
+			<CardContent className="p-0">
+			<section className="bg-muted dark:bg-background relative isolate mx-auto flex max-w-none flex-col overflow-hidden rounded-2xl w-full px-1.5">
+					<div className="relative isolate order-1 -m-1">
 						<div className="after:bg-card dark:after:bg-muted after:absolute after:inset-0 after:top-10 after:z-[-1] after:rounded-xl">
 							<div className="before:ring-muted dark:before:ring-background after:border-border overflow-hidden before:pointer-events-none before:absolute before:inset-0 before:top-10 before:z-10 before:rounded-xl before:ring-2 after:pointer-events-none after:absolute after:inset-0 after:top-10 after:z-20 after:rounded-xl after:border">
 								<div className="relative overflow-x-auto rounded-xl">
@@ -506,9 +550,9 @@ export function DataTable({
 																<th
 																	key={header.id}
 																	colSpan={header.colSpan}
-																	className="text-foreground overflow-hidden px-4 pt-3 pb-2 text-left text-sm font-medium"
+																	className="text-foreground overflow-hidden px-2 pt-3 pb-2 text-left text-sm font-medium"
 																>
-																	<span className="inline-flex">
+																	<span className={cn('inline-flex', header.id === 'select' && 'flex justify-center')}>
 																		{header.isPlaceholder
 																			? null
 																			: flexRender(
@@ -536,7 +580,7 @@ export function DataTable({
 													<tr className="group/table-row hover:bg-muted/50 [&+&]:border-border [&+&]:border-t">
 														<td
 															colSpan={columns.length}
-															className="overflow-hidden border-0 px-4 py-8 text-center"
+															className="overflow-hidden border-0 px-4 py-2 text-center"
 														>
 															<span className="text-muted-foreground text-sm">
 																No results.
@@ -552,7 +596,7 @@ export function DataTable({
 						</div>
 					</div>
 				</section>
-				<div className="flex items-center justify-between px-4">
+				{/* <div className="flex items-center justify-between px-4">
 					<div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
 						{table.getFilteredSelectedRowModel().rows.length} of{' '}
 						{table.getFilteredRowModel().rows.length} row(s) selected.
@@ -628,24 +672,9 @@ export function DataTable({
 							</Button>
 						</div>
 					</div>
-				</div>
-			</TabsContent>
-			<TabsContent
-				value="past-performance"
-				className="flex flex-col px-4 lg:px-6"
-			>
-				<div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-			</TabsContent>
-			<TabsContent value="key-personnel" className="flex flex-col px-4 lg:px-6">
-				<div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-			</TabsContent>
-			<TabsContent
-				value="focus-documents"
-				className="flex flex-col px-4 lg:px-6"
-			>
-				<div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-			</TabsContent>
-		</Tabs>
+				</div> */}
+			</CardContent>
+		</Card>
 	)
 }
 
@@ -801,19 +830,73 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
 							</div>
 						</div>
 						<div className="flex flex-col gap-3">
-							<Label htmlFor="reviewer">Reviewer</Label>
-							<Select defaultValue={item.reviewer}>
-								<SelectTrigger id="reviewer" className="w-full">
-									<SelectValue placeholder="Select a reviewer" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
-									<SelectItem value="Jamik Tashpulatov">
-										Jamik Tashpulatov
-									</SelectItem>
-									<SelectItem value="Emily Whalen">Emily Whalen</SelectItem>
-								</SelectContent>
-							</Select>
+							<Label>Reviewers</Label>
+							<div className="flex flex-wrap gap-2">
+								{/* Current reviewers */}
+								{item.reviewers.map((reviewer) => (
+									<div
+										key={reviewer}
+										className="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm"
+									>
+										<Avatar className="size-5">
+											<AvatarFallback className="text-xs bg-primary/20 text-primary font-medium">
+												{getInitials(reviewer)}
+											</AvatarFallback>
+										</Avatar>
+										<span>{reviewer}</span>
+										<Button
+											type="button"
+											variant="ghost"
+											size="icon"
+											className="size-4 hover:bg-primary/20 rounded-full ml-1"
+											onClick={() => {
+												// Remove reviewer functionality would go here
+												toast.success(`Removed ${reviewer}`)
+											}}
+										>
+											<Icon name="x" className="size-3" />
+											<span className="sr-only">Remove {reviewer}</span>
+										</Button>
+									</div>
+								))}
+								
+								{/* Add reviewer button */}
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Button
+											type="button"
+											variant="outline"
+											size="sm"
+											className="border-dashed text-muted-foreground hover:text-primary"
+										>
+											<Icon name="plus" className="size-4 mr-1" />
+											Add Reviewer
+										</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent align="start" className="w-52">
+										{AVAILABLE_REVIEWERS.filter(
+											(reviewer) => !item.reviewers.includes(reviewer)
+										).map((reviewer) => (
+											<DropdownMenuItem
+												key={reviewer}
+												onSelect={() => {
+													// Add reviewer functionality would go here
+													toast.success(`Added ${reviewer}`)
+												}}
+											>
+												<div className="flex items-center gap-2">
+													<Avatar className="size-6">
+														<AvatarFallback className="text-xs bg-primary/10 text-primary font-medium">
+															{getInitials(reviewer)}
+														</AvatarFallback>
+													</Avatar>
+													{reviewer}
+												</div>
+											</DropdownMenuItem>
+										))}
+									</DropdownMenuContent>
+								</DropdownMenu>
+							</div>
 						</div>
 					</form>
 				</div>
