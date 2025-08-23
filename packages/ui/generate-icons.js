@@ -9,26 +9,42 @@ async function generateIcons() {
 	console.log('Generating icon sprite and types...')
 
 	const inputDir = path.join(__dirname, 'other', 'svg-icons')
-	const outputDir = path.join(
-		__dirname,
-		'..',
-		'..',
-		'apps',
-		'web',
-		'app',
-		'components',
-		'ui',
-		'icons',
-	)
-	const duplicateOutputDir = path.join(__dirname, 'components', 'icons')
+	
+	// Array of output directories - add new ones here as needed
+	const outputDirs = [
+		// Web app icons
+		path.join(
+			__dirname,
+			'..',
+			'..',
+			'apps',
+			'web',
+			'app',
+			'components',
+			'ui',
+			'icons',
+		),
+		// Admin app icons
+		path.join(
+			__dirname,
+			'..',
+			'..',
+			'apps',
+			'admin',
+			'app',
+			'components',
+			'ui',
+			'icons',
+		),
+		// UI package icons
+		path.join(__dirname, 'components', 'icons'),
+	]
 
-	// Create the output directory if it doesn't exist
-	if (!fs.existsSync(outputDir)) {
-		fs.mkdirSync(outputDir, { recursive: true })
-	}
-
-	if (!fs.existsSync(duplicateOutputDir)) {
-		fs.mkdirSync(duplicateOutputDir, { recursive: true })
+	// Create all output directories if they don't exist
+	for (const outputDir of outputDirs) {
+		if (!fs.existsSync(outputDir)) {
+			fs.mkdirSync(outputDir, { recursive: true })
+		}
 	}
 
 	// Read all SVG files
@@ -60,34 +76,27 @@ async function generateIcons() {
 ${symbols.join('\n')}
 </svg>`
 
-	// Write sprite file
-	const spriteFilePath = path.join(outputDir, 'sprite.svg')
-	fs.writeFileSync(spriteFilePath, spriteContent, 'utf8')
-
-	// Write duplicate sprite file
-	const duplicateSpriteFilePath = path.join(duplicateOutputDir, 'sprite.svg')
-	fs.writeFileSync(duplicateSpriteFilePath, spriteContent, 'utf8')
-
 	// Generate TypeScript types
 	const typesContent = `export type IconName = ${iconNames.map((name) => `'${name}'`).join(' | ')}`
 
-	const typesFilePath = path.join(outputDir, 'icon-name.d.ts')
-	fs.writeFileSync(typesFilePath, typesContent, 'utf8')
-
-	// Write duplicate types file
-	const duplicateTypesFilePath = path.join(duplicateOutputDir, 'icon-name.d.ts')
-	fs.writeFileSync(duplicateTypesFilePath, typesContent, 'utf8')
-
-	// Generate index file
+	// Generate index file content
 	const indexContent = `export type { IconName } from './icon-name'
 export { default as spriteUrl } from './sprite.svg?url'`
 
-	const indexFilePath = path.join(outputDir, 'index.ts')
-	fs.writeFileSync(indexFilePath, indexContent, 'utf8')
+	// Write files to all output directories
+	for (const outputDir of outputDirs) {
+		// Write sprite file
+		const spriteFilePath = path.join(outputDir, 'sprite.svg')
+		fs.writeFileSync(spriteFilePath, spriteContent, 'utf8')
 
-	// Write duplicate index file
-	const duplicateIndexFilePath = path.join(duplicateOutputDir, 'index.ts')
-	fs.writeFileSync(duplicateIndexFilePath, indexContent, 'utf8')
+		// Write types file
+		const typesFilePath = path.join(outputDir, 'icon-name.d.ts')
+		fs.writeFileSync(typesFilePath, typesContent, 'utf8')
+
+		// Write index file
+		const indexFilePath = path.join(outputDir, 'index.ts')
+		fs.writeFileSync(indexFilePath, indexContent, 'utf8')
+	}
 
 	console.log(
 		`✅ Icons generated successfully! Generated ${iconNames.length} icons:`,
