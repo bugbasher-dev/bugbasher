@@ -6,8 +6,8 @@ const proxy = httpProxy.createProxyServer({
 });
 
 const targets = {
-  'epic-stack.me:2999': 'http://localhost:3001',
-  'app.epic-stack.me:2999': 'http://localhost:3002',
+  'epic-stack.me:2999': 'http://localhost:3002',
+  'app.epic-stack.me:2999': 'http://localhost:3001',
   'studio.epic-stack.me:2999': 'http://localhost:3003',
   'docs.epic-stack.me:2999': 'http://localhost:3004',
   'admin.epic-stack.me:2999': 'http://localhost:3005',
