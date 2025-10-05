@@ -2,11 +2,22 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { useFetcher } from 'react-router'
 import { z } from 'zod'
-import { ErrorList, Field } from '#app/components/forms.tsx'
+import {
+	ErrorList,
+	convertErrorsToFieldFormat,
+} from '#app/components/forms.tsx'
 
 import { changeEmailActionIntent } from '#app/routes/_app+/profile.tsx'
 import { EmailSchema } from '#app/utils/user-validation.ts'
-import { Button, StatusButton } from '@repo/ui'
+import {
+	Button,
+	StatusButton,
+	Field,
+	FieldLabel,
+	FieldError,
+	FieldGroup,
+	Input,
+} from '@repo/ui'
 
 export const ChangeEmailSchema = z.object({
 	email: EmailSchema,
@@ -51,32 +62,37 @@ export function EmailChangeForm({
 	return (
 		<fetcher.Form method="POST" {...getFormProps(form)}>
 			<input type="hidden" name="intent" value={changeEmailActionIntent} />
-			<Field
-				labelProps={{ children: 'New Email' }}
-				inputProps={{
-					...getInputProps(fields.email, { type: 'email' }),
-					autoComplete: 'email',
-				}}
-				errors={fields.email.errors}
-			/>
-			<ErrorList id={form.errorId} errors={form.errors} />
-			<div className="mt-4 flex justify-end gap-2">
-				<Button
-					type="button"
-					variant="secondary"
-					onClick={() => setIsOpen(false)}
-				>
-					Cancel
-				</Button>
-				<StatusButton
-					type="submit"
-					status={
-						fetcher.state !== 'idle' ? 'pending' : (form.status ?? 'idle')
-					}
-				>
-					Save
-				</StatusButton>
-			</div>
+			<FieldGroup>
+				<Field data-invalid={fields.email.errors?.length ? true : undefined}>
+					<FieldLabel htmlFor={fields.email.id}>New Email</FieldLabel>
+					<Input
+						{...getInputProps(fields.email, { type: 'email' })}
+						autoComplete="email"
+						aria-invalid={fields.email.errors?.length ? true : undefined}
+					/>
+					<FieldError
+						errors={convertErrorsToFieldFormat(fields.email.errors)}
+					/>
+				</Field>
+				<ErrorList id={form.errorId} errors={form.errors} />
+				<div className="mt-4 flex justify-end gap-2">
+					<Button
+						type="button"
+						variant="secondary"
+						onClick={() => setIsOpen(false)}
+					>
+						Cancel
+					</Button>
+					<StatusButton
+						type="submit"
+						status={
+							fetcher.state !== 'idle' ? 'pending' : (form.status ?? 'idle')
+						}
+					>
+						Save
+					</StatusButton>
+				</div>
+			</FieldGroup>
 		</fetcher.Form>
 	)
 }

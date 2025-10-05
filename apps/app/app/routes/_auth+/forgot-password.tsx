@@ -14,7 +14,10 @@ import {
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
-import { ErrorList } from '#app/components/forms.tsx'
+import {
+	ErrorList,
+	convertErrorsToFieldFormat,
+} from '#app/components/forms.tsx'
 import {
 	Card,
 	CardContent,
@@ -23,8 +26,11 @@ import {
 	CardHeader,
 	CardTitle,
 	Input,
-	Label,
 	StatusButton,
+	Field,
+	FieldLabel,
+	FieldError,
+	FieldGroup,
 } from '@repo/ui'
 import arcjet from '#app/utils/arcjet.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
@@ -193,19 +199,30 @@ export default function ForgotPasswordRoute() {
 			<CardContent>
 				<Form method="POST" {...getFormProps(form)}>
 					<HoneypotInputs />
-					<div className="grid gap-6">
-						<div className="grid gap-3">
-							<Label htmlFor={fields.usernameOrEmail.id}>
+					<FieldGroup>
+						<Field
+							data-invalid={
+								fields.usernameOrEmail.errors?.length ? true : undefined
+							}
+						>
+							<FieldLabel htmlFor={fields.usernameOrEmail.id}>
 								Username or Email
-							</Label>
+							</FieldLabel>
 							<Input
 								{...getInputProps(fields.usernameOrEmail, { type: 'text' })}
 								autoFocus
 								placeholder="Enter your username or email"
 								required
+								aria-invalid={
+									fields.usernameOrEmail.errors?.length ? true : undefined
+								}
 							/>
-							<ErrorList errors={fields.usernameOrEmail.errors} />
-						</div>
+							<FieldError
+								errors={convertErrorsToFieldFormat(
+									fields.usernameOrEmail.errors,
+								)}
+							/>
+						</Field>
 
 						<ErrorList errors={form.errors} id={form.errorId} />
 
@@ -216,7 +233,7 @@ export default function ForgotPasswordRoute() {
 						>
 							Send reset instructions
 						</StatusButton>
-					</div>
+					</FieldGroup>
 				</Form>
 			</CardContent>
 			<CardFooter className="block rounded-lg p-4 text-center text-sm">

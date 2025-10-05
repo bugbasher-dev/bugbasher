@@ -7,17 +7,19 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-	Label,
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
+	Field,
+	FieldLabel,
+	FieldError,
 } from '@repo/ui'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { Form } from 'react-router'
 import { z } from 'zod'
-import { ErrorList } from '#app/components/forms'
+import { ErrorList, convertErrorsToFieldFormat } from '#app/components/forms'
 
 export const TeamSizeSchema = z.object({
 	size: z.string().min(1, 'Team size is required'),
@@ -64,11 +66,9 @@ export default function TeamSizeCard({
 			<Form method="POST" {...getFormProps(form)}>
 				<input type="hidden" name="intent" value="update-team-size" />
 				<input {...getInputProps(fields.organizationId, { type: 'hidden' })} />
-				<CardContent className="space-y-4">
-					<div className="space-y-2">
-						<Label htmlFor={fields.size.id} className="mb-2 block">
-							Organization Size
-						</Label>
+				<CardContent>
+					<Field data-invalid={fields.size.errors?.length ? true : undefined}>
+						<FieldLabel htmlFor={fields.size.id}>Organization Size</FieldLabel>
 						<Select
 							name={fields.size.name}
 							defaultValue={organization.size || ''}
@@ -84,8 +84,10 @@ export default function TeamSizeCard({
 								))}
 							</SelectContent>
 						</Select>
-						<ErrorList errors={fields.size.errors} />
-					</div>
+						<FieldError
+							errors={convertErrorsToFieldFormat(fields.size.errors)}
+						/>
+					</Field>
 					<ErrorList errors={form.errors} id={form.errorId} />
 				</CardContent>
 				<CardFooter className="justify-end">

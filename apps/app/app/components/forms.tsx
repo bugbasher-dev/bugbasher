@@ -9,11 +9,20 @@ import {
 	InputOTPSeparator,
 	InputOTPSlot,
 	Input,
-	Label,
 	Textarea,
+	Field as UIField,
+	FieldLabel,
+	FieldError,
+	cn,
 } from '@repo/ui'
 
 export type ListOfErrors = Array<string | null | undefined> | null | undefined
+
+// Helper function to convert error arrays to FieldError format
+export function convertErrorsToFieldFormat(errors?: ListOfErrors) {
+	if (!errors) return undefined
+	return errors.filter(Boolean).map((error) => ({ message: error as string }))
+}
 
 export function ErrorList({
 	id,
@@ -35,6 +44,7 @@ export function ErrorList({
 	)
 }
 
+// Legacy Field component - use Field, FieldLabel, FieldError from @repo/ui instead
 export function Field({
 	labelProps,
 	inputProps,
@@ -48,20 +58,14 @@ export function Field({
 }) {
 	const fallbackId = useId()
 	const id = inputProps.id ?? fallbackId
-	const errorId = errors?.length ? `${id}-error` : undefined
+	const hasErrors = errors?.length ? true : undefined
+
 	return (
-		<div className={className}>
-			<Label htmlFor={id} {...labelProps} />
-			<Input
-				id={id}
-				aria-invalid={errorId ? true : undefined}
-				aria-describedby={errorId}
-				{...inputProps}
-			/>
-			<div className="min-h-[18px] pr-4 pl-0">
-				{errorId ? <ErrorList id={errorId} errors={errors} /> : null}
-			</div>
-		</div>
+		<UIField className={className} data-invalid={hasErrors}>
+			<FieldLabel htmlFor={id} {...labelProps} />
+			<Input id={id} aria-invalid={hasErrors} {...inputProps} />
+			<FieldError errors={convertErrorsToFieldFormat(errors)} />
+		</UIField>
 	)
 }
 
@@ -78,16 +82,16 @@ export function OTPField({
 }) {
 	const fallbackId = useId()
 	const id = inputProps.id ?? fallbackId
-	const errorId = errors?.length ? `${id}-error` : undefined
+	const hasErrors = errors?.length ? true : undefined
+
 	return (
-		<div className={className}>
-			<Label htmlFor={id} {...labelProps} />
+		<UIField className={cn(className, 'w-auto')} data-invalid={hasErrors}>
+			<FieldLabel htmlFor={id} {...labelProps} />
 			<InputOTP
 				pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
 				maxLength={6}
 				id={id}
-				aria-invalid={errorId ? true : undefined}
-				aria-describedby={errorId}
+				aria-invalid={hasErrors}
 				{...inputProps}
 			>
 				<InputOTPGroup>
@@ -102,10 +106,8 @@ export function OTPField({
 					<InputOTPSlot index={5} />
 				</InputOTPGroup>
 			</InputOTP>
-			<div className="min-h-[32px] px-4 pt-1 pb-3">
-				{errorId ? <ErrorList id={errorId} errors={errors} /> : null}
-			</div>
-		</div>
+			<FieldError errors={convertErrorsToFieldFormat(errors)} />
+		</UIField>
 	)
 }
 
@@ -122,20 +124,14 @@ export function TextareaField({
 }) {
 	const fallbackId = useId()
 	const id = textareaProps.id ?? textareaProps.name ?? fallbackId
-	const errorId = errors?.length ? `${id}-error` : undefined
+	const hasErrors = errors?.length ? true : undefined
+
 	return (
-		<div className={className}>
-			<Label htmlFor={id} {...labelProps} />
-			<Textarea
-				id={id}
-				aria-invalid={errorId ? true : undefined}
-				aria-describedby={errorId}
-				{...textareaProps}
-			/>
-			<div className="min-h-[18px] pr-4 pl-0">
-				{errorId ? <ErrorList id={errorId} errors={errors} /> : null}
-			</div>
-		</div>
+		<UIField className={className} data-invalid={hasErrors}>
+			<FieldLabel htmlFor={id} {...labelProps} />
+			<Textarea id={id} aria-invalid={hasErrors} {...textareaProps} />
+			<FieldError errors={convertErrorsToFieldFormat(errors)} />
+		</UIField>
 	)
 }
 
@@ -164,40 +160,39 @@ export function CheckboxField({
 		initialValue: defaultChecked ? checkedValue : undefined,
 	})
 	const id = buttonProps.id ?? fallbackId
-	const errorId = errors?.length ? `${id}-error` : undefined
+	const hasErrors = errors?.length ? true : undefined
 
 	return (
-		<div className={className}>
-			<div className="flex gap-2">
-				<Checkbox
-					{...checkboxProps}
-					id={id}
-					aria-invalid={errorId ? true : undefined}
-					aria-describedby={errorId}
-					checked={input.value === checkedValue}
-					onCheckedChange={(state) => {
-						input.change(state.valueOf() ? checkedValue : '')
-						buttonProps.onCheckedChange?.(state)
-					}}
-					onFocus={(event) => {
-						input.focus()
-						buttonProps.onFocus?.(event)
-					}}
-					onBlur={(event) => {
-						input.blur()
-						buttonProps.onBlur?.(event)
-					}}
-					type="button"
-				/>
-				<label
-					htmlFor={id}
-					{...labelProps}
-					className="text-body-xs text-muted-foreground self-center"
-				/>
-			</div>
-			<div className="px-4 pt-1 pb-3">
-				{errorId ? <ErrorList id={errorId} errors={errors} /> : null}
-			</div>
-		</div>
+		<UIField
+			className={className}
+			orientation="horizontal"
+			data-invalid={hasErrors}
+		>
+			<Checkbox
+				{...checkboxProps}
+				id={id}
+				aria-invalid={hasErrors}
+				checked={input.value === checkedValue}
+				onCheckedChange={(state) => {
+					input.change(state.valueOf() ? checkedValue : '')
+					buttonProps.onCheckedChange?.(state)
+				}}
+				onFocus={(event) => {
+					input.focus()
+					buttonProps.onFocus?.(event)
+				}}
+				onBlur={(event) => {
+					input.blur()
+					buttonProps.onBlur?.(event)
+				}}
+				type="button"
+			/>
+			<FieldLabel
+				htmlFor={id}
+				{...labelProps}
+				className="text-body-xs text-muted-foreground self-center font-normal"
+			/>
+			<FieldError errors={convertErrorsToFieldFormat(errors)} />
+		</UIField>
 	)
 }

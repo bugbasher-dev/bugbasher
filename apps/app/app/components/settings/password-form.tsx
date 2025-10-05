@@ -2,9 +2,20 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { useFetcher } from 'react-router'
 import { z } from 'zod'
-import { ErrorList, Field } from '#app/components/forms.tsx'
+import {
+	ErrorList,
+	convertErrorsToFieldFormat,
+} from '#app/components/forms.tsx'
 
-import { Button, StatusButton } from '@repo/ui'
+import {
+	Button,
+	StatusButton,
+	Field,
+	FieldLabel,
+	FieldError,
+	FieldGroup,
+	Input,
+} from '@repo/ui'
 import { setPasswordActionIntent } from '#app/routes/_app+/security.tsx'
 import {
 	PasswordSchema,
@@ -64,66 +75,124 @@ export function PasswordForm({
 				}
 			/>
 
-			{hasPassword && (
+			<FieldGroup>
+				{hasPassword && (
+					<Field
+						data-invalid={
+							fields.currentPassword?.errors?.length ? true : undefined
+						}
+					>
+						<FieldLabel htmlFor={fields.currentPassword.id}>
+							Current Password
+						</FieldLabel>
+						<Input
+							{...getInputProps(fields.currentPassword, { type: 'password' })}
+							autoComplete="current-password"
+							aria-invalid={
+								fields.currentPassword?.errors?.length ? true : undefined
+							}
+						/>
+						<FieldError
+							errors={convertErrorsToFieldFormat(
+								fields.currentPassword?.errors,
+							)}
+						/>
+					</Field>
+				)}
+
 				<Field
-					labelProps={{ children: 'Current Password' }}
-					inputProps={{
-						...getInputProps(fields.currentPassword, { type: 'password' }),
-						autoComplete: 'current-password',
-					}}
-					errors={fields.currentPassword?.errors}
-				/>
-			)}
-
-			<Field
-				labelProps={{ children: hasPassword ? 'New Password' : 'Password' }}
-				inputProps={{
-					...getInputProps(hasPassword ? fields.newPassword : fields.password, {
-						type: 'password',
-					}),
-					autoComplete: 'new-password',
-				}}
-				errors={(hasPassword ? fields.newPassword : fields.password)?.errors}
-			/>
-
-			<Field
-				labelProps={{
-					children: hasPassword ? 'Confirm New Password' : 'Confirm Password',
-				}}
-				inputProps={{
-					...getInputProps(
-						hasPassword ? fields.confirmNewPassword : fields.confirmPassword,
-						{
-							type: 'password',
-						},
-					),
-					autoComplete: 'new-password',
-				}}
-				errors={
-					(hasPassword ? fields.confirmNewPassword : fields.confirmPassword)
-						?.errors
-				}
-			/>
-
-			<ErrorList id={form.errorId} errors={form.errors} />
-
-			<div className="mt-4 flex justify-end gap-2">
-				<Button
-					type="button"
-					variant="secondary"
-					onClick={() => setIsOpen(false)}
-				>
-					Cancel
-				</Button>
-				<StatusButton
-					type="submit"
-					status={
-						fetcher.state !== 'idle' ? 'pending' : (form.status ?? 'idle')
+					data-invalid={
+						(hasPassword ? fields.newPassword : fields.password)?.errors?.length
+							? true
+							: undefined
 					}
 				>
-					{hasPassword ? 'Change Password' : 'Create Password'}
-				</StatusButton>
-			</div>
+					<FieldLabel
+						htmlFor={(hasPassword ? fields.newPassword : fields.password).id}
+					>
+						{hasPassword ? 'New Password' : 'Password'}
+					</FieldLabel>
+					<Input
+						{...getInputProps(
+							hasPassword ? fields.newPassword : fields.password,
+							{
+								type: 'password',
+							},
+						)}
+						autoComplete="new-password"
+						aria-invalid={
+							(hasPassword ? fields.newPassword : fields.password)?.errors
+								?.length
+								? true
+								: undefined
+						}
+					/>
+					<FieldError
+						errors={convertErrorsToFieldFormat(
+							(hasPassword ? fields.newPassword : fields.password)?.errors,
+						)}
+					/>
+				</Field>
+
+				<Field
+					data-invalid={
+						(hasPassword ? fields.confirmNewPassword : fields.confirmPassword)
+							?.errors?.length
+							? true
+							: undefined
+					}
+				>
+					<FieldLabel
+						htmlFor={
+							(hasPassword ? fields.confirmNewPassword : fields.confirmPassword)
+								.id
+						}
+					>
+						{hasPassword ? 'Confirm New Password' : 'Confirm Password'}
+					</FieldLabel>
+					<Input
+						{...getInputProps(
+							hasPassword ? fields.confirmNewPassword : fields.confirmPassword,
+							{
+								type: 'password',
+							},
+						)}
+						autoComplete="new-password"
+						aria-invalid={
+							(hasPassword ? fields.confirmNewPassword : fields.confirmPassword)
+								?.errors?.length
+								? true
+								: undefined
+						}
+					/>
+					<FieldError
+						errors={convertErrorsToFieldFormat(
+							(hasPassword ? fields.confirmNewPassword : fields.confirmPassword)
+								?.errors,
+						)}
+					/>
+				</Field>
+
+				<ErrorList id={form.errorId} errors={form.errors} />
+
+				<div className="mt-4 flex justify-end gap-2">
+					<Button
+						type="button"
+						variant="secondary"
+						onClick={() => setIsOpen(false)}
+					>
+						Cancel
+					</Button>
+					<StatusButton
+						type="submit"
+						status={
+							fetcher.state !== 'idle' ? 'pending' : (form.status ?? 'idle')
+						}
+					>
+						{hasPassword ? 'Change Password' : 'Create Password'}
+					</StatusButton>
+				</div>
+			</FieldGroup>
 		</fetcher.Form>
 	)
 }

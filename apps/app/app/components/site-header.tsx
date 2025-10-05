@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useGlobalHotkeys } from '#app/hooks/use-hotkeys'
 import { CommandMenu } from './command-menu'
-import { Button, Separator, SidebarTrigger, Icon } from '@repo/ui'
+import { Button, Separator, SidebarTrigger, Icon, Kbd } from '@repo/ui'
 import NotificationBell from './ui/notification-bell'
 import { Form, useFetcher } from 'react-router'
 
@@ -37,9 +37,9 @@ export function SiteHeader({ isCollapsed }: { isCollapsed: boolean }) {
 					>
 						<Icon name="search" className="h-4 w-4" />
 						Search notes...
-						<kbd className="bg-muted pointer-events-none absolute top-[0.3rem] right-[0.3rem] hidden h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none sm:flex">
+						<Kbd className="absolute top-[0.3rem] right-[0.3rem]">
 							<span className="text-xs">⌘</span>K
-						</kbd>
+						</Kbd>
 					</Button>
 					<NotificationBell />
 				</div>

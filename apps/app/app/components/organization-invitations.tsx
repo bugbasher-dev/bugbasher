@@ -16,6 +16,10 @@ import {
 	CardTitle,
 	Icon,
 	Input,
+	InputGroup,
+	InputGroupAddon,
+	InputGroupButton,
+	InputGroupInput,
 	Separator,
 	Select,
 	SelectContent,
@@ -363,20 +367,21 @@ function InviteFieldset({
 
 	return (
 		<div>
-			<fieldset className="w-full" {...getFieldsetProps(meta)}>
-				<div className="flex w-full items-start space-x-2">
-					<Field
-						labelProps={{ children: '', 'aria-label': 'Email' }}
-						inputProps={{
-							...emailProps,
-							placeholder: 'Enter email address',
-							className: 'flex-1',
-						}}
-						className="w-full"
-						errors={inviteFields.email.errors}
+			<fieldset className="mb-2 w-full" {...getFieldsetProps(meta)}>
+				<InputGroup className="w-full">
+					<InputGroupInput
+						{...emailProps}
+						placeholder="Enter email address"
+						aria-label="Email"
+						aria-invalid={
+							inviteFields.email.errors?.length ? 'true' : undefined
+						}
 					/>
 
-					<div className="min-w-[120px]">
+					<InputGroupAddon
+						className="gap-0 rounded-r-lg py-1 pr-1.5"
+						align="inline-end"
+					>
 						<Select
 							name={inviteFields.role.name}
 							value={role.value}
@@ -389,7 +394,7 @@ function InviteFieldset({
 								}
 							}}
 						>
-							<SelectTrigger className="w-full">
+							<SelectTrigger className="border-r-none h-auto rounded-r-md border-1 border-l bg-transparent shadow-none focus:ring-0">
 								<SelectValue>
 									{roles.find((r) => r.value === role.value)?.label}
 								</SelectValue>
@@ -407,21 +412,21 @@ function InviteFieldset({
 								))}
 							</SelectContent>
 						</Select>
-					</div>
 
-					{index > 0 && (
-						<Button
-							variant="ghost"
-							size="icon"
-							{...form.remove.getButtonProps({
-								name: fields.invites.name,
-								index,
-							})}
-						>
-							<Icon name="trash-2" className="h-4 w-4" />
-						</Button>
-					)}
-				</div>
+						{index > 0 && (
+							<InputGroupButton
+								variant="ghost"
+								size="icon-sm"
+								{...form.remove.getButtonProps({
+									name: fields.invites.name,
+									index,
+								})}
+							>
+								<Icon name="trash-2" className="h-4 w-4" />
+							</InputGroupButton>
+						)}
+					</InputGroupAddon>
+				</InputGroup>
 				<ErrorList id={meta.errorId} errors={meta.errors} />
 			</fieldset>
 		</div>

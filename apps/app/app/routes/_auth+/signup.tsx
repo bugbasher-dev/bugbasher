@@ -7,7 +7,10 @@ import { data, redirect, Form, useSearchParams, Link } from 'react-router'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
-import { ErrorList } from '#app/components/forms.tsx'
+import {
+	ErrorList,
+	convertErrorsToFieldFormat,
+} from '#app/components/forms.tsx'
 import {
 	Card,
 	CardContent,
@@ -16,8 +19,11 @@ import {
 	CardHeader,
 	CardTitle,
 	Input,
-	Label,
 	StatusButton,
+	Field,
+	FieldLabel,
+	FieldError,
+	FieldGroup,
 } from '@repo/ui'
 import arcjet from '#app/utils/arcjet.server.ts'
 import { requireAnonymous } from '#app/utils/auth.server.ts'
@@ -232,18 +238,23 @@ export default function SignupRoute({
 					{/* Email Signup Form */}
 					<Form method="POST" {...getFormProps(form)}>
 						<HoneypotInputs />
-						<div className="grid gap-6">
-							<div className="grid gap-3">
-								<Label htmlFor={fields.email.id}>Email</Label>
+						<FieldGroup>
+							<Field
+								data-invalid={fields.email.errors?.length ? true : undefined}
+							>
+								<FieldLabel htmlFor={fields.email.id}>Email</FieldLabel>
 								<Input
 									{...getInputProps(fields.email, { type: 'email' })}
 									autoFocus
 									autoComplete="email"
 									placeholder="m@example.com"
 									required
+									aria-invalid={fields.email.errors?.length ? true : undefined}
 								/>
-								<ErrorList errors={fields.email.errors} />
-							</div>
+								<FieldError
+									errors={convertErrorsToFieldFormat(fields.email.errors)}
+								/>
+							</Field>
 
 							<ErrorList errors={form.errors} id={form.errorId} />
 
@@ -255,7 +266,7 @@ export default function SignupRoute({
 							>
 								Sign up
 							</StatusButton>
-						</div>
+						</FieldGroup>
 					</Form>
 				</div>
 			</CardContent>

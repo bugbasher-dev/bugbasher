@@ -1,7 +1,7 @@
 import { useId } from 'react'
 import { Form, useSearchParams, useSubmit } from 'react-router'
 import { useDebounce, useIsPending } from '#app/utils/misc.tsx'
-import { Input, Label, Icon, StatusButton } from '@repo/ui'
+import { Input, FieldLabel, Icon, StatusButton } from '@repo/ui'
 
 export function SearchBar({
 	status,
@@ -32,9 +32,9 @@ export function SearchBar({
 			onChange={(e) => autoSubmit && handleFormChange(e.currentTarget)}
 		>
 			<div className="flex-1">
-				<Label htmlFor={id} className="sr-only">
+				<FieldLabel htmlFor={id} className="sr-only">
 					Search
-				</Label>
+				</FieldLabel>
 				<Input
 					type="search"
 					name="search"

@@ -2,9 +2,21 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { data, redirect, Form, Link } from 'react-router'
-import { ErrorList, Field } from '#app/components/forms.tsx'
+import {
+	ErrorList,
+	convertErrorsToFieldFormat,
+} from '#app/components/forms.tsx'
 
-import { Button, Icon, StatusButton } from '@repo/ui'
+import {
+	Button,
+	Icon,
+	StatusButton,
+	Field,
+	FieldLabel,
+	FieldError,
+	FieldGroup,
+	Input,
+} from '@repo/ui'
 import {
 	checkIsCommonPassword,
 	getPasswordHash,
@@ -101,36 +113,52 @@ export default function CreatePasswordRoute({
 
 	return (
 		<Form method="POST" {...getFormProps(form)} className="mx-auto max-w-md">
-			<Field
-				labelProps={{ children: 'New Password' }}
-				inputProps={{
-					...getInputProps(fields.password, { type: 'password' }),
-					autoComplete: 'new-password',
-				}}
-				errors={fields.password.errors}
-			/>
-			<Field
-				labelProps={{ children: 'Confirm New Password' }}
-				inputProps={{
-					...getInputProps(fields.confirmPassword, {
-						type: 'password',
-					}),
-					autoComplete: 'new-password',
-				}}
-				errors={fields.confirmPassword.errors}
-			/>
-			<ErrorList id={form.errorId} errors={form.errors} />
-			<div className="grid w-full grid-cols-2 gap-6">
-				<Button variant="secondary" asChild>
-					<Link to="..">Cancel</Link>
-				</Button>
-				<StatusButton
-					type="submit"
-					status={isPending ? 'pending' : (form.status ?? 'idle')}
+			<FieldGroup>
+				<Field data-invalid={fields.password.errors?.length ? true : undefined}>
+					<FieldLabel htmlFor={fields.password.id}>New Password</FieldLabel>
+					<Input
+						{...getInputProps(fields.password, { type: 'password' })}
+						autoComplete="new-password"
+						aria-invalid={fields.password.errors?.length ? true : undefined}
+					/>
+					<FieldError
+						errors={convertErrorsToFieldFormat(fields.password.errors)}
+					/>
+				</Field>
+
+				<Field
+					data-invalid={
+						fields.confirmPassword.errors?.length ? true : undefined
+					}
 				>
-					Create Password
-				</StatusButton>
-			</div>
+					<FieldLabel htmlFor={fields.confirmPassword.id}>
+						Confirm New Password
+					</FieldLabel>
+					<Input
+						{...getInputProps(fields.confirmPassword, { type: 'password' })}
+						autoComplete="new-password"
+						aria-invalid={
+							fields.confirmPassword.errors?.length ? true : undefined
+						}
+					/>
+					<FieldError
+						errors={convertErrorsToFieldFormat(fields.confirmPassword.errors)}
+					/>
+				</Field>
+
+				<ErrorList id={form.errorId} errors={form.errors} />
+				<div className="grid w-full grid-cols-2 gap-6">
+					<Button variant="secondary" asChild>
+						<Link to="..">Cancel</Link>
+					</Button>
+					<StatusButton
+						type="submit"
+						status={isPending ? 'pending' : (form.status ?? 'idle')}
+					>
+						Create Password
+					</StatusButton>
+				</div>
+			</FieldGroup>
 		</Form>
 	)
 }

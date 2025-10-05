@@ -4,9 +4,8 @@ import {
 	useForm,
 	type FieldMetadata,
 } from '@conform-to/react'
-import { Label } from '@radix-ui/react-label'
 import React, { useState, useRef, useCallback } from 'react'
-import { Button, Icon } from '@repo/ui'
+import { Button, Icon, FieldLabel } from '@repo/ui'
 import { type ImageFieldset } from '#app/routes/_app+/$orgSlug_+/__org-note-editor.tsx'
 import { cn, getNoteImgSrc } from '#app/utils/misc.tsx'
 
@@ -136,9 +135,9 @@ export function MultiImageUpload({
 
 	return (
 		<div className={cn('mt-4 space-y-4', className)}>
-			<Label className="text-sm font-medium">
+			<FieldLabel className="text-sm font-medium">
 				{label} ({imageList.length}/{maxImages})
-			</Label>
+			</FieldLabel>
 
 			{/* Existing Images Grid */}
 			{imageList.length > 0 && (

@@ -5,7 +5,10 @@ import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { Img } from 'openimg/react'
 import { data, Link, useFetcher } from 'react-router'
 import { z } from 'zod'
-import { ErrorList, Field } from '#app/components/forms.tsx'
+import {
+	ErrorList,
+	convertErrorsToFieldFormat,
+} from '#app/components/forms.tsx'
 
 import { requireUserId, sessionKey } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
@@ -15,7 +18,16 @@ import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { NameSchema, UsernameSchema } from '#app/utils/user-validation.ts'
 import { type Route } from './+types/profile.index.ts'
 import { twoFAVerificationType } from './profile.two-factor.tsx'
-import { Button, Icon, StatusButton } from '@repo/ui'
+import {
+	Button,
+	Icon,
+	StatusButton,
+	Field,
+	FieldLabel,
+	FieldError,
+	FieldGroup,
+	Input,
+} from '@repo/ui'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,
@@ -238,39 +250,53 @@ function UpdateProfile({
 
 	return (
 		<fetcher.Form method="POST" {...getFormProps(form)}>
-			<div className="grid grid-cols-6 gap-x-10">
-				<Field
-					className="col-span-3"
-					labelProps={{
-						htmlFor: fields.username.id,
-						children: 'Username',
-					}}
-					inputProps={getInputProps(fields.username, { type: 'text' })}
-					errors={fields.username.errors}
-				/>
-				<Field
-					className="col-span-3"
-					labelProps={{ htmlFor: fields.name.id, children: 'Name' }}
-					inputProps={getInputProps(fields.name, { type: 'text' })}
-					errors={fields.name.errors}
-				/>
-			</div>
+			<FieldGroup>
+				<div className="grid grid-cols-6 gap-x-10">
+					<Field
+						className="col-span-3"
+						data-invalid={fields.username.errors?.length ? true : undefined}
+					>
+						<FieldLabel htmlFor={fields.username.id}>Username</FieldLabel>
+						<Input
+							{...getInputProps(fields.username, { type: 'text' })}
+							aria-invalid={fields.username.errors?.length ? true : undefined}
+						/>
+						<FieldError
+							errors={convertErrorsToFieldFormat(fields.username.errors)}
+						/>
+					</Field>
 
-			<ErrorList errors={form.errors} id={form.errorId} />
+					<Field
+						className="col-span-3"
+						data-invalid={fields.name.errors?.length ? true : undefined}
+					>
+						<FieldLabel htmlFor={fields.name.id}>Name</FieldLabel>
+						<Input
+							{...getInputProps(fields.name, { type: 'text' })}
+							aria-invalid={fields.name.errors?.length ? true : undefined}
+						/>
+						<FieldError
+							errors={convertErrorsToFieldFormat(fields.name.errors)}
+						/>
+					</Field>
+				</div>
 
-			<div className="mt-8 flex justify-center">
-				<StatusButton
-					size="sm"
-					type="submit"
-					name="intent"
-					value={profileUpdateActionIntent}
-					status={
-						fetcher.state !== 'idle' ? 'pending' : (form.status ?? 'idle')
-					}
-				>
-					Save changes
-				</StatusButton>
-			</div>
+				<ErrorList errors={form.errors} id={form.errorId} />
+
+				<div className="mt-8 flex justify-center">
+					<StatusButton
+						size="sm"
+						type="submit"
+						name="intent"
+						value={profileUpdateActionIntent}
+						status={
+							fetcher.state !== 'idle' ? 'pending' : (form.status ?? 'idle')
+						}
+					>
+						Save changes
+					</StatusButton>
+				</div>
+			</FieldGroup>
 		</fetcher.Form>
 	)
 }
