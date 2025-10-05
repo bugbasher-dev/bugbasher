@@ -4,7 +4,7 @@ import { data, redirect, Form, useSearchParams } from 'react-router'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 
 import { z } from 'zod'
-import { CheckboxField, ErrorList } from '#app/components/forms.tsx'
+import { CheckboxField, ErrorList, convertErrorsToFieldFormat } from '#app/components/forms.tsx'
 
 import {
 	checkIsCommonPassword,
@@ -32,9 +32,13 @@ import {
 	CardHeader,
 	CardTitle,
 	Input,
-	Label,
 	StatusButton,
 	Icon,
+	Field,
+	FieldLabel,
+	FieldError,
+	FieldGroup,
+	Checkbox,
 } from '@repo/ui'
 
 export const onboardingEmailSessionKey = 'onboardingEmail'
@@ -319,44 +323,47 @@ export default function OnboardingRoute({
 			<CardContent>
 				<Form method="POST" {...getFormProps(form)}>
 					<HoneypotInputs />
-					<div className="grid gap-6">
-						<div className="grid gap-3">
-							<Label htmlFor={fields.username.id}>Username</Label>
+					<FieldGroup>
+						<Field data-invalid={fields.username.errors?.length ? true : undefined}>
+							<FieldLabel htmlFor={fields.username.id}>Username</FieldLabel>
 							<Input
 								{...getInputProps(fields.username, { type: 'text' })}
 								autoComplete="username"
 								placeholder="Enter your username"
 								required
+								aria-invalid={fields.username.errors?.length ? true : undefined}
 							/>
-							<ErrorList errors={fields.username.errors} />
-						</div>
+							<FieldError errors={convertErrorsToFieldFormat(fields.username.errors)} />
+						</Field>
 
-						<div className="grid gap-3">
-							<Label htmlFor={fields.name.id}>Full Name</Label>
+						<Field data-invalid={fields.name.errors?.length ? true : undefined}>
+							<FieldLabel htmlFor={fields.name.id}>Full Name</FieldLabel>
 							<Input
 								{...getInputProps(fields.name, { type: 'text' })}
 								autoComplete="name"
 								placeholder="Enter your full name"
 								required
+								aria-invalid={fields.name.errors?.length ? true : undefined}
 							/>
-							<ErrorList errors={fields.name.errors} />
-						</div>
+							<FieldError errors={convertErrorsToFieldFormat(fields.name.errors)} />
+						</Field>
 
-						<div className="grid gap-3">
-							<Label htmlFor={fields.password.id}>Password</Label>
+						<Field data-invalid={fields.password.errors?.length ? true : undefined}>
+							<FieldLabel htmlFor={fields.password.id}>Password</FieldLabel>
 							<Input
 								{...getInputProps(fields.password, { type: 'password' })}
 								autoComplete="new-password"
 								placeholder="Create a password"
 								required
+								aria-invalid={fields.password.errors?.length ? true : undefined}
 							/>
-							<ErrorList errors={fields.password.errors} />
-						</div>
+							<FieldError errors={convertErrorsToFieldFormat(fields.password.errors)} />
+						</Field>
 
-						<div className="grid gap-3">
-							<Label htmlFor={fields.confirmPassword.id}>
+						<Field data-invalid={fields.confirmPassword.errors?.length ? true : undefined}>
+							<FieldLabel htmlFor={fields.confirmPassword.id}>
 								Confirm Password
-							</Label>
+							</FieldLabel>
 							<Input
 								{...getInputProps(fields.confirmPassword, {
 									type: 'password',
@@ -364,38 +371,39 @@ export default function OnboardingRoute({
 								autoComplete="new-password"
 								placeholder="Confirm your password"
 								required
+								aria-invalid={fields.confirmPassword.errors?.length ? true : undefined}
 							/>
-							<ErrorList errors={fields.confirmPassword.errors} />
-						</div>
+							<FieldError errors={convertErrorsToFieldFormat(fields.confirmPassword.errors)} />
+						</Field>
 
-						<div>
-							<div className="flex items-center space-x-2">
-								<CheckboxField
-									labelProps={{
-										htmlFor: fields.agreeToTermsOfServiceAndPrivacyPolicy.id,
-										children:
-											'I agree to the Terms of Service and Privacy Policy',
-									}}
-									buttonProps={getInputProps(
-										fields.agreeToTermsOfServiceAndPrivacyPolicy,
-										{ type: 'checkbox' },
-									)}
-									errors={fields.agreeToTermsOfServiceAndPrivacyPolicy.errors}
+						<FieldGroup>
+							<Field orientation="horizontal">
+								<Checkbox
+									{...(() => {
+										const { type, ...props } = getInputProps(fields.agreeToTermsOfServiceAndPrivacyPolicy, { type: 'checkbox' })
+										return props
+									})()}
+									id={fields.agreeToTermsOfServiceAndPrivacyPolicy.id}
 								/>
-							</div>
-							<div className="flex items-center space-x-2">
-								<CheckboxField
-									labelProps={{
-										htmlFor: fields.remember.id,
-										children: 'Remember me',
-									}}
-									buttonProps={getInputProps(fields.remember, {
-										type: 'checkbox',
-									})}
-									errors={fields.remember.errors}
+								<FieldLabel htmlFor={fields.agreeToTermsOfServiceAndPrivacyPolicy.id} className="font-normal">
+									I agree to the Terms of Service and Privacy Policy
+								</FieldLabel>
+							</Field>
+							<FieldError errors={convertErrorsToFieldFormat(fields.agreeToTermsOfServiceAndPrivacyPolicy.errors)} />
+
+							<Field orientation="horizontal">
+								<Checkbox
+									{...(() => {
+										const { type, ...props } = getInputProps(fields.remember, { type: 'checkbox' })
+										return props
+									})()}
+									id={fields.remember.id}
 								/>
-							</div>
-						</div>
+								<FieldLabel htmlFor={fields.remember.id} className="font-normal">
+									Remember me
+								</FieldLabel>
+							</Field>
+						</FieldGroup>
 
 						<input {...getInputProps(fields.redirectTo, { type: 'hidden' })} />
 						<ErrorList errors={form.errors} id={form.errorId} />
@@ -408,7 +416,7 @@ export default function OnboardingRoute({
 						>
 							Create account
 						</StatusButton>
-					</div>
+					</FieldGroup>
 				</Form>
 			</CardContent>
 		</Card>

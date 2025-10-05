@@ -7,6 +7,7 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
+	FieldGroup,
 	Switch,
 } from '@repo/ui'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
@@ -83,16 +84,18 @@ export default function VerifiedDomainCard({
 					<input
 						{...getInputProps(fields.organizationId, { type: 'hidden' })}
 					/>
-					<CardContent className="mt-2 py-2">
-						<Field
-							labelProps={{ children: 'Verified domain' }}
-							inputProps={{
-								...getInputProps(fields.verifiedDomain, { type: 'text' }),
-								placeholder: 'example.com',
-							}}
-							className="w-full pt-2"
-							errors={fields.verifiedDomain.errors}
-						/>
+					<CardContent>
+						<FieldGroup>
+							<Field
+								labelProps={{ children: 'Verified domain' }}
+								inputProps={{
+									...getInputProps(fields.verifiedDomain, { type: 'text' }),
+									placeholder: 'example.com',
+								}}
+								className="w-full pt-2"
+								errors={fields.verifiedDomain.errors}
+							/>
+						</FieldGroup>
 						<ErrorList id={form.errorId} errors={form.errors} />
 					</CardContent>
 					<CardFooter className="flex justify-between gap-4">

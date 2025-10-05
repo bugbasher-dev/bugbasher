@@ -32,6 +32,9 @@ import {
 	PageTitle,
 	Textarea,
 	Icon,
+	FieldLabel,
+	FieldGroup,
+	FieldDescription,
 } from '@repo/ui'
 import { generateApiKey } from '#app/utils/api-key.server.ts'
 import { requireUserId } from '#app/utils/auth.server.ts'
@@ -258,17 +261,19 @@ function CreateApiKeyModal({
 
 				<Form onSubmit={handleSubmit} className="space-y-4">
 					<div className="space-y-2">
-						<Label htmlFor="api-key-name">
-							Key Name <span className="text-destructive">*</span>
-						</Label>
-						<Input
-							id="api-key-name"
-							placeholder="e.g., Claude Desktop, Kiro IDE"
-							value={name}
-							onChange={(e) => setName(e.target.value)}
-							required
-							disabled={isSubmitting}
-						/>
+						<FieldGroup>
+							<FieldLabel htmlFor="api-key-name">
+								Key Name
+							</FieldLabel>
+							<Input
+								id="api-key-name"
+								placeholder="e.g., Claude Desktop, Kiro IDE"
+								value={name}
+								onChange={(e) => setName(e.target.value)}
+								required
+								disabled={isSubmitting}
+							/>
+						</FieldGroup>
 					</div>
 
 					<div className="space-y-3">
@@ -284,20 +289,20 @@ function CreateApiKeyModal({
 								}}
 								disabled={isSubmitting}
 							/>
-							<Label htmlFor="has-expiration" className="text-sm">
+							<FieldLabel htmlFor="has-expiration" className="text-sm">
 								Set expiration date (optional)
-							</Label>
+							</FieldLabel>
 						</div>
 
 						{hasExpiration && (
-							<div className="space-y-2">
-								<Label
+							<FieldGroup>
+								<FieldLabel
 									htmlFor="expiration-date"
 									className="flex items-center gap-2"
 								>
 									<Icon name="calendar" className="h-4 w-4" />
 									Expiration Date
-								</Label>
+								</FieldLabel>
 								<Input
 									id="expiration-date"
 									type="date"
@@ -306,11 +311,11 @@ function CreateApiKeyModal({
 									min={minDate}
 									disabled={isSubmitting}
 								/>
-								<p className="text-muted-foreground text-xs">
+								<FieldDescription>
 									The API key will expire on this date. Leave unchecked for no
 									expiration.
-								</p>
-							</div>
+								</FieldDescription>
+							</FieldGroup>
 						)}
 					</div>
 

@@ -9,7 +9,7 @@ import { data, Form, Link, useNavigate, useSearchParams } from 'react-router'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
-import { CheckboxField, ErrorList } from '#app/components/forms.tsx'
+import { CheckboxField, ErrorList, convertErrorsToFieldFormat } from '#app/components/forms.tsx'
 import {
 	Card,
 	CardContent,
@@ -18,9 +18,13 @@ import {
 	CardHeader,
 	CardTitle,
 	Input,
-	Label,
 	StatusButton,
 	Icon,
+	Field,
+	FieldLabel,
+	FieldError,
+	FieldGroup,
+	Checkbox,
 } from '@repo/ui'
 import arcjet from '#app/utils/arcjet.server.ts'
 import { login, requireAnonymous } from '#app/utils/auth.server.ts'
@@ -206,21 +210,22 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
 						<HoneypotInputs />
 
 						{/* Email/Username Login Form */}
-						<div className="grid gap-6">
-							<div className="grid gap-3">
-								<Label htmlFor={fields.username.id}>Username</Label>
+						<FieldGroup>
+							<Field data-invalid={fields.username.errors?.length ? true : undefined}>
+								<FieldLabel htmlFor={fields.username.id}>Username</FieldLabel>
 								<Input
 									{...getInputProps(fields.username, { type: 'text' })}
 									autoFocus
-									className="lowercase"
 									autoComplete="username"
 									placeholder="Enter your username"
+									aria-invalid={fields.username.errors?.length ? true : undefined}
 								/>
-								<ErrorList errors={fields.username.errors} />
-							</div>
-							<div className="grid gap-3">
+								<FieldError errors={convertErrorsToFieldFormat(fields.username.errors)} />
+							</Field>
+
+							<Field data-invalid={fields.password.errors?.length ? true : undefined}>
 								<div className="flex items-center">
-									<Label htmlFor={fields.password.id}>Password</Label>
+									<FieldLabel htmlFor={fields.password.id}>Password</FieldLabel>
 									<Link
 										to="/forgot-password"
 										className="ml-auto text-sm underline-offset-4 hover:underline"
@@ -234,22 +239,23 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
 									})}
 									autoComplete="current-password"
 									placeholder="Enter your password"
+									aria-invalid={fields.password.errors?.length ? true : undefined}
 								/>
-								<ErrorList errors={fields.password.errors} />
-							</div>
+								<FieldError errors={convertErrorsToFieldFormat(fields.password.errors)} />
+							</Field>
 
-							<div className="flex items-center space-x-2">
-								<CheckboxField
-									labelProps={{
-										htmlFor: fields.remember.id,
-										children: 'Remember me',
-									}}
-									buttonProps={getInputProps(fields.remember, {
-										type: 'checkbox',
-									})}
-									errors={fields.remember.errors}
+							<Field orientation="horizontal">
+								<Checkbox
+									{...(() => {
+										const { type, ...props } = getInputProps(fields.remember, { type: 'checkbox' })
+										return props
+									})()}
+									id={fields.remember.id}
 								/>
-							</div>
+								<FieldLabel htmlFor={fields.remember.id} className="font-normal">
+									Remember me
+								</FieldLabel>
+							</Field>
 
 							<input
 								{...getInputProps(fields.redirectTo, { type: 'hidden' })}
@@ -264,7 +270,7 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
 							>
 								Login
 							</StatusButton>
-						</div>
+						</FieldGroup>
 					</Form>
 				</div>
 			</CardContent>

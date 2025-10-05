@@ -4,7 +4,7 @@ import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { EmailChangeEmail } from '@repo/email'
 import { data, redirect, Form } from 'react-router'
 import { z } from 'zod'
-import { ErrorList, Field } from '#app/components/forms.tsx'
+import { ErrorList, convertErrorsToFieldFormat } from '#app/components/forms.tsx'
 import {
 	prepareVerification,
 	requireRecentVerification,
@@ -17,7 +17,7 @@ import { EmailSchema } from '#app/utils/user-validation.ts'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
 import { type Route } from './+types/profile.change-email.ts'
 import { type BreadcrumbHandle } from './profile.tsx'
-import { Icon, StatusButton } from '@repo/ui'
+import { Icon, StatusButton, Field, FieldLabel, FieldError, FieldGroup, Input } from '@repo/ui'
 
 export const handle: BreadcrumbHandle & SEOHandle = {
 	breadcrumb: <Icon name="mail">Change Email</Icon>,
@@ -122,22 +122,25 @@ export default function ChangeEmailIndex({
 			</p>
 			<div className="mx-auto mt-5 max-w-sm">
 				<Form method="POST" {...getFormProps(form)}>
-					<Field
-						labelProps={{ children: 'New Email' }}
-						inputProps={{
-							...getInputProps(fields.email, { type: 'email' }),
-							autoComplete: 'email',
-						}}
-						errors={fields.email.errors}
-					/>
-					<ErrorList id={form.errorId} errors={form.errors} />
-					<div>
-						<StatusButton
-							status={isPending ? 'pending' : (form.status ?? 'idle')}
-						>
-							Send Confirmation
-						</StatusButton>
-					</div>
+					<FieldGroup>
+						<Field data-invalid={fields.email.errors?.length ? true : undefined}>
+							<FieldLabel htmlFor={fields.email.id}>New Email</FieldLabel>
+							<Input
+								{...getInputProps(fields.email, { type: 'email' })}
+								autoComplete="email"
+								aria-invalid={fields.email.errors?.length ? true : undefined}
+							/>
+							<FieldError errors={convertErrorsToFieldFormat(fields.email.errors)} />
+						</Field>
+						<ErrorList id={form.errorId} errors={form.errors} />
+						<div>
+							<StatusButton
+								status={isPending ? 'pending' : (form.status ?? 'idle')}
+							>
+								Send Confirmation
+							</StatusButton>
+						</div>
+					</FieldGroup>
 				</Form>
 			</div>
 		</div>

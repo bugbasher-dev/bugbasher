@@ -18,7 +18,7 @@ import {
 	useSearchParams,
 } from 'react-router'
 import { z } from 'zod'
-import { ErrorList } from '#app/components/forms'
+import { ErrorList, convertErrorsToFieldFormat } from '#app/components/forms'
 
 import {
 	Select,
@@ -47,7 +47,6 @@ import {
 import {
 	Button,
 	Input,
-	Label,
 	Textarea,
 	Card,
 	CardContent,
@@ -55,6 +54,10 @@ import {
 	CardHeader,
 	CardTitle,
 	Icon,
+	Field,
+	FieldLabel,
+	FieldError,
+	FieldGroup,
 } from '@repo/ui'
 
 // Photo upload schema
@@ -517,9 +520,9 @@ function Step1({ actionData }: { actionData: any }) {
 						<input type="hidden" name="intent" value="create-organization" />
 						<input type="hidden" name="step" value="1" />
 
-						<div className="space-y-5">
-							<div>
-								<Label htmlFor={fields.logoFile.id}>Logo</Label>
+						<FieldGroup>
+							<Field data-invalid={fields.logoFile.errors?.length ? true : undefined}>
+								<FieldLabel htmlFor={fields.logoFile.id}>Logo</FieldLabel>
 								<div className="mt-2">
 									<div className="flex items-center">
 										<div className="bg-muted border-input relative flex size-16 items-center justify-center overflow-hidden rounded-md border">
@@ -558,6 +561,7 @@ function Step1({ actionData }: { actionData: any }) {
 												accept="image/png,image/jpeg"
 												className="sr-only"
 												onChange={handleImageChange}
+												aria-invalid={fields.logoFile.errors?.length ? true : undefined}
 											/>
 											<Button type="button" variant="outline" size="sm" asChild>
 												<label
@@ -572,17 +576,14 @@ function Step1({ actionData }: { actionData: any }) {
 											</p>
 										</div>
 									</div>
-									<ErrorList
-										errors={fields.logoFile.errors}
-										id={fields.logoFile.id}
-									/>
 								</div>
-							</div>
+								<FieldError errors={convertErrorsToFieldFormat(fields.logoFile.errors)} />
+							</Field>
 
-							<div>
-								<Label htmlFor={fields.name.id}>
+							<Field data-invalid={fields.name.errors?.length ? true : undefined}>
+								<FieldLabel htmlFor={fields.name.id}>
 									Name<span className="text-red-500">*</span>
-								</Label>
+								</FieldLabel>
 								<Input
 									id={fields.name.id}
 									name={fields.name.name}
@@ -590,16 +591,16 @@ function Step1({ actionData }: { actionData: any }) {
 									onChange={(e) => nameControl.change(e.target.value)}
 									onBlur={nameControl.blur}
 									placeholder="Acme Inc."
-									className="mt-1"
+									aria-invalid={fields.name.errors?.length ? true : undefined}
 								/>
-								<ErrorList errors={fields.name.errors} id={fields.name.id} />
-							</div>
+								<FieldError errors={convertErrorsToFieldFormat(fields.name.errors)} />
+							</Field>
 
-							<div>
-								<Label htmlFor={fields.slug.id}>
+							<Field data-invalid={fields.slug.errors?.length ? true : undefined}>
+								<FieldLabel htmlFor={fields.slug.id}>
 									Slug<span className="text-red-500">*</span>
-								</Label>
-								<div className="mt-1 flex items-center">
+								</FieldLabel>
+								<div className="flex items-center">
 									<div className="pr-1 text-sm text-gray-500">/app/</div>
 									<Input
 										id={fields.slug.id}
@@ -621,6 +622,7 @@ function Step1({ actionData }: { actionData: any }) {
 										}}
 										placeholder="acme"
 										className="flex-1"
+										aria-invalid={fields.slug.errors?.length ? true : undefined}
 									/>
 								</div>
 								<div className="mt-1 space-y-1">
@@ -646,23 +648,20 @@ function Step1({ actionData }: { actionData: any }) {
 										)}
 									</div>
 								</div>
-								<ErrorList errors={fields.slug.errors} id={fields.slug.id} />
-							</div>
+								<FieldError errors={convertErrorsToFieldFormat(fields.slug.errors)} />
+							</Field>
 
-							<div>
-								<Label htmlFor={fields.description.id}>Description</Label>
+							<Field data-invalid={fields.description.errors?.length ? true : undefined}>
+								<FieldLabel htmlFor={fields.description.id}>Description</FieldLabel>
 								<Textarea
 									{...getInputProps(fields.description, { type: 'text' })}
-									className="mt-1"
 									rows={3}
 									placeholder="Tell us about your organization..."
+									aria-invalid={fields.description.errors?.length ? true : undefined}
 								/>
-								<ErrorList
-									errors={fields.description.errors}
-									id={fields.description.id}
-								/>
-							</div>
-						</div>
+								<FieldError errors={convertErrorsToFieldFormat(fields.description.errors)} />
+							</Field>
+						</FieldGroup>
 
 						<ErrorList errors={form.errors} id={form.errorId} />
 
@@ -875,11 +874,11 @@ function Step4({ orgId, actionData }: { orgId: string; actionData: any }) {
 					<input type="hidden" name="intent" value="complete-setup" />
 					<input type="hidden" name="orgId" value={orgId} />
 
-					<div className="space-y-5">
-						<div>
-							<Label htmlFor={fields.organizationSize.id}>
+					<FieldGroup>
+						<Field data-invalid={fields.organizationSize.errors?.length ? true : undefined}>
+							<FieldLabel htmlFor={fields.organizationSize.id}>
 								Organization size
-							</Label>
+							</FieldLabel>
 							<Select
 								name={fields.organizationSize.name}
 								defaultValue={fields.organizationSize.initialValue}
@@ -895,14 +894,11 @@ function Step4({ orgId, actionData }: { orgId: string; actionData: any }) {
 									))}
 								</SelectContent>
 							</Select>
-							<ErrorList
-								errors={fields.organizationSize.errors}
-								id={fields.organizationSize.id}
-							/>
-						</div>
+							<FieldError errors={convertErrorsToFieldFormat(fields.organizationSize.errors)} />
+						</Field>
 
-						<div>
-							<Label htmlFor={fields.userDepartment.id}>Your department</Label>
+						<Field data-invalid={fields.userDepartment.errors?.length ? true : undefined}>
+							<FieldLabel htmlFor={fields.userDepartment.id}>Your department</FieldLabel>
 							<Select
 								name={fields.userDepartment.name}
 								defaultValue={fields.userDepartment.initialValue}
@@ -918,12 +914,9 @@ function Step4({ orgId, actionData }: { orgId: string; actionData: any }) {
 									))}
 								</SelectContent>
 							</Select>
-							<ErrorList
-								errors={fields.userDepartment.errors}
-								id={fields.userDepartment.id}
-							/>
-						</div>
-					</div>
+							<FieldError errors={convertErrorsToFieldFormat(fields.userDepartment.errors)} />
+						</Field>
+					</FieldGroup>
 
 					<ErrorList errors={form.errors} id={form.errorId} />
 
@@ -1032,19 +1025,17 @@ function CreateInviteFieldset({
 		<div>
 			<fieldset className="w-full">
 				<div className="flex w-full items-start space-x-2">
-					<div className="flex-1">
+					<Field className="flex-1" data-invalid={inviteFields.email.errors?.length ? true : undefined}>
 						<Input
 							{...getInputProps(inviteFields.email, { type: 'email' })}
 							placeholder="Enter email address"
 							className="w-full"
+							aria-invalid={inviteFields.email.errors?.length ? true : undefined}
 						/>
-						<ErrorList
-							errors={inviteFields.email.errors}
-							id={inviteFields.email.id}
-						/>
-					</div>
+						<FieldError errors={convertErrorsToFieldFormat(inviteFields.email.errors)} />
+					</Field>
 
-					<div className="min-w-[120px]">
+					<Field className="max-w-[120px]" data-invalid={inviteFields.role.errors?.length ? true : undefined}>
 						<Select
 							name={inviteFields.role.name}
 							value={
@@ -1061,7 +1052,7 @@ function CreateInviteFieldset({
 								}
 							}}
 						>
-							<SelectTrigger className="w-full">
+							<SelectTrigger>
 								<SelectValue />
 							</SelectTrigger>
 							<SelectContent>
@@ -1071,19 +1062,13 @@ function CreateInviteFieldset({
 											<span className="font-medium">
 												{role.charAt(0).toUpperCase() + role.slice(1)}
 											</span>
-											<span className="text-muted-foreground text-sm">
-												{ROLE_DESCRIPTIONS[role] || `${role} role`}
-											</span>
 										</div>
 									</SelectItem>
 								))}
 							</SelectContent>
 						</Select>
-						<ErrorList
-							errors={inviteFields.role.errors}
-							id={inviteFields.role.id}
-						/>
-					</div>
+						<FieldError errors={convertErrorsToFieldFormat(inviteFields.role.errors)} />
+					</Field>
 
 					{index > 0 && (
 						<Button

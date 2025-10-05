@@ -14,7 +14,7 @@ import {
 } from 'react-router'
 import { safeRedirect } from 'remix-utils/safe-redirect'
 import { z } from 'zod'
-import { CheckboxField, ErrorList } from '#app/components/forms.tsx'
+import { CheckboxField, ErrorList, convertErrorsToFieldFormat } from '#app/components/forms.tsx'
 
 import {
 	sessionKey,
@@ -37,8 +37,12 @@ import {
 	CardHeader,
 	CardTitle,
 	Input,
-	Label,
 	StatusButton,
+	Field,
+	FieldLabel,
+	FieldError,
+	FieldGroup,
+	Checkbox,
 } from '@repo/ui'
 
 export const providerIdKey = 'providerId'
@@ -211,7 +215,7 @@ export default function OnboardingProviderRoute({
 						</CardHeader>
 						<CardContent>
 							<Form method="POST" {...getFormProps(form)}>
-								<div className="grid gap-6">
+								<FieldGroup>
 									{fields.imageUrl.initialValue ? (
 										<div className="flex flex-col items-center justify-center gap-4">
 											<img
@@ -228,59 +232,59 @@ export default function OnboardingProviderRoute({
 										</div>
 									) : null}
 
-									<div className="grid gap-3">
-										<Label htmlFor={fields.username.id}>Username</Label>
+									<Field data-invalid={fields.username.errors?.length ? true : undefined}>
+										<FieldLabel htmlFor={fields.username.id}>Username</FieldLabel>
 										<Input
 											{...getInputProps(fields.username, { type: 'text' })}
 											autoComplete="username"
 											className="lowercase"
 											placeholder="Enter your username"
 											required
+											aria-invalid={fields.username.errors?.length ? true : undefined}
 										/>
-										<ErrorList errors={fields.username.errors} />
-									</div>
+										<FieldError errors={convertErrorsToFieldFormat(fields.username.errors)} />
+									</Field>
 
-									<div className="grid gap-3">
-										<Label htmlFor={fields.name.id}>Full Name</Label>
+									<Field data-invalid={fields.name.errors?.length ? true : undefined}>
+										<FieldLabel htmlFor={fields.name.id}>Full Name</FieldLabel>
 										<Input
 											{...getInputProps(fields.name, { type: 'text' })}
 											autoComplete="name"
 											placeholder="Enter your full name"
 											required
+											aria-invalid={fields.name.errors?.length ? true : undefined}
 										/>
-										<ErrorList errors={fields.name.errors} />
-									</div>
+										<FieldError errors={convertErrorsToFieldFormat(fields.name.errors)} />
+									</Field>
 
-									<div className="flex items-center space-x-2">
-										<CheckboxField
-											labelProps={{
-												htmlFor:
-													fields.agreeToTermsOfServiceAndPrivacyPolicy.id,
-												children:
-													'I agree to the Terms of Service and Privacy Policy',
-											}}
-											buttonProps={getInputProps(
-												fields.agreeToTermsOfServiceAndPrivacyPolicy,
-												{ type: 'checkbox' },
-											)}
-											errors={
-												fields.agreeToTermsOfServiceAndPrivacyPolicy.errors
-											}
-										/>
-									</div>
+									<FieldGroup>
+										<Field orientation="horizontal">
+											<Checkbox
+												{...(() => {
+													const { type, ...props } = getInputProps(fields.agreeToTermsOfServiceAndPrivacyPolicy, { type: 'checkbox' })
+													return props
+												})()}
+												id={fields.agreeToTermsOfServiceAndPrivacyPolicy.id}
+											/>
+											<FieldLabel htmlFor={fields.agreeToTermsOfServiceAndPrivacyPolicy.id} className="font-normal">
+												I agree to the Terms of Service and Privacy Policy
+											</FieldLabel>
+										</Field>
+										<FieldError errors={convertErrorsToFieldFormat(fields.agreeToTermsOfServiceAndPrivacyPolicy.errors)} />
 
-									<div className="flex items-center space-x-2">
-										<CheckboxField
-											labelProps={{
-												htmlFor: fields.remember.id,
-												children: 'Remember me',
-											}}
-											buttonProps={getInputProps(fields.remember, {
-												type: 'checkbox',
-											})}
-											errors={fields.remember.errors}
-										/>
-									</div>
+										<Field orientation="horizontal">
+											<Checkbox
+												{...(() => {
+													const { type, ...props } = getInputProps(fields.remember, { type: 'checkbox' })
+													return props
+												})()}
+												id={fields.remember.id}
+											/>
+											<FieldLabel htmlFor={fields.remember.id} className="font-normal">
+												Remember me
+											</FieldLabel>
+										</Field>
+									</FieldGroup>
 
 									{redirectTo ? (
 										<input type="hidden" name="redirectTo" value={redirectTo} />
@@ -296,7 +300,7 @@ export default function OnboardingProviderRoute({
 									>
 										Create account
 									</StatusButton>
-								</div>
+								</FieldGroup>
 							</Form>
 						</CardContent>
 					</Card>

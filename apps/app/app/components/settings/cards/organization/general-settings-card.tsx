@@ -6,6 +6,7 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
+	FieldGroup,
 	StatusButton,
 } from '@repo/ui'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
@@ -69,7 +70,7 @@ export function GeneralSettingsCard({
 								name="intent"
 								value={organizationUpdateActionIntent}
 							/>
-							<div className="flex flex-col">
+							<FieldGroup>
 								<Field
 									labelProps={{ htmlFor: fields.name.id, children: 'Name' }}
 									inputProps={getInputProps(fields.name, { type: 'text' })}
@@ -80,7 +81,7 @@ export function GeneralSettingsCard({
 									inputProps={getInputProps(fields.slug, { type: 'text' })}
 									errors={fields.slug.errors}
 								/>
-							</div>
+							</FieldGroup>
 							<ErrorList id={form.errorId} errors={form.errors} />
 						</fetcher.Form>
 					</div>

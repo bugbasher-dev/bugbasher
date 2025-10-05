@@ -3,7 +3,7 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { data, redirect, Form } from 'react-router'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
-import { ErrorList } from '#app/components/forms.tsx'
+import { ErrorList, convertErrorsToFieldFormat } from '#app/components/forms.tsx'
 
 import {
 	checkIsCommonPassword,
@@ -21,8 +21,11 @@ import {
 	CardHeader,
 	CardTitle,
 	Input,
-	Label,
 	StatusButton,
+	Field,
+	FieldLabel,
+	FieldError,
+	FieldGroup,
 } from '@repo/ui'
 
 export const handle: SEOHandle = {
@@ -117,23 +120,24 @@ export default function ResetPasswordPage({
 			</CardHeader>
 			<CardContent>
 				<Form method="POST" {...getFormProps(form)}>
-					<div className="grid gap-6">
-						<div className="grid gap-3">
-							<Label htmlFor={fields.password.id}>New Password</Label>
+					<FieldGroup>
+						<Field data-invalid={fields.password.errors?.length ? true : undefined}>
+							<FieldLabel htmlFor={fields.password.id}>New Password</FieldLabel>
 							<Input
 								{...getInputProps(fields.password, { type: 'password' })}
 								autoComplete="new-password"
 								autoFocus
 								placeholder="Enter your new password"
 								required
+								aria-invalid={fields.password.errors?.length ? true : undefined}
 							/>
-							<ErrorList errors={fields.password.errors} />
-						</div>
+							<FieldError errors={convertErrorsToFieldFormat(fields.password.errors)} />
+						</Field>
 
-						<div className="grid gap-3">
-							<Label htmlFor={fields.confirmPassword.id}>
+						<Field data-invalid={fields.confirmPassword.errors?.length ? true : undefined}>
+							<FieldLabel htmlFor={fields.confirmPassword.id}>
 								Confirm Password
-							</Label>
+							</FieldLabel>
 							<Input
 								{...getInputProps(fields.confirmPassword, {
 									type: 'password',
@@ -141,9 +145,10 @@ export default function ResetPasswordPage({
 								autoComplete="new-password"
 								placeholder="Confirm your new password"
 								required
+								aria-invalid={fields.confirmPassword.errors?.length ? true : undefined}
 							/>
-							<ErrorList errors={fields.confirmPassword.errors} />
-						</div>
+							<FieldError errors={convertErrorsToFieldFormat(fields.confirmPassword.errors)} />
+						</Field>
 
 						<ErrorList errors={form.errors} id={form.errorId} />
 
@@ -155,7 +160,7 @@ export default function ResetPasswordPage({
 						>
 							Reset password
 						</StatusButton>
-					</div>
+					</FieldGroup>
 				</Form>
 			</CardContent>
 		</Card>

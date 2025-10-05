@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useFetcher } from 'react-router'
 
 import { z } from 'zod'
-import { ErrorList, Field } from '#app/components/forms.tsx'
+import { ErrorList, convertErrorsToFieldFormat } from '#app/components/forms.tsx'
 import { EmailChangeForm } from '#app/components/settings/email-form.tsx'
 
 import { NameSchema, UsernameSchema } from '#app/utils/user-validation.ts'
@@ -23,6 +23,11 @@ import {
 	DialogTitle,
 	DialogTrigger,
 	StatusButton,
+	Field,
+	FieldLabel,
+	FieldError,
+	FieldGroup,
+	Input,
 } from '@repo/ui'
 
 export const ProfileFormSchema = z.object({
@@ -73,20 +78,25 @@ export function ProfileCard({ user }: ProfileCardProps) {
 					</div>
 					<div className="flex-grow">
 						<fetcher.Form method="POST" {...getFormProps(form)}>
-							<div className="flex flex-col">
-								<Field
-									labelProps={{ htmlFor: fields.name.id, children: 'Name' }}
-									inputProps={getInputProps(fields.name, { type: 'text' })}
-									errors={fields.name.errors}
-								/>
-								<Field
-									labelProps={{
-										htmlFor: fields.username.id,
-										children: 'Username',
-									}}
-									inputProps={getInputProps(fields.username, { type: 'text' })}
-									errors={fields.username.errors}
-								/>
+							<FieldGroup>
+								<Field data-invalid={fields.name.errors?.length ? true : undefined}>
+									<FieldLabel htmlFor={fields.name.id}>Name</FieldLabel>
+									<Input
+										{...getInputProps(fields.name, { type: 'text' })}
+										aria-invalid={fields.name.errors?.length ? true : undefined}
+									/>
+									<FieldError errors={convertErrorsToFieldFormat(fields.name.errors)} />
+								</Field>
+								
+								<Field data-invalid={fields.username.errors?.length ? true : undefined}>
+									<FieldLabel htmlFor={fields.username.id}>Username</FieldLabel>
+									<Input
+										{...getInputProps(fields.username, { type: 'text' })}
+										aria-invalid={fields.username.errors?.length ? true : undefined}
+									/>
+									<FieldError errors={convertErrorsToFieldFormat(fields.username.errors)} />
+								</Field>
+								
 								<div className="flex flex-col gap-1.5">
 									<label
 										htmlFor="email"
@@ -95,12 +105,12 @@ export function ProfileCard({ user }: ProfileCardProps) {
 										Email
 									</label>
 									<div className="relative">
-										<input
+										<Input
 											id="email"
 											type="text"
 											disabled
 											value={user.email}
-											className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 pr-[100px] text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+											className="pr-[100px]"
 										/>
 										<Dialog
 											open={isEmailModalOpen}
@@ -128,8 +138,9 @@ export function ProfileCard({ user }: ProfileCardProps) {
 										address
 									</p>
 								</div>
-							</div>
-							<ErrorList errors={form.errors} id={form.errorId} />
+
+								<ErrorList errors={form.errors} id={form.errorId} />
+							</FieldGroup>
 						</fetcher.Form>
 					</div>
 				</div>
