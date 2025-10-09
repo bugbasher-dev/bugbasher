@@ -91,7 +91,7 @@ const DropdownMenuSubTrigger = ({
 			data-slot="dropdown-menu-sub-trigger"
 			data-inset={inset}
 			className={cn(
-				'focus:bg-accent data-[state=open]:bg-accent flex items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none',
+				'focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground flex items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none',
 				inset && 'pl-8',
 				className,
 			)}

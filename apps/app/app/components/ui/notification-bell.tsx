@@ -111,7 +111,7 @@ function NotificationItem({ notification }: { notification: Notification }) {
 
 	return (
 		<div
-			className={`${notification.isRead ? 'bg-background' : 'bg-accent'}`}
+			className={`${notification.isRead ? 'bg-background' : 'bg-muted'}`}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 			onClick={handlePress}
