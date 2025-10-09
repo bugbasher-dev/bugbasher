@@ -10,12 +10,14 @@ const port = currentUrl.port
 
 // Create app subdomain URL - works with any domain
 const appHostname = hostname.startsWith('app.') ? hostname : `app.${hostname}`
-const docsHostname = hostname.startsWith('docs.') ? hostname : `docs.${hostname}`
+const docsHostname = hostname.startsWith('docs.')
+	? hostname
+	: `docs.${hostname}`
 const demoUrl = `${protocol}//${appHostname}${port ? `:${port}` : ''}/signup`
 const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 ---
 
-<html class="" lang="en">
+<html class="dark" lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -119,9 +121,9 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 							>
 								Pricing
 							</a>
-                            <a
+							<a
 								href={docsUrl}
-                                target="_blank"
+								target="_blank"
 								class="text-sm font-medium hover:text-primary transition-colors"
 							>
 								Docs
@@ -132,8 +134,8 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 					<div class="hidden lg:flex items-center space-x-4 relative z-10">
 						<a
 							href={demoUrl}
-                            target="_blank"
-							class="inline-flex items-center rounded-full justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+							target="_blank"
+							class="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:ring-1 focus-visible:outline-none active:scale-97 disabled:pointer-events-none disabled:opacity-50 bg-primary text-black hover:bg-primary/90 border-[0.5px] border-white/25 shadow-sm ring-1 shadow-black/10 ring-[color-mix(in_oklab,var(--foreground)_15%,var(--primary))] h-9 px-4 py-2"
 						>
 							Get started
 						</a>
@@ -142,7 +144,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 					<!-- Mobile Navigation -->
 					<button
 						id="mobile-menu-trigger"
-						class="lg:hidden inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 relative z-10"
+						class="lg:hidden inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 relative z-10"
 					>
 						<svg
 							class="h-6 w-6"
@@ -232,12 +234,12 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 							<a href="/company" class="block text-lg py-2"> Company </a>
 						</div>
 
-						<div class="space-y-3 pt-6 border-t">
+						<div class="space-y-3 pt-6 border-t border-border/50">
 							<a
 								href={demoUrl}
-								class="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+								class="w-full inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:ring-1 focus-visible:outline-none active:scale-97 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 border-[0.5px] border-white/25 shadow-sm ring-1 shadow-black/10 ring-[color-mix(in_oklab,var(--foreground)_15%,var(--primary))] h-9 px-4 py-2"
 							>
-								Book a demo
+								Get started
 							</a>
 						</div>
 					</div>
@@ -283,22 +285,22 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 							<!-- CTA Section -->
 							<div class="lg:max-w-md">
 								<h2
-									class="text-2xl md:text-3xl font-light text-foreground mb-4"
+									class="text-2xl md:text-3xl font-title text-foreground mb-4 tracking-tight"
 								>
 									Build your next startup even faster
 								</h2>
-								<p class="text-muted-foreground mb-6">
+								<p class="text-muted-foreground mb-6 text-sm leading-relaxed">
 									Epic Startup is a modern SaaS boilerplate that helps
 									developers and founders launch production-ready applications
 									in minutes.
 								</p>
 								<a
 									href={demoUrl}
-									class="inline-flex items-center justify-center bg-muted text-foreground font-medium text-sm py-3 px-6 transition-colors hover:bg-muted/80"
+									class="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:ring-1 focus-visible:outline-none active:scale-97 disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-secondary/80 border-[0.5px] border-white/20 shadow-sm shadow-black/8 h-9 px-4 py-2 group"
 								>
 									Get started
 									<svg
-										class="ml-2 w-4 h-4"
+										class="w-4 h-4 transition-transform group-hover:translate-x-1"
 										fill="none"
 										stroke="currentColor"
 										viewBox="0 0 24 24"
@@ -317,7 +319,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 
 					<!-- Navigation -->
 					<nav
-						class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-y-8 mb-12 border-t border-dashed border-border pt-8"
+						class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-y-8 gap-x-4 mb-12 border-t border-border/50 pt-12"
 					>
 						<!-- Home -->
 						<div>
@@ -325,7 +327,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 								<li>
 									<a
 										href="/"
-										class="text-sm font-medium text-foreground hover:text-muted-foreground transition-colors"
+										class="text-sm font-medium text-card-foreground hover:text-primary transition-colors"
 									>
 										Home
 									</a>
@@ -335,14 +337,14 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 
 						<!-- Resources -->
 						<div>
-							<h3 class="text-sm font-semibold text-foreground mb-3">
+							<h3 class="text-sm font-medium text-card-foreground mb-4">
 								Resources
 							</h3>
 							<ul class="space-y-3">
 								<li>
 									<a
 										href="/blog"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										Blog
 									</a>
@@ -350,7 +352,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 								<li>
 									<a
 										href="/pricing"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										Pricing
 									</a>
@@ -358,7 +360,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 								<li>
 									<a
 										href="/docs"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										Documentation
 									</a>
@@ -368,14 +370,14 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 
 						<!-- Product -->
 						<div>
-							<h3 class="text-sm font-semibold text-foreground mb-3">
+							<h3 class="text-sm font-medium text-card-foreground mb-4">
 								Product
 							</h3>
 							<ul class="space-y-3">
 								<li>
 									<a
 										href="/features"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										Features
 									</a>
@@ -383,7 +385,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 								<li>
 									<a
 										href="/integrations"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										Integrations
 									</a>
@@ -391,7 +393,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 								<li>
 									<a
 										href="/api"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										API
 									</a>
@@ -401,14 +403,14 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 
 						<!-- Company -->
 						<div>
-							<h3 class="text-sm font-semibold text-foreground mb-3">
+							<h3 class="text-sm font-medium text-card-foreground mb-4">
 								Company
 							</h3>
 							<ul class="space-y-3">
 								<li>
 									<a
 										href="/about"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										About
 									</a>
@@ -416,7 +418,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 								<li>
 									<a
 										href="/careers"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										Careers
 									</a>
@@ -424,7 +426,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 								<li>
 									<a
 										href="/contact"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										Contact
 									</a>
@@ -434,13 +436,15 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 
 						<!-- Social -->
 						<div>
-							<h3 class="text-sm font-semibold text-foreground mb-3">Social</h3>
+							<h3 class="text-sm font-medium text-card-foreground mb-4">
+								Social
+							</h3>
 							<ul class="space-y-3">
 								<li>
 									<a
 										href="https://twitter.com"
 										target="_blank"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										Twitter
 									</a>
@@ -449,7 +453,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 									<a
 										href="https://github.com"
 										target="_blank"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										GitHub
 									</a>
@@ -458,7 +462,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 									<a
 										href="https://linkedin.com"
 										target="_blank"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										LinkedIn
 									</a>
@@ -468,12 +472,14 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 
 						<!-- Legal -->
 						<div>
-							<h3 class="text-sm font-semibold text-foreground mb-3">Legal</h3>
+							<h3 class="text-sm font-medium text-card-foreground mb-4">
+								Legal
+							</h3>
 							<ul class="space-y-3">
 								<li>
 									<a
 										href="/privacy"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										Privacy Policy
 									</a>
@@ -481,7 +487,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 								<li>
 									<a
 										href="/terms"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										Terms of Service
 									</a>
@@ -489,7 +495,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 								<li>
 									<a
 										href="/cookies"
-										class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+										class="text-sm text-muted-foreground hover:text-primary transition-colors"
 									>
 										Cookie Policy
 									</a>
@@ -499,7 +505,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 					</nav>
 
 					<!-- Bottom Section -->
-					<div class="pt-8 border-t border-dashed border-border">
+					<div class="pt-8 border-t border-border/50">
 						<div
 							class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
 						>
@@ -507,7 +513,9 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 								© 2025 Epic Startup. All rights reserved.
 							</p>
 							<div class="flex items-center space-x-4">
-								<span class="text-xs text-muted-foreground font-mono">
+								<span
+									class="text-xs text-muted-foreground font-mono uppercase tracking-wide"
+								>
 									// Built with ❤️ for developers
 								</span>
 							</div>
@@ -595,6 +603,4 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 			mobileOperationTypesContent.classList.toggle('hidden')
 		})
 	}
-
-
 </script>

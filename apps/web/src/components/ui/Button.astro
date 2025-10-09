@@ -1,18 +1,24 @@
 ---
 interface Props {
-	variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'link'
-	size?: 'sm' | 'md' | 'lg'
+	variant?:
+		| 'default'
+		| 'destructive'
+		| 'outline'
+		| 'secondary'
+		| 'ghost'
+		| 'link'
+	size?: 'sm' | 'md' | 'lg' | 'icon'
 	href?: string
 	class?: string
 	disabled?: boolean
 	type?: 'button' | 'submit' | 'reset'
 	target?: '_blank' | '_self' | '_parent' | '_top'
 	rel?: string
-    id?: string
+	id?: string
 }
 
 const {
-	variant = 'primary',
+	variant = 'default',
 	size = 'md',
 	href,
 	class: className = '',
@@ -20,44 +26,54 @@ const {
 	type = 'button',
 	target,
 	rel,
-    id,
+	id,
 	...rest
 } = Astro.props
 
-const baseClasses = 'inline-flex items-center justify-center font-medium rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
+const baseClasses =
+	'focus-visible:ring-ring aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:ring-1 focus-visible:outline-none active:scale-97 disabled:pointer-events-none disabled:opacity-50 data-[theme=light]:text-shadow-sm'
 
 const variantClasses = {
-	primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
-	secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border',
-	outline: 'border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground',
-	ghost: 'text-foreground hover:bg-accent hover:text-accent-foreground',
-	link: 'text-primary hover:text-primary/80 border-b-2 border-transparent hover:border-primary/80'
+	default:
+		'bg-primary text-black hover:bg-primary/90 border-[0.5px] border-white/25 shadow-sm ring-1 shadow-black/10 ring-[color-mix(in_oklab,var(--foreground)_15%,var(--primary))]',
+	destructive:
+		'bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 border-[0.5px] border-white/15 text-white shadow-sm shadow-red-900/10',
+	outline:
+		'bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 border-input border shadow-sm shadow-black/5',
+	secondary:
+		'bg-secondary text-secondary-foreground hover:bg-secondary/80 border-[0.5px] border-white/20 shadow-sm shadow-black/8',
+	ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
+	link: 'text-primary underline-offset-4 hover:underline',
 }
 
 const sizeClasses = {
-	sm: 'text-sm py-2 px-4',
-	md: 'text-base py-3 px-6',
-	lg: 'text-lg py-4 px-8'
+	sm: 'h-8 gap-1.5 px-3',
+	md: 'h-9 px-4 py-2',
+	lg: 'h-10 px-6',
+	icon: 'size-9',
 }
 
 const classes = [
 	baseClasses,
 	variantClasses[variant],
 	sizeClasses[size],
-	className
-].filter(Boolean).join(' ')
+	className,
+]
+	.filter(Boolean)
+	.join(' ')
 
 const Element = href ? 'a' : 'button'
 ---
 
 <Element
+	data-slot="button"
 	class={classes}
 	href={href}
 	disabled={disabled && !href ? disabled : undefined}
 	type={!href ? type : undefined}
 	target={target}
 	rel={rel}
-    id={id}
+	id={id}
 	{...rest}
 >
 	<slot />
