@@ -1,6 +1,7 @@
 ---
 import MarketingLayout from '../../../layouts/MarketingLayout.astro'
 import { cmsClient } from '../../../lib/cms'
+import SEO from '../../../components/SEO.astro'
 
 export async function getStaticPaths() {
 	// Generate paths for pagination using cmsClient
@@ -25,6 +26,13 @@ const posts = await cmsClient.getPosts(pageNumber, 12)
 ---
 
 <MarketingLayout>
+	<Fragment slot="head">
+		<SEO
+			title={`Blog - Page ${pageNumber} - Epic Startup`}
+			description="Discover the latest insights and updates from our team. Learn about best practices, tutorials, and product updates."
+		/>
+	</Fragment>
+
 	<main class="min-h-screen py-24">
 		<div class="container mx-auto px-4 mb-16">
 			<div class="prose dark:prose-invert max-w-none">

@@ -5,6 +5,7 @@ import { cmsClient } from '../lib/cms'
 import RenderHero from '../components/RenderHero.astro'
 import RenderBlocks from '../components/RenderBlocks.astro'
 import GridDesign from '../components/GridDesign.astro'
+import SEO from '../components/SEO.astro'
 
 // Fetch recent blog posts using cmsClient
 const recentPostsData = await cmsClient.getPosts(1, 3)
@@ -19,22 +20,12 @@ const homePage = await cmsClient.getHomePage()
 	{
 		homePage ? (
 			<article>
-				{/* SEO Meta Tags for home page */}
 				<Fragment slot="head">
-					<title>
-						{homePage.meta?.title || homePage.title || 'The Epic Stack'}
-					</title>
-					{homePage.meta?.description && (
-						<meta name="description" content={homePage.meta.description} />
-					)}
-					{homePage.meta?.image &&
-						typeof homePage.meta.image === 'object' &&
-						homePage.meta.image.url && (
-							<>
-								<meta property="og:image" content={homePage.meta.image.url} />
-								<meta name="twitter:image" content={homePage.meta.image.url} />
-							</>
-						)}
+					<SEO
+						title={homePage.meta?.title || homePage.title || 'The Epic Stack'}
+						description={homePage.meta?.description}
+						image={homePage.meta?.image}
+					/>
 				</Fragment>
 
 				{/* Render CMS Hero Section */}

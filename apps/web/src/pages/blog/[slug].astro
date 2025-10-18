@@ -2,6 +2,7 @@
 import MarketingLayout from '../../layouts/MarketingLayout.astro'
 import { cmsClient } from '../../lib/cms'
 import PostContent from '../../components/PostContent.astro'
+import SEO from '../../components/SEO.astro'
 
 const { title, content, meta, publishedAt, categories, heroImage } = Astro.props
 
@@ -28,6 +29,16 @@ export async function getStaticPaths() {
 ---
 
 <MarketingLayout>
+	<Fragment slot="head">
+		<SEO
+			title={meta?.title || title}
+			description={meta?.description}
+			image={meta?.image || heroImage}
+			type="article"
+			publishedTime={publishedAt}
+		/>
+	</Fragment>
+
 	<PostContent 
 		title={title}
 		content={content}
