@@ -11,7 +11,7 @@ functionality integrated with the Epic Stack backend.
 - Landing pages for new users
 - Authentication screens (Sign In / Sign Up)
 - Integration with existing backend APIs
-- Monorepo integration with Turbo
+- Monorepo integration with Nx
 
 ## Project Structure
 
@@ -72,8 +72,8 @@ You can also run the mobile app from the monorepo root:
 
 ```bash
 npm run dev:mobile          # Start mobile app
-turbo run typecheck --filter mobile  # Type check
-turbo run lint --filter mobile       # Lint code
+nx run mobile:typecheck     # Type check
+nx run mobile:lint          # Lint code
 ```
 
 ## Configuration

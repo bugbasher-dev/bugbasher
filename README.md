@@ -34,7 +34,7 @@ npx epicli
 
 ## Monorepo Structure
 
-This project is a monorepo managed by Turborepo. The code is organized into two
+This project is a monorepo managed by Nx. The code is organized into two
 main directories: `apps` and `packages`.
 
 - **`apps`**: Contains the different applications that make up the Epic Stack.

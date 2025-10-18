@@ -60,19 +60,21 @@ const {
 						{buttonText}
 					</Button>
 				</div>
-				<div class="grid sm:grid-cols-2 col-span-6 gap-4">
+				<div class="grid sm:grid-cols-2 col-span-6 relative gap-2 p-2">
+							<div class="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgb(0,0,0),rgb(68,85,119)_1px,transparent_1px,transparent_5px)]" />
+
 					{
 						features.map((feature, idx) => (
-							<div class="bg-muted dark:bg-background p-[1px]">
+							<div class="bg-muted dark:bg-background p-[1px] relative z-10">
 								<div class="bg-card ring-border ring-1 shadow-sm overflow-hidden">
 									{/* Card Header */}
-									<header class="px-6 py-4 border-b border-border/50">
+									<header class="px-6 py-4">
 										<h3 class="text-base font-medium text-card-foreground flex items-center gap-2">
 											{feature.title}
 										</h3>
 									</header>
 									{/* Card Body */}
-									<div class="p-5.5">
+									<div class="p-5.5 pt-0">
 										<p class="text-sm text-muted-foreground leading-relaxed">
 											{feature.description}
 										</p>
