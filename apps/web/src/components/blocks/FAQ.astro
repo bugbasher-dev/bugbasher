@@ -1,6 +1,4 @@
 ---
-import GridDesign from '../GridDesign.astro'
-
 interface FAQItem {
 	question: string
 	answer: string
@@ -18,7 +16,7 @@ interface Props {
 
 const {
 	title = 'FAQs',
-	subtitle = 'Your questions answered',
+	subtitle = "Here are some common questions and answers that you might encounter when using our service.",
 	fAQs: items = [
 		{
 			question: 'How long does shipping take?',
@@ -36,98 +34,59 @@ const {
 				'Orders can be changed or canceled within 2 hours of placement. Contact support with your order number and we will assist you.',
 		},
 	],
-	supportText = "Can't find what you're looking for? Contact our",
-	supportLinkLabel = 'customer support team',
+	supportText = "Can't find what you're looking for?",
+	supportLinkLabel = 'Contact Us',
 	supportLinkUrl = '#',
 } = Astro.props
 ---
 
-<section class="relative py-16 md:py-24">
-	<GridDesign />
-	<div class="relative z-10 mx-auto max-w-5xl px-6">
-		<div class="grid gap-8 md:grid-cols-5 md:gap-12">
-			<div class="md:col-span-2">
-				<h2 class="text-foreground text-4xl font-title tracking-tight mb-4">
-					{title}
-				</h2>
+<div class="mx-auto h-[calc(100%+20rem)] w-full">
+<div class="container px-4 md:px-6 relative">
+	<div class="grid h-[calc(100%)] grid-cols-1 md:grid-cols-2 border-dashed lg:border-x">
+		<div class="space-y-4 px-4 pt-12 pb-4 md:border-r border-dashed">
+			<h2 class="font-bold text-3xl font-title md:text-6xl">{title}</h2>
+			<p class="text-muted-foreground">{subtitle}</p>
+		</div>
+		<div class="place-content-center py-20 relative">
+			<div class="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgb(0,0,0),rgb(68,85,119)_1px,transparent_1px,transparent_5px)]" />
+
+			<div class="accordion bg-background relative z-10">
 				{
-					subtitle && (
-						<p class="text-muted-foreground mt-2 text-balance text-base leading-relaxed">
-							{subtitle}
-						</p>
-					)
-				}
-				{
-					supportText && supportLinkLabel && supportLinkUrl && (
-						<div class="mt-8 hidden md:block">
-							<div>
-								<p class="text-sm text-muted-foreground">
-									{supportText}{' '}
-									<a
-										class="text-primary font-medium hover:underline transition-colors"
-										href={supportLinkUrl}
-									>
-										{supportLinkLabel}
-									</a>
-								</p>
+					items.map((faq, idx) => (
+						<details class="accordion-item group border-b first:border-t border-dashed" open={idx === 0}>
+							<summary class="accordion-trigger flex cursor-pointer items-center justify-between px-4 py-4 text-[15px] leading-6 hover:no-underline list-none">
+								<span class="font-title">{faq.question}</span>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="16"
+									height="16"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="shrink-0 transition-transform duration-200 group-open:rotate-180"
+								>
+									<path d="m6 9 6 6 6-6" />
+								</svg>
+							</summary>
+							<div class="accordion-content px-4 pb-4 text-muted-foreground">
+								{faq.answer}
 							</div>
-						</div>
-					)
+						</details>
+					))
 				}
 			</div>
-			<div class="md:col-span-3">
-				<div class="bg-muted dark:bg-background p-1">
-					<div
-						class="bg-card ring-border shadow-sm ring-1 divide-y divide-border/50"
-					>
-						{
-							items.map((faq, idx) => (
-								<details class="group" open={idx === 0}>
-									<summary class="flex cursor-pointer items-start justify-between gap-4 px-6 py-5 text-left font-medium outline-none text-base hover:bg-accent/5 transition-colors">
-										<span class="text-card-foreground">{faq.question}</span>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											width="20"
-											height="20"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											class="text-muted-foreground pointer-events-none shrink-0 mt-0.5 transition-transform duration-200 group-open:rotate-180"
-										>
-											<path d="m6 9 6 6 6-6" />
-										</svg>
-									</summary>
-									<div class="px-6 pb-5 text-sm text-muted-foreground leading-relaxed">
-										{faq.answer}
-									</div>
-								</details>
-							))
-						}
-					</div>
-				</div>
-			</div>
-			{
-				supportText && supportLinkLabel && supportLinkUrl && (
-					<div class="md:hidden md:col-span-5">
-						<div class="bg-muted dark:bg-background rounded-2xl p-1 mt-6">
-							<div class="bg-card ring-border rounded-2lg p-5 shadow-sm ring-1">
-								<p class="text-sm text-muted-foreground">
-									{supportText}{' '}
-									<a
-										class="text-primary font-medium hover:underline transition-colors"
-										href={supportLinkUrl}
-									>
-										{supportLinkLabel}
-									</a>
-								</p>
-							</div>
-						</div>
-					</div>
-				)
-			}
 		</div>
 	</div>
-</section>
+	</div>
+	<div class="flex h-14 items-center justify-center border-t border-dashed">
+		<p class="text-muted-foreground">
+			{supportText}{' '}
+			<a class="text-primary hover:underline" href={supportLinkUrl}>
+				{supportLinkLabel}
+			</a>
+		</p>
+	</div>
+</div>

@@ -3,7 +3,7 @@
 @custom-variant dark (&:is(.dark *));
 
 .font-title {
-	font-family: 'Playfair Display', sans-serif;
+	/* font-family: 'Playfair Display', sans-serif; */
 }
 
 :root {
