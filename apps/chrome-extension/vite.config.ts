@@ -2,14 +2,15 @@ import { crx, type ManifestV3Export } from '@crxjs/vite-plugin'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { brand } from '@repo/config/brand'
 
 const BROWSER = process.env.BROWSER || 'chrome'
 
 const baseManifest: ManifestV3Export = {
 	manifest_version: 3,
-	name: 'Epic Startup Extension',
+	name: brand.products.extension.name,
 	version: '1.0',
-	description: 'Chrome extension for Epic Startup',
+	description: brand.products.extension.description,
 	permissions: ['storage', 'activeTab', 'scripting', 'tabs', 'cookies'],
 	host_permissions: ['<all_urls>'],
 	action: {
@@ -28,7 +29,7 @@ const baseManifest: ManifestV3Export = {
 
 const chromeManifest: Partial<ManifestV3Export> = {
 	...baseManifest,
-	name: 'Epic Startup Chrome Extension',
+	name: brand.products.extension.chrome,
 	background: {
 		service_worker: 'src/background/index.ts',
 		type: 'module',
@@ -37,7 +38,7 @@ const chromeManifest: Partial<ManifestV3Export> = {
 
 const firefoxManifest: Partial<ManifestV3Export> = {
 	...baseManifest,
-	name: 'Epic Startup Firefox Extension',
+	name: brand.products.extension.firefox,
 	background: {
 		scripts: ['src/background/index.ts'],
 		type: 'module',

@@ -1,4 +1,5 @@
 ---
+import { brand, getCopyright } from '@repo/config/brand'
 import GridDesign from '~/components/GridDesign.astro'
 import '../styles/tailwind.css'
 
@@ -21,6 +22,10 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" href="/favicon.ico" sizes="48x48" />
+		<link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg" />
+		<link rel="apple-touch-icon" href="/favicons/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" crossorigin="use-credentials" />
 		<slot name="head" />
 	</head>
 	<body>
@@ -48,7 +53,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 											fill="currentColor"></path></g
 									></svg
 								>
-								<span class="font-semibold text-lg">Epic Startup</span>
+								<span class="font-semibold text-lg">{brand.name}</span>
 							</div>
 						</a>
 
@@ -277,7 +282,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 									></svg
 								>
 								<span class="font-semibold text-lg text-foreground"
-									>Epic Startup</span
+									>{brand.name}</span
 								>
 							</div>
 
@@ -289,9 +294,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 									Build your next startup even faster
 								</h2>
 								<p class="text-muted-foreground mb-6 text-sm leading-relaxed">
-									Epic Startup is a modern SaaS boilerplate that helps
-									developers and founders launch production-ready applications
-									in minutes.
+									{brand.description}
 								</p>
 								<a
 									href={demoUrl}
@@ -509,7 +512,7 @@ const docsUrl = `${protocol}//${docsHostname}${port ? `:${port}` : ''}`
 							class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
 						>
 							<p class="text-sm text-muted-foreground">
-								© 2025 Epic Startup. All rights reserved.
+								{getCopyright()}
 							</p>
 							<div class="flex items-center space-x-4">
 								<span

@@ -1,6 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod'
+import { brand } from '@repo/config/brand'
 
 // Get API key from command line arguments
 const API_KEY = process.argv[2]
@@ -16,14 +17,14 @@ const SERVER_URL = 'http://localhost:3001/api/mcp-tools'
 const server = new McpServer(
 	{
 		name: 'epic-notes-proxy',
-		title: 'Epic Startup Proxy',
+		title: `${brand.name} Proxy`,
 		version: '1.0.0',
 	},
 	{
 		capabilities: {
 			tools: {},
 		},
-		instructions: 'Lets you connect to Epic Startup system',
+		instructions: `Lets you connect to ${brand.name} system`,
 	},
 )
 

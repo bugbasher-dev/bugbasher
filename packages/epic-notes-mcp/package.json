@@ -2,7 +2,7 @@
   "name": "epic-notes-mcp",
   "version": "2.0.0",
   "type": "module",
-  "description": "MCP server for Epic Startup organization",
+  "description": "MCP server for organization",
   "main": "build/index.cjs",
   "bin": {
     "epic-notes-mcp": "./build/index.cjs"

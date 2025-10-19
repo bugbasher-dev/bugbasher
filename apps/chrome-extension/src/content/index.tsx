@@ -1,5 +1,6 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
+import { brand } from '@repo/config/brand'
 import {
 	Button,
 	Card,
@@ -74,7 +75,9 @@ function ContentApp({ onClose }: { onClose: () => void }) {
 			<CardHeader className="pb-3">
 				<div className="flex items-center justify-between">
 					<div>
-						<CardTitle className="text-lg">Epic Startup Extension</CardTitle>
+						<CardTitle className="text-lg">
+							{brand.products.extension.name}
+						</CardTitle>
 					</div>
 					<Button
 						variant="ghost"

@@ -1,6 +1,7 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
+import { brand } from '@repo/config/brand'
 import { EmailChangeEmail } from '@repo/email'
 import { data, redirect, Form } from 'react-router'
 import { z } from 'zod'
@@ -89,7 +90,7 @@ export async function action({ request }: Route.ActionArgs) {
 
 	const response = await sendEmail({
 		to: submission.value.email,
-		subject: `Epic Startup Email Change Verification`,
+		subject: brand.email.emailChange,
 		react: <EmailChangeEmail verifyUrl={verifyUrl.toString()} otp={otp} />,
 	})
 

@@ -118,7 +118,7 @@ export const Testimonials: Block = {
           variant: 'default',
         },
         {
-          quote: 'Epic Startup saved me 127.3 hours of boilerplate setup...',
+          quote: 'Our platform saved me 127.3 hours of boilerplate setup...',
           authorName: 'Ctrl Alt Delete',
           authorTitle: 'Reformed Code Artist',
           authorCompany: 'Infinite Loop Labs',

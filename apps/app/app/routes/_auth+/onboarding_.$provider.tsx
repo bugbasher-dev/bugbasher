@@ -5,6 +5,7 @@ import {
 	type SubmissionResult,
 } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
+import { getPageTitle } from '@repo/config/brand'
 import {
 	redirect,
 	data,
@@ -177,7 +178,7 @@ export async function action({ request, params }: Route.ActionArgs) {
 }
 
 export const meta: Route.MetaFunction = () => {
-	return [{ title: 'Setup Epic Startup Account' }]
+	return [{ title: getPageTitle('Setup Account') }]
 }
 
 export default function OnboardingProviderRoute({

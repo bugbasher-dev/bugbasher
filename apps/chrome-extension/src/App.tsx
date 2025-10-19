@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import browser from 'webextension-polyfill'
+import { brand } from '@repo/config/brand'
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@repo/ui'
 import {
 	AUTH_STATUS_KEY,
@@ -174,7 +175,9 @@ function App() {
 	return (
 		<Card className="w-80 rounded-none border-none shadow-none">
 			<CardHeader>
-				<CardTitle className="text-lg">Epic Startup Extension</CardTitle>
+				<CardTitle className="text-lg">
+					{brand.products.extension.name}
+				</CardTitle>
 			</CardHeader>
 			<CardContent>
 				{/* Authentication Status */}

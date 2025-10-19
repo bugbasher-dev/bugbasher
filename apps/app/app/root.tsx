@@ -1,4 +1,5 @@
 import { NovuProvider } from '@novu/react/hooks'
+import { brand, getErrorTitle } from '@repo/config/brand'
 import { EpicToaster, TooltipProvider } from '@repo/ui'
 import { OpenImgContextProvider } from 'openimg/react'
 import {
@@ -61,8 +62,8 @@ export const links: Route.LinksFunction = () => {
 
 export const meta: Route.MetaFunction = ({ data }) => {
 	return [
-		{ title: data ? 'Epic Startup' : 'Error | Epic Startup' },
-		{ name: 'description', content: `Your own captain's log` },
+		{ title: data ? brand.name : getErrorTitle() },
+		{ name: 'description', content: brand.products.app.description },
 	]
 }
 

@@ -2,6 +2,7 @@ import { detectBot, slidingWindow } from '@arcjet/remix'
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
+import { getPageTitle } from '@repo/config/brand'
 import { startAuthentication } from '@simplewebauthn/browser'
 import { type PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/server'
 import { useOptimistic, useState, useTransition } from 'react'
@@ -401,7 +402,7 @@ function PasskeyLogin({
 }
 
 export const meta: Route.MetaFunction = () => {
-	return [{ title: 'Login to Epic Startup' }]
+	return [{ title: getPageTitle('Login') }]
 }
 
 export function ErrorBoundary() {
