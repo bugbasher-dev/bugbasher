@@ -55,7 +55,9 @@ export function BillingCard({
 	isClosedBeta,
 	currentPriceId,
 }: BillingCardProps & { currentPriceId?: string | null }) {
-	const [billingInterval, setBillingInterval] = useState<'monthly' | 'yearly'>('monthly')
+	const [billingInterval, setBillingInterval] = useState<'monthly' | 'yearly'>(
+		'monthly',
+	)
 
 	// Update billing interval when data becomes available
 	useEffect(() => {
@@ -71,8 +73,18 @@ export function BillingCard({
 	console.log('plansAndPrices', plansAndPrices)
 	console.log('plansAndPrices.prices:', plansAndPrices?.prices)
 	console.log('billingInterval:', billingInterval)
-	console.log('Base price for', billingInterval, ':', plansAndPrices?.prices.base?.[billingInterval])
-	console.log('Plus price for', billingInterval, ':', plansAndPrices?.prices.plus?.[billingInterval])
+	console.log(
+		'Base price for',
+		billingInterval,
+		':',
+		plansAndPrices?.prices.base?.[billingInterval],
+	)
+	console.log(
+		'Plus price for',
+		billingInterval,
+		':',
+		plansAndPrices?.prices.plus?.[billingInterval],
+	)
 
 	if (isClosedBeta) {
 		return (
@@ -174,22 +186,24 @@ export function BillingCard({
 			{/* Billing Interval Toggle */}
 			{plansAndPrices && (
 				<div className="flex items-center justify-end">
-					<div className="flex items-center space-x-2 rounded-lg bg-muted p-1">
+					<div className="bg-muted flex items-center space-x-2 rounded-lg p-1">
 						<button
 							onClick={() => setBillingInterval('monthly')}
-							className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${billingInterval === 'monthly'
-								? 'bg-background text-foreground shadow-sm'
-								: 'text-muted-foreground hover:text-foreground'
-								}`}
+							className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
+								billingInterval === 'monthly'
+									? 'bg-background text-foreground shadow-sm'
+									: 'text-muted-foreground hover:text-foreground'
+							}`}
 						>
 							Monthly
 						</button>
 						<button
 							onClick={() => setBillingInterval('yearly')}
-							className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${billingInterval === 'yearly'
-								? 'bg-background text-foreground shadow-sm'
-								: 'text-muted-foreground hover:text-foreground'
-								}`}
+							className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
+								billingInterval === 'yearly'
+									? 'bg-background text-foreground shadow-sm'
+									: 'text-muted-foreground hover:text-foreground'
+							}`}
 						>
 							Yearly
 							<Badge variant="secondary" className="ml-2 text-xs">
@@ -209,7 +223,8 @@ export function BillingCard({
 						includesSeats={PLANS.Base.seats}
 						billingInterval={billingInterval}
 						currentPlan={
-							currentPriceId === plansAndPrices?.prices.base?.[billingInterval]?.id
+							currentPriceId ===
+							plansAndPrices?.prices.base?.[billingInterval]?.id
 						}
 						priceId={plansAndPrices?.prices.base?.[billingInterval]?.id}
 					/>
@@ -219,7 +234,8 @@ export function BillingCard({
 						includesSeats={PLANS.Plus.seats}
 						billingInterval={billingInterval}
 						currentPlan={
-							currentPriceId === plansAndPrices?.prices.plus?.[billingInterval]?.id
+							currentPriceId ===
+							plansAndPrices?.prices.plus?.[billingInterval]?.id
 						}
 						priceId={plansAndPrices?.prices.plus?.[billingInterval]?.id}
 					/>
@@ -227,9 +243,11 @@ export function BillingCard({
 			) : (
 				<Card>
 					<CardContent className="p-6">
-						<div className="text-center text-muted-foreground">
+						<div className="text-muted-foreground text-center">
 							<p>Unable to load pricing information</p>
-							<p className="text-sm">Please check your Stripe configuration or try again later</p>
+							<p className="text-sm">
+								Please check your Stripe configuration or try again later
+							</p>
 						</div>
 					</CardContent>
 				</Card>
@@ -306,7 +324,7 @@ function PricingPlan({
 		return (
 			<Card>
 				<CardContent className="p-6">
-					<div className="text-center text-muted-foreground">
+					<div className="text-muted-foreground text-center">
 						<p>Pricing not available</p>
 						<p className="text-sm">Please check your Stripe configuration</p>
 					</div>
@@ -322,7 +340,10 @@ function PricingPlan({
 	if (stripePrice.unitAmount) {
 		// Standard pricing
 		basePrice = stripePrice.unitAmount / 100
-	} else if ((stripePrice as any).tiers && (stripePrice as any).tiers.length > 0) {
+	} else if (
+		(stripePrice as any).tiers &&
+		(stripePrice as any).tiers.length > 0
+	) {
 		// Tiered pricing - use the first tier's flat_amount
 		const firstTier = (stripePrice as any).tiers[0]
 		const secondTier = (stripePrice as any).tiers[1]
@@ -342,7 +363,7 @@ function PricingPlan({
 		return (
 			<Card>
 				<CardContent className="p-6">
-					<div className="text-center text-muted-foreground">
+					<div className="text-muted-foreground text-center">
 						<p>Price not configured</p>
 						<p className="text-sm">Contact support for pricing</p>
 					</div>
@@ -362,7 +383,7 @@ function PricingPlan({
 					<span className="text-muted-foreground text-sm">per month</span>
 				</div>
 				{billingInterval === 'yearly' && (
-					<div className="text-sm text-muted-foreground">
+					<div className="text-muted-foreground text-sm">
 						${basePrice.toFixed(2)} billed annually
 					</div>
 				)}
@@ -373,7 +394,11 @@ function PricingPlan({
 					<li>Includes {includesSeats} user seats</li>
 					{additionalUserPrice > 0 && (
 						<li>
-							Additional users: ${billingInterval === 'yearly' ? (additionalUserPrice / 12).toFixed(2) : additionalUserPrice.toFixed(2)}/user/month
+							Additional users: $
+							{billingInterval === 'yearly'
+								? (additionalUserPrice / 12).toFixed(2)
+								: additionalUserPrice.toFixed(2)}
+							/user/month
 							{billingInterval === 'yearly' && (
 								<span className="block text-xs opacity-75">
 									(${additionalUserPrice.toFixed(2)} billed annually per user)

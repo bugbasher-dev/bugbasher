@@ -722,7 +722,9 @@ function SubscriptionStep({
 	})
 
 	const [selectedPriceId, setSelectedPriceId] = useState<string>('')
-	const [billingInterval, setBillingInterval] = useState<'monthly' | 'yearly'>('monthly')
+	const [billingInterval, setBillingInterval] = useState<'monthly' | 'yearly'>(
+		'monthly',
+	)
 
 	const PLANS = {
 		Base: {
@@ -753,14 +755,14 @@ function SubscriptionStep({
 
 					{/* Billing Interval Toggle */}
 					<div className="flex items-center justify-center">
-						<div className="flex items-center space-x-2 rounded-lg bg-muted p-1">
+						<div className="bg-muted flex items-center space-x-2 rounded-lg p-1">
 							<button
 								type="button"
 								onClick={() => {
 									setBillingInterval('monthly')
 									setSelectedPriceId('') // Reset selection when switching intervals
 								}}
-								className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
+								className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
 									billingInterval === 'monthly'
 										? 'bg-background text-foreground shadow-sm'
 										: 'text-muted-foreground hover:text-foreground'
@@ -774,7 +776,7 @@ function SubscriptionStep({
 									setBillingInterval('yearly')
 									setSelectedPriceId('') // Reset selection when switching intervals
 								}}
-								className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
+								className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
 									billingInterval === 'yearly'
 										? 'bg-background text-foreground shadow-sm'
 										: 'text-muted-foreground hover:text-foreground'
@@ -1165,8 +1167,8 @@ function PlanCard({
 }) {
 	if (!stripePrice) {
 		return (
-			<div className="rounded-lg border-2 border-border p-4 opacity-50">
-				<div className="text-center text-muted-foreground">
+			<div className="border-border rounded-lg border-2 p-4 opacity-50">
+				<div className="text-muted-foreground text-center">
 					<p>Plan not available</p>
 					<p className="text-sm">Please check configuration</p>
 				</div>
@@ -1177,7 +1179,7 @@ function PlanCard({
 	// Handle tiered pricing - get the base price from the first tier's flat_amount
 	let basePrice = 0
 	let additionalUserPrice = 0
-	
+
 	if (stripePrice.unitAmount) {
 		// Standard pricing
 		basePrice = stripePrice.unitAmount / 100
@@ -1185,11 +1187,11 @@ function PlanCard({
 		// Tiered pricing - use the first tier's flat_amount
 		const firstTier = stripePrice.tiers[0]
 		const secondTier = stripePrice.tiers[1]
-		
+
 		if (firstTier?.flat_amount) {
 			basePrice = firstTier.flat_amount / 100
 		}
-		
+
 		// Get additional user pricing from second tier
 		if (secondTier?.unit_amount) {
 			additionalUserPrice = secondTier.unit_amount / 100
@@ -1198,8 +1200,8 @@ function PlanCard({
 
 	if (basePrice === 0) {
 		return (
-			<div className="rounded-lg border-2 border-border p-4 opacity-50">
-				<div className="text-center text-muted-foreground">
+			<div className="border-border rounded-lg border-2 p-4 opacity-50">
+				<div className="text-muted-foreground text-center">
 					<p>Price not configured</p>
 					<p className="text-sm">Contact support</p>
 				</div>
@@ -1221,13 +1223,11 @@ function PlanCard({
 		>
 			<div className="mb-4">
 				<div className="flex items-baseline gap-2">
-					<span className="text-2xl font-bold">
-						${displayPrice.toFixed(2)}
-					</span>
+					<span className="text-2xl font-bold">${displayPrice.toFixed(2)}</span>
 					<span className="text-muted-foreground text-sm">per month</span>
 				</div>
 				{billingInterval === 'yearly' && (
-					<div className="text-sm text-muted-foreground">
+					<div className="text-muted-foreground text-sm">
 						${basePrice.toFixed(2)} billed annually
 					</div>
 				)}
@@ -1237,7 +1237,11 @@ function PlanCard({
 				<li>Includes {seats} user seats</li>
 				{additionalUserPrice > 0 && (
 					<li>
-						Additional users: ${billingInterval === 'yearly' ? (additionalUserPrice / 12).toFixed(2) : additionalUserPrice.toFixed(2)}/user/month
+						Additional users: $
+						{billingInterval === 'yearly'
+							? (additionalUserPrice / 12).toFixed(2)
+							: additionalUserPrice.toFixed(2)}
+						/user/month
 						{billingInterval === 'yearly' && (
 							<span className="block text-xs opacity-75">
 								(${additionalUserPrice.toFixed(2)} billed annually per user)

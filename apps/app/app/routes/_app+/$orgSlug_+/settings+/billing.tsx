@@ -57,7 +57,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 	if (organization.stripeSubscriptionId) {
 		try {
 			const { stripe } = await import('#app/utils/payments.server')
-			const subscription = await stripe.subscriptions.retrieve(organization.stripeSubscriptionId)
+			const subscription = await stripe.subscriptions.retrieve(
+				organization.stripeSubscriptionId,
+			)
 			currentPriceId = subscription.items.data[0]?.price.id || null
 		} catch (error) {
 			console.error('Error fetching current subscription:', error)
@@ -161,8 +163,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function BillingSettings() {
-	const { organization, plansAndPrices, invoices, isClosedBeta, currentPriceId } =
-		useLoaderData<typeof loader>()
+	const {
+		organization,
+		plansAndPrices,
+		invoices,
+		isClosedBeta,
+		currentPriceId,
+	} = useLoaderData<typeof loader>()
 
 	return (
 		<AnnotatedLayout>

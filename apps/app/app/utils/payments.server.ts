@@ -42,13 +42,19 @@ export async function getPlansAndPrices() {
 		const plusPlan = products.find((product) => product.name === 'Plus')
 
 		// Filter for monthly and yearly prices
-		const monthlyPrices = prices.filter((price) => price.interval === 'month' && price.currency === 'usd')
-		const yearlyPrices = prices.filter((price) => price.interval === 'year' && price.currency === 'usd')
+		const monthlyPrices = prices.filter(
+			(price) => price.interval === 'month' && price.currency === 'usd',
+		)
+		const yearlyPrices = prices.filter(
+			(price) => price.interval === 'year' && price.currency === 'usd',
+		)
 
 		console.log('monthlyPrices', monthlyPrices)
 		console.log('yearlyPrices', yearlyPrices)
 
-		const basePrice = prices.filter(price => price.id === basePlan?.defaultPriceId)
+		const basePrice = prices.filter(
+			(price) => price.id === basePlan?.defaultPriceId,
+		)
 		console.log('basePrice', basePrice)
 		// Find prices for each plan and interval
 		const basePriceMonthly = monthlyPrices.find(
@@ -261,13 +267,12 @@ export async function createCheckoutSession(
 		customer: organization.stripeCustomerId || customer?.id || undefined,
 		client_reference_id: userId.toString(),
 		allow_promotion_codes: true,
-		subscription_data: {
-			...(trialConfig.creditCardRequired === 'manual'
+		subscription_data:
+			trialConfig.creditCardRequired === 'manual'
 				? {}
 				: {
-					trial_period_days: trialConfig.trialDays,
-				}),
-		},
+						trial_period_days: trialConfig.trialDays,
+					},
 		payment_method_collection:
 			trialConfig.creditCardRequired === 'stripe' ? 'if_required' : 'always',
 	})
@@ -448,7 +453,7 @@ export async function getStripePrices() {
 			active: true,
 			limit: 200,
 			type: 'recurring',
-			expand: ['data.tiers']
+			expand: ['data.tiers'],
 		})
 
 		const mappedPrices = prices.data.map((price) => ({
@@ -457,7 +462,7 @@ export async function getStripePrices() {
 			unitAmount: price.unit_amount,
 			interval: price.recurring?.interval,
 			trialPeriodDays: price.recurring?.trial_period_days,
-			...price
+			...price,
 		}))
 
 		return mappedPrices

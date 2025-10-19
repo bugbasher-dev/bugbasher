@@ -318,7 +318,10 @@ describe('IntegrationEncryptionService Edge Cases', () => {
 
 		it('should handle special characters in provider name', () => {
 			const providerName = 'provider-with-special-chars!@#$%'
-			const state = encryptionService.generateOAuthState('org-123', providerName)
+			const state = encryptionService.generateOAuthState(
+				'org-123',
+				providerName,
+			)
 
 			const validated = encryptionService.validateOAuthState(state)
 			expect(validated.providerName).toBe(providerName)

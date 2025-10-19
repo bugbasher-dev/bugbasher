@@ -620,7 +620,11 @@ describe('TokenManager', () => {
 			const justExpired = new Date(now.getTime()) // Expires exactly now
 
 			const mockIntegrations = [
-				{ id: 'int-just-expired', tokenExpiresAt: justExpired, providerName: 'test' },
+				{
+					id: 'int-just-expired',
+					tokenExpiresAt: justExpired,
+					providerName: 'test',
+				},
 			]
 
 			vi.mocked(prisma.integration.findMany).mockResolvedValue(
@@ -637,7 +641,11 @@ describe('TokenManager', () => {
 			const expiredRecently = new Date(now.getTime() - 1000) // 1 second ago
 
 			const mockIntegrations = [
-				{ id: 'int-expired', tokenExpiresAt: expiredRecently, providerName: 'test' },
+				{
+					id: 'int-expired',
+					tokenExpiresAt: expiredRecently,
+					providerName: 'test',
+				},
 			]
 
 			vi.mocked(prisma.integration.findMany).mockResolvedValue(

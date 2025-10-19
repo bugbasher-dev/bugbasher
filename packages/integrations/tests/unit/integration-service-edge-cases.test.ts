@@ -117,7 +117,9 @@ describe('IntegrationService Edge Cases', () => {
 
 			const result = service.formatNoteMessage(note, 'created', author)
 
-			expect(result.title).toBe('Title with <tags> & "quotes" and \'apostrophes\'')
+			expect(result.title).toBe(
+				'Title with <tags> & "quotes" and \'apostrophes\'',
+			)
 			expect(result.content).toBe('Content with\nnewlines\tand\ttabs')
 			expect(result.author).toBe('Test & User <script>')
 		})
@@ -235,7 +237,11 @@ describe('IntegrationService Edge Cases', () => {
 				expectedResult,
 			)
 
-			const result = await service.initiateOAuth('', 'slack', 'https://callback.com')
+			const result = await service.initiateOAuth(
+				'',
+				'slack',
+				'https://callback.com',
+			)
 
 			expect(result).toEqual(expectedResult)
 			expect(integrationManager.initiateOAuth).toHaveBeenCalledWith(
@@ -345,7 +351,11 @@ describe('IntegrationService Edge Cases', () => {
 		it('should handle logging without optional parameters', async () => {
 			vi.mocked(integrationManager.logIntegrationActivity).mockResolvedValue()
 
-			await service.logIntegrationActivity('integration-123', 'test_action', 'success')
+			await service.logIntegrationActivity(
+				'integration-123',
+				'test_action',
+				'success',
+			)
 
 			expect(integrationManager.logIntegrationActivity).toHaveBeenCalledWith(
 				'integration-123',

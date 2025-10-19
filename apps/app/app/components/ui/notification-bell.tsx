@@ -232,9 +232,7 @@ function EmptyState() {
 export default function NotificationBell() {
 	const [filter, setFilter] = useState<'all' | 'unread'>('all')
 	const { notifications, isLoading, fetchMore, hasMore, readAll, refetch } =
-		useNotifications({
-			...(filter === 'unread' ? { read: false } : {}),
-		})
+		useNotifications(filter === 'unread' ? { read: false } : {})
 	const novu = useNovu()
 	const [isOpen, setIsOpen] = useState(false)
 	const location = useLocation()

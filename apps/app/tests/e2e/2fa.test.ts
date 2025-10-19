@@ -28,7 +28,7 @@ test('Users can add 2FA to their account and use it when logging in', async ({
 		page.getByRole('textbox', { name: /Authentication Code/i }),
 	).toBeVisible()
 
-	await main.getByRole('tab', {  name: /Setup key/i }).click()
+	await main.getByRole('tab', { name: /Setup key/i }).click()
 
 	// Wait for the OTP URI element to be available before accessing its text
 	const otpUriElement = page.getByLabel(/One-time Password URI/i)

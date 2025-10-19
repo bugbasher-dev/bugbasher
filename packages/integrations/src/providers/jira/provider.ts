@@ -991,7 +991,7 @@ export class JiraProvider extends BaseIntegrationProvider {
 				// Fallback to the first available issue type
 				issueType = availableIssueTypes[0]?.name || 'Task'
 			}
-		} catch (error) {
+		} catch {
 			issueType = 'Task' // Final fallback
 		}
 

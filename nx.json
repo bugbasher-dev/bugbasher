@@ -1,54 +1,41 @@
 {
-  "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "namedInputs": {
-    "sharedGlobals": [
-      "{workspaceRoot}/**/.env.*local"
-    ],
-    "default": [
-      "{projectRoot}/**/*",
-      "sharedGlobals"
-    ]
-  },
-  "targetDefaults": {
-    "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "{projectRoot}/build/**",
-        "{projectRoot}/public/build/**",
-        "{projectRoot}/server-build/**",
-        "{projectRoot}/dist/**",
-        "{projectRoot}/.expo/**"
-      ],
-      "cache": true
-    },
-    "lint": {
-      "cache": true
-    },
-    "typecheck": {
-      "cache": true
-    },
-    "test": {
-      "dependsOn": [
-        "^build"
-      ],
-      "cache": true
-    },
-    "test:e2e:run": {
-      "dependsOn": [
-        "^build"
-      ],
-      "cache": true
-    },
-    "dev": {
-      "cache": false
-    },
-    "build:docs": {
-      "outputs": [
-        "{projectRoot}/.mintlify/doc-build/**"
-      ],
-      "cache": true
-    }
-  }
+	"$schema": "./node_modules/nx/schemas/nx-schema.json",
+	"namedInputs": {
+		"sharedGlobals": ["{workspaceRoot}/**/.env.*local"],
+		"default": ["{projectRoot}/**/*", "sharedGlobals"]
+	},
+	"targetDefaults": {
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": [
+				"{projectRoot}/build/**",
+				"{projectRoot}/public/build/**",
+				"{projectRoot}/server-build/**",
+				"{projectRoot}/dist/**",
+				"{projectRoot}/.expo/**"
+			],
+			"cache": true
+		},
+		"lint": {
+			"cache": true
+		},
+		"typecheck": {
+			"cache": true
+		},
+		"test": {
+			"dependsOn": ["^build"],
+			"cache": true
+		},
+		"test:e2e:run": {
+			"dependsOn": ["^build"],
+			"cache": true
+		},
+		"dev": {
+			"cache": false
+		},
+		"build:docs": {
+			"outputs": ["{projectRoot}/.mintlify/doc-build/**"],
+			"cache": true
+		}
+	}
 }

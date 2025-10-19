@@ -197,7 +197,7 @@ export class IntegrationManager {
 			// Standard OAuth 2.0 state validation
 			try {
 				stateData = OAuthStateManager.validateState(params.state)
-			} catch (error) {
+			} catch {
 				throw new Error('Invalid OAuth state')
 			}
 
