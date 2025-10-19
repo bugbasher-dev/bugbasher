@@ -1,5 +1,6 @@
 import { google } from '@ai-sdk/google'
 import { invariant } from '@epic-web/invariant'
+import { brand } from '@repo/config/brand'
 import { prisma } from '@repo/prisma'
 import { streamText } from 'ai'
 import { type ActionFunctionArgs } from 'react-router'
@@ -66,7 +67,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	const result = streamText({
 		model: google('models/gemini-2.5-flash'),
 		messages,
-		system: `You are an intelligent AI assistant for Epic Startup, a comprehensive note-taking and organization management platform. You specialize in helping users maximize their productivity and collaboration through smart note management.
+		system:
+			brand.ai.systemPrompt +
+			`
 
 ## Your Core Capabilities:
 - **Content Analysis**: Summarize, extract key points, identify themes, and suggest improvements

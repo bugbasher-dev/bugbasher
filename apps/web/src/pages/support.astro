@@ -1,13 +1,14 @@
 ---
 import MarketingLayout from '../layouts/MarketingLayout.astro'
 import SEO from '../components/SEO.astro'
+import { getPageTitle, brand } from '@repo/config/brand'
 ---
 
 <MarketingLayout>
     <Fragment slot="head">
         <SEO
-            title="Support - Epic Startup"
-            description="Get help and support for Epic Startup. Find answers to common questions and contact our support team."
+            title={getPageTitle('Support')}
+            description={`Get help and support for ${brand.name}. Find answers to common questions and contact our support team.`}
         />
     </Fragment>
 

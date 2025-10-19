@@ -2,6 +2,7 @@ import { detectBot, slidingWindow, validateEmail } from '@arcjet/remix'
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
+import { brand, getPageTitle } from '@repo/config/brand'
 import { SignupEmail } from '@repo/email'
 import { data, redirect, Form, useSearchParams, Link } from 'react-router'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
@@ -160,7 +161,7 @@ export async function action(args: Route.ActionArgs) {
 
 	const response = await sendEmail({
 		to: email,
-		subject: `Welcome to Epic Startup!`,
+		subject: brand.email.welcome,
 		react: <SignupEmail onboardingUrl={verifyUrl.toString()} otp={otp} />,
 	})
 
@@ -179,7 +180,7 @@ export async function action(args: Route.ActionArgs) {
 }
 
 export const meta: Route.MetaFunction = () => {
-	return [{ title: 'Sign Up | Epic Startup' }]
+	return [{ title: getPageTitle('Sign Up') }]
 }
 
 export default function SignupRoute({

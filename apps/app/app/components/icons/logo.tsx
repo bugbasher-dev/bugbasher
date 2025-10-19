@@ -1,4 +1,5 @@
 import { cn } from '#app/utils/misc.tsx'
+import { brand } from '@repo/config/brand'
 
 export function Logo({
 	className,
@@ -33,7 +34,7 @@ export function Logo({
 				</g>
 			</svg>
 			<div className="font-title font-bold group-data-[collapsible=icon]:hidden">
-				Epic Startup
+				{brand.name}
 			</div>
 		</div>
 	)

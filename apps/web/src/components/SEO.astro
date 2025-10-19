@@ -8,9 +8,11 @@ interface Props {
   modifiedTime?: string
 }
 
+import { brand } from '@repo/config/brand'
+
 const {
-  title = 'Epic Startup - Build your next startup even faster',
-  description = 'Epic Startup is a modern SaaS boilerplate that helps developers and founders launch production-ready applications in minutes.',
+  title = `${brand.name} - ${brand.tagline}`,
+  description = brand.description,
   image,
   type = 'website',
   publishedTime,

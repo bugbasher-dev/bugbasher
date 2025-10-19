@@ -2,6 +2,7 @@ import { detectBot, slidingWindow, validateEmail } from '@arcjet/remix'
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
+import { brand, getPageTitle } from '@repo/config/brand'
 import { ForgotPasswordEmail } from '@repo/email'
 import {
 	data,
@@ -155,7 +156,7 @@ export async function action({ request }: Route.ActionArgs) {
 
 	const response = await sendEmail({
 		to: user.email,
-		subject: `Epic Startup Password Reset`,
+		subject: brand.email.passwordReset,
 		react: (
 			<ForgotPasswordEmail onboardingUrl={verifyUrl.toString()} otp={otp} />
 		),
@@ -172,7 +173,7 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export const meta: Route.MetaFunction = () => {
-	return [{ title: 'Password Recovery for Epic Startup' }]
+	return [{ title: getPageTitle('Password Recovery') }]
 }
 
 export default function ForgotPasswordRoute() {
