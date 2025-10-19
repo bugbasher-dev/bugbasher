@@ -56,7 +56,8 @@
   "prettier": "@epic-web/config/prettier",
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,md}": [
-      "prettier --write"
+      "prettier --write",
+      "npm run lint"
     ],
     "*.{js,jsx,ts,tsx}": [
       "oxlint --fix"
