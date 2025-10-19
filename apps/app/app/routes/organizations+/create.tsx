@@ -58,6 +58,7 @@ import {
 	FieldLabel,
 	FieldError,
 	FieldGroup,
+	Badge,
 } from '@repo/ui'
 
 // Photo upload schema
@@ -721,19 +722,18 @@ function SubscriptionStep({
 	})
 
 	const [selectedPriceId, setSelectedPriceId] = useState<string>('')
+	const [billingInterval, setBillingInterval] = useState<'monthly' | 'yearly'>(
+		'monthly',
+	)
 
 	const PLANS = {
 		Base: {
 			name: 'Base plan',
 			seats: 3,
-			price: 7.99,
-			additionalSeatPrice: 4.99,
 		},
 		Plus: {
 			name: 'Plus plan',
 			seats: 5,
-			price: 49.99,
-			additionalSeatPrice: 9.99,
 		},
 	}
 
@@ -753,75 +753,66 @@ function SubscriptionStep({
 					<input type="hidden" name="orgId" value={orgId} />
 					<input type="hidden" name="priceId" value={selectedPriceId} />
 
+					{/* Billing Interval Toggle */}
+					<div className="flex items-center justify-center">
+						<div className="bg-muted flex items-center space-x-2 rounded-lg p-1">
+							<button
+								type="button"
+								onClick={() => {
+									setBillingInterval('monthly')
+									setSelectedPriceId('') // Reset selection when switching intervals
+								}}
+								className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
+									billingInterval === 'monthly'
+										? 'bg-background text-foreground shadow-sm'
+										: 'text-muted-foreground hover:text-foreground'
+								}`}
+							>
+								Monthly
+							</button>
+							<button
+								type="button"
+								onClick={() => {
+									setBillingInterval('yearly')
+									setSelectedPriceId('') // Reset selection when switching intervals
+								}}
+								className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
+									billingInterval === 'yearly'
+										? 'bg-background text-foreground shadow-sm'
+										: 'text-muted-foreground hover:text-foreground'
+								}`}
+							>
+								Yearly
+								<Badge variant="secondary" className="ml-2 text-xs">
+									Save 20%
+								</Badge>
+							</button>
+						</div>
+					</div>
+
 					<div className="grid gap-6 lg:grid-cols-2">
 						{/* Base Plan */}
-						{plansAndPrices?.prices.base && (
-							<div
-								className={`cursor-pointer rounded-lg border-2 p-4 transition-colors ${
-									selectedPriceId === plansAndPrices.prices.base.id
-										? 'border-primary bg-primary/5'
-										: 'border-border hover:border-primary/50'
-								}`}
-								onClick={() =>
-									setSelectedPriceId(plansAndPrices.prices.base?.id || '')
-								}
-							>
-								<div className="mb-4">
-									<div className="flex items-baseline gap-2">
-										<span className="text-2xl font-bold">
-											${PLANS.Base.price}
-										</span>
-										<span className="text-muted-foreground text-sm">
-											per month
-										</span>
-									</div>
-									<h3 className="text-lg font-semibold">{PLANS.Base.name}</h3>
-								</div>
-								<ul className="text-muted-foreground space-y-2 text-sm">
-									<li>Includes {PLANS.Base.seats} user seats</li>
-									<li>
-										Additional seats: ${PLANS.Base.additionalSeatPrice}
-										/seat/month
-									</li>
-									<li>All core features included</li>
-								</ul>
-							</div>
-						)}
+						<PlanCard
+							plan="base"
+							title={PLANS.Base.name}
+							seats={PLANS.Base.seats}
+							stripePrice={plansAndPrices?.prices.base?.[billingInterval]}
+							billingInterval={billingInterval}
+							selectedPriceId={selectedPriceId}
+							onSelect={setSelectedPriceId}
+						/>
 
 						{/* Plus Plan */}
-						{plansAndPrices?.prices.plus && (
-							<div
-								className={`cursor-pointer rounded-lg border-2 p-4 transition-colors ${
-									selectedPriceId === plansAndPrices.prices.plus.id
-										? 'border-primary bg-primary/5'
-										: 'border-border hover:border-primary/50'
-								}`}
-								onClick={() =>
-									setSelectedPriceId(plansAndPrices.prices.plus?.id || '')
-								}
-							>
-								<div className="mb-4">
-									<div className="flex items-baseline gap-2">
-										<span className="text-2xl font-bold">
-											${PLANS.Plus.price}
-										</span>
-										<span className="text-muted-foreground text-sm">
-											per month
-										</span>
-									</div>
-									<h3 className="text-lg font-semibold">{PLANS.Plus.name}</h3>
-								</div>
-								<ul className="text-muted-foreground space-y-2 text-sm">
-									<li>Includes {PLANS.Plus.seats} user seats</li>
-									<li>
-										Additional seats: ${PLANS.Plus.additionalSeatPrice}
-										/seat/month
-									</li>
-									<li>All core features included</li>
-									<li>Priority support</li>
-								</ul>
-							</div>
-						)}
+						<PlanCard
+							plan="plus"
+							title={PLANS.Plus.name}
+							seats={PLANS.Plus.seats}
+							stripePrice={plansAndPrices?.prices.plus?.[billingInterval]}
+							billingInterval={billingInterval}
+							selectedPriceId={selectedPriceId}
+							onSelect={setSelectedPriceId}
+							isPremium
+						/>
 					</div>
 
 					<ErrorList errors={form.errors} id={form.errorId} />
@@ -1139,6 +1130,128 @@ function CreateInviteFieldset({
 				</div>
 				<ErrorList id={meta.errorId} errors={meta.errors} />
 			</fieldset>
+		</div>
+	)
+}
+
+function PlanCard({
+	plan,
+	title,
+	seats,
+	stripePrice,
+	billingInterval,
+	selectedPriceId,
+	onSelect,
+	isPremium = false,
+}: {
+	plan: 'base' | 'plus'
+	title: string
+	seats: number
+	stripePrice?: {
+		id: string
+		productId: string
+		unitAmount: number | null
+		currency: string
+		interval: string | null | undefined
+		trialPeriodDays: number | null | undefined
+		tiers?: Array<{
+			flat_amount: number | null
+			unit_amount: number | null
+			up_to: number | null
+		}>
+	}
+	billingInterval: 'monthly' | 'yearly'
+	selectedPriceId: string
+	onSelect: (priceId: string) => void
+	isPremium?: boolean
+}) {
+	if (!stripePrice) {
+		return (
+			<div className="border-border rounded-lg border-2 p-4 opacity-50">
+				<div className="text-muted-foreground text-center">
+					<p>Plan not available</p>
+					<p className="text-sm">Please check configuration</p>
+				</div>
+			</div>
+		)
+	}
+
+	// Handle tiered pricing - get the base price from the first tier's flat_amount
+	let basePrice = 0
+	let additionalUserPrice = 0
+
+	if (stripePrice.unitAmount) {
+		// Standard pricing
+		basePrice = stripePrice.unitAmount / 100
+	} else if (stripePrice.tiers && stripePrice.tiers.length > 0) {
+		// Tiered pricing - use the first tier's flat_amount
+		const firstTier = stripePrice.tiers[0]
+		const secondTier = stripePrice.tiers[1]
+
+		if (firstTier?.flat_amount) {
+			basePrice = firstTier.flat_amount / 100
+		}
+
+		// Get additional user pricing from second tier
+		if (secondTier?.unit_amount) {
+			additionalUserPrice = secondTier.unit_amount / 100
+		}
+	}
+
+	if (basePrice === 0) {
+		return (
+			<div className="border-border rounded-lg border-2 p-4 opacity-50">
+				<div className="text-muted-foreground text-center">
+					<p>Price not configured</p>
+					<p className="text-sm">Contact support</p>
+				</div>
+			</div>
+		)
+	}
+
+	const displayPrice = billingInterval === 'yearly' ? basePrice / 12 : basePrice
+	const isSelected = selectedPriceId === stripePrice.id
+
+	return (
+		<div
+			className={`cursor-pointer rounded-lg border-2 p-4 transition-colors ${
+				isSelected
+					? 'border-primary bg-primary/5'
+					: 'border-border hover:border-primary/50'
+			}`}
+			onClick={() => onSelect(stripePrice.id)}
+		>
+			<div className="mb-4">
+				<div className="flex items-baseline gap-2">
+					<span className="text-2xl font-bold">${displayPrice.toFixed(2)}</span>
+					<span className="text-muted-foreground text-sm">per month</span>
+				</div>
+				{billingInterval === 'yearly' && (
+					<div className="text-muted-foreground text-sm">
+						${basePrice.toFixed(2)} billed annually
+					</div>
+				)}
+				<h3 className="text-lg font-semibold">{title}</h3>
+			</div>
+			<ul className="text-muted-foreground space-y-2 text-sm">
+				<li>Includes {seats} user seats</li>
+				{additionalUserPrice > 0 && (
+					<li>
+						Additional users: $
+						{billingInterval === 'yearly'
+							? (additionalUserPrice / 12).toFixed(2)
+							: additionalUserPrice.toFixed(2)}
+						/user/month
+						{billingInterval === 'yearly' && (
+							<span className="block text-xs opacity-75">
+								(${additionalUserPrice.toFixed(2)} billed annually per user)
+							</span>
+						)}
+					</li>
+				)}
+				<li>All core features included</li>
+				{isPremium && <li>Priority support</li>}
+			</ul>
 		</div>
 	)
 }

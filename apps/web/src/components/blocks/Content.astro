@@ -31,14 +31,14 @@ const renderLexicalContent = (content: any) => {
 							// Handle bold, italic, etc.
 							let formattedText = child.text || ''
 							if (child.format & 1)
-								formattedText = `<strong>${formattedText}</strong>` // Bold
-							if (child.format & 2) formattedText = `<em>${formattedText}</em>` // Italic
+								formattedText = `<strong class="font-semibold text-card-foreground">${formattedText}</strong>` // Bold
+							if (child.format & 2) formattedText = `<em class="italic">${formattedText}</em>` // Italic
 							return formattedText
 						}
 						return child.text || ''
 					})
 					.join('')
-				return `<p class="text-lg text-foreground leading-relaxed mb-6">${text}</p>`
+				return `<p class="text-base text-muted-foreground leading-relaxed mb-4">${text}</p>`
 			}
 			if (node.type === 'heading' && node.children) {
 				const text = node.children
@@ -46,12 +46,12 @@ const renderLexicalContent = (content: any) => {
 					.join('')
 				const tag = node.tag || 'h2'
 				const headingClasses = {
-					h1: 'text-4xl md:text-6xl text-primary mb-8 border-l-2 border-primary pl-6',
-					h2: 'text-3xl md:text-4xl text-primary mb-6 border-l-2 border-primary pl-6',
-					h3: 'text-2xl md:text-3xl font-medium text-primary mb-4 border-l-2 border-primary pl-4',
-					h4: 'text-xl md:text-2xl font-medium text-primary mb-4 border-l-2 border-primary pl-4',
-					h5: 'text-lg md:text-xl font-semibold text-primary mb-3 border-l-2 border-primary pl-4',
-					h6: 'text-base md:text-lg font-semibold text-primary mb-3 border-l-2 border-primary pl-4',
+					h1: 'text-3xl md:text-5xl font-title text-card-foreground mb-6',
+					h2: 'text-2xl md:text-4xl font-title text-card-foreground mb-5',
+					h3: 'text-xl md:text-3xl font-medium text-card-foreground mb-4',
+					h4: 'text-lg md:text-2xl font-medium text-card-foreground mb-4',
+					h5: 'text-base md:text-xl font-semibold text-card-foreground mb-3',
+					h6: 'text-sm md:text-lg font-semibold text-card-foreground mb-3',
 				}
 				const className =
 					headingClasses[tag as keyof typeof headingClasses] ||
@@ -72,16 +72,16 @@ const renderLexicalContent = (content: any) => {
 									return child.text || ''
 								})
 								.join('')
-							return `<li class="text-lg text-foreground leading-relaxed mb-2 pl-2">${itemText}</li>`
+							return `<li class="text-base text-muted-foreground leading-relaxed mb-2 pl-2">${itemText}</li>`
 						}
 						return ''
 					})
 					.join('')
 
 				if (node.listType === 'number') {
-					return `<ol class="list-decimal list-inside mb-6 space-y-2 border-l-2 border-muted pl-6">${listItems}</ol>`
+					return `<ol class="list-decimal list-inside mb-6 space-y-2 pl-6">${listItems}</ol>`
 				} else {
-					return `<ul class="list-disc list-inside mb-6 space-y-2 border-l-2 border-muted pl-6">${listItems}</ul>`
+					return `<ul class="list-disc list-inside mb-6 space-y-2 pl-6">${listItems}</ul>`
 				}
 			}
 			if (node.type === 'quote' && node.children) {
@@ -95,7 +95,7 @@ const renderLexicalContent = (content: any) => {
 						return child.text || ''
 					})
 					.join('')
-				return `<blockquote class="border-l-4 border-primary bg-muted/50 p-6 my-8 text-lg italic text-muted-foreground">"${text}"</blockquote>`
+				return `<blockquote class="border-l-2 border-primary/50 bg-muted/30 p-5 my-6 text-base italic text-muted-foreground rounded-r-lg">"${text}"</blockquote>`
 			}
 			return ''
 		})
@@ -112,12 +112,12 @@ const renderLexicalContent = (content: any) => {
 				(title || subtitle) && (
 					<div class="text-center mb-12">
 						{title && (
-							<h3 class="font-mono text-sm uppercase tracking-wide text-muted-foreground mb-6">
+							<h3 class="font-mono text-xs uppercase tracking-wide text-muted-foreground mb-4">
 								// {title}
 							</h3>
 						)}
 						{subtitle && (
-							<h2 class="text-4xl md:text-6xl font-light text-primary mb-4">
+							<h2 class="text-4xl md:text-6xl font-title text-foreground mb-4">
 								{subtitle}
 							</h2>
 						)}
@@ -126,8 +126,10 @@ const renderLexicalContent = (content: any) => {
 			}
 
 			<div class="max-w-4xl mx-auto">
-				<div class="border border-dashed border-border p-8 md:p-12">
-					<div set:html={renderLexicalContent(richText)} />
+				<div class="bg-muted dark:bg-background rounded-2xl p-1">
+					<div class="bg-card ring-border rounded-2lg p-8 md:p-12 shadow-sm ring-1">
+						<div set:html={renderLexicalContent(richText)} />
+					</div>
 				</div>
 			</div>
 		</div>

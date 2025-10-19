@@ -1,8 +1,16 @@
 ---
-import MarketingLayout from '../layouts/MarketingLayout.astro';
+import MarketingLayout from '../layouts/MarketingLayout.astro'
+import SEO from '../components/SEO.astro'
 ---
 
 <MarketingLayout>
+    <Fragment slot="head">
+        <SEO
+            title="Terms of Service - Epic Startup"
+            description="Read our terms of service to understand the rules and regulations for using Epic Startup."
+        />
+    </Fragment>
+
     <div class="container mx-auto py-16">
         <h1 class="text-4xl font-bold mb-8">Terms of Service</h1>
         <div>Terms of service content</div>

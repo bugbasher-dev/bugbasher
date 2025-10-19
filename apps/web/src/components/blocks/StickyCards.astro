@@ -1,6 +1,7 @@
 ---
 import GridDesign from '../GridDesign.astro'
 import Button from '../ui/Button.astro'
+import Badge from '../ui/Badge.astro'
 
 interface Card {
 	tagline: string
@@ -71,16 +72,16 @@ const {
 ---
 
 <!-- STICKY CARDS VERSION -->
-<section class="relative w-full py-16 md:py-24">
+<section class="relative w-full pt-16 md:pt-24">
 	<GridDesign />
 	<div class="container relative mx-auto px-4 md:px-6">
 		<!-- Header -->
 		<div class="text-center mb-16 md:mb-20">
 			<div class="max-w-3xl mx-auto">
 				<div class="mb-4">
-					<span class="font-mono text-sm uppercase tracking-wide text-muted-foreground">
-						// {subtitle}
-					</span>
+					<Badge variant="outline">
+						{subtitle}
+					</Badge>
 				</div>
 				<div class="mb-6">
 					<h2 class="text-4xl md:text-6xl tracking-tight font-title">
@@ -94,79 +95,80 @@ const {
 		</div>
 
 		<!-- Sticky Cards Layout - Inspired by Webflow approach -->
-		<div class="max-w-6xl mx-auto">
-			<div class="grid grid-cols-1 gap-0">
-				{cards.map((card, index) => {
-					const isEven = index % 2 === 0
-					return (
-						<div class="sticky-card sticky top-[10%] h-[80vh] mb-[10vh] bg-background border border-border overflow-hidden grid grid-cols-1 lg:grid-cols-2 items-stretch">
-							<!-- Content Section -->
-							<div class={`flex flex-col justify-center p-6 md:p-12 lg:p-16 ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
-								<div class="max-w-lg">
-									<div class="mb-2">
-										<span class="font-mono text-xs uppercase tracking-wide text-muted-foreground">
-											// {card.tagline}
-										</span>
-									</div>
-									<div class="mb-6">
-										<h3 class="text-4xl tracking-tight font-title">
-											{card.title}
-										</h3>
-									</div>
-									<p class="text-muted-foreground leading-relaxed mb-8">
-										{card.description}
-									</p>
-									
-									<!-- Action Buttons -->
-									<div class="flex flex-wrap items-center gap-4">
-										<Button 
-											href={card.primaryButtonUrl}
-											variant="outline"
-											size="md"
-										>
-											{card.primaryButtonText}
-										</Button>
-										<Button 
-											href={card.secondaryButtonUrl}
-											variant="ghost"
-											size="md"
-											class="group"
-										>
-											<span>{card.secondaryButtonText}</span>
-											<svg 
-												xmlns="http://www.w3.org/2000/svg" 
-												width="16" 
-												height="16" 
-												viewBox="0 0 16 16" 
-												fill="none" 
-												stroke="currentColor" 
-												stroke-width="1.5"
-												class="ml-2 group-hover:translate-x-1 transition-transform duration-200"
+		<div class="relative pt-[10vh]">
+			<div class="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgb(0,0,0),rgb(68,85,119)_1px,transparent_1px,transparent_5px)]" />
+			<div class="max-w-6xl mx-auto relative z-10">
+				<div class="grid grid-cols-1 gap-0 ">
+					{cards.map((card, index) => {
+						const isEven = index % 2 === 0
+						return (
+							<div class="sticky-card sticky top-[10%] h-[80vh] mb-[10vh] bg-background border border-border overflow-hidden grid grid-cols-1 lg:grid-cols-2 items-stretch">
+								<!-- Content Section -->
+								<div class={`flex flex-col justify-center p-6 md:p-12 lg:p-16 ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
+									<div class="max-w-lg">
+										<div class="mb-2">
+											<Badge variant="outline" size="sm">
+												{card.tagline}
+											</Badge>
+										</div>
+										<div class="mb-6">
+											<h3 class="text-4xl tracking-tight font-title">
+												{card.title}
+											</h3>
+										</div>
+										<p class="text-muted-foreground leading-relaxed mb-8">
+											{card.description}
+										</p>
+										
+										<!-- Action Buttons -->
+										<div class="flex flex-wrap items-center gap-4">
+											<Button 
+												href={card.primaryButtonUrl}
+												variant="outline"
+												size="md"
 											>
-												<path d="M6 3L11 8L6 13" />
-											</svg>
-										</Button>
+												{card.primaryButtonText}
+											</Button>
+											<Button 
+												href={card.secondaryButtonUrl}
+												variant="ghost"
+												size="md"
+												class="group"
+											>
+												<span>{card.secondaryButtonText}</span>
+												<svg 
+													xmlns="http://www.w3.org/2000/svg" 
+													width="16" 
+													height="16" 
+													viewBox="0 0 16 16" 
+													fill="none" 
+													stroke="currentColor" 
+													stroke-width="1.5"
+													class="ml-2 group-hover:translate-x-1 transition-transform duration-200"
+												>
+													<path d="M6 3L11 8L6 13" />
+												</svg>
+											</Button>
+										</div>
+									</div>
+								</div>
+
+								<!-- Image Section -->
+								<div class={`flex flex-col justify-center items-center h-[80vh] ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
+									<div class="w-full h-full bg-muted/20 border border-dashed border-border overflow-hidden">
+										<img
+											src={card.image}
+											alt={card.title}
+											class="w-full h-full object-cover"
+											loading="lazy"
+										/>
 									</div>
 								</div>
 							</div>
-
-							<!-- Image Section -->
-							<div class={`flex flex-col justify-center items-center h-[80vh] ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
-								<div class="w-full h-full bg-muted/20 border border-dashed border-border overflow-hidden">
-									<img
-										src={card.image}
-										alt={card.title}
-										class="w-full h-full object-cover"
-										loading="lazy"
-									/>
-								</div>
-							</div>
-						</div>
-					)
-				})}
-			</div>
+						)
+					})}
+				</div>
 		</div>
-	</div>
 </section>
 
 <style>

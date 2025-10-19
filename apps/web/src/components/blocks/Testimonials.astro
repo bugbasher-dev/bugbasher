@@ -156,7 +156,9 @@ const testimonials = rawTestimonials.map((testimonial) => {
 	<div class="mt-12 w-full border-y border-dashed">
 		<div class="container relative px-4 md:px-6">
 			<div class="relative border-muted bg-background">
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+				<div
+					class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-foreground/10 border-dashed border-l"
+				>
 					{
 						testimonials.map((testimonial, index) => {
 							const isFirstCard = index === 0
@@ -165,7 +167,7 @@ const testimonials = rawTestimonials.map((testimonial) => {
 
 							return (
 								<div
-									class={`border-foreground/1 transition-colors border border-dashed ${
+									class={`border-foreground/10 transition-colors border-b border-r border-dashed ${
 										isFirstCard
 											? 'row-span-2 border-foreground/10 bg-muted shadow-lg hover:bg-muted/50'
 											: isStripeCard

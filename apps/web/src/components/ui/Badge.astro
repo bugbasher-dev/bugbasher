@@ -7,32 +7,34 @@ interface Props {
 
 const {
 	variant = 'default',
-	size = 'lg',
+	size = 'md',
 	class: className = '',
 	...rest
 } = Astro.props
 
 const baseClasses =
-	'inline-flex items-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 font-mono uppercase tracking-wide border-dashed border-[#d1d1d1]'
+	'focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:border-muted-foreground/20 inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden border px-2 py-0.5 text-md font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] font-mono uppercase tracking-wide'
 
 const variantClasses = {
-	default: 'bg-primary text-primary-foreground hover:bg-primary/80',
-	secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+	default:
+		'bg-primary text-primary-foreground hover:bg-primary/90 border-transparent',
+	secondary:
+		'bg-secondary text-secondary-foreground hover:bg-secondary/90 border-transparent',
 	outline:
-		'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+		'bg-background text-foreground hover:bg-accent hover:text-accent-foreground border-dashed',
 	destructive:
-		'bg-destructive text-destructive-foreground hover:bg-destructive/80',
+		'bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 border-transparent text-white',
 }
 
 const sizeClasses = {
-	sm: 'px-2 py-1 text-xs',
-	md: 'px-3 py-1.5 text-sm',
-	lg: 'px-4 py-2 text-base',
+	sm: 'px-2 py-0.5 text-sm',
+	md: 'px-2 py-0.5 text-md',
+	lg: 'px-3 py-1 text-sm',
 }
 
 const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`
 ---
 
-<div class={classes} {...rest}>
+<span data-slot="badge" class={classes} {...rest}>
 	<slot />
-</div>
+</span>

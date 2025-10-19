@@ -14,7 +14,7 @@ and this project adheres to
 - Initial package structure and configuration
 - TypeScript build configuration with declaration files and source maps
 - Vitest testing infrastructure
-- Turbo.json pipeline integration
+- Nx monorepo integration
 - Basic package exports structure
 
 ## [0.1.0] - 2025-01-18

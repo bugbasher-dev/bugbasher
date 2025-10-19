@@ -7,6 +7,7 @@ import cloudflare from '@astrojs/cloudflare'
 
 export default defineConfig({
 	output: 'server',
+	site: 'https://epic-stack.me',
 	integrations: [react()],
 
 	vite: {

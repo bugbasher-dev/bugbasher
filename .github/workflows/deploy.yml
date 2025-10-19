@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   lint:
-    name: ⬣ ESLint
+    name: 🔬 Lint
     runs-on: ubuntu-22.04
     steps:
       - name: ⬇️ Checkout repo
@@ -41,8 +41,8 @@ jobs:
           npx prisma migrate deploy --schema=packages/prisma/schema.prisma &&
           npx prisma generate --sql --schema=packages/prisma/schema.prisma
 
-      - name: 🔬 Lint
-        run: npm run lint
+      - name: ⚡ Lint (Oxc - Fast)
+        run: npm run lint:oxc
 
   typecheck:
     name: ʦ TypeScript

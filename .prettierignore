@@ -5,11 +5,36 @@ node_modules
 /server-build
 .env
 
-/test-results/
-/playwright-report/
-/playwright/.cache/
-/tests/fixtures/email/*.json
-/coverage
-/prisma/migrations
+# Test artifacts (all workspaces)
+**/test-results/
+**/playwright-report/
+**/playwright/.cache/
+**/tests/fixtures/email/*.json
+**/coverage
 
+# Database
+/prisma/migrations
+**/data.db
+**/data.db-journal
+
+# Build artifacts
+**/dist
+**/build
+**/server-build
+**/.next
+**/.astro
+**/.react-router
+**/.nx
+**/.turbo
+**/.cache
+
+# Generated files
+**/components/ui/icons
+**/importMap.js
+**/payload-types.ts
 package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Other
+graph.html

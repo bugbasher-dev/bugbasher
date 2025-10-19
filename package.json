@@ -7,20 +7,24 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build",
+    "build": "nx run-many -t build",
     "dev": "npm-run-all --parallel dev:proxy dev:all",
-    "dev:all": "turbo run dev --filter app --filter web --filter cms --filter admin --filter studio --filter docs --concurrency 20",
+    "dev:all": "nx run-many -t dev -p app web cms admin studio docs --parallel=20",
     "dev:proxy": "node dev-proxy.js",
-    "dev:web": "turbo run dev --filter web --filter cms",
-    "dev:app": "turbo run dev --filter app",
-    "dev:mobile": "turbo run dev --filter mobile",
-    "dev:trigger": "turbo run dev --filter background-jobs",
-    "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck",
-    "test": "turbo run test",
-    "test:e2e:run": "turbo run test:e2e:run",
+    "dev:web": "nx run-many -t dev -p web cms",
+    "dev:app": "nx run app:dev",
+    "dev:mobile": "nx run mobile:dev",
+    "dev:trigger": "nx run background-jobs:dev",
+    "lint": "nx run-many -t lint",
+    "lint:oxc": "oxlint .",
+    "lint:oxc:fix": "oxlint --fix .",
+    "lint:all": "npm run lint:oxc && npm run lint",
+    "typecheck": "nx run-many -t typecheck",
+    "test": "nx run-many -t test",
+    "test:e2e:run": "nx run-many -t test:e2e:run",
     "test:e2e:install": "npx playwright install --with-deps chromium",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "db:setup": "cd packages/prisma && npm run setup",
     "db:generate": "cd packages/prisma && npm run db:generate",
     "db:push": "cd packages/prisma && npm run db:push",
@@ -28,24 +32,40 @@
     "db:seed": "cd packages/prisma && npm run db:seed",
     "db:migrate:dev": "cd packages/prisma && npm run db:migrate:dev",
     "docs:dev": "cd apps/docs && npx mint dev",
-    "docs:build": "cd apps/docs && npx mint build"
+    "docs:build": "cd apps/docs && npx mint build",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@epic-web/config": "^1.20.1",
     "@types/http-proxy": "^1.17.16",
     "ajv": "^8.17.1",
     "http-proxy": "^1.18.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.4",
     "npm-run-all": "^4.1.5",
+    "nx": "21.6.5",
+    "oxlint": "^1.23.0",
     "prettier": "^3.5.3",
     "prettier-plugin-sql": "^0.19.0",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "react-test-renderer": "^19.1.1",
-    "turbo": "^2.5.5"
+    "react-test-renderer": "^19.1.1"
   },
   "engines": {
     "node": "22"
   },
   "prettier": "@epic-web/config/prettier",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write",
+      "npm run lint"
+    ],
+    "*.{js,jsx,ts,tsx}": [
+      "oxlint --fix"
+    ],
+    "*.{ts,tsx}": [
+      "npm run typecheck"
+    ]
+  },
   "volta": {
     "node": "22.15.0",
     "npm": "10.9.0"

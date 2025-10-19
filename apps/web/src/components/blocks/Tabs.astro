@@ -97,10 +97,10 @@ const {
 							>
 								<div class="flex items-start gap-4">
 									<div class="flex-shrink-0 w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors">
-										<div set:html={tab.icon} />
+										<div class="text-primary" set:html={tab.icon} />
 									</div>
 									<div class="flex-1">
-										<h3 class="text-xl font-medium text-primary mb-2 group-hover:translate-x-1 transition-transform duration-200">
+										<h3 class="text-xl font-medium mb-2 group-hover:translate-x-1 transition-transform duration-200">
 											{tab.title}
 										</h3>
 										<div class="tab-description overflow-hidden transition-all duration-300" style="max-height: 0;">
@@ -119,7 +119,6 @@ const {
 				<div class="flex flex-wrap items-center gap-4">
 					<Button 
 						href={buttonUrl}
-						variant="primary"
 						size="md"
 					>
 						{buttonText}

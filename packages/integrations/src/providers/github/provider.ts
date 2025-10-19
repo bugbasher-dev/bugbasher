@@ -240,7 +240,7 @@ export class GitHubProvider extends BaseIntegrationProvider {
 	 * Refresh GitHub access token
 	 * Note: GitHub doesn't support refresh tokens in the standard OAuth flow
 	 */
-	async refreshToken(refreshToken: string): Promise<TokenData> {
+	async refreshToken(_refreshToken: string): Promise<TokenData> {
 		// GitHub doesn't support refresh tokens in their OAuth flow
 		// Users need to re-authenticate when tokens expire
 		throw new Error(

@@ -1,6 +1,7 @@
 ---
 import GridDesign from '../GridDesign.astro'
 import Button from '../ui/Button.astro'
+import Badge from '../ui/Badge.astro'
 
 interface Feature {
 	name: string
@@ -116,9 +117,9 @@ const yearlyDiscount = plans.length
 	<div class="container relative mx-auto px-4 md:px-6">
 		<!-- Header -->
 		<div class="text-center mb-12">
-			<h3 class="font-mono text-sm uppercase tracking-wide text-muted-foreground mb-6">
-				// PRICING PLANS
-			</h3>
+			<Badge variant="outline" size="sm">
+				PRICING PLANS
+			</Badge>
 			<h2 class="text-4xl md:text-6xl tracking-tight font-title mb-4">
 				{title}
 			</h2>
@@ -129,16 +130,16 @@ const yearlyDiscount = plans.length
 
 		<!-- Pricing Toggle -->
 		<div class="flex flex-col justify-center items-center mb-12">
-			<div class="inline-flex items-center justify-center bg-muted p-0.5 text-muted-foreground border border-dashed border-border rounded-full" id="pricing-toggle">
+			<div class="inline-flex items-center justify-center bg-muted p-[1px] text-muted-foreground" id="pricing-toggle">
 				<button 
-					class="inline-flex items-center justify-center whitespace-nowrap px-6 py-2 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-background text-foreground hover:text-accent-foreground border border-border rounded-full" 
+					class="inline-flex items-center justify-center whitespace-nowrap px-6 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-background text-foreground border border-border shadow-sm cursor-pointer" 
 					data-period="monthly"
 					id="monthly-btn"
 				>
 					Monthly
 				</button>
 				<button 
-					class="inline-flex items-center justify-center whitespace-nowrap px-6 py-2 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-muted-foreground hover:text-accent-foreground rounded-full" 
+					class="inline-flex items-center justify-center whitespace-nowrap px-6 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-muted-foreground cursor-pointer" 
 					data-period="yearly"
 					id="yearly-btn"
 				>
@@ -146,9 +147,9 @@ const yearlyDiscount = plans.length
 				</button>
 			</div>
 			{yearlyDiscount > 0 && (
-				<div class="flex items-center gap-2 mt-3">
+				<div class="flex items-center gap-2 mt-4">
 					<div class="w-2 h-2 bg-primary rounded-sm"></div>
-					<span class="text-xs text-muted-foreground font-mono uppercase tracking-wide" id="discount-text">
+					<span class="text-sm text-muted-foreground" id="discount-text">
 						Save up to {yearlyDiscount}% with yearly plan
 					</span>
 				</div>
@@ -156,80 +157,93 @@ const yearlyDiscount = plans.length
 		</div>
 
 		<!-- Pricing Cards -->
-		<div class={`grid gap-0 border-l border-t border-dashed ${
+		<div class={`grid p-1 ${
 			plans.length === 1 ? 'grid-cols-1 max-w-md mx-auto' :
 			plans.length === 2 ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto' :
 			plans.length === 3 ? 'grid-cols-1 md:grid-cols-3' :
 			'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
 		}`}>
 			{plans.map((plan) => (
-				<div class={`border-b border-r border-dashed bg-background relative transition-all duration-200 ${
+				<div class={`group relative transition-all duration-200 ${
 					plan.highlight 
-						? 'bg-muted/30 hover:bg-gradient-to-b from-muted/10 to-muted/60' 
-						: 'hover:bg-gradient-to-b from-muted/5 to-muted/50'
-				} transition-colors`}>
+						? 'ring-2 ring-primary/50 hover:ring-primary z-10' 
+						: 'hover:shadow-lg'
+				}`}>
 					{plan.badge && (
-						<div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-secondary text-secondary-foreground px-3 py-1 text-xs rounded-full border border-border">
+						<div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-secondary text-secondary-foreground px-3 py-1 text-xs rounded-full border-[0.5px] border-white/20 shadow-sm shadow-black/8">
 							{plan.badge}
 						</div>
 					)}
 					
-					<!-- Card Header -->
-					<div class="pt-6 pb-4 border-b border-dashed">
-						<div class="space-y-2 mb-4">
-							<h3 class="text-xl font-semibold text-primary border-l-2 border-primary pl-4">
-								{plan.title}
-							</h3>
-							<p class="text-sm text-muted-foreground pl-4">
-								{plan.description}
-							</p>
-						</div>
-						<div class="space-y-1 pl-4">
+					<div class="bg-card overflow-hidden shadow-sm flex flex-col h-full">
+						<!-- Card Header -->
+						<header class="px-6 py-4">
+							<div class="space-y-1">
+								<h3 class="text-base font-medium text-card-foreground flex items-center gap-2">
+									{plan.title}
+								</h3>
+								<p class="text-sm text-muted-foreground leading-relaxed text-pretty">
+									{plan.description}
+								</p>
+							</div>
+						</header>
+						
+						<!-- Card Body - Pricing -->
+						<div class="border-t border-border/50 px-6 py-5 space-y-1">
 							<!-- Monthly Price -->
 							<div class="pricing-monthly">
-								<span class="text-4xl font-medium text-primary">
-									{parseFloat(plan.monthlyPrice) >= 0 && plan.currency}
-									{plan.monthlyPrice}
-								</span>
-								<p class="text-muted-foreground">Per month</p>
+								<div class="flex items-baseline gap-1">
+									<span class="text-3xl font-bold text-primary">
+										{parseFloat(plan.monthlyPrice) >= 0 && plan.currency}
+										{plan.monthlyPrice}
+									</span>
+									{parseFloat(plan.monthlyPrice) >= 0 && (
+										<span class="text-muted-foreground text-sm">/month</span>
+									)}
+								</div>
 							</div>
 							<!-- Yearly Price -->
 							<div class="pricing-yearly hidden">
-								<span class="text-4xl font-medium text-primary">
-									{parseFloat(plan.yearlyPrice) >= 0 && plan.currency}
-									{plan.yearlyPrice}
-									{calculateDiscount(plan.monthlyPrice, plan.yearlyPrice) > 0 && (
-										<span class="text-xs ml-2 underline">
-											{calculateDiscount(plan.monthlyPrice, plan.yearlyPrice)}% off
-										</span>
+								<div class="flex items-baseline gap-1">
+									<span class="text-3xl font-bold text-primary">
+										{parseFloat(plan.yearlyPrice) >= 0 && plan.currency}
+										{plan.yearlyPrice}
+									</span>
+									{parseFloat(plan.yearlyPrice) >= 0 && (
+										<span class="text-muted-foreground text-sm">/year</span>
 									)}
-								</span>
-								<p class="text-muted-foreground">Per year</p>
+								</div>
+								{calculateDiscount(plan.monthlyPrice, plan.yearlyPrice) > 0 && (
+									<div class="mt-1">
+										<span class="inline-flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-md">
+											Save {calculateDiscount(plan.monthlyPrice, plan.yearlyPrice)}%
+										</span>
+									</div>
+								)}
 							</div>
 						</div>
-					</div>
 
-					<!-- Features -->
-					<div class="p-6 space-y-4 flex-1">
-						{plan.features.map((feature) => (
-							<div class="flex items-center gap-3">
-								<div class="w-2 h-2 bg-primary rounded-sm flex-shrink-0"></div>
-								<span class="text-sm">{feature.name}</span>
-								<span class="ml-auto text-sm text-muted-foreground">Included</span>
-							</div>
-						))}
-					</div>
+						<!-- Card Body - Features -->
+						<div class="border-t border-border/50 p-5.5 space-y-3 flex-1">
+							{plan.features.map((feature) => (
+								<div class="flex items-start gap-3">
+									<div class="w-2 h-2 bg-primary rounded-sm flex-shrink-0 mt-1.5"></div>
+									<span class="text-sm text-card-foreground leading-relaxed flex-1">{feature.name}</span>
+								</div>
+							))}
+						</div>
 
-					<!-- CTA Button -->
-					<div class="p-6 pt-0">
-						<Button
-							href={`#plan-${plan.id}`}
-							variant={plan.highlight ? 'primary' : 'secondary'}
-							size="md"
-							class="w-full"
-						>
-							{plan.buttonText}
-						</Button>
+						<!-- Card Footer -->
+						<footer class="border-t border-border/50 px-5 py-3 pb-4">
+							<Button
+								href={`#plan-${plan.id}`}
+								variant={plan.highlight ? 'default' : 'secondary'}
+								size="md"
+								class="w-full"
+							>
+								{plan.buttonText}
+							</Button>
+						</footer>
 					</div>
 				</div>
 			))}
@@ -237,22 +251,24 @@ const yearlyDiscount = plans.length
 
 		<!-- Footer -->
 		{showFooter && (
-			<div class={`flex items-center justify-between bg-muted/50 p-6 border border-dashed mt-12 ${
+			<div class={`p-1 mt-12 ${
 				plans.length === 1 ? 'max-w-md mx-auto' :
 				plans.length === 2 ? 'max-w-4xl mx-auto' : ''
 			}`}>
-				<div class="flex flex-col md:flex-row gap-4 justify-between w-full">
-					<p class="text-lg font-medium text-card-foreground text-left w-full my-auto">
-						{footerText}
-					</p>
-					<Button
-						href="#apply"
-						variant="secondary"
-						size="sm"
-						class="whitespace-nowrap"
-					>
-						{footerButtonText}
-					</Button>
+				<div class="bg-card ring-border p-6 shadow-sm ring-1">
+					<div class="flex flex-col md:flex-row gap-4 justify-between items-center w-full">
+						<p class="text-base text-card-foreground text-left flex-1">
+							{footerText}
+						</p>
+						<Button
+							href="#apply"
+							variant="secondary"
+							size="md"
+							class="whitespace-nowrap"
+						>
+							{footerButtonText}
+						</Button>
+					</div>
 				</div>
 			</div>
 		)}
@@ -270,11 +286,11 @@ const yearlyDiscount = plans.length
 
 		function setActiveButton(activeBtn: HTMLElement, inactiveBtn: HTMLElement) {
 			// Update active button styles
-			activeBtn.classList.add('bg-background', 'text-foreground', 'border', 'border-border')
+			activeBtn.classList.add('bg-background', 'text-foreground', 'border', 'border-border', 'shadow-sm')
 			activeBtn.classList.remove('text-muted-foreground')
 			
 			// Update inactive button styles
-			inactiveBtn.classList.remove('bg-background', 'text-foreground', 'border', 'border-border')
+			inactiveBtn.classList.remove('bg-background', 'text-foreground', 'border', 'border-border', 'shadow-sm')
 			inactiveBtn.classList.add('text-muted-foreground')
 		}
 

@@ -2,6 +2,7 @@
 import MarketingLayout from '../layouts/MarketingLayout.astro'
 import { cmsClient } from '../lib/cms'
 import PageContent from '../components/PageContent.astro'
+import SEO from '../components/SEO.astro'
 export const prerender = true;
 const { title, hero, layout, meta } = Astro.props
 
@@ -26,16 +27,12 @@ export async function getStaticPaths() {
 ---
 
 <MarketingLayout>
-  {/* SEO Meta Tags */}
   <Fragment slot="head">
-    <title>{meta?.title || title || 'Page'}</title>
-    {meta?.description && <meta name="description" content={meta.description} />}
-    {meta?.image && typeof meta.image === 'object' && meta.image.url && (
-      <>
-        <meta property="og:image" content={meta.image.url} />
-        <meta name="twitter:image" content={meta.image.url} />
-      </>
-    )}
+    <SEO
+      title={meta?.title || title}
+      description={meta?.description}
+      image={meta?.image}
+    />
   </Fragment>
 
   <PageContent title={title} hero={hero} layout={layout} meta={meta} />

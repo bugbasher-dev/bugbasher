@@ -150,16 +150,15 @@ export async function createCheckoutSession(
 		customer: organization.stripeCustomerId || customer?.id || undefined,
 		client_reference_id: userId.toString(),
 		allow_promotion_codes: true,
-		subscription_data: {
-			...(process.env.CREDIT_CARD_REQUIRED_FOR_TRIAL === 'manual'
+		subscription_data:
+			process.env.CREDIT_CARD_REQUIRED_FOR_TRIAL === 'manual'
 				? {}
 				: {
 						trial_period_days:
 							process.env.CREDIT_CARD_REQUIRED_FOR_TRIAL === 'manual'
 								? 0
 								: parseInt(process.env.TRIAL_DAYS || '0', 10),
-					}),
-		},
+					},
 		payment_method_collection:
 			process.env.CREDIT_CARD_REQUIRED_FOR_TRIAL === 'stripe'
 				? 'if_required'

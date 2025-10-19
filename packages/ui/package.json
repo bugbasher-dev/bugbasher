@@ -12,7 +12,9 @@
   "scripts": {
     "dev": "node generate-icons.js --watch",
     "build": "node generate-icons.js && tsc",
-    "lint": "eslint .",
+    "lint": "oxlint . && eslint .",
+    "lint:oxc": "oxlint .",
+    "lint:oxc:fix": "oxlint --fix .",
     "typecheck": "tsc --noEmit",
     "icons": "node generate-icons.js",
     "icons:watch": "node generate-icons.js --watch"

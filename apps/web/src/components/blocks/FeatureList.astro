@@ -116,20 +116,20 @@ const {
 				</p>
 			</div>
 			<!-- Navigation Controls -->
-			<div class="flex items-center gap-1.5">
+			<div class="flex items-center gap-2">
 				<Button 
 					id="prev-btn"
-					variant="ghost"
-					size="sm"
-					class="w-10 h-10 p-0 bg-muted hover:bg-muted/80 disabled:opacity-30 disabled:cursor-not-allowed text-muted-foreground border border-dashed border-border"
+					variant="outline"
+					size="icon"
+					class="w-9 h-9 disabled:opacity-30 disabled:cursor-not-allowed"
 					aria-label="Previous feature"
 				>
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<path d="m15 18-6-6 6-6"></path>
 					</svg>
 				</Button>
 				<!-- Pagination Dots -->
-				<div class="flex items-center gap-2 bg-muted p-4 border border-dashed border-border" id="pagination-dots">
+				<div class="flex items-center gap-2 bg-muted p-3" id="pagination-dots">
 					{features.map((_, index) => (
 						<button 
 							class="w-1.5 h-1.5 transition-all duration-200 pagination-dot"
@@ -140,12 +140,12 @@ const {
 				</div>
 				<Button 
 					id="next-btn"
-					variant="ghost"
-					size="sm"
-					class="w-10 h-10 p-0 bg-muted hover:bg-muted/80 disabled:opacity-30 disabled:cursor-not-allowed text-muted-foreground border border-dashed border-border"
+					variant="outline"
+					size="icon"
+					class="w-9 h-9 disabled:opacity-30 disabled:cursor-not-allowed"
 					aria-label="Next feature"
 				>
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<path d="m9 18 6-6-6-6"></path>
 					</svg>
 				</Button>
@@ -162,11 +162,11 @@ const {
 				{features.map((feature, index) => (
 					<div class="flex-shrink-0 w-[90vw] md:w-[544px] feature-card" data-index={index}>
 						<!-- Content Section -->
-						<div class="py-2 min-h-[150px]">
-							<h5 class="mb-3 text-primary text-2xl font-medium border-l-2 border-primary pl-4 font-title">
+						<div class="py-4 min-h-[140px]">
+							<h5 class="mb-3 text-card-foreground text-2xl font-medium font-title">
 								{feature.title}
 							</h5>
-							<p class="text-muted-foreground leading-relaxed max-w-[500px] pl-4">
+							<p class="text-muted-foreground text-sm leading-relaxed max-w-[500px]">
 								{feature.description}
 							</p>
 						</div>
@@ -174,48 +174,50 @@ const {
 						<!-- Image Section -->
 						<div class="relative">
 							{feature.backgroundImage && (
-								<div 
-									class="h-80 relative bg-cover bg-center bg-no-repeat border border-dashed border-border overflow-hidden"
-									style={`background-image: url(${feature.backgroundImage})`}
-								>
-									{feature.testimonial && (
-										<div class="absolute top-0 left-0 right-0 bg-background/90 backdrop-blur-sm border-t border-dashed border-border p-1 px-2">
-											<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-												<div class="max-w-[420px]">
-													<p class="text-sm text-muted-foreground leading-tight">
-														{feature.testimonial.text}
-													</p>
+								<div class="bg-muted dark:bg-background p-1 overflow-hidden">
+									<div 
+										class="h-80 relative bg-cover bg-center bg-no-repeat overflow-hidden bg-card ring-border ring-1 shadow-sm"
+										style={`background-image: url(${feature.backgroundImage})`}
+									>
+										{feature.testimonial && (
+											<div class="absolute top-0 left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border/50 p-4">
+												<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+													<div class="max-w-[380px]">
+														<p class="text-sm text-muted-foreground leading-relaxed">
+															{feature.testimonial.text}
+														</p>
+													</div>
+													<div class="flex items-center gap-3">
+														{!feature.testimonial.logo && feature.testimonial.companyName && (
+															<div class="text-sm font-medium text-card-foreground">
+																{feature.testimonial.companyName}
+															</div>
+														)}
+														{feature.testimonial.logo && (
+															<img 
+																src={feature.testimonial.logo}
+																alt={feature.testimonial.logoAlt || feature.testimonial.companyName}
+																class="h-7 w-auto object-contain"
+															/>
+														)}
+													</div>
 												</div>
-                                                <div class="flex items-center gap-3">
-													
-													{!feature.testimonial.logo && feature.testimonial.companyName && (
-														<div class="text-sm font-medium text-primary">
-															{feature.testimonial.companyName}
-														</div>
-													)}
-                                                    {feature.testimonial.logo && (
-														<img 
-															src={feature.testimonial.logo}
-															alt={feature.testimonial.logoAlt || feature.testimonial.companyName}
-															class="h-8 w-auto object-contain"
-														/>
-													)}
-												</div>
-												
 											</div>
-										</div>
-									)}
+										)}
+									</div>
 								</div>
 							)}
 
 							{feature.image && (
 								<div class="absolute left-1/2 transform -translate-x-1/2 top-8 md:top-16 w-[260px] md:w-[380px]">
-									<div class="bg-background overflow-hidden h-[260px] md:h-[380px] border border-dashed border-border shadow-lg">
-										<img
-											src={feature.image}
-											alt={feature.title}
-											class="w-full h-full object-cover"
-										/>
+									<div class="bg-muted dark:bg-background p-1">
+										<div class="bg-card overflow-hidden h-[260px] md:h-[380px] ring-border ring-1 shadow-lg">
+											<img
+												src={feature.image}
+												alt={feature.title}
+												class="w-full h-full object-cover"
+											/>
+										</div>
 									</div>
 								</div>
 							)}
