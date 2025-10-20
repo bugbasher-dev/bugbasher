@@ -53,7 +53,7 @@ const {
 			<div class="accordion bg-background relative z-10">
 				{
 					items.map((faq, idx) => (
-						<details class="accordion-item group border-b first:border-t border-dashed" open={idx === 0}>
+						<details name="frequently-asked-questions" class="accordion-item group border-b first:border-t border-dashed" open={idx === 0}>
 							<summary class="accordion-trigger flex cursor-pointer items-center justify-between px-4 py-4 text-[15px] leading-6 hover:no-underline list-none">
 								<span class="font-title">{faq.question}</span>
 								<svg
