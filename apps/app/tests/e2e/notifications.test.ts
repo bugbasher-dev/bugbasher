@@ -25,8 +25,7 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for email notification toggles
-		const emailNotificationToggle = page.getByRole('switch', { name: /email notifications/i }).or(
-			page.getByRole('checkbox', { name: /email notifications/i })
+		const emailNotificationToggle = page.getByRole('switch', { name: /email notifications/i }).first()
 		)
 
 		if (await emailNotificationToggle.isVisible()) {
@@ -52,8 +51,7 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for push notification toggles
-		const pushNotificationToggle = page.getByRole('switch', { name: /push notifications/i }).or(
-			page.getByRole('checkbox', { name: /push notifications/i })
+		const pushNotificationToggle = page.getByRole('switch', { name: /push notifications/i }).first()
 		)
 
 		if (await pushNotificationToggle.isVisible()) {
@@ -79,8 +77,7 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for notification frequency settings
-		const frequencySelect = page.getByRole('combobox', { name: /frequency/i }).or(
-			page.getByLabel(/frequency/i)
+		const frequencySelect = page.getByRole('combobox', { name: /frequency/i }).first()
 		)
 
 		if (await frequencySelect.isVisible()) {
@@ -110,10 +107,8 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for notifications bell or indicator
-		const notificationBell = page.getByRole('button', { name: /notifications/i }).or(
-			page.locator('[data-testid="notifications-bell"]')
-		).or(
-			page.getByLabel(/notifications/i)
+		const notificationBell = page.getByRole('button', { name: /notifications/i }).first()
+		).first()
 		)
 
 		if (await notificationBell.isVisible()) {
@@ -182,16 +177,14 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for notifications bell
-		const notificationBell = page.getByRole('button', { name: /notifications/i }).or(
-			page.locator('[data-testid="notifications-bell"]')
+		const notificationBell = page.getByRole('button', { name: /notifications/i }).first()
 		)
 
 		if (await notificationBell.isVisible()) {
 			await notificationBell.click()
 
 			// Look for mark as read button
-			const markAsReadButton = page.getByRole('button', { name: /mark as read/i }).or(
-				page.getByRole('button', { name: /mark all as read/i })
+			const markAsReadButton = page.getByRole('button', { name: /mark as read/i }).first()
 			)
 
 			if (await markAsReadButton.isVisible()) {
@@ -211,8 +204,7 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for specific notification type toggles
-		const commentNotificationToggle = page.getByRole('switch', { name: /comment notifications/i }).or(
-			page.getByRole('checkbox', { name: /comment notifications/i })
+		const commentNotificationToggle = page.getByRole('switch', { name: /comment notifications/i }).first()
 		)
 
 		if (await commentNotificationToggle.isVisible()) {
@@ -238,8 +230,7 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Toggle a notification setting
-		const emailToggle = page.getByRole('switch', { name: /email notifications/i }).or(
-			page.getByRole('checkbox', { name: /email notifications/i })
+		const emailToggle = page.getByRole('switch', { name: /email notifications/i }).first()
 		)
 
 		if (await emailToggle.isVisible()) {
@@ -308,8 +299,7 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for test notification button
-		const testButton = page.getByRole('button', { name: /test notification/i }).or(
-			page.getByRole('button', { name: /send test/i })
+		const testButton = page.getByRole('button', { name: /test notification/i }).first()
 		)
 
 		if (await testButton.isVisible()) {

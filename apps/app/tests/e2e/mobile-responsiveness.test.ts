@@ -43,12 +43,9 @@ test.describe('Mobile Responsiveness', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for mobile menu button (hamburger menu)
-		const mobileMenuButton = page.getByRole('button', { name: /menu/i }).or(
-			page.getByRole('button', { name: /navigation/i })
-		).or(
-			page.locator('[data-testid="mobile-menu-button"]')
-		).or(
-			page.locator('button[aria-expanded]')
+		const mobileMenuButton = page.getByRole('button', { name: /menu/i }).first()
+		).first()
+		).first()
 		)
 
 		if (await mobileMenuButton.isVisible()) {
@@ -56,8 +53,7 @@ test.describe('Mobile Responsiveness', () => {
 			await mobileMenuButton.click()
 
 			// Verify menu opens
-			const mobileMenu = page.getByRole('navigation').or(
-				page.locator('[data-testid="mobile-menu"]')
+			const mobileMenu = page.getByRole('navigation').first()
 			)
 			await expect(mobileMenu).toBeVisible()
 

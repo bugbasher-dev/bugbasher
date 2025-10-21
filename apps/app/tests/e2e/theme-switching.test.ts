@@ -14,17 +14,14 @@ test.describe('Theme Switching', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Find and click theme switcher
-		const themeButton = page.getByRole('button', { name: /theme/i }).or(
-			page.locator('[data-testid="theme-switch"]')
-		).or(
-			page.getByLabel(/theme/i)
+		const themeButton = page.getByRole('button', { name: /theme/i }).first()
+		).first()
 		)
 
 		await themeButton.click()
 
 		// Select dark theme
-		await page.getByRole('menuitem', { name: /dark/i }).or(
-			page.getByText(/dark/i)
+		await page.getByRole('menuitem', { name: /dark/i }).first()
 		).click()
 
 		// Wait for theme to apply
@@ -46,22 +43,18 @@ test.describe('Theme Switching', () => {
 		await page.waitForLoadState('networkidle')
 
 		// First switch to dark theme
-		const themeButton = page.getByRole('button', { name: /theme/i }).or(
-			page.locator('[data-testid="theme-switch"]')
-		).or(
-			page.getByLabel(/theme/i)
+		const themeButton = page.getByRole('button', { name: /theme/i }).first()
+		).first()
 		)
 
 		await themeButton.click()
-		await page.getByRole('menuitem', { name: /dark/i }).or(
-			page.getByText(/dark/i)
+		await page.getByRole('menuitem', { name: /dark/i }).first()
 		).click()
 		await page.waitForTimeout(500)
 
 		// Now switch to light theme
 		await themeButton.click()
-		await page.getByRole('menuitem', { name: /light/i }).or(
-			page.getByText(/light/i)
+		await page.getByRole('menuitem', { name: /light/i }).first()
 		).click()
 		await page.waitForTimeout(500)
 
@@ -81,17 +74,14 @@ test.describe('Theme Switching', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Find and click theme switcher
-		const themeButton = page.getByRole('button', { name: /theme/i }).or(
-			page.locator('[data-testid="theme-switch"]')
-		).or(
-			page.getByLabel(/theme/i)
+		const themeButton = page.getByRole('button', { name: /theme/i }).first()
+		).first()
 		)
 
 		await themeButton.click()
 
 		// Select system theme
-		await page.getByRole('menuitem', { name: /system/i }).or(
-			page.getByText(/system/i)
+		await page.getByRole('menuitem', { name: /system/i }).first()
 		).click()
 
 		// Wait for theme to apply
@@ -113,15 +103,12 @@ test.describe('Theme Switching', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Switch to dark theme
-		const themeButton = page.getByRole('button', { name: /theme/i }).or(
-			page.locator('[data-testid="theme-switch"]')
-		).or(
-			page.getByLabel(/theme/i)
+		const themeButton = page.getByRole('button', { name: /theme/i }).first()
+		).first()
 		)
 
 		await themeButton.click()
-		await page.getByRole('menuitem', { name: /dark/i }).or(
-			page.getByText(/dark/i)
+		await page.getByRole('menuitem', { name: /dark/i }).first()
 		).click()
 		await page.waitForTimeout(500)
 
@@ -148,15 +135,12 @@ test.describe('Theme Switching', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Switch to dark theme
-		const themeButton = page.getByRole('button', { name: /theme/i }).or(
-			page.locator('[data-testid="theme-switch"]')
-		).or(
-			page.getByLabel(/theme/i)
+		const themeButton = page.getByRole('button', { name: /theme/i }).first()
+		).first()
 		)
 
 		await themeButton.click()
-		await page.getByRole('menuitem', { name: /dark/i }).or(
-			page.getByText(/dark/i)
+		await page.getByRole('menuitem', { name: /dark/i }).first()
 		).click()
 		await page.waitForTimeout(500)
 
@@ -190,30 +174,26 @@ test.describe('Theme Switching', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Find theme switcher
-		const themeButton = page.getByRole('button', { name: /theme/i }).or(
-			page.locator('[data-testid="theme-switch"]')
-		).or(
-			page.getByLabel(/theme/i)
+		const themeButton = page.getByRole('button', { name: /theme/i }).first()
+		).first()
 		)
 
 		// Switch to dark theme
 		await themeButton.click()
-		await page.getByRole('menuitem', { name: /dark/i }).or(
-			page.getByText(/dark/i)
+		await page.getByRole('menuitem', { name: /dark/i }).first()
 		).click()
 		await page.waitForTimeout(500)
 
 		// Open theme menu again and verify dark is selected/highlighted
 		await themeButton.click()
-		const darkOption = page.getByRole('menuitem', { name: /dark/i }).or(
-			page.getByText(/dark/i)
+		const darkOption = page.getByRole('menuitem', { name: /dark/i }).first()
 		)
 		
 		// Check if the dark option has selected/active styling
 		await expect(darkOption).toHaveAttribute('aria-selected', 'true')
-			; // Fixed .or() syntax - using conditional logic instead
+			; // Fixed .first() syntax - using conditional logic instead
 		// expect(darkOption).toHaveClass(/selected/))
-			; // Fixed .or() syntax - using conditional logic instead
+			; // Fixed .first() syntax - using conditional logic instead
 		// expect(darkOption).toHaveClass(/active/))
 	})
 
@@ -227,15 +207,12 @@ test.describe('Theme Switching', () => {
 		await page.goto('/profile')
 		await page.waitForLoadState('networkidle')
 
-		const themeButton = page.getByRole('button', { name: /theme/i }).or(
-			page.locator('[data-testid="theme-switch"]')
-		).or(
-			page.getByLabel(/theme/i)
+		const themeButton = page.getByRole('button', { name: /theme/i }).first()
+		).first()
 		)
 
 		await themeButton.click()
-		await page.getByRole('menuitem', { name: /dark/i }).or(
-			page.getByText(/dark/i)
+		await page.getByRole('menuitem', { name: /dark/i }).first()
 		).click()
 		await page.waitForTimeout(500)
 
@@ -251,15 +228,12 @@ test.describe('Theme Switching', () => {
 		await expect(htmlElement).toHaveClass(/dark/)
 
 		// Switch to light theme from organizations page
-		const orgThemeButton = page.getByRole('button', { name: /theme/i }).or(
-			page.locator('[data-testid="theme-switch"]')
-		).or(
-			page.getByLabel(/theme/i)
+		const orgThemeButton = page.getByRole('button', { name: /theme/i }).first()
+		).first()
 		)
 
 		await orgThemeButton.click()
-		await page.getByRole('menuitem', { name: /light/i }).or(
-			page.getByText(/light/i)
+		await page.getByRole('menuitem', { name: /light/i }).first()
 		).click()
 		await page.waitForTimeout(500)
 
@@ -278,10 +252,8 @@ test.describe('Theme Switching', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Find theme switcher and focus it
-		const themeButton = page.getByRole('button', { name: /theme/i }).or(
-			page.locator('[data-testid="theme-switch"]')
-		).or(
-			page.getByLabel(/theme/i)
+		const themeButton = page.getByRole('button', { name: /theme/i }).first()
+		).first()
 		)
 
 		await themeButton.focus()

@@ -12,10 +12,8 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for profile photo upload section
-		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).or(
-			page.getByRole('button', { name: /change photo/i })
-		).or(
-			page.getByText(/upload/i)
+		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).first()
+		).first()
 		)
 
 		if (await photoUploadButton.isVisible()) {
@@ -34,7 +32,7 @@ test.describe('File Operations', () => {
 
 			// Verify success message or updated photo
 			await expect(page.getByText(/photo updated/i)).toBeVisible()
-				; // Fixed .or() syntax - using conditional logic instead
+				; // Fixed .first() syntax - using conditional logic instead
 		// expect(page.locator('img[alt*="profile"]')).toBeVisible())
 		}
 	})
@@ -50,10 +48,8 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for organization logo upload section
-		const logoUploadButton = page.getByRole('button', { name: /upload logo/i }).or(
-			page.getByRole('button', { name: /change logo/i })
-		).or(
-			page.getByText(/logo/i)
+		const logoUploadButton = page.getByRole('button', { name: /upload logo/i }).first()
+		).first()
 		)
 
 		if (await logoUploadButton.isVisible()) {
@@ -72,7 +68,7 @@ test.describe('File Operations', () => {
 
 			// Verify success message or updated logo
 			await expect(page.getByText(/logo updated/i)).toBeVisible()
-				; // Fixed .or() syntax - using conditional logic instead
+				; // Fixed .first() syntax - using conditional logic instead
 		// expect(page.locator('img[alt*="logo"]')).toBeVisible())
 		}
 	})
@@ -92,10 +88,8 @@ test.describe('File Operations', () => {
 		await page.getByRole('textbox', { name: /content/i }).fill('This note will have an image')
 
 		// Look for image upload functionality
-		const imageUploadButton = page.getByRole('button', { name: /upload image/i }).or(
-			page.getByRole('button', { name: /add image/i })
-		).or(
-			page.locator('input[type="file"][accept*="image"]')
+		const imageUploadButton = page.getByRole('button', { name: /upload image/i }).first()
+		).first()
 		)
 
 		if (await imageUploadButton.isVisible()) {
@@ -132,10 +126,8 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for data download section
-		const downloadButton = page.getByRole('button', { name: /download data/i }).or(
-			page.getByRole('link', { name: /download data/i })
-		).or(
-			page.getByText(/export data/i)
+		const downloadButton = page.getByRole('button', { name: /download data/i }).first()
+		).first()
 		)
 
 		if (await downloadButton.isVisible()) {
@@ -162,8 +154,7 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for profile photo upload
-		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).or(
-			page.getByRole('button', { name: /change photo/i })
+		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).first()
 		)
 
 		if (await photoUploadButton.isVisible()) {
@@ -176,7 +167,7 @@ test.describe('File Operations', () => {
 
 			// Verify error message for invalid file type
 			await expect(page.getByText(/invalid file type/i)).toBeVisible()
-				; // Fixed .or() syntax - using conditional logic instead
+				; // Fixed .first() syntax - using conditional logic instead
 		// expect(page.getByText(/only images are allowed/i)).toBeVisible())
 		}
 	})
@@ -189,8 +180,7 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for profile photo upload
-		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).or(
-			page.getByRole('button', { name: /change photo/i })
+		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).first()
 		)
 
 		if (await photoUploadButton.isVisible()) {
@@ -205,7 +195,7 @@ test.describe('File Operations', () => {
 				
 				// Verify error message for file too large
 				await expect(page.getByText(/file too large/i)).toBeVisible()
-					; // Fixed .or() syntax - using conditional logic instead
+					; // Fixed .first() syntax - using conditional logic instead
 		// expect(page.getByText(/maximum file size/i)).toBeVisible())
 			} catch (error) {
 				// File might not exist in fixtures, skip this test
@@ -222,16 +212,14 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for existing profile photo and remove button
-		const removePhotoButton = page.getByRole('button', { name: /remove photo/i }).or(
-			page.getByRole('button', { name: /delete photo/i })
+		const removePhotoButton = page.getByRole('button', { name: /remove photo/i }).first()
 		)
 
 		if (await removePhotoButton.isVisible()) {
 			await removePhotoButton.click()
 
 			// Confirm removal if there's a confirmation dialog
-			const confirmButton = page.getByRole('button', { name: /confirm/i }).or(
-				page.getByRole('button', { name: /delete/i })
+			const confirmButton = page.getByRole('button', { name: /confirm/i }).first()
 			)
 
 			if (await confirmButton.isVisible()) {
@@ -251,8 +239,7 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for profile photo upload
-		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).or(
-			page.getByRole('button', { name: /change photo/i })
+		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).first()
 		)
 
 		if (await photoUploadButton.isVisible()) {
@@ -264,9 +251,9 @@ test.describe('File Operations', () => {
 
 			// Look for progress indicator
 			await expect(page.getByText(/uploading/i)).toBeVisible()
-				; // Fixed .or() syntax - using conditional logic instead
+				; // Fixed .first() syntax - using conditional logic instead
 		// expect(page.locator('[role="progressbar"]')).toBeVisible())
-				; // Fixed .or() syntax - using conditional logic instead
+				; // Fixed .first() syntax - using conditional logic instead
 		// expect(page.getByText(/processing/i)).toBeVisible())
 		}
 	})
@@ -282,8 +269,7 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for image upload with preview
-		const imageUploadButton = page.getByRole('button', { name: /upload image/i }).or(
-			page.locator('input[type="file"][accept*="image"]')
+		const imageUploadButton = page.getByRole('button', { name: /upload image/i }).first()
 		)
 
 		if (await imageUploadButton.isVisible()) {
@@ -299,7 +285,7 @@ test.describe('File Operations', () => {
 
 			// Look for image preview
 			await expect(page.locator('img[src*="blob:"]')).toBeVisible()
-				; // Fixed .or() syntax - using conditional logic instead
+				; // Fixed .first() syntax - using conditional logic instead
 		// expect(page.getByText(/preview/i)).toBeVisible())
 		}
 	})
@@ -315,8 +301,7 @@ test.describe('File Operations', () => {
 		await page.route('**/upload**', route => route.abort())
 
 		// Look for profile photo upload
-		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).or(
-			page.getByRole('button', { name: /change photo/i })
+		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).first()
 		)
 
 		if (await photoUploadButton.isVisible()) {
@@ -328,9 +313,9 @@ test.describe('File Operations', () => {
 
 			// Verify error handling
 			await expect(page.getByText(/upload failed/i)).toBeVisible()
-				; // Fixed .or() syntax - using conditional logic instead
+				; // Fixed .first() syntax - using conditional logic instead
 		// expect(page.getByText(/network error/i)).toBeVisible())
-				; // Fixed .or() syntax - using conditional logic instead
+				; // Fixed .first() syntax - using conditional logic instead
 		// expect(page.getByText(/try again/i)).toBeVisible())
 		}
 	})
@@ -346,8 +331,7 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for organization data export
-		const exportButton = page.getByRole('button', { name: /export data/i }).or(
-			page.getByRole('link', { name: /download organization data/i })
+		const exportButton = page.getByRole('button', { name: /export data/i }).first()
 		)
 
 		if (await exportButton.isVisible()) {

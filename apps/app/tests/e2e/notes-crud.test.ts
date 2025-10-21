@@ -81,8 +81,7 @@ test.describe('Notes CRUD Operations', () => {
 		await page.getByRole('button', { name: /delete/i }).click()
 		
 		// Confirm deletion if there's a confirmation dialog
-		const confirmButton = page.getByRole('button', { name: /confirm/i }).or(
-			page.getByRole('button', { name: /delete/i })
+		const confirmButton = page.getByRole('button', { name: /confirm/i }).first()
 		)
 		if (await confirmButton.isVisible()) {
 			await confirmButton.click()
@@ -176,8 +175,7 @@ test.describe('Notes CRUD Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Test filtering by published status
-		const publishedFilter = page.getByRole('button', { name: /published/i }).or(
-			page.getByRole('tab', { name: /published/i })
+		const publishedFilter = page.getByRole('button', { name: /published/i }).first()
 		)
 
 		if (await publishedFilter.isVisible()) {
@@ -186,8 +184,7 @@ test.describe('Notes CRUD Operations', () => {
 		}
 
 		// Test filtering by draft status
-		const draftFilter = page.getByRole('button', { name: /draft/i }).or(
-			page.getByRole('tab', { name: /draft/i })
+		const draftFilter = page.getByRole('button', { name: /draft/i }).first()
 		)
 
 		if (await draftFilter.isVisible()) {
@@ -216,8 +213,7 @@ test.describe('Notes CRUD Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Change visibility to public
-		const visibilityToggle = page.getByRole('switch', { name: /public/i }).or(
-			page.getByRole('checkbox', { name: /public/i })
+		const visibilityToggle = page.getByRole('switch', { name: /public/i }).first()
 		)
 
 		if (await visibilityToggle.isVisible()) {

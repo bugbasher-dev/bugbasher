@@ -164,8 +164,7 @@ test.describe('Accessibility', () => {
 		
 		for (const theme of themes) {
 			// Switch to theme
-			const themeButton = page.getByRole('button', { name: /theme/i }).or(
-				page.locator('[data-testid="theme-switch"]')
+			const themeButton = page.getByRole('button', { name: /theme/i }).first()
 			)
 
 			if (await themeButton.isVisible()) {
@@ -313,10 +312,8 @@ test.describe('Accessibility', () => {
 		await page.keyboard.press('Tab')
 
 		// Look for skip links
-		const skipLink = page.getByRole('link', { name: /skip to main content/i }).or(
-			page.getByRole('link', { name: /skip to content/i })
-		).or(
-			page.locator('a[href="#main"]')
+		const skipLink = page.getByRole('link', { name: /skip to main content/i }).first()
+		).first()
 		)
 
 		if (await skipLink.count() > 0) {
@@ -326,7 +323,7 @@ test.describe('Accessibility', () => {
 			await skipLink.first().click()
 			
 			// Verify focus moved to main content
-			const mainContent = page.getByRole('main').or(page.locator('#main'))
+			const mainContent = page.getByRole('main').first())
 			if (await mainContent.count() > 0) {
 				await expect(mainContent.first()).toBeFocused()
 			}
