@@ -1,6 +1,9 @@
 import { faker } from '@faker-js/faker'
 import { prisma } from '#app/utils/db.server.ts'
-import { createTestOrganization, createTestOrganizationWithMultipleUsers } from '#tests/test-utils.ts'
+import {
+	createTestOrganization,
+	createTestOrganizationWithMultipleUsers,
+} from '#tests/test-utils.ts'
 // Removed prisma import - using test utilities instead
 import { expect, test } from '#tests/playwright-utils.ts'
 
@@ -34,11 +37,11 @@ test.describe('Notes CRUD Operations', () => {
 
 		const note = await prisma.organizationNote.create({
 			select: { id: true },
-			data: { 
-				...createNote(), 
+			data: {
+				...createNote(),
 				organizationId: org.id,
 				createdById: user.id,
-				isPublic: true
+				isPublic: true,
 			},
 		})
 		await page.goto(`/${org.slug}/notes/${note.id}`)
@@ -67,11 +70,11 @@ test.describe('Notes CRUD Operations', () => {
 
 		const note = await prisma.organizationNote.create({
 			select: { id: true },
-			data: { 
-				...createNote(), 
+			data: {
+				...createNote(),
 				organizationId: org.id,
 				createdById: user.id,
-				isPublic: true
+				isPublic: true,
 			},
 		})
 		await page.goto(`/${org.slug}/notes/${note.id}`)
@@ -79,17 +82,14 @@ test.describe('Notes CRUD Operations', () => {
 
 		// delete the note
 		await page.getByRole('button', { name: /delete/i }).click()
-		
+
 		// Confirm deletion if there's a confirmation dialog
 		const confirmButton = page.getByRole('button', { name: /confirm/i }).first()
-		)
 		if (await confirmButton.isVisible()) {
 			await confirmButton.click()
 		}
 
-		await expect(
-			page.getByText(/note.*deleted/i),
-		).toBeVisible()
+		await expect(page.getByText(/note.*deleted/i)).toBeVisible()
 		await expect(page).toHaveURL(`/${org.slug}/notes`)
 	})
 
@@ -102,11 +102,11 @@ test.describe('Notes CRUD Operations', () => {
 		const noteData = createNote()
 		const note = await prisma.organizationNote.create({
 			select: { id: true },
-			data: { 
-				...noteData, 
+			data: {
+				...noteData,
 				organizationId: org.id,
 				createdById: user.id,
-				isPublic: true
+				isPublic: true,
 			},
 		})
 
@@ -114,7 +114,9 @@ test.describe('Notes CRUD Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Verify note details are displayed
-		await expect(page.getByRole('heading', { name: noteData.title })).toBeVisible()
+		await expect(
+			page.getByRole('heading', { name: noteData.title }),
+		).toBeVisible()
 		await expect(page.getByText(noteData.content)).toBeVisible()
 	})
 
@@ -127,12 +129,12 @@ test.describe('Notes CRUD Operations', () => {
 		// Create multiple notes
 		const notes = Array.from({ length: 3 }, () => createNote())
 		await prisma.organizationNote.createMany({
-			data: notes.map(note => ({
+			data: notes.map((note) => ({
 				...note,
 				organizationId: org.id,
 				createdById: user.id,
-				isPublic: true
-			}))
+				isPublic: true,
+			})),
 		})
 
 		await page.goto(`/${org.slug}/notes`)
@@ -160,23 +162,24 @@ test.describe('Notes CRUD Operations', () => {
 					...draftNote,
 					organizationId: org.id,
 					createdById: user.id,
-					isPublic: false // Draft
+					isPublic: false, // Draft
 				},
 				{
 					...publishedNote,
 					organizationId: org.id,
 					createdById: user.id,
-					isPublic: true // Published
-				}
-			]
+					isPublic: true, // Published
+				},
+			],
 		})
 
 		await page.goto(`/${org.slug}/notes`)
 		await page.waitForLoadState('networkidle')
 
 		// Test filtering by published status
-		const publishedFilter = page.getByRole('button', { name: /published/i }).first()
-		)
+		const publishedFilter = page
+			.getByRole('button', { name: /published/i })
+			.first()
 
 		if (await publishedFilter.isVisible()) {
 			await publishedFilter.click()
@@ -185,7 +188,6 @@ test.describe('Notes CRUD Operations', () => {
 
 		// Test filtering by draft status
 		const draftFilter = page.getByRole('button', { name: /draft/i }).first()
-		)
 
 		if (await draftFilter.isVisible()) {
 			await draftFilter.click()
@@ -201,11 +203,11 @@ test.describe('Notes CRUD Operations', () => {
 
 		const note = await prisma.organizationNote.create({
 			select: { id: true },
-			data: { 
-				...createNote(), 
+			data: {
+				...createNote(),
 				organizationId: org.id,
 				createdById: user.id,
-				isPublic: false // Start as private
+				isPublic: false, // Start as private
 			},
 		})
 
@@ -213,8 +215,9 @@ test.describe('Notes CRUD Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Change visibility to public
-		const visibilityToggle = page.getByRole('switch', { name: /public/i }).first()
-		)
+		const visibilityToggle = page
+			.getByRole('switch', { name: /public/i })
+			.first()
 
 		if (await visibilityToggle.isVisible()) {
 			await visibilityToggle.click()
@@ -223,7 +226,7 @@ test.describe('Notes CRUD Operations', () => {
 			// Verify note is now public
 			const updatedNote = await prisma.organizationNote.findUnique({
 				where: { id: note.id },
-				select: { isPublic: true }
+				select: { isPublic: true },
 			})
 			expect(updatedNote?.isPublic).toBe(true)
 		}

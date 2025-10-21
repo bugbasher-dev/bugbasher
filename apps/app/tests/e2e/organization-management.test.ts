@@ -1,12 +1,15 @@
 import { faker } from '@faker-js/faker'
 import { prisma } from '#app/utils/db.server.ts'
 import { expect, test } from '#tests/playwright-utils.ts'
-import { createTestOrganization, createTestOrganizationWithMultipleUsers } from '#tests/test-utils.ts'
+import {
+	createTestOrganization,
+	createTestOrganizationWithMultipleUsers,
+} from '#tests/test-utils.ts'
 
 test.describe('Organization Management', () => {
 	test('Users can create a new organization', async ({ page, login }) => {
 		const user = await login()
-		
+
 		// Navigate to organizations page
 		await page.goto('/organizations')
 		await page.waitForLoadState('networkidle')
@@ -22,7 +25,9 @@ test.describe('Organization Management', () => {
 
 		await page.getByRole('textbox', { name: /name/i }).fill(orgName)
 		await page.getByRole('textbox', { name: /slug/i }).fill(orgSlug)
-		await page.getByRole('textbox', { name: /description/i }).fill(orgDescription)
+		await page
+			.getByRole('textbox', { name: /description/i })
+			.fill(orgDescription)
 
 		// Submit the form
 		await page.getByRole('button', { name: /create organization/i }).click()
@@ -34,12 +39,12 @@ test.describe('Organization Management', () => {
 		// Verify organization exists in database
 		const createdOrg = await prisma.organization.findFirst({
 			where: { slug: orgSlug },
-			include: { members: true }
+			include: { users: true },
 		})
 		expect(createdOrg).toBeTruthy()
 		expect(createdOrg?.name).toBe(orgName)
-		expect(createdOrg?.members).toHaveLength(1)
-		expect(createdOrg?.members[0].userId).toBe(user.id)
+		expect(createdOrg?.users).toHaveLength(1)
+		expect(createdOrg?.users[0]?.userId).toBe(user.id)
 	})
 
 	test('Users can switch between organizations', async ({ page, login }) => {
@@ -54,10 +59,10 @@ test.describe('Organization Management', () => {
 				users: {
 					create: {
 						userId: user.id,
-						organizationRoleId: 'org_role_admin'
-					}
-				}
-			}
+						organizationRoleId: 'org_role_admin',
+					},
+				},
+			},
 		})
 
 		const org2 = await prisma.organization.create({
@@ -68,10 +73,10 @@ test.describe('Organization Management', () => {
 				users: {
 					create: {
 						userId: user.id,
-						organizationRoleId: 'org_role_member'
-					}
-				}
-			}
+						organizationRoleId: 'org_role_member',
+					},
+				},
+			},
 		})
 
 		// Navigate to first organization
@@ -104,7 +109,11 @@ test.describe('Organization Management', () => {
 		await expect(page.locator(`input[value="${org.name}"]`)).toBeVisible()
 		await expect(page.locator(`input[value="${org.slug}"]`)).toBeVisible()
 		if (org.description) {
-			await expect(page.locator(`textarea:has-text("${org.description}"), input[value="${org.description}"]`)).toBeVisible()
+			await expect(
+				page.locator(
+					`textarea:has-text("${org.description}"), input[value="${org.description}"]`,
+				),
+			).toBeVisible()
 		}
 	})
 
@@ -123,7 +132,9 @@ test.describe('Organization Management', () => {
 		const newDescription = faker.company.catchPhrase()
 
 		await page.getByRole('textbox', { name: /name/i }).fill(newName)
-		await page.getByRole('textbox', { name: /description/i }).fill(newDescription)
+		await page
+			.getByRole('textbox', { name: /description/i })
+			.fill(newDescription)
 
 		// Save changes
 		await page.getByRole('button', { name: /save changes/i }).click()
@@ -133,7 +144,7 @@ test.describe('Organization Management', () => {
 
 		// Verify changes in database
 		const updatedOrg = await prisma.organization.findUnique({
-			where: { id: org.id }
+			where: { id: org.id },
 		})
 		expect(updatedOrg?.name).toBe(newName)
 		expect(updatedOrg?.description).toBe(newDescription)
@@ -148,8 +159,8 @@ test.describe('Organization Management', () => {
 				email: faker.internet.email(),
 				username: faker.internet.username(),
 				name: faker.person.fullName(),
-				roles: { connect: { name: 'user' } }
-			}
+				roles: { connect: { name: 'user' } },
+			},
 		})
 
 		const member2 = await prisma.user.create({
@@ -157,8 +168,8 @@ test.describe('Organization Management', () => {
 				email: faker.internet.email(),
 				username: faker.internet.username(),
 				name: faker.person.fullName(),
-				roles: { connect: { name: 'user' } }
-			}
+				roles: { connect: { name: 'user' } },
+			},
 		})
 
 		// Create an organization with multiple members
@@ -171,10 +182,10 @@ test.describe('Organization Management', () => {
 					create: [
 						{ userId: user.id, organizationRoleId: 'org_role_admin' },
 						{ userId: member1.id, organizationRoleId: 'org_role_admin' },
-						{ userId: member2.id, organizationRoleId: 'org_role_member' }
-					]
-				}
-			}
+						{ userId: member2.id, organizationRoleId: 'org_role_member' },
+					],
+				},
+			},
 		})
 
 		// Navigate to organization members page
@@ -201,8 +212,8 @@ test.describe('Organization Management', () => {
 				email: faker.internet.email(),
 				username: faker.internet.username(),
 				name: faker.person.fullName(),
-				roles: { connect: { name: 'user' } }
-			}
+				roles: { connect: { name: 'user' } },
+			},
 		})
 
 		// Create an organization with the member
@@ -214,10 +225,10 @@ test.describe('Organization Management', () => {
 				users: {
 					create: [
 						{ userId: user.id, organizationRoleId: 'org_role_admin' },
-						{ userId: member.id, organizationRoleId: 'org_role_member' }
-					]
-				}
-			}
+						{ userId: member.id, organizationRoleId: 'org_role_member' },
+					],
+				},
+			},
 		})
 
 		// Navigate to organization members page
@@ -232,14 +243,17 @@ test.describe('Organization Management', () => {
 		await page.getByRole('button', { name: /confirm/i }).click()
 
 		// Verify member is no longer displayed
-		await expect(page.getByText(member.name || member.username)).not.toBeVisible()
+		await expect(
+			page.getByText(member.name || member.username),
+		).not.toBeVisible()
 
 		// Verify member is removed from database
-		const orgMembers = await prisma.organizationMember.findMany({
-			where: { organizationId: org.id }
+		const orgMembers = await prisma.organization.findMany({
+			where: { id: org.id },
+			select: { users: { where: { userId: member.id } } },
 		})
-		expect(orgMembers).toHaveLength(1)
-		expect(orgMembers[0].userId).toBe(user.id)
+		expect(orgMembers[0]?.users).toHaveLength(1)
+		expect(orgMembers[0]?.users[0]?.userId).toBe(user.id)
 	})
 
 	test('Users can leave an organization', async ({ page, login }) => {
@@ -251,8 +265,8 @@ test.describe('Organization Management', () => {
 				email: faker.internet.email(),
 				username: faker.internet.username(),
 				name: faker.person.fullName(),
-				roles: { connect: { name: 'user' } }
-			}
+				roles: { connect: { name: 'user' } },
+			},
 		})
 
 		// Create an organization where user is a member
@@ -264,10 +278,10 @@ test.describe('Organization Management', () => {
 				users: {
 					create: [
 						{ userId: owner.id, organizationRoleId: 'org_role_admin' },
-						{ userId: user.id, organizationRoleId: 'org_role_member' }
-					]
-				}
-			}
+						{ userId: user.id, organizationRoleId: 'org_role_member' },
+					],
+				},
+			},
 		})
 
 		// Navigate to organization settings
@@ -284,8 +298,8 @@ test.describe('Organization Management', () => {
 		await expect(page).toHaveURL('/organizations')
 
 		// Verify user is no longer a member in database
-		const membership = await prisma.organizationMember.findFirst({
-			where: { organizationId: org.id, userId: user.id }
+		const membership = await prisma.organization.findFirst({
+			where: { id: org.id, users: { some: { userId: user.id } } },
 		})
 		expect(membership).toBeNull()
 	})

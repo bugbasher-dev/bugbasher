@@ -1,6 +1,9 @@
 import { faker } from '@faker-js/faker'
 import { prisma } from '#app/utils/db.server.ts'
-import { createTestOrganization, createTestOrganizationWithMultipleUsers } from '#tests/test-utils.ts'
+import {
+	createTestOrganization,
+	createTestOrganizationWithMultipleUsers,
+} from '#tests/test-utils.ts'
 // Removed prisma import - using test utilities instead
 import { expect, test } from '#tests/playwright-utils.ts'
 
@@ -44,7 +47,7 @@ test.describe('Dashboard', () => {
 					organizationId: org.id,
 					createdById: user.id,
 					isPublic: true,
-					createdAt: today
+					createdAt: today,
 				},
 				{
 					title: 'Today Note 2',
@@ -52,7 +55,7 @@ test.describe('Dashboard', () => {
 					organizationId: org.id,
 					createdById: user.id,
 					isPublic: true,
-					createdAt: today
+					createdAt: today,
 				},
 				{
 					title: 'Yesterday Note',
@@ -60,9 +63,9 @@ test.describe('Dashboard', () => {
 					organizationId: org.id,
 					createdById: user.id,
 					isPublic: true,
-					createdAt: yesterday
-				}
-			]
+					createdAt: yesterday,
+				},
+			],
 		})
 
 		// Navigate to organization dashboard
@@ -76,7 +79,10 @@ test.describe('Dashboard', () => {
 		await expect(page.getByText(/total notes/i)).toBeVisible()
 	})
 
-	test('Dashboard shows onboarding checklist for new organizations', async ({ page, login }) => {
+	test('Dashboard shows onboarding checklist for new organizations', async ({
+		page,
+		login,
+	}) => {
 		const user = await login()
 
 		// Create a new organization
@@ -87,7 +93,9 @@ test.describe('Dashboard', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Verify onboarding checklist is displayed - use specific heading
-		await expect(page.getByRole('heading', { name: /get started/i })).toBeVisible()
+		await expect(
+			page.getByRole('heading', { name: /get started/i }),
+		).toBeVisible()
 
 		// Verify some common onboarding steps
 		await expect(page.getByText(/create your first note/i)).toBeVisible()
@@ -108,16 +116,16 @@ test.describe('Dashboard', () => {
 					content: 'Recent content 1',
 					organizationId: org.id,
 					createdById: user.id,
-					isPublic: true
+					isPublic: true,
 				},
 				{
 					title: 'Recent Note 2',
 					content: 'Recent content 2',
 					organizationId: org.id,
 					createdById: user.id,
-					isPublic: true
-				}
-			]
+					isPublic: true,
+				},
+			],
 		})
 
 		// Navigate to organization dashboard
@@ -128,7 +136,10 @@ test.describe('Dashboard', () => {
 		await expect(page.getByText(/top contributors/i)).toBeVisible()
 	})
 
-	test('Dashboard displays organization statistics', async ({ page, login }) => {
+	test('Dashboard displays organization statistics', async ({
+		page,
+		login,
+	}) => {
 		const user = await login()
 
 		// Create additional users
@@ -137,8 +148,8 @@ test.describe('Dashboard', () => {
 				email: faker.internet.email(),
 				username: faker.internet.username(),
 				name: faker.person.fullName(),
-				roles: { connect: { name: 'user' } }
-			}
+				roles: { connect: { name: 'user' } },
+			},
 		})
 
 		const member2 = await prisma.user.create({
@@ -146,8 +157,8 @@ test.describe('Dashboard', () => {
 				email: faker.internet.email(),
 				username: faker.internet.username(),
 				name: faker.person.fullName(),
-				roles: { connect: { name: 'user' } }
-			}
+				roles: { connect: { name: 'user' } },
+			},
 		})
 
 		// Create an organization with multiple members
@@ -160,10 +171,10 @@ test.describe('Dashboard', () => {
 					create: [
 						{ userId: user.id, organizationRoleId: 'org_role_admin' },
 						{ userId: member1.id, organizationRoleId: 'org_role_member' },
-						{ userId: member2.id, organizationRoleId: 'org_role_member' }
-					]
-				}
-			}
+						{ userId: member2.id, organizationRoleId: 'org_role_member' },
+					],
+				},
+			},
 		})
 
 		// Create multiple notes
@@ -173,8 +184,8 @@ test.describe('Dashboard', () => {
 				content: `Content ${i + 1}`,
 				organizationId: org.id,
 				createdById: user.id,
-				isPublic: true
-			}))
+				isPublic: true,
+			})),
 		})
 
 		// Navigate to organization dashboard
@@ -197,17 +208,22 @@ test.describe('Dashboard', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for quick note creation button or link - use first() to avoid strict mode
-		const createNoteButton = page.getByRole('link', { name: /create note/i }).first()
+		const createNoteButton = page
+			.getByRole('link', { name: /create note/i })
+			.first()
 
 		if (await createNoteButton.isVisible()) {
 			await createNoteButton.click()
-			
+
 			// Verify we're redirected to note creation page
 			await expect(page).toHaveURL(new RegExp(`/${org.slug}/notes/new`))
 		}
 	})
 
-	test('Dashboard shows empty state for new organizations', async ({ page, login }) => {
+	test('Dashboard shows empty state for new organizations', async ({
+		page,
+		login,
+	}) => {
 		const user = await login()
 
 		// Create a new organization with no notes
@@ -218,7 +234,9 @@ test.describe('Dashboard', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Verify empty state messaging - use specific selectors
-		await expect(page.getByRole('heading', { name: /get started/i })).toBeVisible()
+		await expect(
+			page.getByRole('heading', { name: /get started/i }),
+		).toBeVisible()
 		await expect(page.getByRole('heading', { name: /welcome/i })).toBeVisible()
 	})
 
@@ -233,7 +251,9 @@ test.describe('Dashboard', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Test navigation to notes section - use first() to avoid strict mode
-		const notesLink = page.getByRole('link', { name: 'Notes', exact: true }).first()
+		const notesLink = page
+			.getByRole('link', { name: 'Notes', exact: true })
+			.first()
 		if (await notesLink.isVisible()) {
 			await notesLink.click()
 			await expect(page).toHaveURL(new RegExp(`/${org.slug}/notes`))
@@ -248,11 +268,14 @@ test.describe('Dashboard', () => {
 		if (await settingsButton.isVisible()) {
 			await settingsButton.click()
 			// Just verify the dropdown opened, not navigation since it's a dropdown
-			await expect(page.locator('[role="menu"]')).toBeVisible()
+			await expect(page.getByRole('menu')).toBeVisible()
 		}
 	})
 
-	test('Dashboard is responsive on different screen sizes', async ({ page, login }) => {
+	test('Dashboard is responsive on different screen sizes', async ({
+		page,
+		login,
+	}) => {
 		const user = await login()
 
 		// Create an organization for the user

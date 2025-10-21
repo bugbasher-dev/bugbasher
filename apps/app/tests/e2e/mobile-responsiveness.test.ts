@@ -1,4 +1,7 @@
-import { createTestOrganization, createTestOrganizationWithMultipleUsers } from '#tests/test-utils.ts'
+import {
+	createTestOrganization,
+	createTestOrganizationWithMultipleUsers,
+} from '#tests/test-utils.ts'
 import { prisma } from '#app/utils/db.server.ts'
 // Removed prisma import - using test utilities instead
 import { expect, test } from '#tests/playwright-utils.ts'
@@ -43,10 +46,10 @@ test.describe('Mobile Responsiveness', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for mobile menu button (hamburger menu)
-		const mobileMenuButton = page.getByRole('button', { name: /menu/i }).first()
-		).first()
-		).first()
-		)
+		const mobileMenuButton = page
+			.getByRole('button', { name: /menu/i })
+			.first()
+			.first()
 
 		if (await mobileMenuButton.isVisible()) {
 			// Open mobile menu
@@ -54,7 +57,6 @@ test.describe('Mobile Responsiveness', () => {
 
 			// Verify menu opens
 			const mobileMenu = page.getByRole('navigation').first()
-			)
 			await expect(mobileMenu).toBeVisible()
 
 			// Verify navigation links are accessible
@@ -63,7 +65,7 @@ test.describe('Mobile Responsiveness', () => {
 
 			// Close menu by clicking button again
 			await mobileMenuButton.click()
-			
+
 			// Verify menu closes
 			await expect(mobileMenu).not.toBeVisible()
 		}
@@ -90,14 +92,14 @@ test.describe('Mobile Responsiveness', () => {
 
 		// Test form submission on mobile
 		await titleInput.fill('Mobile Test Note')
-		
+
 		const contentInput = page.getByRole('textbox', { name: /content/i })
 		await contentInput.fill('This note was created on mobile')
 
 		// Verify submit button is accessible
 		const submitButton = page.getByRole('button', { name: /save/i })
 		await expect(submitButton).toBeVisible()
-		
+
 		const submitButtonBox = await submitButton.boundingBox()
 		expect(submitButtonBox?.height).toBeGreaterThan(40) // Minimum touch target size
 
@@ -120,8 +122,8 @@ test.describe('Mobile Responsiveness', () => {
 				content: `Content for note ${i + 1}`,
 				organizationId: org.id,
 				createdById: user.id,
-				isPublic: true
-			}))
+				isPublic: true,
+			})),
 		})
 
 		// Set mobile viewport
@@ -135,7 +137,9 @@ test.describe('Mobile Responsiveness', () => {
 
 		if (tableCount > 0) {
 			// Verify table doesn't cause horizontal scrolling
-			const bodyScrollWidth = await page.evaluate(() => document.body.scrollWidth)
+			const bodyScrollWidth = await page.evaluate(
+				() => document.body.scrollWidth,
+			)
 			const viewportWidth = await page.evaluate(() => window.innerWidth)
 			expect(bodyScrollWidth).toBeLessThanOrEqual(viewportWidth + 1)
 
@@ -179,12 +183,18 @@ test.describe('Mobile Responsiveness', () => {
 		if (swipeCount > 0) {
 			const element = swipeableElements.first()
 			const elementBox = await element.boundingBox()
-			
+
 			if (elementBox) {
 				// Simulate swipe gesture
-				await page.mouse.move(elementBox.x + 10, elementBox.y + elementBox.height / 2)
+				await page.mouse.move(
+					elementBox.x + 10,
+					elementBox.y + elementBox.height / 2,
+				)
 				await page.mouse.down()
-				await page.mouse.move(elementBox.x + elementBox.width - 10, elementBox.y + elementBox.height / 2)
+				await page.mouse.move(
+					elementBox.x + elementBox.width - 10,
+					elementBox.y + elementBox.height / 2,
+				)
 				await page.mouse.up()
 			}
 		}
@@ -207,11 +217,11 @@ test.describe('Mobile Responsiveness', () => {
 
 		for (let i = 0; i < Math.min(textCount, 10); i++) {
 			const element = textElements.nth(i)
-			if (await element.isVisible() && await element.textContent()) {
-				const fontSize = await element.evaluate(el => {
+			if ((await element.isVisible()) && (await element.textContent())) {
+				const fontSize = await element.evaluate((el) => {
 					return window.getComputedStyle(el).fontSize
 				})
-				
+
 				// Verify font size is at least 16px for body text (accessibility guideline)
 				const fontSizeValue = parseInt(fontSize.replace('px', ''))
 				expect(fontSizeValue).toBeGreaterThanOrEqual(14) // Allow slightly smaller for some elements
@@ -239,7 +249,7 @@ test.describe('Mobile Responsiveness', () => {
 			if (await image.isVisible()) {
 				const imageBox = await image.boundingBox()
 				const viewportWidth = await page.evaluate(() => window.innerWidth)
-				
+
 				if (imageBox) {
 					// Images should not exceed viewport width
 					expect(imageBox.width).toBeLessThanOrEqual(viewportWidth)
@@ -301,7 +311,10 @@ test.describe('Mobile Responsiveness', () => {
 		await expect(viewportMeta).toHaveAttribute('content', /width=device-width/)
 	})
 
-	test('Orientation changes are handled gracefully', async ({ page, login }) => {
+	test('Orientation changes are handled gracefully', async ({
+		page,
+		login,
+	}) => {
 		const user = await login()
 
 		// Create an organization for the user
@@ -338,21 +351,23 @@ test.describe('Mobile Responsiveness', () => {
 		await page.setViewportSize({ width: 375, height: 667 })
 
 		// Simulate slow network to see loading states
-		await page.route('**/*', route => {
+		await page.route('**/*', (route) => {
 			setTimeout(() => route.continue(), 100) // Add 100ms delay
 		})
 
 		await page.goto(`/${org.slug}`)
 
 		// Look for loading indicators
-		const loadingIndicators = page.locator('[data-testid="loading"], .loading, .spinner')
+		const loadingIndicators = page.locator(
+			'[data-testid="loading"], .loading, .spinner',
+		)
 		const loadingCount = await loadingIndicators.count()
 
 		if (loadingCount > 0) {
 			// Verify loading indicators are visible and appropriately sized for mobile
 			const loadingElement = loadingIndicators.first()
 			await expect(loadingElement).toBeVisible()
-			
+
 			const loadingBox = await loadingElement.boundingBox()
 			if (loadingBox) {
 				// Loading indicator should be reasonably sized for mobile

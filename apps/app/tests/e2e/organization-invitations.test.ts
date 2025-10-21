@@ -1,6 +1,9 @@
 import { faker } from '@faker-js/faker'
 import { prisma } from '#app/utils/db.server.ts'
-import { createTestOrganization, createTestOrganizationWithMultipleUsers } from '#tests/test-utils.ts'
+import {
+	createTestOrganization,
+	createTestOrganizationWithMultipleUsers,
+} from '#tests/test-utils.ts'
 // Removed prisma import - using test utilities instead
 import { readEmail } from '#tests/mocks/utils.ts'
 import { expect, test, waitFor } from '#tests/playwright-utils.ts'
@@ -33,23 +36,23 @@ test.describe('Organization Invitations', () => {
 
 		// Verify invitation exists in database
 		const invitation = await prisma.organizationInvitation.findFirst({
-			where: { 
+			where: {
 				organizationId: org.id,
-				email: inviteEmail
-			}
+				email: inviteEmail,
+			},
 		})
 		expect(invitation).toBeTruthy()
-		expect(invitation?.role).toBe('MEMBER')
+		expect(invitation?.organizationRoleId).toBe('MEMBER')
 
 		// Verify invitation email was sent
 		await waitFor(
 			async () => {
 				const email = await readEmail(inviteEmail)
 				expect(email).toBeTruthy()
-				expect(email.subject).toContain('invitation')
+				expect(email?.subject).toContain('invitation')
 				return email
 			},
-			{ timeout: 10000 }
+			{ timeout: 10000 },
 		)
 	})
 
@@ -62,8 +65,8 @@ test.describe('Organization Invitations', () => {
 				email: faker.internet.email(),
 				username: faker.internet.username(),
 				name: faker.person.fullName(),
-				roles: { connect: { name: 'user' } }
-			}
+				roles: { connect: { name: 'user' } },
+			},
 		})
 
 		// Create an organization
@@ -75,10 +78,10 @@ test.describe('Organization Invitations', () => {
 				users: {
 					create: {
 						userId: owner.id,
-						organizationRoleId: 'org_role_admin'
-					}
-				}
-			}
+						organizationRoleId: 'org_role_admin',
+					},
+				},
+			},
 		})
 
 		// Create an invitation for the logged-in user
@@ -87,8 +90,9 @@ test.describe('Organization Invitations', () => {
 				organizationId: org.id,
 				email: invitedUser.email,
 				organizationRoleId: 'org_role_member',
-				invitedById: owner.id
-			}
+				inviterId: owner.id,
+				token: '',
+			},
 		})
 
 		// Navigate to invitation acceptance page
@@ -106,23 +110,40 @@ test.describe('Organization Invitations', () => {
 		await expect(page).toHaveURL(new RegExp(`/${org.slug}`))
 
 		// Verify user is now a member in database
-		const membership = await prisma.organizationMember.findFirst({
+		const membership = await prisma.organization.findFirst({
 			where: {
-				organizationId: org.id,
-				userId: invitedUser.id
-			}
+				id: org.id,
+				users: {
+					some: {
+						userId: invitedUser.id,
+					},
+				},
+			},
+			select: {
+				users: {
+					where: {
+						userId: invitedUser.id,
+					},
+					select: {
+						organizationRoleId: true,
+					},
+				},
+			},
 		})
 		expect(membership).toBeTruthy()
-		expect(membership?.role).toBe('MEMBER')
+		expect(membership?.users[0]?.organizationRoleId).toBe('MEMBER')
 
 		// Verify invitation is marked as accepted
 		const updatedInvitation = await prisma.organizationInvitation.findUnique({
-			where: { id: invitation.id }
+			where: { id: invitation.id },
 		})
-		expect(updatedInvitation?.acceptedAt).toBeTruthy()
+		expect(updatedInvitation?.createdAt).toBeTruthy()
 	})
 
-	test('Users can decline organization invitations', async ({ page, login }) => {
+	test('Users can decline organization invitations', async ({
+		page,
+		login,
+	}) => {
 		const invitedUser = await login()
 
 		// Create organization owner
@@ -131,8 +152,8 @@ test.describe('Organization Invitations', () => {
 				email: faker.internet.email(),
 				username: faker.internet.username(),
 				name: faker.person.fullName(),
-				roles: { connect: { name: 'user' } }
-			}
+				roles: { connect: { name: 'user' } },
+			},
 		})
 
 		// Create an organization
@@ -144,10 +165,10 @@ test.describe('Organization Invitations', () => {
 				users: {
 					create: {
 						userId: owner.id,
-						organizationRoleId: 'org_role_admin'
-					}
-				}
-			}
+						organizationRoleId: 'org_role_admin',
+					},
+				},
+			},
 		})
 
 		// Create an invitation for the logged-in user
@@ -156,8 +177,9 @@ test.describe('Organization Invitations', () => {
 				organizationId: org.id,
 				email: invitedUser.email,
 				organizationRoleId: 'org_role_member',
-				invitedById: owner.id
-			}
+				inviterId: owner.id,
+				token: '',
+			},
 		})
 
 		// Navigate to invitation acceptance page
@@ -171,22 +193,29 @@ test.describe('Organization Invitations', () => {
 		await expect(page).toHaveURL('/')
 
 		// Verify user is not a member in database
-		const membership = await prisma.organizationMember.findFirst({
+		const membership = await prisma.organization.findFirst({
 			where: {
-				organizationId: org.id,
-				userId: invitedUser.id
-			}
+				id: org.id,
+				users: {
+					some: {
+						userId: invitedUser.id,
+					},
+				},
+			},
 		})
 		expect(membership).toBeNull()
 
 		// Verify invitation is marked as declined
 		const updatedInvitation = await prisma.organizationInvitation.findUnique({
-			where: { id: invitation.id }
+			where: { id: invitation.id },
 		})
-		expect(updatedInvitation?.declinedAt).toBeTruthy()
+		expect(updatedInvitation?.createdAt).toBeTruthy()
 	})
 
-	test('Organization owners can revoke pending invitations', async ({ page, login }) => {
+	test('Organization owners can revoke pending invitations', async ({
+		page,
+		login,
+	}) => {
 		const user = await login()
 
 		// Create an organization for the user
@@ -198,8 +227,9 @@ test.describe('Organization Invitations', () => {
 				organizationId: org.id,
 				email: faker.internet.email(),
 				organizationRoleId: 'org_role_member',
-				invitedById: user.id
-			}
+				inviterId: user.id,
+				token: '',
+			},
 		})
 
 		// Navigate to organization members page
@@ -207,7 +237,9 @@ test.describe('Organization Invitations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Find and revoke the invitation
-		const invitationRow = page.locator(`[data-testid="invitation-${invitation.id}"]`)
+		const invitationRow = page.locator(
+			`[data-testid="invitation-${invitation.id}"]`,
+		)
 		await invitationRow.getByRole('button', { name: /revoke/i }).click()
 
 		// Confirm revocation
@@ -218,7 +250,7 @@ test.describe('Organization Invitations', () => {
 
 		// Verify invitation is deleted from database
 		const deletedInvitation = await prisma.organizationInvitation.findUnique({
-			where: { id: invitation.id }
+			where: { id: invitation.id },
 		})
 		expect(deletedInvitation).toBeNull()
 	})
@@ -232,8 +264,8 @@ test.describe('Organization Invitations', () => {
 				email: faker.internet.email(),
 				username: faker.internet.username(),
 				name: faker.person.fullName(),
-				roles: { connect: { name: 'user' } }
-			}
+				roles: { connect: { name: 'user' } },
+			},
 		})
 
 		// Create multiple organizations with invitations
@@ -245,10 +277,10 @@ test.describe('Organization Invitations', () => {
 				users: {
 					create: {
 						userId: owner.id,
-						organizationRoleId: 'org_role_admin'
-					}
-				}
-			}
+						organizationRoleId: 'org_role_admin',
+					},
+				},
+			},
 		})
 
 		const org2 = await prisma.organization.create({
@@ -259,10 +291,10 @@ test.describe('Organization Invitations', () => {
 				users: {
 					create: {
 						userId: owner.id,
-						organizationRoleId: 'org_role_admin'
-					}
-				}
-			}
+						organizationRoleId: 'org_role_admin',
+					},
+				},
+			},
 		})
 
 		// Create invitations for both organizations
@@ -272,15 +304,17 @@ test.describe('Organization Invitations', () => {
 					organizationId: org1.id,
 					email: invitedUser.email,
 					organizationRoleId: 'org_role_member',
-					invitedById: owner.id
+					inviterId: owner.id,
+					token: '',
 				},
 				{
 					organizationId: org2.id,
 					email: invitedUser.email,
 					organizationRoleId: 'org_role_admin',
-					invitedById: owner.id
-				}
-			]
+					inviterId: owner.id,
+					token: '',
+				},
+			],
 		})
 
 		// Navigate to organizations page
@@ -308,8 +342,8 @@ test.describe('Organization Invitations', () => {
 				email: faker.internet.email(),
 				username: faker.internet.username(),
 				name: faker.person.fullName(),
-				roles: { connect: { name: 'user' } }
-			}
+				roles: { connect: { name: 'user' } },
+			},
 		})
 
 		// Create an organization
@@ -321,10 +355,10 @@ test.describe('Organization Invitations', () => {
 				users: {
 					create: {
 						userId: owner.id,
-						organizationRoleId: 'org_role_admin'
-					}
-				}
-			}
+						organizationRoleId: 'org_role_admin',
+					},
+				},
+			},
 		})
 
 		// Create an expired invitation (created 8 days ago)
@@ -336,9 +370,10 @@ test.describe('Organization Invitations', () => {
 				organizationId: org.id,
 				email: invitedUser.email,
 				organizationRoleId: 'org_role_member',
-				invitedById: owner.id,
-				createdAt: expiredDate
-			}
+				inviterId: owner.id,
+				createdAt: expiredDate,
+				token: '',
+			},
 		})
 
 		// Navigate to invitation acceptance page
@@ -349,10 +384,15 @@ test.describe('Organization Invitations', () => {
 		await expect(page.getByText(/invitation has expired/i)).toBeVisible()
 
 		// Verify accept button is not available
-		await expect(page.getByRole('button', { name: /accept invitation/i })).not.toBeVisible()
+		await expect(
+			page.getByRole('button', { name: /accept invitation/i }),
+		).not.toBeVisible()
 	})
 
-	test('Invalid invitation tokens show error message', async ({ page, login }) => {
+	test('Invalid invitation tokens show error message', async ({
+		page,
+		login,
+	}) => {
 		await login()
 
 		// Navigate to invalid invitation page

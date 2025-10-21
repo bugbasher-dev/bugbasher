@@ -35,7 +35,10 @@ test.describe('Accessibility', () => {
 		await expect(page.locator('h1')).toHaveCount(1)
 	})
 
-	test('Forms have proper labels and ARIA attributes', async ({ page, login }) => {
+	test('Forms have proper labels and ARIA attributes', async ({
+		page,
+		login,
+	}) => {
 		const user = await login()
 
 		// Create an organization for the user
@@ -48,7 +51,7 @@ test.describe('Accessibility', () => {
 		// Verify form inputs have labels
 		const titleInput = page.getByRole('textbox', { name: /title/i })
 		await expect(titleInput).toBeVisible()
-		
+
 		// Check if input has aria-label or associated label
 		const hasAriaLabel = await titleInput.getAttribute('aria-label')
 		const hasLabel = await page.locator('label[for]').isVisible()
@@ -70,7 +73,10 @@ test.describe('Accessibility', () => {
 		}
 	})
 
-	test('Interactive elements are keyboard accessible', async ({ page, login }) => {
+	test('Interactive elements are keyboard accessible', async ({
+		page,
+		login,
+	}) => {
 		const user = await login()
 
 		// Create an organization for the user
@@ -82,7 +88,7 @@ test.describe('Accessibility', () => {
 
 		// Test keyboard navigation through interactive elements
 		await page.keyboard.press('Tab')
-		
+
 		// Verify focus is visible
 		const focusedElement = page.locator(':focus')
 		await expect(focusedElement).toBeVisible()
@@ -90,7 +96,7 @@ test.describe('Accessibility', () => {
 		// Test that all buttons are focusable
 		const buttons = page.getByRole('button')
 		const buttonCount = await buttons.count()
-		
+
 		for (let i = 0; i < Math.min(buttonCount, 5); i++) {
 			const button = buttons.nth(i)
 			if (await button.isVisible()) {
@@ -102,7 +108,7 @@ test.describe('Accessibility', () => {
 		// Test that links are focusable
 		const links = page.getByRole('link')
 		const linkCount = await links.count()
-		
+
 		for (let i = 0; i < Math.min(linkCount, 5); i++) {
 			const link = links.nth(i)
 			if (await link.isVisible()) {
@@ -149,7 +155,10 @@ test.describe('Accessibility', () => {
 		}
 	})
 
-	test('Color contrast meets accessibility standards', async ({ page, login }) => {
+	test('Color contrast meets accessibility standards', async ({
+		page,
+		login,
+	}) => {
 		const user = await login()
 
 		// Create an organization for the user
@@ -161,11 +170,10 @@ test.describe('Accessibility', () => {
 
 		// Test both light and dark themes
 		const themes = ['light', 'dark']
-		
+
 		for (const theme of themes) {
 			// Switch to theme
 			const themeButton = page.getByRole('button', { name: /theme/i }).first()
-			)
 
 			if (await themeButton.isVisible()) {
 				await themeButton.click()
@@ -174,13 +182,15 @@ test.describe('Accessibility', () => {
 			}
 
 			// Check text elements have sufficient contrast
-			const textElements = page.locator('p, span, div, h1, h2, h3, h4, h5, h6, button, a')
+			const textElements = page.locator(
+				'p, span, div, h1, h2, h3, h4, h5, h6, button, a',
+			)
 			const textCount = await textElements.count()
 
 			// Sample a few text elements to verify they're visible (basic contrast check)
 			for (let i = 0; i < Math.min(textCount, 10); i++) {
 				const element = textElements.nth(i)
-				if (await element.isVisible() && await element.textContent()) {
+				if ((await element.isVisible()) && (await element.textContent())) {
 					// Basic visibility check - more sophisticated contrast checking would require additional tools
 					await expect(element).toBeVisible()
 				}
@@ -199,33 +209,35 @@ test.describe('Accessibility', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Test focus indicators on various interactive elements
-		const interactiveElements = page.locator('button, a, input, select, textarea')
+		const interactiveElements = page.locator(
+			'button, a, input, select, textarea',
+		)
 		const elementCount = await interactiveElements.count()
 
 		for (let i = 0; i < Math.min(elementCount, 10); i++) {
 			const element = interactiveElements.nth(i)
 			if (await element.isVisible()) {
 				await element.focus()
-				
+
 				// Verify element is focused
 				await expect(element).toBeFocused()
-				
+
 				// Check that focus is visually indicated (this is a basic check)
-				const computedStyle = await element.evaluate(el => {
+				const computedStyle = await element.evaluate((el) => {
 					const style = window.getComputedStyle(el, ':focus')
 					return {
 						outline: style.outline,
 						outlineWidth: style.outlineWidth,
-						boxShadow: style.boxShadow
+						boxShadow: style.boxShadow,
 					}
 				})
-				
+
 				// Verify some form of focus indication exists
-				const hasFocusIndicator = 
+				const hasFocusIndicator =
 					computedStyle.outline !== 'none' ||
 					computedStyle.outlineWidth !== '0px' ||
 					computedStyle.boxShadow !== 'none'
-				
+
 				expect(hasFocusIndicator).toBeTruthy()
 			}
 		}
@@ -246,24 +258,27 @@ test.describe('Accessibility', () => {
 
 		// Check for navigation landmark
 		const navigation = page.getByRole('navigation')
-		if (await navigation.count() > 0) {
+		if ((await navigation.count()) > 0) {
 			await expect(navigation.first()).toBeVisible()
 		}
 
 		// Check for banner/header
 		const banner = page.getByRole('banner')
-		if (await banner.count() > 0) {
+		if ((await banner.count()) > 0) {
 			await expect(banner.first()).toBeVisible()
 		}
 
 		// Check for contentinfo/footer
 		const contentinfo = page.getByRole('contentinfo')
-		if (await contentinfo.count() > 0) {
+		if ((await contentinfo.count()) > 0) {
 			await expect(contentinfo.first()).toBeVisible()
 		}
 	})
 
-	test('Screen reader announcements work correctly', async ({ page, login }) => {
+	test('Screen reader announcements work correctly', async ({
+		page,
+		login,
+	}) => {
 		const user = await login()
 
 		// Create an organization for the user
@@ -287,7 +302,7 @@ test.describe('Accessibility', () => {
 		}
 
 		// Check for status messages
-		const statusElements = page.locator('[role="status"], [role="alert"]')
+		const statusElements = page.getByRole('status')
 		const statusCount = await statusElements.count()
 
 		for (let i = 0; i < statusCount; i++) {
@@ -312,19 +327,20 @@ test.describe('Accessibility', () => {
 		await page.keyboard.press('Tab')
 
 		// Look for skip links
-		const skipLink = page.getByRole('link', { name: /skip to main content/i }).first()
-		).first()
-		)
+		const skipLink = page
+			.getByRole('link', { name: /skip to main content/i })
+			.first()
+			.first()
 
-		if (await skipLink.count() > 0) {
+		if ((await skipLink.count()) > 0) {
 			await expect(skipLink.first()).toBeVisible()
-			
+
 			// Test skip link functionality
 			await skipLink.first().click()
-			
+
 			// Verify focus moved to main content
-			const mainContent = page.getByRole('main').first())
-			if (await mainContent.count() > 0) {
+			const mainContent = page.getByRole('main').first()
+			if ((await mainContent.count()) > 0) {
 				await expect(mainContent.first()).toBeFocused()
 			}
 		}
@@ -343,7 +359,7 @@ test.describe('Accessibility', () => {
 			await submitButton.click()
 
 			// Check for accessible error messages
-			const errorMessages = page.locator('[role="alert"], .error, [aria-invalid="true"]')
+			const errorMessages = page.getByRole('alert')
 			const errorCount = await errorMessages.count()
 
 			if (errorCount > 0) {
@@ -353,7 +369,7 @@ test.describe('Accessibility', () => {
 
 				for (let i = 0; i < invalidCount; i++) {
 					const field = invalidFields.nth(i)
-					
+
 					// Check if field has aria-describedby pointing to error message
 					const describedBy = await field.getAttribute('aria-describedby')
 					if (describedBy) {
@@ -385,19 +401,22 @@ test.describe('Accessibility', () => {
 
 		// Verify dialog has accessible name
 		const dialogTitle = dialog.locator('[aria-labelledby], [aria-label]')
-		if (await dialogTitle.count() > 0) {
+		if ((await dialogTitle.count()) > 0) {
 			await expect(dialogTitle.first()).toBeVisible()
 		}
 
 		// Test focus trap - focus should stay within dialog
 		await page.keyboard.press('Tab')
 		const focusedElement = page.locator(':focus')
-		
+
 		// Verify focused element is within the dialog
-		const isWithinDialog = await focusedElement.evaluate((el, dialogEl) => {
-			return dialogEl.contains(el)
-		}, await dialog.elementHandle())
-		
+		const isWithinDialog = await focusedElement.evaluate(
+			(el, dialogEl) => {
+				return dialogEl?.contains(el)
+			},
+			await dialog.elementHandle(),
+		)
+
 		expect(isWithinDialog).toBeTruthy()
 
 		// Close dialog with Escape
@@ -418,8 +437,8 @@ test.describe('Accessibility', () => {
 				content: `Content ${i + 1}`,
 				organizationId: org.id,
 				createdById: user.id,
-				isPublic: true
-			}))
+				isPublic: true,
+			})),
 		})
 
 		// Navigate to notes page (likely has a table)
@@ -432,17 +451,17 @@ test.describe('Accessibility', () => {
 
 		for (let i = 0; i < tableCount; i++) {
 			const table = tables.nth(i)
-			
+
 			// Check for table headers
 			const headers = table.locator('th')
 			const headerCount = await headers.count()
-			
+
 			if (headerCount > 0) {
 				// Verify headers have proper scope attributes
 				for (let j = 0; j < headerCount; j++) {
 					const header = headers.nth(j)
 					const scope = await header.getAttribute('scope')
-					
+
 					// Headers should have scope="col" or scope="row"
 					if (scope) {
 						expect(['col', 'row', 'colgroup', 'rowgroup']).toContain(scope)
@@ -452,7 +471,7 @@ test.describe('Accessibility', () => {
 
 			// Check for table caption
 			const caption = table.locator('caption')
-			if (await caption.count() > 0) {
+			if ((await caption.count()) > 0) {
 				await expect(caption.first()).toBeVisible()
 			}
 		}

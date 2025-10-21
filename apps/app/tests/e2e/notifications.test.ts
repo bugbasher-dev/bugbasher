@@ -1,6 +1,9 @@
 import { faker } from '@faker-js/faker'
 import { prisma } from '#app/utils/db.server.ts'
-import { createTestOrganization, createTestOrganizationWithMultipleUsers } from '#tests/test-utils.ts'
+import {
+	createTestOrganization,
+	createTestOrganizationWithMultipleUsers,
+} from '#tests/test-utils.ts'
 // Removed prisma import - using test utilities instead
 import { expect, test } from '#tests/playwright-utils.ts'
 
@@ -14,10 +17,15 @@ test.describe('Notifications', () => {
 
 		// Verify notification settings page loads
 		await expect(page.getByText(/notification settings/i)).toBeVisible()
-		await expect(page.getByText(/manage your notification preferences/i)).toBeVisible()
+		await expect(
+			page.getByText(/manage your notification preferences/i),
+		).toBeVisible()
 	})
 
-	test('Users can update email notification preferences', async ({ page, login }) => {
+	test('Users can update email notification preferences', async ({
+		page,
+		login,
+	}) => {
 		await login()
 
 		// Navigate to notification settings
@@ -25,8 +33,9 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for email notification toggles
-		const emailNotificationToggle = page.getByRole('switch', { name: /email notifications/i }).first()
-		)
+		const emailNotificationToggle = page
+			.getByRole('switch', { name: /email notifications/i })
+			.first()
 
 		if (await emailNotificationToggle.isVisible()) {
 			// Toggle email notifications
@@ -36,14 +45,17 @@ test.describe('Notifications', () => {
 			const saveButton = page.getByRole('button', { name: /save/i })
 			if (await saveButton.isVisible()) {
 				await saveButton.click()
-				
+
 				// Verify success message
 				await expect(page.getByText(/settings updated/i)).toBeVisible()
 			}
 		}
 	})
 
-	test('Users can update push notification preferences', async ({ page, login }) => {
+	test('Users can update push notification preferences', async ({
+		page,
+		login,
+	}) => {
 		await login()
 
 		// Navigate to notification settings
@@ -51,8 +63,9 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for push notification toggles
-		const pushNotificationToggle = page.getByRole('switch', { name: /push notifications/i }).first()
-		)
+		const pushNotificationToggle = page
+			.getByRole('switch', { name: /push notifications/i })
+			.first()
 
 		if (await pushNotificationToggle.isVisible()) {
 			// Toggle push notifications
@@ -62,14 +75,17 @@ test.describe('Notifications', () => {
 			const saveButton = page.getByRole('button', { name: /save/i })
 			if (await saveButton.isVisible()) {
 				await saveButton.click()
-				
+
 				// Verify success message
 				await expect(page.getByText(/settings updated/i)).toBeVisible()
 			}
 		}
 	})
 
-	test('Users can configure notification frequency', async ({ page, login }) => {
+	test('Users can configure notification frequency', async ({
+		page,
+		login,
+	}) => {
 		await login()
 
 		// Navigate to notification settings
@@ -77,8 +93,9 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for notification frequency settings
-		const frequencySelect = page.getByRole('combobox', { name: /frequency/i }).first()
-		)
+		const frequencySelect = page
+			.getByRole('combobox', { name: /frequency/i })
+			.first()
 
 		if (await frequencySelect.isVisible()) {
 			// Change notification frequency
@@ -89,7 +106,7 @@ test.describe('Notifications', () => {
 			const saveButton = page.getByRole('button', { name: /save/i })
 			if (await saveButton.isVisible()) {
 				await saveButton.click()
-				
+
 				// Verify success message
 				await expect(page.getByText(/settings updated/i)).toBeVisible()
 			}
@@ -107,9 +124,10 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for notifications bell or indicator
-		const notificationBell = page.getByRole('button', { name: /notifications/i }).first()
-		).first()
-		)
+		const notificationBell = page
+			.getByRole('button', { name: /notifications/i })
+			.first()
+			.first()
 
 		if (await notificationBell.isVisible()) {
 			await notificationBell.click()
@@ -119,7 +137,10 @@ test.describe('Notifications', () => {
 		}
 	})
 
-	test('Users receive notifications for organization invitations', async ({ page, login }) => {
+	test('Users receive notifications for organization invitations', async ({
+		page,
+		login,
+	}) => {
 		const invitedUser = await login()
 
 		// Create organization owner
@@ -128,8 +149,8 @@ test.describe('Notifications', () => {
 				email: faker.internet.email(),
 				username: faker.internet.username(),
 				name: faker.person.fullName(),
-				roles: { connect: { name: 'user' } }
-			}
+				roles: { connect: { name: 'user' } },
+			},
 		})
 
 		// Create an organization
@@ -141,10 +162,10 @@ test.describe('Notifications', () => {
 				users: {
 					create: {
 						userId: owner.id,
-						organizationRoleId: 'org_role_admin'
-					}
-				}
-			}
+						organizationRoleId: 'org_role_admin',
+					},
+				},
+			},
 		})
 
 		// Create an invitation for the logged-in user
@@ -153,8 +174,9 @@ test.describe('Notifications', () => {
 				organizationId: org.id,
 				email: invitedUser.email,
 				organizationRoleId: 'org_role_member',
-				invitedById: owner.id
-			}
+				inviterId: owner.id,
+				token: '',
+			},
 		})
 
 		// Navigate to organizations page
@@ -177,15 +199,17 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for notifications bell
-		const notificationBell = page.getByRole('button', { name: /notifications/i }).first()
-		)
+		const notificationBell = page
+			.getByRole('button', { name: /notifications/i })
+			.first()
 
 		if (await notificationBell.isVisible()) {
 			await notificationBell.click()
 
 			// Look for mark as read button
-			const markAsReadButton = page.getByRole('button', { name: /mark as read/i }).first()
-			)
+			const markAsReadButton = page
+				.getByRole('button', { name: /mark as read/i })
+				.first()
 
 			if (await markAsReadButton.isVisible()) {
 				await markAsReadButton.click()
@@ -196,7 +220,10 @@ test.describe('Notifications', () => {
 		}
 	})
 
-	test('Users can disable specific notification types', async ({ page, login }) => {
+	test('Users can disable specific notification types', async ({
+		page,
+		login,
+	}) => {
 		await login()
 
 		// Navigate to notification settings
@@ -204,8 +231,9 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for specific notification type toggles
-		const commentNotificationToggle = page.getByRole('switch', { name: /comment notifications/i }).first()
-		)
+		const commentNotificationToggle = page
+			.getByRole('switch', { name: /comment notifications/i })
+			.first()
 
 		if (await commentNotificationToggle.isVisible()) {
 			// Disable comment notifications
@@ -215,14 +243,17 @@ test.describe('Notifications', () => {
 			const saveButton = page.getByRole('button', { name: /save/i })
 			if (await saveButton.isVisible()) {
 				await saveButton.click()
-				
+
 				// Verify success message
 				await expect(page.getByText(/settings updated/i)).toBeVisible()
 			}
 		}
 	})
 
-	test('Notification preferences persist across sessions', async ({ page, login }) => {
+	test('Notification preferences persist across sessions', async ({
+		page,
+		login,
+	}) => {
 		await login()
 
 		// Navigate to notification settings
@@ -230,12 +261,13 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Toggle a notification setting
-		const emailToggle = page.getByRole('switch', { name: /email notifications/i }).first()
-		)
+		const emailToggle = page
+			.getByRole('switch', { name: /email notifications/i })
+			.first()
 
 		if (await emailToggle.isVisible()) {
 			const initialState = await emailToggle.isChecked()
-			
+
 			// Toggle the setting
 			await emailToggle.click()
 
@@ -251,8 +283,7 @@ test.describe('Notifications', () => {
 			await page.waitForLoadState('networkidle')
 
 			// Verify the setting persisted
-			const newState = await emailToggle.isChecked()
-			expect(newState).not.toBe(initialState)
+			await expect(emailToggle).toBeChecked()
 		}
 	})
 
@@ -265,7 +296,7 @@ test.describe('Notifications', () => {
 
 		// Look for notification channel options
 		const channelOptions = page.getByText(/notification channels/i)
-		
+
 		if (await channelOptions.isVisible()) {
 			// Verify different channels are available
 			await expect(page.getByText(/email/i)).toBeVisible()
@@ -273,7 +304,10 @@ test.describe('Notifications', () => {
 		}
 	})
 
-	test('Notification settings show current preferences', async ({ page, login }) => {
+	test('Notification settings show current preferences', async ({
+		page,
+		login,
+	}) => {
 		await login()
 
 		// Navigate to notification settings
@@ -286,7 +320,7 @@ test.describe('Notifications', () => {
 		// Check that toggles show current state
 		const toggles = page.getByRole('switch')
 		const toggleCount = await toggles.count()
-		
+
 		// Verify at least some notification toggles are present
 		expect(toggleCount).toBeGreaterThan(0)
 	})
@@ -299,8 +333,9 @@ test.describe('Notifications', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for test notification button
-		const testButton = page.getByRole('button', { name: /test notification/i }).first()
-		)
+		const testButton = page
+			.getByRole('button', { name: /test notification/i })
+			.first()
 
 		if (await testButton.isVisible()) {
 			await testButton.click()
@@ -310,7 +345,10 @@ test.describe('Notifications', () => {
 		}
 	})
 
-	test('Notification settings are accessible via keyboard', async ({ page, login }) => {
+	test('Notification settings are accessible via keyboard', async ({
+		page,
+		login,
+	}) => {
 		await login()
 
 		// Navigate to notification settings
@@ -319,16 +357,16 @@ test.describe('Notifications', () => {
 
 		// Test keyboard navigation through toggles
 		await page.keyboard.press('Tab')
-		
+
 		// Find the first focusable toggle
 		const firstToggle = page.getByRole('switch').first()
-		
+
 		if (await firstToggle.isVisible()) {
 			await firstToggle.focus()
-			
+
 			// Toggle with space key
 			await page.keyboard.press('Space')
-			
+
 			// Navigate to next toggle with tab
 			await page.keyboard.press('Tab')
 		}

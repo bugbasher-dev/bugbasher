@@ -1,4 +1,7 @@
-import { createTestOrganization, createTestOrganizationWithMultipleUsers } from '#tests/test-utils.ts'
+import {
+	createTestOrganization,
+	createTestOrganizationWithMultipleUsers,
+} from '#tests/test-utils.ts'
 // Removed prisma import - using test utilities instead
 import { expect, test } from '#tests/playwright-utils.ts'
 import path from 'path'
@@ -12,14 +15,18 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for profile photo upload section
-		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).first()
-		).first()
-		)
+		const photoUploadButton = page
+			.getByRole('button', { name: /upload photo/i })
+			.first()
+			.first()
 
 		if (await photoUploadButton.isVisible()) {
 			// Create a test image file
-			const testImagePath = path.join(__dirname, '../fixtures/images/test-avatar.jpg')
-			
+			const testImagePath = path.join(
+				__dirname,
+				'../fixtures/images/test-avatar.jpg',
+			)
+
 			// Click upload button to open file dialog
 			await photoUploadButton.click()
 
@@ -31,9 +38,8 @@ test.describe('File Operations', () => {
 			await page.waitForTimeout(2000)
 
 			// Verify success message or updated photo
-			await expect(page.getByText(/photo updated/i)).toBeVisible()
-				; // Fixed .first() syntax - using conditional logic instead
-		// expect(page.locator('img[alt*="profile"]')).toBeVisible())
+			await expect(page.getByText(/photo updated/i)).toBeVisible() // Fixed .first() syntax - using conditional logic instead
+			// expect(page.locator('img[alt*="profile"]')).toBeVisible())
 		}
 	})
 
@@ -48,14 +54,18 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for organization logo upload section
-		const logoUploadButton = page.getByRole('button', { name: /upload logo/i }).first()
-		).first()
-		)
+		const logoUploadButton = page
+			.getByRole('button', { name: /upload logo/i })
+			.first()
+			.first()
 
 		if (await logoUploadButton.isVisible()) {
 			// Create a test image file
-			const testImagePath = path.join(__dirname, '../fixtures/images/test-logo.png')
-			
+			const testImagePath = path.join(
+				__dirname,
+				'../fixtures/images/test-logo.png',
+			)
+
 			// Click upload button
 			await logoUploadButton.click()
 
@@ -67,9 +77,8 @@ test.describe('File Operations', () => {
 			await page.waitForTimeout(2000)
 
 			// Verify success message or updated logo
-			await expect(page.getByText(/logo updated/i)).toBeVisible()
-				; // Fixed .first() syntax - using conditional logic instead
-		// expect(page.locator('img[alt*="logo"]')).toBeVisible())
+			await expect(page.getByText(/logo updated/i)).toBeVisible() // Fixed .first() syntax - using conditional logic instead
+			// expect(page.locator('img[alt*="logo"]')).toBeVisible())
 		}
 	})
 
@@ -85,18 +94,24 @@ test.describe('File Operations', () => {
 
 		// Fill in note details
 		await page.getByRole('textbox', { name: /title/i }).fill('Note with Image')
-		await page.getByRole('textbox', { name: /content/i }).fill('This note will have an image')
+		await page
+			.getByRole('textbox', { name: /content/i })
+			.fill('This note will have an image')
 
 		// Look for image upload functionality
-		const imageUploadButton = page.getByRole('button', { name: /upload image/i }).first()
-		).first()
-		)
+		const imageUploadButton = page
+			.getByRole('button', { name: /upload image/i })
+			.first()
+			.first()
 
 		if (await imageUploadButton.isVisible()) {
 			// Create a test image file
-			const testImagePath = path.join(__dirname, '../fixtures/images/test-note-image.jpg')
-			
-			if (await imageUploadButton.getAttribute('type') === 'file') {
+			const testImagePath = path.join(
+				__dirname,
+				'../fixtures/images/test-note-image.jpg',
+			)
+
+			if ((await imageUploadButton.getAttribute('type')) === 'file') {
 				// Direct file input
 				await imageUploadButton.setInputFiles(testImagePath)
 			} else {
@@ -126,9 +141,10 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for data download section
-		const downloadButton = page.getByRole('button', { name: /download data/i }).first()
-		).first()
-		)
+		const downloadButton = page
+			.getByRole('button', { name: /download data/i })
+			.first()
+			.first()
 
 		if (await downloadButton.isVisible()) {
 			// Set up download listener
@@ -154,21 +170,21 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for profile photo upload
-		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).first()
-		)
+		const photoUploadButton = page
+			.getByRole('button', { name: /upload photo/i })
+			.first()
 
 		if (await photoUploadButton.isVisible()) {
 			// Try to upload an invalid file type (text file)
 			const invalidFilePath = path.join(__dirname, '../fixtures/test-file.txt')
-			
+
 			await photoUploadButton.click()
 			const fileInput = page.locator('input[type="file"]')
 			await fileInput.setInputFiles(invalidFilePath)
 
 			// Verify error message for invalid file type
-			await expect(page.getByText(/invalid file type/i)).toBeVisible()
-				; // Fixed .first() syntax - using conditional logic instead
-		// expect(page.getByText(/only images are allowed/i)).toBeVisible())
+			await expect(page.getByText(/invalid file type/i)).toBeVisible() // Fixed .first() syntax - using conditional logic instead
+			// expect(page.getByText(/only images are allowed/i)).toBeVisible())
 		}
 	})
 
@@ -180,26 +196,31 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for profile photo upload
-		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).first()
-		)
+		const photoUploadButton = page
+			.getByRole('button', { name: /upload photo/i })
+			.first()
 
 		if (await photoUploadButton.isVisible()) {
 			// Create a large test file (this would need to be created in fixtures)
-			const largeFilePath = path.join(__dirname, '../fixtures/images/large-image.jpg')
-			
+			const largeFilePath = path.join(
+				__dirname,
+				'../fixtures/images/large-image.jpg',
+			)
+
 			await photoUploadButton.click()
 			const fileInput = page.locator('input[type="file"]')
-			
+
 			try {
 				await fileInput.setInputFiles(largeFilePath)
-				
+
 				// Verify error message for file too large
-				await expect(page.getByText(/file too large/i)).toBeVisible()
-					; // Fixed .first() syntax - using conditional logic instead
-		// expect(page.getByText(/maximum file size/i)).toBeVisible())
+				await expect(page.getByText(/file too large/i)).toBeVisible() // Fixed .first() syntax - using conditional logic instead
+				// expect(page.getByText(/maximum file size/i)).toBeVisible())
 			} catch (error) {
 				// File might not exist in fixtures, skip this test
-				console.log('Large test file not found, skipping file size validation test')
+				console.log(
+					'Large test file not found, skipping file size validation test',
+				)
 			}
 		}
 	})
@@ -212,15 +233,17 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for existing profile photo and remove button
-		const removePhotoButton = page.getByRole('button', { name: /remove photo/i }).first()
-		)
+		const removePhotoButton = page
+			.getByRole('button', { name: /remove photo/i })
+			.first()
 
 		if (await removePhotoButton.isVisible()) {
 			await removePhotoButton.click()
 
 			// Confirm removal if there's a confirmation dialog
-			const confirmButton = page.getByRole('button', { name: /confirm/i }).first()
-			)
+			const confirmButton = page
+				.getByRole('button', { name: /confirm/i })
+				.first()
 
 			if (await confirmButton.isVisible()) {
 				await confirmButton.click()
@@ -239,22 +262,25 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for profile photo upload
-		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).first()
-		)
+		const photoUploadButton = page
+			.getByRole('button', { name: /upload photo/i })
+			.first()
 
 		if (await photoUploadButton.isVisible()) {
-			const testImagePath = path.join(__dirname, '../fixtures/images/test-avatar.jpg')
-			
+			const testImagePath = path.join(
+				__dirname,
+				'../fixtures/images/test-avatar.jpg',
+			)
+
 			await photoUploadButton.click()
 			const fileInput = page.locator('input[type="file"]')
 			await fileInput.setInputFiles(testImagePath)
 
 			// Look for progress indicator
-			await expect(page.getByText(/uploading/i)).toBeVisible()
-				; // Fixed .first() syntax - using conditional logic instead
-		// expect(page.locator('[role="progressbar"]')).toBeVisible())
-				; // Fixed .first() syntax - using conditional logic instead
-		// expect(page.getByText(/processing/i)).toBeVisible())
+			await expect(page.getByText(/uploading/i)).toBeVisible() // Fixed .first() syntax - using conditional logic instead
+			// expect(page.locator('[role="progressbar"]')).toBeVisible())
+			// Fixed .first() syntax - using conditional logic instead
+			// expect(page.getByText(/processing/i)).toBeVisible())
 		}
 	})
 
@@ -269,13 +295,17 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for image upload with preview
-		const imageUploadButton = page.getByRole('button', { name: /upload image/i }).first()
-		)
+		const imageUploadButton = page
+			.getByRole('button', { name: /upload image/i })
+			.first()
 
 		if (await imageUploadButton.isVisible()) {
-			const testImagePath = path.join(__dirname, '../fixtures/images/test-note-image.jpg')
-			
-			if (await imageUploadButton.getAttribute('type') === 'file') {
+			const testImagePath = path.join(
+				__dirname,
+				'../fixtures/images/test-note-image.jpg',
+			)
+
+			if ((await imageUploadButton.getAttribute('type')) === 'file') {
 				await imageUploadButton.setInputFiles(testImagePath)
 			} else {
 				await imageUploadButton.click()
@@ -284,13 +314,15 @@ test.describe('File Operations', () => {
 			}
 
 			// Look for image preview
-			await expect(page.locator('img[src*="blob:"]')).toBeVisible()
-				; // Fixed .first() syntax - using conditional logic instead
-		// expect(page.getByText(/preview/i)).toBeVisible())
+			await expect(page.locator('img[src*="blob:"]')).toBeVisible() // Fixed .first() syntax - using conditional logic instead
+			// expect(page.getByText(/preview/i)).toBeVisible())
 		}
 	})
 
-	test('File upload handles network errors gracefully', async ({ page, login }) => {
+	test('File upload handles network errors gracefully', async ({
+		page,
+		login,
+	}) => {
 		await login()
 
 		// Navigate to profile settings
@@ -298,25 +330,28 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Simulate network failure during upload
-		await page.route('**/upload**', route => route.abort())
+		await page.route('**/upload**', (route) => route.abort())
 
 		// Look for profile photo upload
-		const photoUploadButton = page.getByRole('button', { name: /upload photo/i }).first()
-		)
+		const photoUploadButton = page
+			.getByRole('button', { name: /upload photo/i })
+			.first()
 
 		if (await photoUploadButton.isVisible()) {
-			const testImagePath = path.join(__dirname, '../fixtures/images/test-avatar.jpg')
-			
+			const testImagePath = path.join(
+				__dirname,
+				'../fixtures/images/test-avatar.jpg',
+			)
+
 			await photoUploadButton.click()
 			const fileInput = page.locator('input[type="file"]')
 			await fileInput.setInputFiles(testImagePath)
 
 			// Verify error handling
-			await expect(page.getByText(/upload failed/i)).toBeVisible()
-				; // Fixed .first() syntax - using conditional logic instead
-		// expect(page.getByText(/network error/i)).toBeVisible())
-				; // Fixed .first() syntax - using conditional logic instead
-		// expect(page.getByText(/try again/i)).toBeVisible())
+			await expect(page.getByText(/upload failed/i)).toBeVisible() // Fixed .first() syntax - using conditional logic instead
+			// expect(page.getByText(/network error/i)).toBeVisible())
+			// Fixed .first() syntax - using conditional logic instead
+			// expect(page.getByText(/try again/i)).toBeVisible())
 		}
 	})
 
@@ -331,8 +366,9 @@ test.describe('File Operations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for organization data export
-		const exportButton = page.getByRole('button', { name: /export data/i }).first()
-		)
+		const exportButton = page
+			.getByRole('button', { name: /export data/i })
+			.first()
 
 		if (await exportButton.isVisible()) {
 			// Set up download listener
