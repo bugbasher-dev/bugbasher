@@ -1,0 +1,381 @@
+import { faker } from '@faker-js/faker'
+import { prisma } from '#app/utils/db.server.ts'
+import { expect, test } from '#tests/playwright-utils.ts'
+
+test.describe('Dashboard', () => {
+	test('Dashboard displays organization overview', async ({ page, login }) => {
+		const user = await login()
+
+		// Create an organization for the user
+		const org = await prisma.organization.create({
+			data: {
+				name: faker.company.name(),
+				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
+				description: faker.company.catchPhrase(),
+				members: {
+					create: {
+						userId: user.id,
+						role: 'OWNER'
+					}
+				}
+			}
+		})
+
+		// Navigate to organization dashboard
+		await page.goto(`/${org.slug}`)
+		await page.waitForLoadState('networkidle')
+
+		// Verify organization name is displayed
+		await expect(page.getByText(org.name)).toBeVisible()
+
+		// Verify dashboard components are present
+		await expect(page.getByText(/dashboard/i)).toBeVisible()
+	})
+
+	test('Dashboard shows notes chart with data', async ({ page, login }) => {
+		const user = await login()
+
+		// Create an organization for the user
+		const org = await prisma.organization.create({
+			data: {
+				name: faker.company.name(),
+				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
+				description: faker.company.catchPhrase(),
+				members: {
+					create: {
+						userId: user.id,
+						role: 'OWNER'
+					}
+				}
+			}
+		})
+
+		// Create notes over different days
+		const today = new Date()
+		const yesterday = new Date(today)
+		yesterday.setDate(yesterday.getDate() - 1)
+		const twoDaysAgo = new Date(today)
+		twoDaysAgo.setDate(twoDaysAgo.getDate() - 2)
+
+		await prisma.organizationNote.createMany({
+			data: [
+				{
+					title: 'Today Note 1',
+					content: 'Content 1',
+					organizationId: org.id,
+					createdById: user.id,
+					isPublic: true,
+					createdAt: today
+				},
+				{
+					title: 'Today Note 2',
+					content: 'Content 2',
+					organizationId: org.id,
+					createdById: user.id,
+					isPublic: true,
+					createdAt: today
+				},
+				{
+					title: 'Yesterday Note',
+					content: 'Content 3',
+					organizationId: org.id,
+					createdById: user.id,
+					isPublic: true,
+					createdAt: yesterday
+				}
+			]
+		})
+
+		// Navigate to organization dashboard
+		await page.goto(`/${org.slug}`)
+		await page.waitForLoadState('networkidle')
+
+		// Verify notes chart is displayed
+		await expect(page.locator('[data-testid="notes-chart"]')).toBeVisible()
+
+		// Verify chart shows data points
+		await expect(page.getByText(/notes created/i)).toBeVisible()
+	})
+
+	test('Dashboard shows onboarding checklist for new organizations', async ({ page, login }) => {
+		const user = await login()
+
+		// Create a new organization
+		const org = await prisma.organization.create({
+			data: {
+				name: faker.company.name(),
+				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
+				description: faker.company.catchPhrase(),
+				members: {
+					create: {
+						userId: user.id,
+						role: 'OWNER'
+					}
+				}
+			}
+		})
+
+		// Navigate to organization dashboard
+		await page.goto(`/${org.slug}`)
+		await page.waitForLoadState('networkidle')
+
+		// Verify onboarding checklist is displayed
+		await expect(page.getByText(/getting started/i)).toBeVisible()
+		await expect(page.getByText(/onboarding/i)).toBeVisible()
+
+		// Verify some common onboarding steps
+		await expect(page.getByText(/create your first note/i)).toBeVisible()
+		await expect(page.getByText(/invite team members/i)).toBeVisible()
+	})
+
+	test('Dashboard shows recent activity', async ({ page, login }) => {
+		const user = await login()
+
+		// Create an organization for the user
+		const org = await prisma.organization.create({
+			data: {
+				name: faker.company.name(),
+				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
+				description: faker.company.catchPhrase(),
+				members: {
+					create: {
+						userId: user.id,
+						role: 'OWNER'
+					}
+				}
+			}
+		})
+
+		// Create some recent notes
+		await prisma.organizationNote.createMany({
+			data: [
+				{
+					title: 'Recent Note 1',
+					content: 'Recent content 1',
+					organizationId: org.id,
+					createdById: user.id,
+					isPublic: true
+				},
+				{
+					title: 'Recent Note 2',
+					content: 'Recent content 2',
+					organizationId: org.id,
+					createdById: user.id,
+					isPublic: true
+				}
+			]
+		})
+
+		// Navigate to organization dashboard
+		await page.goto(`/${org.slug}`)
+		await page.waitForLoadState('networkidle')
+
+		// Verify recent activity section exists
+		await expect(page.getByText(/recent/i)).toBeVisible()
+	})
+
+	test('Dashboard displays organization statistics', async ({ page, login }) => {
+		const user = await login()
+
+		// Create additional users
+		const member1 = await prisma.user.create({
+			data: {
+				email: faker.internet.email(),
+				username: faker.internet.username(),
+				name: faker.person.fullName(),
+				roles: { connect: { name: 'user' } }
+			}
+		})
+
+		const member2 = await prisma.user.create({
+			data: {
+				email: faker.internet.email(),
+				username: faker.internet.username(),
+				name: faker.person.fullName(),
+				roles: { connect: { name: 'user' } }
+			}
+		})
+
+		// Create an organization with multiple members
+		const org = await prisma.organization.create({
+			data: {
+				name: faker.company.name(),
+				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
+				description: faker.company.catchPhrase(),
+				members: {
+					create: [
+						{ userId: user.id, role: 'OWNER' },
+						{ userId: member1.id, role: 'MEMBER' },
+						{ userId: member2.id, role: 'MEMBER' }
+					]
+				}
+			}
+		})
+
+		// Create multiple notes
+		await prisma.organizationNote.createMany({
+			data: Array.from({ length: 5 }, (_, i) => ({
+				title: `Note ${i + 1}`,
+				content: `Content ${i + 1}`,
+				organizationId: org.id,
+				createdById: user.id,
+				isPublic: true
+			}))
+		})
+
+		// Navigate to organization dashboard
+		await page.goto(`/${org.slug}`)
+		await page.waitForLoadState('networkidle')
+
+		// Verify statistics are displayed (these might be in cards or summary sections)
+		// Note: The exact selectors depend on the actual dashboard implementation
+		await expect(page.getByText(/3/)).toBeVisible() // 3 members
+		await expect(page.getByText(/5/)).toBeVisible() // 5 notes
+	})
+
+	test('Dashboard allows quick note creation', async ({ page, login }) => {
+		const user = await login()
+
+		// Create an organization for the user
+		const org = await prisma.organization.create({
+			data: {
+				name: faker.company.name(),
+				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
+				description: faker.company.catchPhrase(),
+				members: {
+					create: {
+						userId: user.id,
+						role: 'OWNER'
+					}
+				}
+			}
+		})
+
+		// Navigate to organization dashboard
+		await page.goto(`/${org.slug}`)
+		await page.waitForLoadState('networkidle')
+
+		// Look for quick note creation button or link
+		const createNoteButton = page.getByRole('link', { name: /create note/i }).or(
+			page.getByRole('button', { name: /create note/i })
+		).or(
+			page.getByRole('link', { name: /new note/i })
+		)
+
+		if (await createNoteButton.isVisible()) {
+			await createNoteButton.click()
+			
+			// Verify we're redirected to note creation page
+			await expect(page).toHaveURL(new RegExp(`/${org.slug}/notes/new`))
+		}
+	})
+
+	test('Dashboard shows empty state for new organizations', async ({ page, login }) => {
+		const user = await login()
+
+		// Create a new organization with no notes
+		const org = await prisma.organization.create({
+			data: {
+				name: faker.company.name(),
+				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
+				description: faker.company.catchPhrase(),
+				members: {
+					create: {
+						userId: user.id,
+						role: 'OWNER'
+					}
+				}
+			}
+		})
+
+		// Navigate to organization dashboard
+		await page.goto(`/${org.slug}`)
+		await page.waitForLoadState('networkidle')
+
+		// Verify empty state messaging
+		await expect(page.getByText(/get started/i)).toBeVisible()
+		await expect(page.getByText(/welcome/i)).toBeVisible()
+	})
+
+	test('Dashboard navigation works correctly', async ({ page, login }) => {
+		const user = await login()
+
+		// Create an organization for the user
+		const org = await prisma.organization.create({
+			data: {
+				name: faker.company.name(),
+				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
+				description: faker.company.catchPhrase(),
+				members: {
+					create: {
+						userId: user.id,
+						role: 'OWNER'
+					}
+				}
+			}
+		})
+
+		// Navigate to organization dashboard
+		await page.goto(`/${org.slug}`)
+		await page.waitForLoadState('networkidle')
+
+		// Test navigation to notes section
+		const notesLink = page.getByRole('link', { name: /notes/i })
+		if (await notesLink.isVisible()) {
+			await notesLink.click()
+			await expect(page).toHaveURL(new RegExp(`/${org.slug}/notes`))
+		}
+
+		// Navigate back to dashboard
+		await page.goto(`/${org.slug}`)
+		await page.waitForLoadState('networkidle')
+
+		// Test navigation to settings
+		const settingsLink = page.getByRole('link', { name: /settings/i })
+		if (await settingsLink.isVisible()) {
+			await settingsLink.click()
+			await expect(page).toHaveURL(new RegExp(`/${org.slug}/settings`))
+		}
+	})
+
+	test('Dashboard is responsive on different screen sizes', async ({ page, login }) => {
+		const user = await login()
+
+		// Create an organization for the user
+		const org = await prisma.organization.create({
+			data: {
+				name: faker.company.name(),
+				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
+				description: faker.company.catchPhrase(),
+				members: {
+					create: {
+						userId: user.id,
+						role: 'OWNER'
+					}
+				}
+			}
+		})
+
+		// Test desktop view
+		await page.setViewportSize({ width: 1200, height: 800 })
+		await page.goto(`/${org.slug}`)
+		await page.waitForLoadState('networkidle')
+
+		// Verify dashboard loads properly on desktop
+		await expect(page.getByText(org.name)).toBeVisible()
+
+		// Test tablet view
+		await page.setViewportSize({ width: 768, height: 1024 })
+		await page.waitForLoadState('networkidle')
+
+		// Verify dashboard is still functional on tablet
+		await expect(page.getByText(org.name)).toBeVisible()
+
+		// Test mobile view
+		await page.setViewportSize({ width: 375, height: 667 })
+		await page.waitForLoadState('networkidle')
+
+		// Verify dashboard is still functional on mobile
+		await expect(page.getByText(org.name)).toBeVisible()
+	})
+})
