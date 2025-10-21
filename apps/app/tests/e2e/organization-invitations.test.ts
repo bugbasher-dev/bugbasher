@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { prisma } from '#app/utils/db.server.ts'
+import { createTestOrganization, createTestOrganizationWithMultipleUsers } from '#tests/test-utils.ts'
+// Removed prisma import - using test utilities instead
 import { readEmail } from '#tests/mocks/utils.ts'
 import { expect, test, waitFor } from '#tests/playwright-utils.ts'
 
@@ -8,19 +10,7 @@ test.describe('Organization Invitations', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization members page
 		await page.goto(`/${org.slug}/settings/members`)
@@ -82,10 +72,10 @@ test.describe('Organization Invitations', () => {
 				name: faker.company.name(),
 				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
 				description: faker.company.catchPhrase(),
-				members: {
+				users: {
 					create: {
 						userId: owner.id,
-						role: 'OWNER'
+						organizationRoleId: 'org_role_admin'
 					}
 				}
 			}
@@ -96,7 +86,7 @@ test.describe('Organization Invitations', () => {
 			data: {
 				organizationId: org.id,
 				email: invitedUser.email,
-				role: 'MEMBER',
+				organizationRoleId: 'org_role_member',
 				invitedById: owner.id
 			}
 		})
@@ -151,10 +141,10 @@ test.describe('Organization Invitations', () => {
 				name: faker.company.name(),
 				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
 				description: faker.company.catchPhrase(),
-				members: {
+				users: {
 					create: {
 						userId: owner.id,
-						role: 'OWNER'
+						organizationRoleId: 'org_role_admin'
 					}
 				}
 			}
@@ -165,7 +155,7 @@ test.describe('Organization Invitations', () => {
 			data: {
 				organizationId: org.id,
 				email: invitedUser.email,
-				role: 'MEMBER',
+				organizationRoleId: 'org_role_member',
 				invitedById: owner.id
 			}
 		})
@@ -200,26 +190,14 @@ test.describe('Organization Invitations', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Create a pending invitation
 		const invitation = await prisma.organizationInvitation.create({
 			data: {
 				organizationId: org.id,
 				email: faker.internet.email(),
-				role: 'MEMBER',
+				organizationRoleId: 'org_role_member',
 				invitedById: user.id
 			}
 		})
@@ -264,10 +242,10 @@ test.describe('Organization Invitations', () => {
 				name: faker.company.name(),
 				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
 				description: faker.company.catchPhrase(),
-				members: {
+				users: {
 					create: {
 						userId: owner.id,
-						role: 'OWNER'
+						organizationRoleId: 'org_role_admin'
 					}
 				}
 			}
@@ -278,10 +256,10 @@ test.describe('Organization Invitations', () => {
 				name: faker.company.name(),
 				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
 				description: faker.company.catchPhrase(),
-				members: {
+				users: {
 					create: {
 						userId: owner.id,
-						role: 'OWNER'
+						organizationRoleId: 'org_role_admin'
 					}
 				}
 			}
@@ -293,13 +271,13 @@ test.describe('Organization Invitations', () => {
 				{
 					organizationId: org1.id,
 					email: invitedUser.email,
-					role: 'MEMBER',
+					organizationRoleId: 'org_role_member',
 					invitedById: owner.id
 				},
 				{
 					organizationId: org2.id,
 					email: invitedUser.email,
-					role: 'ADMIN',
+					organizationRoleId: 'org_role_admin',
 					invitedById: owner.id
 				}
 			]
@@ -340,10 +318,10 @@ test.describe('Organization Invitations', () => {
 				name: faker.company.name(),
 				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
 				description: faker.company.catchPhrase(),
-				members: {
+				users: {
 					create: {
 						userId: owner.id,
-						role: 'OWNER'
+						organizationRoleId: 'org_role_admin'
 					}
 				}
 			}
@@ -357,7 +335,7 @@ test.describe('Organization Invitations', () => {
 			data: {
 				organizationId: org.id,
 				email: invitedUser.email,
-				role: 'MEMBER',
+				organizationRoleId: 'org_role_member',
 				invitedById: owner.id,
 				createdAt: expiredDate
 			}

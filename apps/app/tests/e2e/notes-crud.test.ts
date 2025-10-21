@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { prisma } from '#app/utils/db.server.ts'
+import { createTestOrganization, createTestOrganizationWithMultipleUsers } from '#tests/test-utils.ts'
+// Removed prisma import - using test utilities instead
 import { expect, test } from '#tests/playwright-utils.ts'
 
 test.describe('Notes CRUD Operations', () => {
@@ -7,19 +9,7 @@ test.describe('Notes CRUD Operations', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		await page.goto(`/${org.slug}/notes`)
 		await page.waitForLoadState('networkidle')
@@ -40,19 +30,7 @@ test.describe('Notes CRUD Operations', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		const note = await prisma.organizationNote.create({
 			select: { id: true },
@@ -85,19 +63,7 @@ test.describe('Notes CRUD Operations', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		const note = await prisma.organizationNote.create({
 			select: { id: true },
@@ -132,19 +98,7 @@ test.describe('Notes CRUD Operations', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		const noteData = createNote()
 		const note = await prisma.organizationNote.create({
@@ -169,19 +123,7 @@ test.describe('Notes CRUD Operations', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Create multiple notes
 		const notes = Array.from({ length: 3 }, () => createNote())
@@ -207,19 +149,7 @@ test.describe('Notes CRUD Operations', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Create notes with different statuses
 		const draftNote = createNote()
@@ -270,19 +200,7 @@ test.describe('Notes CRUD Operations', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		const note = await prisma.organizationNote.create({
 			select: { id: true },

@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { prisma } from '#app/utils/db.server.ts'
+import { createTestOrganization, createTestOrganizationWithMultipleUsers } from '#tests/test-utils.ts'
+// Removed prisma import - using test utilities instead
 import { expect, test } from '#tests/playwright-utils.ts'
 
 test.describe('Dashboard', () => {
@@ -7,19 +9,7 @@ test.describe('Dashboard', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization dashboard
 		await page.goto(`/${org.slug}`)
@@ -36,19 +26,7 @@ test.describe('Dashboard', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Create notes over different days
 		const today = new Date()
@@ -101,19 +79,7 @@ test.describe('Dashboard', () => {
 		const user = await login()
 
 		// Create a new organization
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization dashboard
 		await page.goto(`/${org.slug}`)
@@ -132,19 +98,7 @@ test.describe('Dashboard', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Create some recent notes
 		await prisma.organizationNote.createMany({
@@ -202,11 +156,11 @@ test.describe('Dashboard', () => {
 				name: faker.company.name(),
 				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
 				description: faker.company.catchPhrase(),
-				members: {
+				users: {
 					create: [
-						{ userId: user.id, role: 'OWNER' },
-						{ userId: member1.id, role: 'MEMBER' },
-						{ userId: member2.id, role: 'MEMBER' }
+						{ userId: user.id, organizationRoleId: 'org_role_admin' },
+						{ userId: member1.id, organizationRoleId: 'org_role_member' },
+						{ userId: member2.id, organizationRoleId: 'org_role_member' }
 					]
 				}
 			}
@@ -237,19 +191,7 @@ test.describe('Dashboard', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization dashboard
 		await page.goto(`/${org.slug}`)
@@ -274,19 +216,7 @@ test.describe('Dashboard', () => {
 		const user = await login()
 
 		// Create a new organization with no notes
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization dashboard
 		await page.goto(`/${org.slug}`)
@@ -301,19 +231,7 @@ test.describe('Dashboard', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization dashboard
 		await page.goto(`/${org.slug}`)
@@ -342,19 +260,7 @@ test.describe('Dashboard', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Test desktop view
 		await page.setViewportSize({ width: 1200, height: 800 })

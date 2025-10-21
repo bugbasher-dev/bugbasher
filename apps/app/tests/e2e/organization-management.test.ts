@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { prisma } from '#app/utils/db.server.ts'
 import { expect, test } from '#tests/playwright-utils.ts'
+import { createTestOrganization, createTestOrganizationWithMultipleUsers } from '#tests/test-utils.ts'
 
 test.describe('Organization Management', () => {
 	test('Users can create a new organization', async ({ page, login }) => {
@@ -50,10 +51,10 @@ test.describe('Organization Management', () => {
 				name: faker.company.name(),
 				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
 				description: faker.company.catchPhrase(),
-				members: {
+				users: {
 					create: {
 						userId: user.id,
-						role: 'OWNER'
+						organizationRoleId: 'org_role_admin'
 					}
 				}
 			}
@@ -64,10 +65,10 @@ test.describe('Organization Management', () => {
 				name: faker.company.name(),
 				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
 				description: faker.company.catchPhrase(),
-				members: {
+				users: {
 					create: {
 						userId: user.id,
-						role: 'MEMBER'
+						organizationRoleId: 'org_role_member'
 					}
 				}
 			}
@@ -93,29 +94,17 @@ test.describe('Organization Management', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization settings
 		await page.goto(`/${org.slug}/settings`)
 		await page.waitForLoadState('networkidle')
 
 		// Verify settings page loads with organization details
-		await expect(page.getByDisplayValue(org.name)).toBeVisible()
-		await expect(page.getByDisplayValue(org.slug)).toBeVisible()
+		await expect(page.locator(`input[value="${org.name}"]`)).toBeVisible()
+		await expect(page.locator(`input[value="${org.slug}"]`)).toBeVisible()
 		if (org.description) {
-			await expect(page.getByDisplayValue(org.description)).toBeVisible()
+			await expect(page.locator(`textarea:has-text("${org.description}"), input[value="${org.description}"]`)).toBeVisible()
 		}
 	})
 
@@ -123,19 +112,7 @@ test.describe('Organization Management', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization settings
 		await page.goto(`/${org.slug}/settings`)
@@ -190,11 +167,11 @@ test.describe('Organization Management', () => {
 				name: faker.company.name(),
 				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
 				description: faker.company.catchPhrase(),
-				members: {
+				users: {
 					create: [
-						{ userId: user.id, role: 'OWNER' },
-						{ userId: member1.id, role: 'ADMIN' },
-						{ userId: member2.id, role: 'MEMBER' }
+						{ userId: user.id, organizationRoleId: 'org_role_admin' },
+						{ userId: member1.id, organizationRoleId: 'org_role_admin' },
+						{ userId: member2.id, organizationRoleId: 'org_role_member' }
 					]
 				}
 			}
@@ -234,10 +211,10 @@ test.describe('Organization Management', () => {
 				name: faker.company.name(),
 				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
 				description: faker.company.catchPhrase(),
-				members: {
+				users: {
 					create: [
-						{ userId: user.id, role: 'OWNER' },
-						{ userId: member.id, role: 'MEMBER' }
+						{ userId: user.id, organizationRoleId: 'org_role_admin' },
+						{ userId: member.id, organizationRoleId: 'org_role_member' }
 					]
 				}
 			}
@@ -284,10 +261,10 @@ test.describe('Organization Management', () => {
 				name: faker.company.name(),
 				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
 				description: faker.company.catchPhrase(),
-				members: {
+				users: {
 					create: [
-						{ userId: owner.id, role: 'OWNER' },
-						{ userId: user.id, role: 'MEMBER' }
+						{ userId: owner.id, organizationRoleId: 'org_role_admin' },
+						{ userId: user.id, organizationRoleId: 'org_role_member' }
 					]
 				}
 			}

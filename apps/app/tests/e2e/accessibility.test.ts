@@ -1,25 +1,13 @@
-import { faker } from '@faker-js/faker'
-import { prisma } from '#app/utils/db.server.ts'
 import { expect, test } from '#tests/playwright-utils.ts'
+import { prisma } from '#app/utils/db.server.ts'
+import { createTestOrganization } from '#tests/test-utils.ts'
 
 test.describe('Accessibility', () => {
 	test('All pages have proper heading structure', async ({ page, login }) => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Test dashboard page
 		await page.goto(`/${org.slug}`)
@@ -51,19 +39,7 @@ test.describe('Accessibility', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Test note creation form
 		await page.goto(`/${org.slug}/notes/new`)
@@ -72,8 +48,11 @@ test.describe('Accessibility', () => {
 		// Verify form inputs have labels
 		const titleInput = page.getByRole('textbox', { name: /title/i })
 		await expect(titleInput).toBeVisible()
-		await expect(titleInput).toHaveAttribute('aria-label')
-			.or(expect(page.locator('label[for]')).toBeVisible())
+		
+		// Check if input has aria-label or associated label
+		const hasAriaLabel = await titleInput.getAttribute('aria-label')
+		const hasLabel = await page.locator('label[for]').isVisible()
+		expect(hasAriaLabel || hasLabel).toBeTruthy()
 
 		const contentInput = page.getByRole('textbox', { name: /content/i })
 		await expect(contentInput).toBeVisible()
@@ -85,8 +64,9 @@ test.describe('Accessibility', () => {
 		// Verify profile form inputs have proper labels
 		const nameInput = page.getByRole('textbox', { name: /name/i })
 		if (await nameInput.isVisible()) {
-			await expect(nameInput).toHaveAttribute('aria-label')
-				.or(expect(page.locator('label[for]')).toBeVisible())
+			const hasAriaLabel = await nameInput.getAttribute('aria-label')
+			const hasLabel = await page.locator('label[for]').isVisible()
+			expect(hasAriaLabel || hasLabel).toBeTruthy()
 		}
 	})
 
@@ -94,19 +74,7 @@ test.describe('Accessibility', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization page
 		await page.goto(`/${org.slug}`)
@@ -148,19 +116,7 @@ test.describe('Accessibility', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization page
 		await page.goto(`/${org.slug}`)
@@ -197,19 +153,7 @@ test.describe('Accessibility', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization page
 		await page.goto(`/${org.slug}`)
@@ -249,19 +193,7 @@ test.describe('Accessibility', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization page
 		await page.goto(`/${org.slug}`)
@@ -304,19 +236,7 @@ test.describe('Accessibility', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization page
 		await page.goto(`/${org.slug}`)
@@ -348,19 +268,7 @@ test.describe('Accessibility', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization page
 		await page.goto(`/${org.slug}`)
@@ -395,19 +303,7 @@ test.describe('Accessibility', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization page
 		await page.goto(`/${org.slug}`)
@@ -476,19 +372,7 @@ test.describe('Accessibility', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization page
 		await page.goto(`/${org.slug}`)
@@ -528,19 +412,7 @@ test.describe('Accessibility', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Create some notes to populate tables
 		await prisma.organizationNote.createMany({

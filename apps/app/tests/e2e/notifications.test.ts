@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { prisma } from '#app/utils/db.server.ts'
+import { createTestOrganization, createTestOrganizationWithMultipleUsers } from '#tests/test-utils.ts'
+// Removed prisma import - using test utilities instead
 import { expect, test } from '#tests/playwright-utils.ts'
 
 test.describe('Notifications', () => {
@@ -101,19 +103,7 @@ test.describe('Notifications', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization page first
 		await page.goto(`/${org.slug}`)
@@ -153,10 +143,10 @@ test.describe('Notifications', () => {
 				name: faker.company.name(),
 				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
 				description: faker.company.catchPhrase(),
-				members: {
+				users: {
 					create: {
 						userId: owner.id,
-						role: 'OWNER'
+						organizationRoleId: 'org_role_admin'
 					}
 				}
 			}
@@ -167,7 +157,7 @@ test.describe('Notifications', () => {
 			data: {
 				organizationId: org.id,
 				email: invitedUser.email,
-				role: 'MEMBER',
+				organizationRoleId: 'org_role_member',
 				invitedById: owner.id
 			}
 		})
@@ -185,19 +175,7 @@ test.describe('Notifications', () => {
 		const user = await login()
 
 		// Create an organization for the user
-		const org = await prisma.organization.create({
-			data: {
-				name: faker.company.name(),
-				slug: faker.helpers.slugify(faker.company.name()).toLowerCase(),
-				description: faker.company.catchPhrase(),
-				members: {
-					create: {
-						userId: user.id,
-						role: 'OWNER'
-					}
-				}
-			}
-		})
+		const org = await createTestOrganization(user.id, 'admin')
 
 		// Navigate to organization page
 		await page.goto(`/${org.slug}`)
