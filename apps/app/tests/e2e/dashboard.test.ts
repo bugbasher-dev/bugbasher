@@ -85,29 +85,18 @@ test.describe('Dashboard', () => {
 	}) => {
 		const user = await login()
 
-		// Create a new organization
-		const org = await createTestOrganization(user.id, 'admin')
-
-		// Ensure onboarding progress is visible and not completed
-		await prisma.onboardingProgress.upsert({
-			where: {
-				userId_organizationId: {
-					userId: user.id,
-					organizationId: org.id,
+		// Create a new organization with minimal data to avoid auto-completion
+		const org = await prisma.organization.create({
+			data: {
+				name: '', // Empty name to avoid hasCompletedProfile auto-detection
+				slug: `test-org-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+				description: '',
+				users: {
+					create: {
+						userId: user.id,
+						organizationRoleId: 'org_role_admin',
+					},
 				},
-			},
-			update: {
-				isVisible: true,
-				isCompleted: false,
-				completedCount: 0,
-			},
-			create: {
-				userId: user.id,
-				organizationId: org.id,
-				totalSteps: 6, // Based on DEFAULT_ONBOARDING_STEPS length
-				completedCount: 0,
-				isCompleted: false,
-				isVisible: true,
 			},
 		})
 
@@ -249,29 +238,18 @@ test.describe('Dashboard', () => {
 	}) => {
 		const user = await login()
 
-		// Create a new organization with no notes
-		const org = await createTestOrganization(user.id, 'admin')
-
-		// Ensure onboarding progress is visible and not completed
-		await prisma.onboardingProgress.upsert({
-			where: {
-				userId_organizationId: {
-					userId: user.id,
-					organizationId: org.id,
+		// Create a new organization with minimal data to avoid auto-completion
+		const org = await prisma.organization.create({
+			data: {
+				name: '', // Empty name to avoid hasCompletedProfile auto-detection
+				slug: `test-org-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+				description: '',
+				users: {
+					create: {
+						userId: user.id,
+						organizationRoleId: 'org_role_admin',
+					},
 				},
-			},
-			update: {
-				isVisible: true,
-				isCompleted: false,
-				completedCount: 0,
-			},
-			create: {
-				userId: user.id,
-				organizationId: org.id,
-				totalSteps: 6, // Based on DEFAULT_ONBOARDING_STEPS length
-				completedCount: 0,
-				isCompleted: false,
-				isVisible: true,
 			},
 		})
 
