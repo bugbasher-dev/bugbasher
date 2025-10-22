@@ -37,7 +37,11 @@ test.describe('Mobile Responsiveness', () => {
 		await page.waitForTimeout(500) // Allow responsive layout to settle
 
 		// Verify content adapts to tablet size - org name should be visible at this width
-		const orgNameVisible = await page.getByText(org.name).first().isVisible().catch(() => false)
+		const orgNameVisible = await page
+			.getByText(org.name)
+			.first()
+			.isVisible()
+			.catch(() => false)
 		if (!orgNameVisible) {
 			// If org name not visible, just verify page loaded correctly
 			await expect(page.locator('body')).toBeVisible()
@@ -58,10 +62,15 @@ test.describe('Mobile Responsiveness', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Look for mobile menu button (hamburger menu or sidebar trigger)
-		const mobileMenuButton = page.getByRole('button').filter({ hasText: /menu|☰/i }).first()
-		const buttonExists = await mobileMenuButton.count().then(count => count > 0)
+		const mobileMenuButton = page
+			.getByRole('button')
+			.filter({ hasText: /menu|☰/i })
+			.first()
+		const buttonExists = await mobileMenuButton
+			.count()
+			.then((count) => count > 0)
 
-		if (buttonExists && await mobileMenuButton.isVisible()) {
+		if (buttonExists && (await mobileMenuButton.isVisible())) {
 			// Open mobile menu
 			await mobileMenuButton.click()
 			await page.waitForTimeout(300) // Wait for animation
@@ -69,11 +78,12 @@ test.describe('Mobile Responsiveness', () => {
 			// Verify navigation links become accessible
 			const notesLink = page.getByRole('link', { name: /notes/i }).first()
 			const settingsLink = page.getByRole('link', { name: /settings/i }).first()
-			
+
 			// Check if at least one navigation element is now visible
-			const hasNavigation = await notesLink.isVisible().catch(() => false) || 
-										 await settingsLink.isVisible().catch(() => false)
-			
+			const hasNavigation =
+				(await notesLink.isVisible().catch(() => false)) ||
+				(await settingsLink.isVisible().catch(() => false))
+
 			expect(hasNavigation).toBeTruthy()
 		} else {
 			// If no mobile menu button, sidebar might always be visible or use different pattern
@@ -95,7 +105,9 @@ test.describe('Mobile Responsiveness', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Test form inputs are properly sized for mobile
-		const titleInput = page.getByRole('textbox', { name: /title/i }).or(page.getByLabel(/title/i))
+		const titleInput = page
+			.getByRole('textbox', { name: /title/i })
+			.or(page.getByLabel(/title/i))
 		await expect(titleInput).toBeVisible({ timeout: 10000 })
 
 		// Verify input is large enough for touch interaction
@@ -107,12 +119,16 @@ test.describe('Mobile Responsiveness', () => {
 		await titleInput.fill('Mobile Test Note')
 
 		// Content editor is a TipTap rich text editor
-		const contentInput = page.locator('.ProseMirror').or(page.getByRole('textbox', { name: /content/i }))
+		const contentInput = page
+			.locator('.ProseMirror')
+			.or(page.getByRole('textbox', { name: /content/i }))
 		await contentInput.waitFor({ state: 'visible', timeout: 5000 })
 		await contentInput.fill('This note was created on mobile')
 
 		// Verify submit button is accessible - try multiple selectors
-		const submitButton = page.getByRole('button', { name: /save|submit|create/i }).first()
+		const submitButton = page
+			.getByRole('button', { name: /save|submit|create/i })
+			.first()
 		await expect(submitButton).toBeVisible({ timeout: 10000 })
 
 		const submitButtonBox = await submitButton.boundingBox()
@@ -179,34 +195,36 @@ test.describe('Mobile Responsiveness', () => {
 		const buttons = page.getByRole('button')
 		const buttonCount = await buttons.count()
 
-	for (let i = 0; i < Math.min(buttonCount, 3); i++) {
-		const button = buttons.nth(i)
-		if (await button.isVisible()) {
-			// Check if button is in viewport before attempting interaction
-			const buttonBox = await button.boundingBox()
-			if (buttonBox) {
-				const viewportHeight = await page.evaluate(() => window.innerHeight)
-				// Check if button is reasonably positioned
-				const isInViewport = buttonBox.y >= 0 && buttonBox.y + buttonBox.height <= viewportHeight + 50
-				
-				if (isInViewport) {
-					// Verify button is large enough for touch (reduced from 40px)
-					expect(buttonBox?.height).toBeGreaterThan(24)
-					expect(buttonBox?.width).toBeGreaterThan(24)
+		for (let i = 0; i < Math.min(buttonCount, 3); i++) {
+			const button = buttons.nth(i)
+			if (await button.isVisible()) {
+				// Check if button is in viewport before attempting interaction
+				const buttonBox = await button.boundingBox()
+				if (buttonBox) {
+					const viewportHeight = await page.evaluate(() => window.innerHeight)
+					// Check if button is reasonably positioned
+					const isInViewport =
+						buttonBox.y >= 0 &&
+						buttonBox.y + buttonBox.height <= viewportHeight + 50
 
-					// Try to click, but don't fail if it moves
-					try {
-						await button.click({ timeout: 2000 })
-						await page.waitForTimeout(100) // Brief wait after interaction
-					} catch (error) {
-						// Button moved or became unavailable, that's okay
-						console.log(`Button ${i} could not be clicked, skipping`)
+					if (isInViewport) {
+						// Verify button is large enough for touch (reduced from 40px)
+						expect(buttonBox?.height).toBeGreaterThan(24)
+						expect(buttonBox?.width).toBeGreaterThan(24)
+
+						// Try to click, but don't fail if it moves
+						try {
+							await button.click({ timeout: 2000 })
+							await page.waitForTimeout(100) // Brief wait after interaction
+						} catch (error) {
+							// Button moved or became unavailable, that's okay
+							console.log(`Button ${i} could not be clicked, skipping`)
+						}
+						break // Successfully tested at least one button
 					}
-					break // Successfully tested at least one button
 				}
 			}
-		}
-	}		// Test swipe gestures if applicable
+		} // Test swipe gestures if applicable
 		const swipeableElements = page.locator('[data-swipeable], .swipeable')
 		const swipeCount = await swipeableElements.count()
 
@@ -252,9 +270,9 @@ test.describe('Mobile Responsiveness', () => {
 					return window.getComputedStyle(el).fontSize
 				})
 
-					// Verify font size is readable (reduced from 14px to 12px)
-					const fontSizeValue = parseInt(fontSize.replace('px', ''))
-					expect(fontSizeValue).toBeGreaterThanOrEqual(12) // Allow smaller for some elements
+				// Verify font size is readable (reduced from 14px to 12px)
+				const fontSizeValue = parseInt(fontSize.replace('px', ''))
+				expect(fontSizeValue).toBeGreaterThanOrEqual(12) // Allow smaller for some elements
 			}
 		}
 	})

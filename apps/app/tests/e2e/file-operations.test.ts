@@ -94,9 +94,11 @@ test.describe('File Operations', () => {
 
 		// Fill in note details
 		await page.getByRole('textbox', { name: /title/i }).fill('Note with Image')
-		
+
 		// Content editor is a TipTap rich text editor
-		const contentEditor = page.locator('.ProseMirror').or(page.getByRole('textbox', { name: /content/i }))
+		const contentEditor = page
+			.locator('.ProseMirror')
+			.or(page.getByRole('textbox', { name: /content/i }))
 		await contentEditor.waitFor({ state: 'visible', timeout: 10000 })
 		await contentEditor.fill('This note will have an image')
 

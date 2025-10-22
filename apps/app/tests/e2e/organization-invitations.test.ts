@@ -95,7 +95,7 @@ test.describe('Organization Invitations', () => {
 			data: {
 				organizationId: org.id,
 				email: invitedUser.email,
-		organizationRoleId: 'org_role_member',
+				organizationRoleId: 'org_role_member',
 				inviterId: owner.id,
 				token: `accept-test-1-${faker.string.uuid()}-${Date.now()}`,
 			},

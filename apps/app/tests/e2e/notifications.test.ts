@@ -180,7 +180,7 @@ test.describe('Notifications', () => {
 					connect: { id: owner.id },
 				},
 			},
-		})		// Navigate to organizations page
+		}) // Navigate to organizations page
 		await page.goto('/organizations')
 		await page.waitForLoadState('networkidle')
 
