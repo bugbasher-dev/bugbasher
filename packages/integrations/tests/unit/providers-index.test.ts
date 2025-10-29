@@ -9,68 +9,68 @@ import {
 } from '../../src/providers/index'
 import { providerRegistry } from '../../src/provider'
 
-// Mock all provider classes
+// Mock all provider classes - using proper class mocks for Vitest v4
 vi.mock('../../src/providers/slack/provider', () => ({
-	SlackProvider: vi.fn().mockImplementation(() => ({
-		name: 'slack',
-		type: 'productivity',
-	})),
+	SlackProvider: class {
+		name = 'slack'
+		type = 'productivity'
+	},
 }))
 
 vi.mock('../../src/providers/jira/provider', () => ({
-	JiraProvider: vi.fn().mockImplementation(() => ({
-		name: 'jira',
-		type: 'productivity',
-	})),
+	JiraProvider: class {
+		name = 'jira'
+		type = 'productivity'
+	},
 }))
 
 vi.mock('../../src/providers/linear/provider', () => ({
-	LinearProvider: vi.fn().mockImplementation(() => ({
-		name: 'linear',
-		type: 'productivity',
-	})),
+	LinearProvider: class {
+		name = 'linear'
+		type = 'productivity'
+	},
 }))
 
 vi.mock('../../src/providers/gitlab/provider', () => ({
-	GitLabProvider: vi.fn().mockImplementation(() => ({
-		name: 'gitlab',
-		type: 'productivity',
-	})),
+	GitLabProvider: class {
+		name = 'gitlab'
+		type = 'productivity'
+	},
 }))
 
 vi.mock('../../src/providers/clickup/provider', () => ({
-	ClickUpProvider: vi.fn().mockImplementation(() => ({
-		name: 'clickup',
-		type: 'productivity',
-	})),
+	ClickUpProvider: class {
+		name = 'clickup'
+		type = 'productivity'
+	},
 }))
 
 vi.mock('../../src/providers/notion/provider', () => ({
-	NotionProvider: vi.fn().mockImplementation(() => ({
-		name: 'notion',
-		type: 'productivity',
-	})),
+	NotionProvider: class {
+		name = 'notion'
+		type = 'productivity'
+	},
 }))
 
 vi.mock('../../src/providers/asana/provider', () => ({
-	AsanaProvider: vi.fn().mockImplementation(() => ({
-		name: 'asana',
-		type: 'productivity',
-	})),
+	AsanaProvider: class {
+		name = 'asana'
+		type = 'productivity'
+	},
 }))
 
 vi.mock('../../src/providers/trello/provider', () => ({
-	TrelloProvider: vi.fn().mockImplementation(() => ({
-		name: 'trello',
-		type: 'productivity',
-	})),
+	TrelloProvider: class {
+		name = 'trello'
+		type = 'productivity'
+	},
 }))
 
 vi.mock('../../src/providers/github/provider', () => ({
-	GitHubProvider: vi.fn().mockImplementation(() => ({
-		name: 'github',
-		type: 'productivity',
-	})),
+	GitHubProvider: class {
+		name = 'github'
+		type = 'productivity'
+	},
 }))
 
 vi.mock('../../src/provider', () => ({

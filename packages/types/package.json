@@ -17,9 +17,9 @@
     "test:watch": "vitest"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^1.6.0",
+    "@vitest/coverage-v8": "^4.0.1",
     "@repo/config": "*",
     "typescript": "^5.8.3",
-    "vitest": "^1.6.0"
+    "vitest": "^4.0.4"
   }
 }
