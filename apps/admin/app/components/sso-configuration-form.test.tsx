@@ -1,6 +1,21 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
+
+// Mock cache.server.ts to avoid node:sqlite in jsdom - MUST be before imports
+vi.mock('#app/utils/cache.server.ts', async () => {
+	return {
+		cachified: vi.fn(),
+		cache: {
+			delete: vi.fn(),
+			clear: vi.fn(),
+		},
+	}
+})
+
 import { SSOConfigurationForm } from './sso-configuration-form.tsx'
 
 // Mock the Form component from react-router

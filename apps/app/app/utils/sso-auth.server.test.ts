@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { faker } from '@faker-js/faker'
 import { http, HttpResponse } from 'msw'
 import { server } from '#tests/mocks'
+import { consoleWarn } from '#tests/setup/setup-test-env.ts'
 
 // Generate a mock encryption key
 const generateMockEncryptionKey = () => 'a'.repeat(64) // 64 hex chars = 32 bytes
@@ -18,20 +19,34 @@ const mockSSOSessionFindUnique = vi.fn()
 const mockSSOSessionUpdate = vi.fn()
 const mockSSOSessionDelete = vi.fn()
 
-// Mock the entire service module
+// Mock the entire service module with proper class for Vitest v4
 vi.mock('./sso-auth.server.ts', () => {
-	const mockService = {
-		createStrategy: vi.fn(),
-		getStrategy: vi.fn(),
-		provisionUser: vi.fn(),
-		createSSOSession: vi.fn(),
-		refreshTokens: vi.fn(),
-		revokeTokens: vi.fn(),
-	}
+	// Define mock functions inside the factory to avoid hoisting issues
+	const mockCreateStrategy = vi.fn()
+	const mockGetStrategy = vi.fn()
+	const mockProvisionUser = vi.fn()
+	const mockCreateSSOSession = vi.fn()
+	const mockRefreshTokens = vi.fn()
+	const mockRevokeTokens = vi.fn()
 
 	return {
-		SSOAuthService: vi.fn(() => mockService),
-		mockService, // Export for test access
+		SSOAuthService: class {
+			createStrategy = mockCreateStrategy
+			getStrategy = mockGetStrategy
+			provisionUser = mockProvisionUser
+			createSSOSession = mockCreateSSOSession
+			refreshTokens = mockRefreshTokens
+			revokeTokens = mockRevokeTokens
+		},
+		// Export mock functions for test access
+		mockService: {
+			createStrategy: mockCreateStrategy,
+			getStrategy: mockGetStrategy,
+			provisionUser: mockProvisionUser,
+			createSSOSession: mockCreateSSOSession,
+			refreshTokens: mockRefreshTokens,
+			revokeTokens: mockRevokeTokens,
+		},
 	}
 })
 
@@ -94,6 +109,9 @@ describe('SSOAuthService', () => {
 	let mockConfig: any
 
 	beforeEach(() => {
+		// Mock console.warn to avoid test failures
+		consoleWarn.mockImplementation(() => {})
+
 		// Mock BASE_URL environment variable
 		process.env.BASE_URL = 'http://localhost:3000'
 

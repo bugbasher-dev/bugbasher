@@ -5,11 +5,48 @@ import {
 	sentryReactRouter,
 } from '@sentry/react-router'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import { envOnlyMacros } from 'vite-env-only'
 import macrosPlugin from 'vite-plugin-babel-macros'
 
 const MODE = process.env.NODE_ENV
+
+// Plugin to stub out cache.server.ts in test mode to avoid node:sqlite in jsdom
+function stubCacheServerPlugin(): Plugin {
+	return {
+		name: 'stub-cache-server',
+		enforce: 'pre',
+		resolveId(id) {
+			if (MODE === 'test' && id.includes('cache.server')) {
+				return '\0virtual:cache-server-stub'
+			}
+		},
+		load(id) {
+			if (id === '\0virtual:cache-server-stub') {
+				return `
+					export const cachified = () => Promise.resolve();
+					export const cache = { 
+						delete: () => {}, 
+						clear: () => {},
+						clearAll: () => {},
+						set: () => {},
+						get: () => {}
+					};
+					export const ssoCache = {
+						delete: () => {},
+						clear: () => {},
+						clearAll: () => {},
+						set: () => {},
+						get: () => {},
+						getEndpoints: () => null,
+						setEndpoints: () => {}
+					};
+					export default {};
+				`
+			}
+		},
+	}
+}
 
 export default defineConfig((config) => ({
 	build: {
@@ -31,9 +68,11 @@ export default defineConfig((config) => ({
 	optimizeDeps: {
 		include: ['@repo/email', '@repo/integrations'],
 	},
-	ssr: {
-		noExternal: ['@repo/email'],
-	},
+	...(MODE !== 'test' && {
+		ssr: {
+			noExternal: ['@repo/email'],
+		},
+	}),
 	server: {
 		allowedHosts: ['admin.epic-stack.me', 'localhost'],
 		watch: {
@@ -45,6 +84,7 @@ export default defineConfig((config) => ({
 	},
 	sentryConfig,
 	plugins: [
+		MODE === 'test' ? stubCacheServerPlugin() : null,
 		envOnlyMacros(),
 		tailwindcss(),
 		// reactRouterDevTools(),
@@ -61,9 +101,10 @@ export default defineConfig((config) => ({
 		include: ['./app/**/*.test.{ts,tsx}'],
 		setupFiles: ['./tests/setup/setup-test-env.ts'],
 		globalSetup: ['./tests/setup/global-setup.ts'],
-		environment: 'jsdom',
+		environment: 'node',
 		envFile: '../../.env',
 		restoreMocks: true,
+		pool: 'threads',
 		coverage: {
 			include: ['app/**/*.{ts,tsx}'],
 			all: true,

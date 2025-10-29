@@ -29,7 +29,7 @@
 	"[typescriptreact]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
-	"oxc.enable": true,
+	"oxc.enable": false,
 	"oxc.trace.server": "off",
 	"[json]": {
 		"editor.defaultFormatter": "vscode.json-language-features"

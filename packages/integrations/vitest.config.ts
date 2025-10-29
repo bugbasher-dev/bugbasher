@@ -21,7 +21,6 @@ export default defineConfig({
 				'**/fixtures/**',
 			],
 			include: ['src/**/*.ts', 'src/**/*.tsx'],
-			all: true,
 			skipFull: false,
 			thresholds: {
 				global: {

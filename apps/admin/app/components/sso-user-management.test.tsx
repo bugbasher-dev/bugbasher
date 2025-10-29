@@ -1,7 +1,19 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { SSOUserManagement } from './sso-user-management.tsx'
+
+// Mock cache.server.ts to avoid node:sqlite in jsdom
+vi.mock('#app/utils/cache.server.ts', () => ({
+	cachified: vi.fn(),
+	cache: {
+		delete: vi.fn(),
+		clear: vi.fn(),
+	},
+}))
 
 // Mock UI components
 vi.mock('@repo/ui', () => ({
