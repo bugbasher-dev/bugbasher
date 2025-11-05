@@ -11,6 +11,7 @@ import { InvoicesCard } from '#app/components/settings/cards/organization/invoic
 
 import { requireUserId } from '#app/utils/auth.server'
 import { prisma } from '#app/utils/db.server'
+import { getLaunchStatus } from '#app/utils/env.server'
 import {
 	checkoutAction,
 	customerPortalAction,
@@ -49,13 +50,24 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 	}
 
 	// Block access to billing page for PUBLIC_BETA and CLOSED_BETA
-	const launchStatus = process.env.LAUNCH_STATUS
-	if (launchStatus === 'PUBLIC_BETA' || launchStatus === 'CLOSED_BETA') {
+	// EXCEPT for organizations with existing active subscriptions (grandfathered)
+	const launchStatus = getLaunchStatus()
+	const hasActiveSubscription = Boolean(
+		organization.stripeSubscriptionId &&
+			organization.subscriptionStatus === 'active',
+	)
+
+	if (
+		!hasActiveSubscription &&
+		(launchStatus === 'PUBLIC_BETA' || launchStatus === 'CLOSED_BETA')
+	) {
 		throw new Response('Not Found', { status: 404 })
 	}
 
-	// At this point, we know we're in LAUNCHED mode, so fetch plans
-	const plansAndPrices = await getPlansAndPrices()
+	// Fetch plans (will be null if in beta and no active subscription)
+	const shouldFetchPlans =
+		launchStatus === 'LAUNCHED' || hasActiveSubscription
+	const plansAndPrices = shouldFetchPlans ? await getPlansAndPrices() : null
 	const invoices = await getOrganizationInvoices(organization)
 
 	// Get current subscription price ID for accurate plan detection
@@ -93,7 +105,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
 				},
 			},
 		},
-		select: { id: true, name: true, slug: true },
+		select: {
+			id: true,
+			name: true,
+			slug: true,
+			stripeSubscriptionId: true,
+			subscriptionStatus: true,
+		},
 	})
 
 	if (!organization) {
@@ -101,8 +119,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
 	}
 
 	// Block access to billing actions for PUBLIC_BETA and CLOSED_BETA
-	const launchStatus = process.env.LAUNCH_STATUS
-	if (launchStatus === 'PUBLIC_BETA' || launchStatus === 'CLOSED_BETA') {
+	// EXCEPT for organizations with existing active subscriptions (grandfathered)
+	const launchStatus = getLaunchStatus()
+	const hasActiveSubscription = Boolean(
+		organization.stripeSubscriptionId &&
+			organization.subscriptionStatus === 'active',
+	)
+
+	if (
+		!hasActiveSubscription &&
+		(launchStatus === 'PUBLIC_BETA' || launchStatus === 'CLOSED_BETA')
+	) {
 		throw new Response('Not Found', { status: 404 })
 	}
 

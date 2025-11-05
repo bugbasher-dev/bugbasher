@@ -80,6 +80,25 @@ export function getEnv() {
 	}
 }
 
+/**
+ * Gets the validated LAUNCH_STATUS environment variable.
+ * Returns 'LAUNCHED' as default if not set or invalid.
+ * @returns The current launch status: CLOSED_BETA, PUBLIC_BETA, or LAUNCHED
+ */
+export function getLaunchStatus() {
+	const status = process.env.LAUNCH_STATUS
+	// Validate against schema enum values
+	if (
+		status === 'CLOSED_BETA' ||
+		status === 'PUBLIC_BETA' ||
+		status === 'LAUNCHED'
+	) {
+		return status
+	}
+	// Return default value as defined in schema
+	return 'LAUNCHED' as const
+}
+
 type ENV = ReturnType<typeof getEnv>
 
 declare global {

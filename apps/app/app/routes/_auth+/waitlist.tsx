@@ -2,6 +2,7 @@ import { getPageTitle } from '@repo/config/brand'
 import { redirect } from 'react-router'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
+import { getLaunchStatus } from '#app/utils/env.server.ts'
 import { type Route } from './+types/waitlist.ts'
 import {
 	Card,
@@ -24,7 +25,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 	}
 
 	// If launch status is not CLOSED_BETA, redirect to organizations
-	const launchStatus = process.env.LAUNCH_STATUS
+	const launchStatus = getLaunchStatus()
 	if (launchStatus !== 'CLOSED_BETA') {
 		throw redirect('/organizations')
 	}
