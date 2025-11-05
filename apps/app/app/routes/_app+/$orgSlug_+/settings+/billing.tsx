@@ -178,7 +178,6 @@ export default function BillingSettings() {
 		organization,
 		plansAndPrices,
 		invoices,
-		isClosedBeta,
 		currentPriceId,
 	} = useLoaderData<typeof loader>()
 
@@ -188,16 +187,13 @@ export default function BillingSettings() {
 				<BillingCard
 					organization={organization}
 					plansAndPrices={plansAndPrices}
-					isClosedBeta={isClosedBeta}
 					currentPriceId={currentPriceId}
 				/>
 			</AnnotatedSection>
 
-			{!isClosedBeta && (
-				<AnnotatedSection>
-					<InvoicesCard invoices={invoices} />
-				</AnnotatedSection>
-			)}
+			<AnnotatedSection>
+				<InvoicesCard invoices={invoices} />
+			</AnnotatedSection>
 		</AnnotatedLayout>
 	)
 }
