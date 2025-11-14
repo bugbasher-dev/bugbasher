@@ -14,7 +14,7 @@ import {
 	useForm,
 } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, lazy, Suspense, Component } from 'react'
 import { useFetcher, useParams } from 'react-router'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
@@ -28,7 +28,34 @@ import {
 	type ContentEditorRef,
 } from '#app/components/note/content-editor.tsx'
 
-import { MultiMediaUpload } from '#app/components/ui/multi-media-upload.tsx'
+// Simple error boundary for lazy-loaded components
+class LazyLoadErrorBoundary extends Component<
+	{ children: React.ReactNode; fallback: React.ReactNode },
+	{ hasError: boolean }
+> {
+	constructor(props: { children: React.ReactNode; fallback: React.ReactNode }) {
+		super(props)
+		this.state = { hasError: false }
+	}
+
+	static getDerivedStateFromError() {
+		return { hasError: true }
+	}
+
+	render() {
+		if (this.state.hasError) {
+			return this.props.fallback
+		}
+		return this.props.children
+	}
+}
+
+// Lazy load MultiMediaUpload component for better performance
+const MultiMediaUpload = lazy(() =>
+	import('#app/components/ui/multi-media-upload.tsx').then((module) => ({
+		default: module.MultiMediaUpload,
+	})),
+)
 import { useIsPending } from '#app/utils/misc.tsx'
 
 const titleMinLength = 1
@@ -289,17 +316,29 @@ export function OrgNoteEditor({
 									</div>
 								)}
 							</div>
-							<MultiMediaUpload
-								meta={fields.media}
-								formId={form.id}
-								existingImages={note?.uploads?.filter(
-									(u) => u.type === 'image',
-								)}
-								existingVideos={note?.uploads?.filter(
-									(u) => u.type === 'video',
-								)}
-								organizationId={organizationId}
-							/>
+							<LazyLoadErrorBoundary
+								fallback={
+									<div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-center">
+										<div className="text-sm text-destructive">
+											Failed to load media upload component
+										</div>
+									</div>
+								}
+							>
+								<Suspense fallback={<div className="h-20 animate-pulse bg-muted" />}>
+									<MultiMediaUpload
+										meta={fields.media}
+										formId={form.id}
+										existingImages={note?.uploads?.filter(
+											(u) => u.type === 'image',
+										)}
+										existingVideos={note?.uploads?.filter(
+											(u) => u.type === 'video',
+										)}
+										organizationId={organizationId}
+									/>
+								</Suspense>
+							</LazyLoadErrorBoundary>
 						</div>
 						<ErrorList id={form.errorId} errors={form.errors} />
 					</fetcher.Form>

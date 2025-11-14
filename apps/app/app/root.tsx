@@ -25,6 +25,7 @@ import { linguiServer, localeCookie } from './modules/lingui/lingui.server.ts'
 import { useOptionalTheme } from './routes/resources+/theme-switch.tsx'
 import tailwindStyleSheetUrl from './styles/tailwind.css?url'
 import { getUserId, logout } from './utils/auth.server.ts'
+import { cache, cachified } from './utils/cache.server.ts'
 import { ClientHintCheck, getHints } from './utils/client-hints.tsx'
 import { getCookieConsentState } from './utils/cookie-consent.server.ts'
 import { prisma } from './utils/db.server.ts'
@@ -79,22 +80,30 @@ export async function loader({ request }: Route.LoaderArgs) {
 	const user = userId
 		? await time(
 				() =>
-					prisma.user.findUnique({
-						select: {
-							id: true,
-							name: true,
-							username: true,
-							image: { select: { objectKey: true } },
-							roles: {
+					cachified({
+						key: `user:${userId}`,
+						cache,
+						// Reduced TTL for security-sensitive data (roles/permissions)
+						// Cache invalidated on user updates via invalidateUserCache()
+						ttl: 1000 * 60 * 1, // 1 minute
+						getFreshValue: () =>
+							prisma.user.findUnique({
 								select: {
+									id: true,
 									name: true,
-									permissions: {
-										select: { entity: true, action: true, access: true },
+									username: true,
+									image: { select: { objectKey: true } },
+									roles: {
+										select: {
+											name: true,
+											permissions: {
+												select: { entity: true, action: true, access: true },
+											},
+										},
 									},
 								},
-							},
-						},
-						where: { id: userId },
+								where: { id: userId },
+							}),
 					}),
 				{ timings, type: 'find user', desc: 'find user in root' },
 			)
@@ -112,9 +121,8 @@ export async function loader({ request }: Route.LoaderArgs) {
 	const isMarketingRoute = requestUrl.pathname.startsWith('/dashboard')
 	const sidebarState = isMarketingRoute ? await getSidebarState(request) : null
 
-	// Get user organizations if user exists
+	// Load user organizations immediately (required for NovuProvider)
 	let userOrganizations = undefined
-	let favoriteNotes = undefined
 	if (user) {
 		try {
 			const { getUserOrganizations, getUserDefaultOrganization } = await import(
@@ -126,16 +134,22 @@ export async function loader({ request }: Route.LoaderArgs) {
 				organizations: orgs,
 				currentOrganization: defaultOrg,
 			}
+		} catch (error) {
+			console.error('Failed to load user organizations', error)
+		}
+	}
 
-			// Get user's favorite notes for the current organization
-			if (defaultOrg?.organization.id) {
-				favoriteNotes = await time(
+	// Load favorite notes
+	const favoriteNotes =
+		user && userOrganizations?.currentOrganization?.organization?.id
+			? await time(
 					() =>
 						prisma.organizationNoteFavorite.findMany({
 							where: {
 								userId: user.id,
 								note: {
-									organizationId: defaultOrg.organization.id,
+									organizationId:
+										userOrganizations.currentOrganization?.organization.id ?? '',
 									OR: [
 										{ isPublic: true },
 										{ createdById: user.id },
@@ -162,11 +176,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 						desc: 'find favorite notes in root',
 					},
 				)
-			}
-		} catch (error) {
-			console.error('Failed to load user organizations', error)
-		}
-	}
+			: undefined
 
 	const requestInfo = {
 		hints: getHints(request),
