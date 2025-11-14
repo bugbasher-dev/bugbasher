@@ -1,0 +1,31 @@
+{
+  "name": "@repo/storage",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "module": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "import": "./index.ts",
+      "default": "./index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "git clean -xdf .cache .nx dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@mjackson/form-data-parser": "^0.7.0",
+    "@paralleldrive/cuid2": "^2.2.2",
+    "@repo/prisma": "*",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.21",
+    "typescript": "^5.8.3"
+  }
+}
