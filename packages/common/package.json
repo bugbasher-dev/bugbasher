@@ -11,6 +11,31 @@
       "types": "./index.ts",
       "import": "./index.ts",
       "default": "./index.ts"
+    },
+    "./cookie-consent": {
+      "types": "./src/cookie-consent.server.ts",
+      "import": "./src/cookie-consent.server.ts",
+      "default": "./src/cookie-consent.server.ts"
+    },
+    "./redirect-cookie": {
+      "types": "./src/redirect-cookie.server.ts",
+      "import": "./src/redirect-cookie.server.ts",
+      "default": "./src/redirect-cookie.server.ts"
+    },
+    "./sidebar-cookie": {
+      "types": "./src/sidebar-cookie.server.ts",
+      "import": "./src/sidebar-cookie.server.ts",
+      "default": "./src/sidebar-cookie.server.ts"
+    },
+    "./toast": {
+      "types": "./src/toast.server.ts",
+      "import": "./src/toast.server.ts",
+      "default": "./src/toast.server.ts"
+    },
+    "./headers": {
+      "types": "./src/headers.server.ts",
+      "import": "./src/headers.server.ts",
+      "default": "./src/headers.server.ts"
     }
   },
   "scripts": {
@@ -21,13 +46,17 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@epic-web/cachified": "^5.4.2",
+    "@paralleldrive/cuid2": "^2.2.2",
+    "@tusbar/cache-control": "^1.0.0",
     "clsx": "^2.1.1",
+    "cookie": "^1.0.2",
     "openimg": "^1.1.0",
     "react": "^19.0.0",
     "react-router": "^7.1.3",
     "spin-delay": "^2.0.0",
     "tailwind-merge": "^3.2.0",
-    "@epic-web/cachified": "^5.4.2"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "22.15.21",
