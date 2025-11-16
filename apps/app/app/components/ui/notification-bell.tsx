@@ -229,13 +229,32 @@ function EmptyState() {
 	)
 }
 
+function useOptionalNovu() {
+	try {
+		return useNovu()
+	} catch {
+		return null
+	}
+}
+
+function useOptionalNotifications(filter?: { read?: boolean }) {
+	try {
+		return useNotifications(filter)
+	} catch {
+		return null
+	}
+}
+
 function NotificationBellComponent() {
 	const [filter, setFilter] = useState<'all' | 'unread'>('all')
 	const { notifications, isLoading, fetchMore, hasMore, readAll, refetch } =
-		useNotifications(filter === 'unread' ? { read: false } : {})
-	const novu = useNovu()
+		useOptionalNotifications(filter === 'unread' ? { read: false } : {}) || {}
+	const novu = useOptionalNovu()
 	const [isOpen, setIsOpen] = useState(false)
 	const location = useLocation()
+
+	if (!novu) return null
+	if (!notifications) return null
 
 	const unreadCount = notifications?.filter((n) => !n.isRead).length || 0
 

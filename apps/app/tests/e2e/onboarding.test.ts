@@ -1,14 +1,11 @@
 import { invariant } from '@epic-web/invariant'
 import { faker } from '@faker-js/faker'
+import { USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '@repo/validation'
 import { prisma } from '#app/utils/db.server.ts'
 import {
 	normalizeEmail,
 	normalizeUsername,
 } from '#app/utils/providers/provider.ts'
-import {
-	USERNAME_MAX_LENGTH,
-	USERNAME_MIN_LENGTH,
-} from '#app/utils/user-validation.ts'
 import { readEmail } from '#tests/mocks/utils.ts'
 import { createUser, expect, test as base } from '#tests/playwright-utils.ts'
 
@@ -27,7 +24,7 @@ const test = base.extend<{
 		password: string
 	}
 }>({
-	getOnboardingData: async ({}, use) => {
+	getOnboardingData: async ({ }, use) => {
 		const userData = createUser()
 		await use(() => {
 			const onboardingData = {
