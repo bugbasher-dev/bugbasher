@@ -5,7 +5,7 @@ import ReactMarkdown, { type Options } from 'react-markdown'
 import rehypeKatex from 'rehype-katex'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
-import { cn } from '#app/utils/misc.tsx'
+import { cn } from '@repo/ui'
 import { CodeBlock, CodeBlockCopyButton } from './code-block'
 import 'katex/dist/katex.min.css'
 import hardenReactMarkdown from 'harden-react-markdown'
@@ -151,23 +151,17 @@ function parseIncompleteMarkdown(text: string): string {
 }
 
 // Create a hardened version of ReactMarkdown
-const HardenedMarkdown =
+const HardenedMarkdown: typeof ReactMarkdown =
 	typeof hardenReactMarkdown === 'function'
-		? hardenReactMarkdown(ReactMarkdown)
+		? (hardenReactMarkdown as any)(ReactMarkdown)
 		: ReactMarkdown
 
 export type ResponseProps = HTMLAttributes<HTMLDivElement> & {
 	options?: Options
 	children: Options['children']
-	allowedImagePrefixes?: ComponentProps<
-		ReturnType<typeof hardenReactMarkdown>
-	>['allowedImagePrefixes']
-	allowedLinkPrefixes?: ComponentProps<
-		ReturnType<typeof hardenReactMarkdown>
-	>['allowedLinkPrefixes']
-	defaultOrigin?: ComponentProps<
-		ReturnType<typeof hardenReactMarkdown>
-	>['defaultOrigin']
+	allowedImagePrefixes?: string[]
+	allowedLinkPrefixes?: string[]
+	defaultOrigin?: string
 	parseIncompleteMarkdown?: boolean
 }
 
@@ -302,9 +296,9 @@ export const Response = memo(
 					components={components}
 					rehypePlugins={[rehypeKatex]}
 					remarkPlugins={[remarkGfm, remarkMath]}
-					allowedImagePrefixes={allowedImagePrefixes ?? ['*']}
-					allowedLinkPrefixes={allowedLinkPrefixes ?? ['*']}
-					defaultOrigin={defaultOrigin}
+					{...(allowedImagePrefixes ? { allowedImagePrefixes: allowedImagePrefixes ?? ['*'] } : {} as any)}
+					{...(allowedLinkPrefixes ? { allowedLinkPrefixes: allowedLinkPrefixes ?? ['*'] } : {} as any)}
+					{...(defaultOrigin ? { defaultOrigin } : {} as any)}
 					{...options}
 				>
 					{parsedChildren}

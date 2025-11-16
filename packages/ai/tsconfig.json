@@ -1,0 +1,15 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"outDir": "dist",
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"types": ["node", "vite/client"],
+		"jsx": "react-jsx",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"skipLibCheck": true
+	},
+	"include": ["src/**/*", "index.ts"],
+	"exclude": ["node_modules", "dist"]
+}
