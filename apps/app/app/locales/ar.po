@@ -13,6 +13,26 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. placeholder {0}: step.actionConfig?.completedLabel || 'Completed'
+#: app/components/onboarding-checklist.tsx:201
+msgid "{0}"
+msgstr "{0}"
+
+#. placeholder {0}: progress.completedCount
+#. placeholder {1}: progress.totalSteps
+#: app/components/onboarding-checklist.tsx:134
+msgid "{0} of {1} completed"
+msgstr "{0} من {1} مكتمل"
+
+#. placeholder {0}: Math.round(progressPercentage)
+#: app/components/onboarding-checklist.tsx:111
+msgid "{0}% complete"
+msgstr "{0}٪ مكتمل"
+
+#: app/components/notes-chart.tsx:119
+msgid "{totalNotes} total notes • {avgNotesPerDay} avg per day"
+msgstr "{totalNotes} ملاحظة إجمالاً • {avgNotesPerDay} متوسط يومي"
+
 #: app/routes/_auth+/login.tsx:728
 msgid "← Back to SSO login"
 msgstr "→ العودة إلى تسجيل الدخول بـ SSO"
@@ -21,9 +41,34 @@ msgstr "→ العودة إلى تسجيل الدخول بـ SSO"
 msgid "A user already exists with this email"
 msgstr "يوجد مستخدم بالفعل بهذا البريد الإلكتروني"
 
+#: app/routes/_app+/organizations.tsx:297
+msgid "Accept"
+msgstr "قبول"
+
+#: app/components/command-menu.tsx:153
+msgid "Account settings"
+msgstr "إعدادات الحساب"
+
 #: app/routes/_auth+/login.tsx:276
 msgid "Account Suspended"
 msgstr "الحساب معلق"
+
+#: app/components/command-menu.tsx:108
+msgid "Actions"
+msgstr "الإجراءات"
+
+#: app/components/app-sidebar.tsx:280
+msgid "Add members"
+msgstr "إضافة أعضاء"
+
+#: app/components/team-switcher.tsx:167
+#: app/routes/_app+/organizations.tsx:219
+msgid "Add organization"
+msgstr "إضافة منظمة"
+
+#: app/routes/_app+/organizations.tsx:376
+msgid "Adjust your search query to show more."
+msgstr "اضبط استعلام البحث لعرض المزيد."
 
 #: app/routes/_auth+/signup.tsx:276
 msgid "Already have an account?"
@@ -33,6 +78,28 @@ msgstr "هل لديك حساب بالفعل؟"
 msgid "Back to login"
 msgstr "العودة لتسجيل الدخول"
 
+#: app/components/app-sidebar.tsx:258
+#: app/components/command-menu.tsx:163
+msgid "Billing"
+msgstr "الفواتير"
+
+#. placeholder {0}: note.createdByName
+#: app/components/command-menu.tsx:141
+msgid "by {0}"
+msgstr "بواسطة {0}"
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:294
+msgid "Cards"
+msgstr "بطاقات"
+
+#: app/components/settings/cards/profile-card.tsx:142
+msgid "Change"
+msgstr "تغيير"
+
+#: app/components/settings/cards/profile-card.tsx:147
+msgid "Change Email"
+msgstr "تغيير البريد الإلكتروني"
+
 #: app/routes/_auth+/verify.tsx:70
 msgid "Check your 2FA app"
 msgstr "تحقق من تطبيق المصادقة الثنائية"
@@ -40,6 +107,10 @@ msgstr "تحقق من تطبيق المصادقة الثنائية"
 #: app/routes/_auth+/verify.tsx:58
 msgid "Check your email"
 msgstr "تحقق من بريدك الإلكتروني"
+
+#: app/components/onboarding-checklist.tsx:145
+msgid "complete"
+msgstr "مكتمل"
 
 #: app/routes/_auth+/signup.tsx:215
 msgid "Complete your signup to join the organization"
@@ -73,10 +144,59 @@ msgstr "إنشاء حساب"
 msgid "Create an account"
 msgstr "إنشاء حساب"
 
+#: app/routes/_app+/index.tsx:33
+msgid "Create an organization"
+msgstr "إنشاء منظمة"
+
+#: app/components/command-menu.tsx:115
+msgid "Create new note"
+msgstr "إنشاء ملاحظة جديدة"
+
+#: app/routes/_app+/$orgSlug_+/notes.new.tsx:32
+msgid "Create New Note"
+msgstr "إنشاء ملاحظة جديدة"
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:371
+#: app/routes/_app+/$orgSlug_+/notes.tsx:383
+msgid "Create Note"
+msgstr "إنشاء ملاحظة"
+
+#: app/components/notes-chart.tsx:58
+msgid "Daily Notes Created"
+msgstr "الملاحظات اليومية المنشأة"
+
+#: app/components/app-sidebar.tsx:109
+#: app/components/app-sidebar.tsx:215
+#: app/components/user-dropdown.tsx:58
+msgid "Dashboard"
+msgstr "لوحة التحكم"
+
+#: app/routes/_app+/organizations.tsx:312
+msgid "Decline"
+msgstr "رفض"
+
+#: app/components/feature-updates.tsx:206
+msgid "Dismiss"
+msgstr "تجاهل"
+
 #: app/routes/_auth+/login.tsx:345
 msgid "Don't have an account?"
 msgstr "ليس لديك حساب؟"
 
+#: app/components/onboarding-checklist.tsx:116
+msgid "Done!"
+msgstr "تم!"
+
+#. placeholder {0}: Math.abs(trendPercentage)
+#: app/components/notes-chart.tsx:113
+msgid "Down by {0}% this period"
+msgstr "انخفض بنسبة {0}٪ في هذه الفترة"
+
+#: app/routes/_app+/$orgSlug_+/notes.$noteId_.edit.tsx:87
+msgid "Edit Note"
+msgstr "تعديل ملاحظة"
+
+#: app/components/settings/cards/profile-card.tsx:122
 #: app/routes/_auth+/login.tsx:743
 #: app/routes/_auth+/signup.tsx:247
 msgid "Email"
@@ -112,6 +232,10 @@ msgstr "أدخل اسم المستخدم أو البريد الإلكتروني"
 msgid "Failed to authenticate with passkey: {errorMessage}"
 msgstr "فشل التحقق باستخدام مفتاح المرور: {errorMessage}"
 
+#: app/components/feature-updates.tsx:178
+msgid "Feature Preview"
+msgstr "معاينة الميزة"
+
 #: app/routes/_auth+/forgot-password.tsx:196
 msgid "Forgot Password"
 msgstr "نسيت كلمة المرور"
@@ -120,13 +244,48 @@ msgstr "نسيت كلمة المرور"
 msgid "Forgot your password?"
 msgstr "هل نسيت كلمة المرور؟"
 
+#: app/components/app-sidebar.tsx:239
+msgid "General"
+msgstr "عام"
+
 #: app/routes/_auth+/login.tsx:388
 msgid "Generating Authentication Options"
 msgstr "جاري إنشاء خيارات المصادقة"
 
+#: app/components/app-sidebar.tsx:272
+msgid "Get chrome extension"
+msgstr "احصل على إضافة كروم"
+
+#: app/components/app-sidebar.tsx:142
+#: app/components/app-sidebar.tsx:285
+msgid "Get help"
+msgstr "احصل على المساعدة"
+
+#: app/components/app-sidebar.tsx:83
+msgid "Get in touch"
+msgstr "تواصل معنا"
+
+#: app/components/onboarding-checklist.tsx:94
+#: app/components/onboarding-checklist.tsx:131
+msgid "Get Started"
+msgstr "ابدأ"
+
+#: app/components/app-sidebar.tsx:147
+#: app/components/app-sidebar.tsx:291
+msgid "Give feedback"
+msgstr "إرسال ملاحظات"
+
 #: app/routes/_auth+/reset-password.tsx:123
 msgid "Hi"
 msgstr "مرحباً"
+
+#: app/components/settings/cards/profile-card.tsx:154
+msgid "If you change your email, you'll need to verify the new address"
+msgstr "إذا قمت بتغيير بريدك الإلكتروني، ستحتاج إلى التحقق من العنوان الجديد"
+
+#: app/components/app-sidebar.tsx:249
+msgid "Integrations"
+msgstr "التكاملات"
 
 #: app/routes/_auth+/login.tsx:210
 msgid "Invalid username or password"
@@ -136,14 +295,43 @@ msgstr "اسم المستخدم أو كلمة المرور غير صحيحة"
 msgid "Invalid Verification Type"
 msgstr "نوع التحقق غير صالح"
 
+#: app/components/team-switcher.tsx:156
+msgid "Invite members"
+msgstr "دعوة أعضاء"
+
+#: app/components/command-menu.tsx:124
+msgid "Invite new members"
+msgstr "دعوة أعضاء جدد"
+
+#. placeholder {0}: invitation.inviter.name || invitation.inviter.email
+#: app/routes/_app+/organizations.tsx:274
+msgid "Invited by {0}"
+msgstr "مدعو من قبل {0}"
+
 #: app/routes/_auth+/signup.tsx:211
 msgid "Join organization"
 msgstr "الانضمام إلى المنظمة"
+
+#: app/routes/_app+/organizations.tsx:199
+msgid "Jump into an existing organization, accept pending invitations, or add a new one."
+msgstr "انتقل إلى منظمة موجودة، أو اقبل الدعوات المعلقة، أو أضف منظمة جديدة."
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:308
+msgid "Kanban"
+msgstr "كانبان"
 
 #: app/routes/_auth+/login.tsx:467
 #: app/routes/_auth+/login.tsx:478
 msgid "Last used"
 msgstr "آخر استخدام"
+
+#: app/components/feature-updates.tsx:197
+msgid "Learn more"
+msgstr "اعرف المزيد"
+
+#: app/components/command-menu.tsx:105
+msgid "Loading notes..."
+msgstr "جاري تحميل الملاحظات..."
 
 #: app/routes/_auth+/login.tsx:288
 msgid "Login Error"
@@ -153,13 +341,88 @@ msgstr "خطأ في تسجيل الدخول"
 msgid "Login with a passkey"
 msgstr "تسجيل الدخول بمفتاح المرور"
 
+#: app/components/user-dropdown.tsx:66
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
 #: app/routes/_auth+/signup.tsx:252
 msgid "m@example.com"
 msgstr "م@مثال.com"
 
+#: app/routes/_app+/profile.tsx:91
+msgid "Manage your account settings and set e-mail preferences."
+msgstr "إدارة إعدادات حسابك وتفضيلات البريد الإلكتروني."
+
+#: app/routes/_app+/notifications.tsx:27
+msgid "Manage your notification preferences for different channels and workflows."
+msgstr "إدارة تفضيلات الإشعارات للقنوات وسير العمل المختلفة."
+
+#: app/routes/_app+/$orgSlug_+/settings+/_layout.tsx:18
+msgid "Manage your organization settings and preferences."
+msgstr "إدارة إعدادات وتفضيلات منظمتك."
+
+#: app/routes/_app+/security.tsx:235
+msgid "Manage your password, two-factor authentication, connected accounts, and advanced security settings."
+msgstr "إدارة كلمة المرور والمصادقة الثنائية والحسابات المتصلة وإعدادات الأمان المتقدمة."
+
+#: app/components/app-sidebar.tsx:227
+msgid "MCP Server"
+msgstr "خادم MCP"
+
+#: app/components/team-switcher.tsx:92
+msgid "member"
+msgstr "عضو"
+
+#: app/components/team-switcher.tsx:94
+msgid "members"
+msgstr "أعضاء"
+
+#: app/components/app-sidebar.tsx:244
+msgid "Members"
+msgstr "الأعضاء"
+
+#: app/components/settings/cards/profile-card.tsx:90
+msgid "Name"
+msgstr "الاسم"
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:318
+msgid "New Note"
+msgstr "ملاحظة جديدة"
+
 #: app/routes/_auth+/reset-password.tsx:132
 msgid "New Password"
 msgstr "كلمة المرور الجديدة"
+
+#. placeholder {0}: params.noteId
+#: app/routes/_app+/$orgSlug_+/notes.$noteId_.edit.tsx:112
+msgid "No note with the id \"{0}\" exists"
+msgstr "لا توجد ملاحظة بالمعرف \"{0}\""
+
+#: app/components/leadership-card.tsx:76
+msgid "No notes created yet"
+msgstr "لم يتم إنشاء ملاحظات بعد"
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:365
+msgid "No notes found"
+msgstr "لم يتم العثور على ملاحظات"
+
+#: app/components/command-menu.tsx:105
+msgid "No notes found."
+msgstr "لم يتم العثور على ملاحظات."
+
+#. placeholder {0}: loaderData.searchQuery
+#: app/routes/_app+/$orgSlug_+/notes.tsx:367
+msgid "No notes match your search for \"{0}\". Try a different search term or create a new note."
+msgstr "لا توجد ملاحظات تطابق بحثك عن \"{0}\". جرب مصطلح بحث مختلف أو أنشئ ملاحظة جديدة."
+
+#: app/routes/_app+/organizations.tsx:372
+msgid "No organization found"
+msgstr "لم يتم العثور على منظمة"
+
+#. placeholder {0}: params.orgSlug
+#: app/routes/_app+/$orgSlug_+/notes.tsx:414
+msgid "No organization with the slug \"{0}\" exists"
+msgstr "لا توجد منظمة بالمعرف \"{0}\""
 
 #: app/routes/_auth+/forgot-password.tsx:131
 msgid "No user exists with this username or email"
@@ -169,6 +432,36 @@ msgstr "لا يوجد مستخدم بهذا الاسم أو البريد الإ�
 msgid "No worries, we'll send you reset instructions."
 msgstr "لا تقلق، سنرسل لك تعليمات إعادة التعيين."
 
+#: app/components/leadership-card.tsx:107
+msgid "note"
+msgstr "ملاحظة"
+
+#: app/components/leadership-card.tsx:105
+msgid "notes"
+msgstr "ملاحظات"
+
+#: app/components/app-sidebar.tsx:221
+#: app/components/command-menu.tsx:130
+#: app/routes/_app+/$orgSlug_+/notes.tsx:272
+msgid "Notes"
+msgstr "الملاحظات"
+
+#: app/components/notes-chart.tsx:61
+msgid "Notes created by your organization over the last {daysShown} days"
+msgstr "الملاحظات التي أنشأتها منظمتك خلال الـ {daysShown} يومًا الماضية"
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:379
+msgid "Notes help you capture thoughts, meeting minutes, or anything important for your organization. Get started by creating your first note."
+msgstr "تساعدك الملاحظات على تسجيل الأفكار ومحاضر الاجتماعات أو أي شيء مهم لمنظمتك. ابدأ بإنشاء ملاحظتك الأولى."
+
+#: app/routes/_app+/notifications.tsx:26
+msgid "Notification Settings"
+msgstr "إعدادات الإشعارات"
+
+#: app/components/app-sidebar.tsx:127
+msgid "Notifications"
+msgstr "الإشعارات"
+
 #: app/routes/_auth+/signup.tsx:236
 msgid "Or continue with"
 msgstr "أو تابع باستخدام"
@@ -177,6 +470,16 @@ msgstr "أو تابع باستخدام"
 msgid "Or continue with email or username"
 msgstr "أو تابع باستخدام البريد الإلكتروني أو اسم المستخدم"
 
+#: app/components/app-sidebar.tsx:133
+#: app/components/team-switcher.tsx:117
+#: app/routes/_app+/organizations.tsx:198
+msgid "Organizations"
+msgstr "المنظمات"
+
+#: app/routes/_app+/index.tsx:34
+msgid "Organizations are used to group your projects."
+msgstr "تُستخدم المنظمات لتجميع مشاريعك."
+
 #: app/routes/_auth+/login.tsx:764
 msgid "Password"
 msgstr "كلمة المرور"
@@ -184,6 +487,10 @@ msgstr "كلمة المرور"
 #: app/routes/_auth+/reset-password.tsx:73
 msgid "Password is too common"
 msgstr "كلمة المرور شائعة جداً"
+
+#: app/routes/_app+/organizations.tsx:231
+msgid "Pending Invitations"
+msgstr "الدعوات المعلقة"
 
 #: app/routes/_auth+/verify.tsx:94
 msgid "Please check your verification link."
@@ -196,6 +503,20 @@ msgstr "يرجى إدخال رمز المصادقة الثنائية للتحق�
 #: app/routes/_auth+/login.tsx:74
 msgid "Please enter your email or username"
 msgstr "يرجى إدخال بريدك الإلكتروني أو اسم المستخدم"
+
+#: app/components/app-sidebar.tsx:115
+#: app/components/user-dropdown.tsx:51
+msgid "Profile"
+msgstr "الملف الشخصي"
+
+#: app/components/settings/cards/profile-card.tsx:74
+#: app/routes/_app+/profile.tsx:90
+msgid "Profile Settings"
+msgstr "إعدادات الملف الشخصي"
+
+#: app/components/leadership-card.tsx:68
+msgid "Rank"
+msgstr "الترتيب"
 
 #: app/routes/_auth+/login.tsx:578
 msgid "Recommended for"
@@ -221,9 +542,41 @@ msgstr "إعادة تعيين كلمة المرور"
 msgid "Reset Password"
 msgstr "إعادة تعيين كلمة المرور"
 
+#: app/components/settings/cards/profile-card.tsx:178
+msgid "Save changes"
+msgstr "حفظ التغييرات"
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:333
+msgid "Search notes by title or content..."
+msgstr "البحث في الملاحظات بالعنوان أو المحتوى..."
+
+#: app/components/command-menu.tsx:99
+#: app/components/site-header.tsx:39
+msgid "Search notes..."
+msgstr "البحث في الملاحظات..."
+
+#: app/routes/_app+/organizations.tsx:210
+msgid "Search..."
+msgstr "البحث..."
+
+#: app/components/app-sidebar.tsx:121
+msgid "Security"
+msgstr "الأمان"
+
+#: app/routes/_app+/security.tsx:234
+msgid "Security Settings"
+msgstr "إعدادات الأمان"
+
 #: app/routes/_auth+/forgot-password.tsx:236
 msgid "Send reset instructions"
 msgstr "إرسال تعليمات إعادة التعيين"
+
+#: app/components/app-sidebar.tsx:233
+#: app/components/command-menu.tsx:149
+#: app/components/command-menu.tsx:173
+#: app/routes/_app+/$orgSlug_+/settings+/_layout.tsx:17
+msgid "Settings"
+msgstr "الإعدادات"
 
 #: app/routes/_auth+/signup.tsx:285
 msgid "Sign in"
@@ -250,14 +603,48 @@ msgstr "أنشئ حساباً باستخدام حساب التواصل الاج�
 msgid "Signing in as"
 msgstr "تسجيل الدخول باسم"
 
+#: app/routes/_app+/$orgSlug_+/index.tsx:296
+msgid "Submit"
+msgstr "إرسال"
+
+#: app/components/leadership-card.tsx:71
+msgid "Team member"
+msgstr "عضو الفريق"
+
+#: app/components/leadership-card.tsx:61
+msgid "Team members who have created the most notes"
+msgstr "أعضاء الفريق الذين أنشأوا أكبر عدد من الملاحظات"
+
+#. placeholder {0}: trialStatus.daysRemaining
+#: app/components/app-sidebar.tsx:58
+msgid "There are <0>{0} days</0> left in your trial. Get in touch with questions or feedback."
+msgstr "باقي <0>{0} أيام</0> في فترة التجربة. تواصل معنا إذا كان لديك أي أسئلة أو ملاحظات."
+
 #: app/routes/_auth+/login.tsx:291
 msgid "There was an issue with your login attempt. Please try again."
 msgstr "حدثت مشكلة في محاولة تسجيل الدخول. يرجى المحاولة مرة أخرى."
+
+#: app/components/leadership-card.tsx:58
+msgid "Top Contributors"
+msgstr "أفضل المساهمين"
+
+#: app/components/notes-chart.tsx:108
+msgid "Trending up by {trendPercentage}% this period"
+msgstr "يتجه للأعلى بنسبة {trendPercentage}٪ في هذه الفترة"
+
+#: app/components/settings/cards/profile-card.tsx:76
+msgid "Update your photo and personal details here."
+msgstr "قم بتحديث صورتك وبياناتك الشخصية هنا."
+
+#: app/components/app-sidebar.tsx:75
+msgid "Upgrade"
+msgstr "ترقية"
 
 #: app/routes/_auth+/login.tsx:591
 msgid "Use password instead"
 msgstr "استخدم كلمة المرور بدلاً من ذلك"
 
+#: app/components/settings/cards/profile-card.tsx:105
 #: app/routes/_auth+/login.tsx:744
 msgid "Username"
 msgstr "اسم المستخدم"
@@ -290,9 +677,34 @@ msgstr "وجدنا منظمتك:"
 msgid "We've sent you a code to verify your email address."
 msgstr "لقد أرسلنا لك رمزاً للتحقق من عنوان بريدك الإلكتروني."
 
+#. placeholder {0}: user?.name || 'User'
+#: app/routes/_app+/$orgSlug_+/index.tsx:290
+msgid "Welcome {0}!"
+msgstr "مرحباً {0}!"
+
 #: app/routes/_auth+/login.tsx:260
 msgid "Welcome back"
 msgstr "مرحباً بعودتك"
+
+#: app/routes/_app+/$orgSlug_+/index.tsx:291
+msgid "Welcome to your organization dashboard. Here you can manage your organization's settings and view analytics."
+msgstr "مرحباً بك في لوحة تحكم المنظمة. هنا يمكنك إدارة إعدادات منظمتك وعرض التحليلات."
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:273
+msgid "You can create notes for your organization here."
+msgstr "يمكنك إنشاء ملاحظات لمنظمتك هنا."
+
+#: app/routes/_app+/organizations.tsx:234
+msgid "You have been invited to join the following organizations. Choose to accept or decline each invitation."
+msgstr "تمت دعوتك للانضمام إلى المنظمات التالية. اختر قبول أو رفض كل دعوة."
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:377
+msgid "You haven't created any notes yet!"
+msgstr "لم تقم بإنشاء أي ملاحظات بعد!"
+
+#: app/routes/_app+/organizations.tsx:378
+msgid "You haven't joined any organizations yet."
+msgstr "لم تنضم إلى أي منظمات بعد."
 
 #: app/routes/_auth+/login.tsx:422
 msgid "You're logged in! Navigating..."

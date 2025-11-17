@@ -13,6 +13,26 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. placeholder {0}: step.actionConfig?.completedLabel || 'Completed'
+#: app/components/onboarding-checklist.tsx:201
+msgid "{0}"
+msgstr ""
+
+#. placeholder {0}: progress.completedCount
+#. placeholder {1}: progress.totalSteps
+#: app/components/onboarding-checklist.tsx:134
+msgid "{0} of {1} completed"
+msgstr ""
+
+#. placeholder {0}: Math.round(progressPercentage)
+#: app/components/onboarding-checklist.tsx:111
+msgid "{0}% complete"
+msgstr ""
+
+#: app/components/notes-chart.tsx:119
+msgid "{totalNotes} total notes • {avgNotesPerDay} avg per day"
+msgstr ""
+
 #: app/routes/_auth+/login.tsx:728
 msgid "← Back to SSO login"
 msgstr ""
@@ -21,8 +41,33 @@ msgstr ""
 msgid "A user already exists with this email"
 msgstr ""
 
+#: app/routes/_app+/organizations.tsx:297
+msgid "Accept"
+msgstr ""
+
+#: app/components/command-menu.tsx:153
+msgid "Account settings"
+msgstr ""
+
 #: app/routes/_auth+/login.tsx:276
 msgid "Account Suspended"
+msgstr ""
+
+#: app/components/command-menu.tsx:108
+msgid "Actions"
+msgstr ""
+
+#: app/components/app-sidebar.tsx:280
+msgid "Add members"
+msgstr ""
+
+#: app/components/team-switcher.tsx:167
+#: app/routes/_app+/organizations.tsx:219
+msgid "Add organization"
+msgstr ""
+
+#: app/routes/_app+/organizations.tsx:376
+msgid "Adjust your search query to show more."
 msgstr ""
 
 #: app/routes/_auth+/signup.tsx:276
@@ -33,12 +78,38 @@ msgstr ""
 msgid "Back to login"
 msgstr ""
 
+#: app/components/app-sidebar.tsx:258
+#: app/components/command-menu.tsx:163
+msgid "Billing"
+msgstr ""
+
+#. placeholder {0}: note.createdByName
+#: app/components/command-menu.tsx:141
+msgid "by {0}"
+msgstr ""
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:294
+msgid "Cards"
+msgstr ""
+
+#: app/components/settings/cards/profile-card.tsx:142
+msgid "Change"
+msgstr ""
+
+#: app/components/settings/cards/profile-card.tsx:147
+msgid "Change Email"
+msgstr ""
+
 #: app/routes/_auth+/verify.tsx:70
 msgid "Check your 2FA app"
 msgstr ""
 
 #: app/routes/_auth+/verify.tsx:58
 msgid "Check your email"
+msgstr ""
+
+#: app/components/onboarding-checklist.tsx:145
+msgid "complete"
 msgstr ""
 
 #: app/routes/_auth+/signup.tsx:215
@@ -73,10 +144,59 @@ msgstr ""
 msgid "Create an account"
 msgstr ""
 
+#: app/routes/_app+/index.tsx:33
+msgid "Create an organization"
+msgstr ""
+
+#: app/components/command-menu.tsx:115
+msgid "Create new note"
+msgstr ""
+
+#: app/routes/_app+/$orgSlug_+/notes.new.tsx:32
+msgid "Create New Note"
+msgstr ""
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:371
+#: app/routes/_app+/$orgSlug_+/notes.tsx:383
+msgid "Create Note"
+msgstr ""
+
+#: app/components/notes-chart.tsx:58
+msgid "Daily Notes Created"
+msgstr ""
+
+#: app/components/app-sidebar.tsx:109
+#: app/components/app-sidebar.tsx:215
+#: app/components/user-dropdown.tsx:58
+msgid "Dashboard"
+msgstr ""
+
+#: app/routes/_app+/organizations.tsx:312
+msgid "Decline"
+msgstr ""
+
+#: app/components/feature-updates.tsx:206
+msgid "Dismiss"
+msgstr ""
+
 #: app/routes/_auth+/login.tsx:345
 msgid "Don't have an account?"
 msgstr ""
 
+#: app/components/onboarding-checklist.tsx:116
+msgid "Done!"
+msgstr ""
+
+#. placeholder {0}: Math.abs(trendPercentage)
+#: app/components/notes-chart.tsx:113
+msgid "Down by {0}% this period"
+msgstr ""
+
+#: app/routes/_app+/$orgSlug_+/notes.$noteId_.edit.tsx:87
+msgid "Edit Note"
+msgstr ""
+
+#: app/components/settings/cards/profile-card.tsx:122
 #: app/routes/_auth+/login.tsx:743
 #: app/routes/_auth+/signup.tsx:247
 msgid "Email"
@@ -112,6 +232,10 @@ msgstr ""
 msgid "Failed to authenticate with passkey: {errorMessage}"
 msgstr ""
 
+#: app/components/feature-updates.tsx:178
+msgid "Feature Preview"
+msgstr ""
+
 #: app/routes/_auth+/forgot-password.tsx:196
 msgid "Forgot Password"
 msgstr ""
@@ -120,12 +244,47 @@ msgstr ""
 msgid "Forgot your password?"
 msgstr ""
 
+#: app/components/app-sidebar.tsx:239
+msgid "General"
+msgstr ""
+
 #: app/routes/_auth+/login.tsx:388
 msgid "Generating Authentication Options"
 msgstr ""
 
+#: app/components/app-sidebar.tsx:272
+msgid "Get chrome extension"
+msgstr ""
+
+#: app/components/app-sidebar.tsx:142
+#: app/components/app-sidebar.tsx:285
+msgid "Get help"
+msgstr ""
+
+#: app/components/app-sidebar.tsx:83
+msgid "Get in touch"
+msgstr ""
+
+#: app/components/onboarding-checklist.tsx:94
+#: app/components/onboarding-checklist.tsx:131
+msgid "Get Started"
+msgstr ""
+
+#: app/components/app-sidebar.tsx:147
+#: app/components/app-sidebar.tsx:291
+msgid "Give feedback"
+msgstr ""
+
 #: app/routes/_auth+/reset-password.tsx:123
 msgid "Hi"
+msgstr ""
+
+#: app/components/settings/cards/profile-card.tsx:154
+msgid "If you change your email, you'll need to verify the new address"
+msgstr ""
+
+#: app/components/app-sidebar.tsx:249
+msgid "Integrations"
 msgstr ""
 
 #: app/routes/_auth+/login.tsx:210
@@ -136,13 +295,42 @@ msgstr ""
 msgid "Invalid Verification Type"
 msgstr ""
 
+#: app/components/team-switcher.tsx:156
+msgid "Invite members"
+msgstr ""
+
+#: app/components/command-menu.tsx:124
+msgid "Invite new members"
+msgstr ""
+
+#. placeholder {0}: invitation.inviter.name || invitation.inviter.email
+#: app/routes/_app+/organizations.tsx:274
+msgid "Invited by {0}"
+msgstr ""
+
 #: app/routes/_auth+/signup.tsx:211
 msgid "Join organization"
+msgstr ""
+
+#: app/routes/_app+/organizations.tsx:199
+msgid "Jump into an existing organization, accept pending invitations, or add a new one."
+msgstr ""
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:308
+msgid "Kanban"
 msgstr ""
 
 #: app/routes/_auth+/login.tsx:467
 #: app/routes/_auth+/login.tsx:478
 msgid "Last used"
+msgstr ""
+
+#: app/components/feature-updates.tsx:197
+msgid "Learn more"
+msgstr ""
+
+#: app/components/command-menu.tsx:105
+msgid "Loading notes..."
 msgstr ""
 
 #: app/routes/_auth+/login.tsx:288
@@ -153,12 +341,87 @@ msgstr ""
 msgid "Login with a passkey"
 msgstr ""
 
+#: app/components/user-dropdown.tsx:66
+msgid "Logout"
+msgstr ""
+
 #: app/routes/_auth+/signup.tsx:252
 msgid "m@example.com"
 msgstr ""
 
+#: app/routes/_app+/profile.tsx:91
+msgid "Manage your account settings and set e-mail preferences."
+msgstr ""
+
+#: app/routes/_app+/notifications.tsx:27
+msgid "Manage your notification preferences for different channels and workflows."
+msgstr ""
+
+#: app/routes/_app+/$orgSlug_+/settings+/_layout.tsx:18
+msgid "Manage your organization settings and preferences."
+msgstr ""
+
+#: app/routes/_app+/security.tsx:235
+msgid "Manage your password, two-factor authentication, connected accounts, and advanced security settings."
+msgstr ""
+
+#: app/components/app-sidebar.tsx:227
+msgid "MCP Server"
+msgstr ""
+
+#: app/components/team-switcher.tsx:92
+msgid "member"
+msgstr ""
+
+#: app/components/team-switcher.tsx:94
+msgid "members"
+msgstr ""
+
+#: app/components/app-sidebar.tsx:244
+msgid "Members"
+msgstr ""
+
+#: app/components/settings/cards/profile-card.tsx:90
+msgid "Name"
+msgstr ""
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:318
+msgid "New Note"
+msgstr ""
+
 #: app/routes/_auth+/reset-password.tsx:132
 msgid "New Password"
+msgstr ""
+
+#. placeholder {0}: params.noteId
+#: app/routes/_app+/$orgSlug_+/notes.$noteId_.edit.tsx:112
+msgid "No note with the id \"{0}\" exists"
+msgstr ""
+
+#: app/components/leadership-card.tsx:76
+msgid "No notes created yet"
+msgstr ""
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:365
+msgid "No notes found"
+msgstr ""
+
+#: app/components/command-menu.tsx:105
+msgid "No notes found."
+msgstr ""
+
+#. placeholder {0}: loaderData.searchQuery
+#: app/routes/_app+/$orgSlug_+/notes.tsx:367
+msgid "No notes match your search for \"{0}\". Try a different search term or create a new note."
+msgstr ""
+
+#: app/routes/_app+/organizations.tsx:372
+msgid "No organization found"
+msgstr ""
+
+#. placeholder {0}: params.orgSlug
+#: app/routes/_app+/$orgSlug_+/notes.tsx:414
+msgid "No organization with the slug \"{0}\" exists"
 msgstr ""
 
 #: app/routes/_auth+/forgot-password.tsx:131
@@ -169,6 +432,36 @@ msgstr ""
 msgid "No worries, we'll send you reset instructions."
 msgstr ""
 
+#: app/components/leadership-card.tsx:107
+msgid "note"
+msgstr ""
+
+#: app/components/leadership-card.tsx:105
+msgid "notes"
+msgstr ""
+
+#: app/components/app-sidebar.tsx:221
+#: app/components/command-menu.tsx:130
+#: app/routes/_app+/$orgSlug_+/notes.tsx:272
+msgid "Notes"
+msgstr ""
+
+#: app/components/notes-chart.tsx:61
+msgid "Notes created by your organization over the last {daysShown} days"
+msgstr ""
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:379
+msgid "Notes help you capture thoughts, meeting minutes, or anything important for your organization. Get started by creating your first note."
+msgstr ""
+
+#: app/routes/_app+/notifications.tsx:26
+msgid "Notification Settings"
+msgstr ""
+
+#: app/components/app-sidebar.tsx:127
+msgid "Notifications"
+msgstr ""
+
 #: app/routes/_auth+/signup.tsx:236
 msgid "Or continue with"
 msgstr ""
@@ -177,12 +470,26 @@ msgstr ""
 msgid "Or continue with email or username"
 msgstr ""
 
+#: app/components/app-sidebar.tsx:133
+#: app/components/team-switcher.tsx:117
+#: app/routes/_app+/organizations.tsx:198
+msgid "Organizations"
+msgstr ""
+
+#: app/routes/_app+/index.tsx:34
+msgid "Organizations are used to group your projects."
+msgstr ""
+
 #: app/routes/_auth+/login.tsx:764
 msgid "Password"
 msgstr ""
 
 #: app/routes/_auth+/reset-password.tsx:73
 msgid "Password is too common"
+msgstr ""
+
+#: app/routes/_app+/organizations.tsx:231
+msgid "Pending Invitations"
 msgstr ""
 
 #: app/routes/_auth+/verify.tsx:94
@@ -195,6 +502,20 @@ msgstr ""
 
 #: app/routes/_auth+/login.tsx:74
 msgid "Please enter your email or username"
+msgstr ""
+
+#: app/components/app-sidebar.tsx:115
+#: app/components/user-dropdown.tsx:51
+msgid "Profile"
+msgstr ""
+
+#: app/components/settings/cards/profile-card.tsx:74
+#: app/routes/_app+/profile.tsx:90
+msgid "Profile Settings"
+msgstr ""
+
+#: app/components/leadership-card.tsx:68
+msgid "Rank"
 msgstr ""
 
 #: app/routes/_auth+/login.tsx:578
@@ -221,8 +542,40 @@ msgstr ""
 msgid "Reset Password"
 msgstr ""
 
+#: app/components/settings/cards/profile-card.tsx:178
+msgid "Save changes"
+msgstr ""
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:333
+msgid "Search notes by title or content..."
+msgstr ""
+
+#: app/components/command-menu.tsx:99
+#: app/components/site-header.tsx:39
+msgid "Search notes..."
+msgstr ""
+
+#: app/routes/_app+/organizations.tsx:210
+msgid "Search..."
+msgstr ""
+
+#: app/components/app-sidebar.tsx:121
+msgid "Security"
+msgstr ""
+
+#: app/routes/_app+/security.tsx:234
+msgid "Security Settings"
+msgstr ""
+
 #: app/routes/_auth+/forgot-password.tsx:236
 msgid "Send reset instructions"
+msgstr ""
+
+#: app/components/app-sidebar.tsx:233
+#: app/components/command-menu.tsx:149
+#: app/components/command-menu.tsx:173
+#: app/routes/_app+/$orgSlug_+/settings+/_layout.tsx:17
+msgid "Settings"
 msgstr ""
 
 #: app/routes/_auth+/signup.tsx:285
@@ -250,14 +603,48 @@ msgstr ""
 msgid "Signing in as"
 msgstr ""
 
+#: app/routes/_app+/$orgSlug_+/index.tsx:296
+msgid "Submit"
+msgstr ""
+
+#: app/components/leadership-card.tsx:71
+msgid "Team member"
+msgstr ""
+
+#: app/components/leadership-card.tsx:61
+msgid "Team members who have created the most notes"
+msgstr ""
+
+#. placeholder {0}: trialStatus.daysRemaining
+#: app/components/app-sidebar.tsx:58
+msgid "There are <0>{0} days</0> left in your trial. Get in touch with questions or feedback."
+msgstr ""
+
 #: app/routes/_auth+/login.tsx:291
 msgid "There was an issue with your login attempt. Please try again."
+msgstr ""
+
+#: app/components/leadership-card.tsx:58
+msgid "Top Contributors"
+msgstr ""
+
+#: app/components/notes-chart.tsx:108
+msgid "Trending up by {trendPercentage}% this period"
+msgstr ""
+
+#: app/components/settings/cards/profile-card.tsx:76
+msgid "Update your photo and personal details here."
+msgstr ""
+
+#: app/components/app-sidebar.tsx:75
+msgid "Upgrade"
 msgstr ""
 
 #: app/routes/_auth+/login.tsx:591
 msgid "Use password instead"
 msgstr ""
 
+#: app/components/settings/cards/profile-card.tsx:105
 #: app/routes/_auth+/login.tsx:744
 msgid "Username"
 msgstr ""
@@ -290,8 +677,33 @@ msgstr ""
 msgid "We've sent you a code to verify your email address."
 msgstr ""
 
+#. placeholder {0}: user?.name || 'User'
+#: app/routes/_app+/$orgSlug_+/index.tsx:290
+msgid "Welcome {0}!"
+msgstr ""
+
 #: app/routes/_auth+/login.tsx:260
 msgid "Welcome back"
+msgstr ""
+
+#: app/routes/_app+/$orgSlug_+/index.tsx:291
+msgid "Welcome to your organization dashboard. Here you can manage your organization's settings and view analytics."
+msgstr ""
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:273
+msgid "You can create notes for your organization here."
+msgstr ""
+
+#: app/routes/_app+/organizations.tsx:234
+msgid "You have been invited to join the following organizations. Choose to accept or decline each invitation."
+msgstr ""
+
+#: app/routes/_app+/$orgSlug_+/notes.tsx:377
+msgid "You haven't created any notes yet!"
+msgstr ""
+
+#: app/routes/_app+/organizations.tsx:378
+msgid "You haven't joined any organizations yet."
 msgstr ""
 
 #: app/routes/_auth+/login.tsx:422
