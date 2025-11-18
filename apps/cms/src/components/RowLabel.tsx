@@ -2,6 +2,10 @@
 import { Header } from '@/payload-types'
 import { RowLabelProps, useRowLabel } from '@payloadcms/ui'
 
+/**
+ * Shared RowLabel component for displaying navigation item labels
+ * Used in both Header and Footer collections
+ */
 export const RowLabel: React.FC<RowLabelProps> = () => {
   const data = useRowLabel<NonNullable<Header['navItems']>[number]>()
 

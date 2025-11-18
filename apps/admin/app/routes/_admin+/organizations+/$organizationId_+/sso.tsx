@@ -44,14 +44,14 @@ const SSOConfigurationActionSchema = z.object({
 	revocationUrl: z.string().url().optional(),
 })
 
-export async function loader({ request, params }: Route['LoaderArgs']) {
-	await requireUserWithRole(request, 'admin')
-
-	invariant(params.organizationId, 'Organization ID is required')
-
-	// Get organization
+/**
+ * Helper function to get organization by ID for SSO routes.
+ * Reduces code duplication between sso.tsx and sso.users.tsx.
+ * Exported for use in sso.users.tsx
+ */
+export async function getOrganizationForSSO(organizationId: string) {
 	const organization = await prisma.organization.findUnique({
-		where: { id: params.organizationId },
+		where: { id: organizationId },
 		select: {
 			id: true,
 			name: true,
@@ -62,6 +62,38 @@ export async function loader({ request, params }: Route['LoaderArgs']) {
 	if (!organization) {
 		throw new Response('Organization not found', { status: 404 })
 	}
+
+	return organization
+}
+
+/**
+ * Helper to build SSO configuration object from form data.
+ * Eliminates duplication between create and update operations.
+ */
+function buildSSOConfigData(configData: any) {
+	return {
+		providerName: configData.providerName,
+		issuerUrl: configData.issuerUrl,
+		clientId: configData.clientId,
+		clientSecret: configData.clientSecret,
+		scopes: configData.scopes || 'openid email profile',
+		autoDiscovery: configData.autoDiscovery ?? true,
+		pkceEnabled: configData.pkceEnabled ?? true,
+		autoProvision: configData.autoProvision ?? true,
+		defaultRole: configData.defaultRole || 'member',
+		attributeMapping: configData.attributeMapping
+			? (JSON.parse(configData.attributeMapping) as Record<string, string>)
+			: undefined,
+	}
+}
+
+export async function loader({ request, params }: Route['LoaderArgs']) {
+	await requireUserWithRole(request, 'admin')
+
+	invariant(params.organizationId, 'Organization ID is required')
+
+	// Get organization
+	const organization = await getOrganizationForSSO(params.organizationId)
 
 	// Get SSO configuration if it exists
 	const ssoConfig = await ssoConfigurationService.getConfiguration(
@@ -198,23 +230,10 @@ export async function action({ request, params }: Route['ActionArgs']) {
 
 				if (configId) {
 					// Update existing configuration
-					await ssoConfigurationService.updateConfiguration(configId, {
-						providerName: configData.providerName,
-						issuerUrl: configData.issuerUrl,
-						clientId: configData.clientId,
-						clientSecret: configData.clientSecret,
-						scopes: configData.scopes || 'openid email profile',
-						autoDiscovery: configData.autoDiscovery ?? true,
-						pkceEnabled: configData.pkceEnabled ?? true,
-						autoProvision: configData.autoProvision ?? true,
-						defaultRole: configData.defaultRole || 'member',
-						attributeMapping: configData.attributeMapping
-							? (JSON.parse(configData.attributeMapping) as Record<
-									string,
-									string
-								>)
-							: undefined,
-					})
+					await ssoConfigurationService.updateConfiguration(
+						configId,
+						buildSSOConfigData(configData),
+					)
 
 					// Log the configuration update
 					await auditLogService.logSSOConfigChange(
@@ -237,23 +256,7 @@ export async function action({ request, params }: Route['ActionArgs']) {
 					// Create new configuration
 					await ssoConfigurationService.createConfiguration(
 						organizationId,
-						{
-							providerName: configData.providerName,
-							issuerUrl: configData.issuerUrl,
-							clientId: configData.clientId,
-							clientSecret: configData.clientSecret,
-							scopes: configData.scopes || 'openid email profile',
-							autoDiscovery: configData.autoDiscovery ?? true,
-							pkceEnabled: configData.pkceEnabled ?? true,
-							autoProvision: configData.autoProvision ?? true,
-							defaultRole: configData.defaultRole || 'member',
-							attributeMapping: configData.attributeMapping
-								? (JSON.parse(configData.attributeMapping) as Record<
-										string,
-										string
-									>)
-								: undefined,
-						},
+						buildSSOConfigData(configData),
 						(user as any).id,
 					)
 

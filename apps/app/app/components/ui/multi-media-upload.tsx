@@ -8,6 +8,8 @@ import React, { useState, useRef, useCallback } from 'react'
 import { Button, Icon, FieldLabel } from '@repo/ui'
 import { type MediaFieldset } from '#app/routes/_app+/$orgSlug_+/__org-note-editor.tsx'
 import { cn, getNoteImgSrc } from '#app/utils/misc.tsx'
+import { useDragAndDrop } from './use-drag-and-drop.tsx'
+import { createFileInputRef } from './use-file-input-ref.tsx'
 
 interface MultiMediaUploadProps {
 	label?: string
@@ -42,7 +44,6 @@ export function MultiMediaUpload({
 	existingVideos = [],
 	organizationId,
 }: MultiMediaUploadProps) {
-	const [isDragging, setIsDragging] = useState(false)
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	const [form] = useForm({ id: formId })
 	const mediaList = meta.getFieldList()
@@ -117,41 +118,13 @@ export function MultiMediaUpload({
 		[form, metaName, meta],
 	)
 
-	const handleDragOver = useCallback(
-		(e: React.DragEvent) => {
-			e.preventDefault()
-			if (!disabled) {
-				setIsDragging(true)
-			}
-		},
-		[disabled],
-	)
-
-	const handleDragLeave = useCallback((e: React.DragEvent) => {
-		e.preventDefault()
-		setIsDragging(false)
-	}, [])
-
-	const handleDrop = useCallback(
-		(e: React.DragEvent) => {
-			e.preventDefault()
-			setIsDragging(false)
-
-			if (disabled) return
-
-			const files = Array.from(e.dataTransfer.files).filter(
-				(file) =>
-					file.type.startsWith('image/') || file.type.startsWith('video/'),
-			)
-
-			if (files.length > 0) {
-				for (const file of files) {
-					handleFileUpload(file)
-				}
-			}
-		},
-		[disabled, handleFileUpload],
-	)
+	const { isDragging, handleDragOver, handleDragLeave, handleDrop } =
+		useDragAndDrop({
+			disabled,
+			onFileUpload: handleFileUpload,
+			acceptFilter: (file) =>
+				file.type.startsWith('image/') || file.type.startsWith('video/'),
+		})
 
 	const handleClick = () => {
 		if (!disabled && fileInputRef.current) {
@@ -350,17 +323,7 @@ function MediaPreview({
 				className="absolute top-0 left-0 z-0 size-32 cursor-pointer opacity-0"
 				accept={isVideo ? 'video/*' : 'image/*'}
 				{...getInputProps(fields.file, { type: 'file' })}
-				ref={(input) => {
-					if (input && file) {
-						try {
-							const dataTransfer = new DataTransfer()
-							dataTransfer.items.add(file)
-							input.files = dataTransfer.files
-						} catch (error) {
-							console.log('Error setting file on input:', error)
-						}
-					}
-				}}
+				ref={createFileInputRef(file)}
 			/>
 			<div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
 				<Button

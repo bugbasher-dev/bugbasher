@@ -74,77 +74,52 @@ export async function getUserOrganizations(
 	return userOrganizations as UserOrganizationWithRole[]
 }
 
+/**
+ * Shared select structure for user organization queries
+ */
+const userOrganizationSelect = {
+	organization: {
+		select: {
+			id: true,
+			name: true,
+			slug: true,
+			image: {
+				select: {
+					id: true,
+					altText: true,
+					objectKey: true,
+				},
+			},
+			_count: {
+				select: {
+					users: {
+						where: { active: true },
+					},
+				},
+			},
+		},
+	},
+	organizationRole: {
+		select: {
+			id: true,
+			name: true,
+			level: true,
+		},
+	},
+	isDefault: true,
+} as const
+
 export async function getUserDefaultOrganization(userId: User['id']) {
 	const defaultOrg = await prisma.userOrganization.findFirst({
 		where: { userId, isDefault: true, active: true },
-		select: {
-			organization: {
-				select: {
-					id: true,
-					name: true,
-					slug: true,
-					image: {
-						select: {
-							id: true,
-							altText: true,
-							objectKey: true,
-						},
-					},
-					_count: {
-						select: {
-							users: {
-								where: { active: true },
-							},
-						},
-					},
-				},
-			},
-			organizationRole: {
-				select: {
-					id: true,
-					name: true,
-					level: true,
-				},
-			},
-			isDefault: true,
-		},
+		select: userOrganizationSelect,
 	})
 
 	if (!defaultOrg) {
 		// If no default organization is set, get the first active organization
 		const firstOrg = await prisma.userOrganization.findFirst({
 			where: { userId, active: true },
-			select: {
-				organization: {
-					select: {
-						id: true,
-						name: true,
-						slug: true,
-						image: {
-							select: {
-								id: true,
-								altText: true,
-								objectKey: true,
-							},
-						},
-						_count: {
-							select: {
-								users: {
-									where: { active: true },
-								},
-							},
-						},
-					},
-				},
-				organizationRole: {
-					select: {
-						id: true,
-						name: true,
-						level: true,
-					},
-				},
-				isDefault: true,
-			},
+			select: userOrganizationSelect,
 			orderBy: { createdAt: 'asc' },
 		})
 
@@ -450,4 +425,46 @@ export async function userHasOrgAccess(
 	}
 
 	return true
+}
+
+/**
+ * Get organization by slug and verify user has access to it.
+ * Combines getOrganizationBySlug with user access verification.
+ * Throws 404 if organization not found, 403 if user doesn't have access.
+ *
+ * @param orgSlug - The organization slug
+ * @param userId - The user ID to check access for
+ * @param select - Optional custom select fields (defaults to id, name, slug)
+ * @returns The organization with specified fields
+ */
+export async function getOrganizationWithAccess<
+	T extends Record<string, any> = { id: true; name: true; slug: true },
+>(
+	orgSlug: string,
+	userId: string,
+	select?: T,
+): Promise<{
+	[K in keyof T]: T[K] extends true
+		? K extends 'id' | 'name' | 'slug'
+			? string
+			: any
+		: any
+}> {
+	const organization = await prisma.organization.findFirst({
+		where: {
+			slug: orgSlug,
+			users: {
+				some: {
+					userId,
+				},
+			},
+		},
+		select: select || ({ id: true, name: true, slug: true } as T),
+	})
+
+	if (!organization) {
+		throw new Response('Not Found', { status: 404 })
+	}
+
+	return organization as any
 }
