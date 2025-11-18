@@ -18,36 +18,22 @@ import {
 	getPlansAndPrices,
 	getOrganizationInvoices,
 } from '#app/utils/payments.server.ts'
+import { requireUserOrganization } from '#app/utils/organization-loader.server.ts'
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)
-	invariant(params.orgSlug, 'orgSlug is required')
 
-	const organization = await prisma.organization.findFirst({
-		where: {
-			slug: params.orgSlug,
-			users: {
-				some: {
-					userId,
-				},
-			},
-		},
-		select: {
-			id: true,
-			name: true,
-			slug: true,
-			size: true,
-			stripeCustomerId: true,
-			stripeSubscriptionId: true,
-			stripeProductId: true,
-			planName: true,
-			subscriptionStatus: true,
-		},
+	const organization = await requireUserOrganization(request, params.orgSlug, {
+		id: true,
+		name: true,
+		slug: true,
+		size: true,
+		stripeCustomerId: true,
+		stripeSubscriptionId: true,
+		stripeProductId: true,
+		planName: true,
+		subscriptionStatus: true,
 	})
-
-	if (!organization) {
-		throw new Response('Not Found', { status: 404 })
-	}
 
 	// Block access to billing page for PUBLIC_BETA and CLOSED_BETA
 	// EXCEPT for organizations with existing active subscriptions (grandfathered)
@@ -137,31 +123,32 @@ export async function action({ request, params }: ActionFunctionArgs) {
 	const intent = formData.get('intent')
 	const priceId = formData.get('priceId') as string | null
 
+	// Fetch full organization data with billing fields for payment actions
+	const organizationWithBilling = await prisma.organization.findUnique({
+		where: { id: organization.id },
+		select: {
+			id: true,
+			createdAt: true,
+			updatedAt: true,
+			name: true,
+			slug: true,
+			description: true,
+			active: true,
+			size: true,
+			stripeCustomerId: true,
+			stripeSubscriptionId: true,
+			stripeProductId: true,
+			planName: true,
+			subscriptionStatus: true,
+			verifiedDomain: true,
+		},
+	})
+
+	if (!organizationWithBilling) {
+		return Response.json({ error: 'Organization not found' }, { status: 404 })
+	}
+
 	if (intent === 'upgrade') {
-		const organizationWithBilling = await prisma.organization.findUnique({
-			where: { id: organization.id },
-			select: {
-				id: true,
-				createdAt: true,
-				updatedAt: true,
-				name: true,
-				slug: true,
-				description: true,
-				active: true,
-				size: true,
-				stripeCustomerId: true,
-				stripeSubscriptionId: true,
-				stripeProductId: true,
-				planName: true,
-				subscriptionStatus: true,
-				verifiedDomain: true,
-			},
-		})
-
-		if (!organizationWithBilling) {
-			return Response.json({ error: 'Organization not found' }, { status: 404 })
-		}
-
 		return checkoutAction(
 			request,
 			organizationWithBilling,
@@ -170,30 +157,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
 	}
 
 	if (intent === 'customer-portal') {
-		const organizationWithBilling = await prisma.organization.findUnique({
-			where: { id: organization.id },
-			select: {
-				id: true,
-				createdAt: true,
-				updatedAt: true,
-				name: true,
-				slug: true,
-				description: true,
-				active: true,
-				size: true,
-				stripeCustomerId: true,
-				stripeSubscriptionId: true,
-				stripeProductId: true,
-				planName: true,
-				subscriptionStatus: true,
-				verifiedDomain: true,
-			},
-		})
-
-		if (!organizationWithBilling) {
-			return Response.json({ error: 'Organization not found' }, { status: 404 })
-		}
-
 		return customerPortalAction(request, organizationWithBilling)
 	}
 

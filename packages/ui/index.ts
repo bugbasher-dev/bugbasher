@@ -168,6 +168,9 @@ export {
 	BreadcrumbEllipsis,
 } from './components/breadcrumb'
 
+export { NavMain } from './components/nav-main'
+export { NotFoundPage } from './components/not-found-page'
+
 export {
 	DropdownMenu,
 	DropdownMenuTrigger,
@@ -240,6 +243,25 @@ export {
 
 // Icon system
 export { Icon, type IconName, type IconSize } from './components/icon'
+
+// Animated icons
+export { ArrowLeftIcon } from './components/animated-icons/arrow-left-icon'
+export { BuildingIcon } from './components/animated-icons/building-icon'
+export { CircleHelpIcon } from './components/animated-icons/circle-help'
+export { FileTextIcon } from './components/animated-icons/file-text-icon'
+export { FoldersIcon } from './components/animated-icons/folders-icon'
+export { GlobeIcon } from './components/animated-icons/globe-icon'
+export { HomeIcon } from './components/animated-icons/home-icon'
+export { ListTodoIcon } from './components/animated-icons/list-todo'
+export { LockOpenIcon } from './components/animated-icons/lock-open-icon'
+export { LogoutIcon } from './components/animated-icons/logout-icon'
+export { McpIcon } from './components/animated-icons/mcp-icon'
+export { MessageSquareMoreIcon } from './components/animated-icons/message-square-more'
+export { SettingsGearIcon } from './components/animated-icons/settings-gear-icon'
+export { ShieldCheckIcon } from './components/animated-icons/shield-check-icon'
+export { SunMoonIcon } from './components/animated-icons/sun-moon-icon'
+export { UserIcon } from './components/animated-icons/user-icon'
+export { UserRoundPlusIcon } from './components/animated-icons/user-round-plus'
 
 export { Divider } from './components/divider'
 
