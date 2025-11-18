@@ -100,7 +100,6 @@ function NotificationPreferencesCardComponent() {
 		new Set(),
 	)
 	const [isRefetching, setIsRefetching] = useState(false)
-	const [hasMounted, setHasMounted] = useState(false)
 
 	const handleRefetch = useCallback(async () => {
 		setIsRefetching(true)
@@ -149,7 +148,7 @@ function NotificationPreferencesCardComponent() {
 				},
 			})
 			await handleRefetch()
-		} catch (error) {
+		} catch {
 			console.error('Failed to update preference:', error)
 		} finally {
 			setUpdatingPreferences((prev) => {
