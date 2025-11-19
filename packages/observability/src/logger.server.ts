@@ -232,7 +232,7 @@ export function sanitizeUrl(url: string): string {
 		})
 
 		return parsed.toString()
-	} catch (error) {
+	} catch {
 		return '[INVALID_URL]'
 	}
 }

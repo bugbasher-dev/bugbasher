@@ -38,7 +38,7 @@ if (!process.env.PRISMA_QUERY_ENGINE_LIBRARY) {
 				break
 			}
 		}
-	} catch (error) {
+	} catch {
 		// Fallback - let Prisma handle it
 	}
 }
@@ -439,21 +439,19 @@ export const videoProcessingTask = task({
 			// Clean up temporary files on error
 			try {
 				await fs.unlink(thumbnailPath)
-			} catch (error) {
+			} catch {
 				// Ignore cleanup errors
 			}
 			try {
 				await fs.unlink(palettePath)
-			} catch (error) {
+			} catch {
 				// Ignore cleanup errors
 			}
 			try {
 				await fs.unlink(tempVideoPath)
-			} catch (error) {
+			} catch {
 				// Ignore cleanup errors
 			}
-
-			throw error
 		}
 	},
 })

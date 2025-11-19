@@ -1,58 +1,22 @@
-import  { type Meta, type StoryObj } from '@storybook/react'
+import { type Meta, type StoryObj } from '@storybook/react'
 import { useRef, useState } from 'react'
-import {
-	ArrowLeftIcon,
-	type ArrowLeftIconHandle,
-} from './animated-icons/arrow-left-icon'
-import {
-	BuildingIcon,
-	type BuildingIconHandle,
-} from './animated-icons/building-icon'
-import {
-	CircleHelpIcon,
-	type CircleHelpIconHandle,
-} from './animated-icons/circle-help'
-import {
-	FileTextIcon,
-	type FileTextIconHandle,
-} from './animated-icons/file-text-icon'
-import {
-	FoldersIcon,
-	type FoldersIconHandle,
-} from './animated-icons/folders-icon'
+import { ArrowLeftIcon } from './animated-icons/arrow-left-icon'
+import { BuildingIcon } from './animated-icons/building-icon'
+import { CircleHelpIcon } from './animated-icons/circle-help'
+import { FileTextIcon } from './animated-icons/file-text-icon'
+import { FoldersIcon } from './animated-icons/folders-icon'
 import { GlobeIcon } from './animated-icons/globe-icon'
 import { HomeIcon, type HomeIconHandle } from './animated-icons/home-icon'
-import {
-	ListTodoIcon,
-	type ListTodoIconHandle,
-} from './animated-icons/list-todo'
-import {
-	LockOpenIcon,
-	type LockOpenIconHandle,
-} from './animated-icons/lock-open-icon'
-import { LogoutIcon, type LogoutIconHandle } from './animated-icons/logout-icon'
-import { McpIcon, type McpIconHandle } from './animated-icons/mcp-icon'
-import {
-	MessageSquareMoreIcon,
-	type MessageSquareMoreIconHandle,
-} from './animated-icons/message-square-more'
-import {
-	SettingsGearIcon,
-	type SettingsGearIconHandle,
-} from './animated-icons/settings-gear-icon'
-import {
-	ShieldCheckIcon,
-	type ShieldCheckIconHandle,
-} from './animated-icons/shield-check-icon'
-import {
-	SunMoonIcon,
-	type SunMoonIconHandle,
-} from './animated-icons/sun-moon-icon'
-import { UserIcon, type UserIconHandle } from './animated-icons/user-icon'
-import {
-	UserRoundPlusIcon,
-	type UserRoundPlusIconHandle,
-} from './animated-icons/user-round-plus'
+import { ListTodoIcon } from './animated-icons/list-todo'
+import { LockOpenIcon } from './animated-icons/lock-open-icon'
+import { LogoutIcon } from './animated-icons/logout-icon'
+import { McpIcon } from './animated-icons/mcp-icon'
+import { MessageSquareMoreIcon } from './animated-icons/message-square-more'
+import { SettingsGearIcon } from './animated-icons/settings-gear-icon'
+import { ShieldCheckIcon } from './animated-icons/shield-check-icon'
+import { SunMoonIcon } from './animated-icons/sun-moon-icon'
+import { UserIcon } from './animated-icons/user-icon'
+import { UserRoundPlusIcon } from './animated-icons/user-round-plus'
 import { Button } from './button'
 
 const meta = {

@@ -371,7 +371,7 @@ export class NoteEventHandler {
 						if (data.noteId && data.channelId) {
 							uniqueConnections.add(`${data.noteId}-${data.channelId}`)
 						}
-					} catch (error) {
+					} catch {
 						// Ignore parsing errors
 					}
 				}

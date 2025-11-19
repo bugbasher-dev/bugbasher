@@ -1,17 +1,28 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from '@repo/ui/dropdown-menu'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+	DropdownMenuTrigger,
+} from '@repo/ui/dropdown-menu'
 import { Icon } from '@repo/ui/icon'
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@repo/ui/sidebar'
+import {
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	useSidebar,
+} from '@repo/ui/sidebar'
 import { useRef } from 'react'
-import { Link, Form, useFetcher } from 'react-router'
+import { Form, useFetcher } from 'react-router'
 
 import { useOptimisticThemeMode } from '#app/routes/resources+/theme-switch.tsx'
 import { useOptionalRequestInfo } from '#app/utils/request-info.ts'
-import { BuildingIcon } from './icons/building-icon'
 import { LogoutIcon } from './icons/logout-icon'
-import { SettingsGearIcon } from './icons/settings-gear-icon'
 import { SunMoonIcon } from './icons/sun-moon-icon'
-import { UserIcon } from './icons/user-icon'
 
 export function NavUser({
 	user,
@@ -29,9 +40,6 @@ export function NavUser({
 	const iconRefs = useRef<{ [key: string]: any }>({})
 	const themeFetcher = useFetcher()
 	const requestInfo = useOptionalRequestInfo()
-
-	// Check if user has admin role
-	const isAdmin = user.roles?.some((role) => role.name === 'admin') ?? false
 
 	// Theme switching logic
 	const optimisticMode = useOptimisticThemeMode()

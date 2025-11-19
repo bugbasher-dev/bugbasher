@@ -197,7 +197,7 @@ export class IntegrationManager {
 			// Standard OAuth 2.0 state validation
 			try {
 				stateData = OAuthStateManager.validateState(params.state)
-			} catch (error) {
+			} catch {
 				throw new Error('Invalid OAuth state')
 			}
 
@@ -990,7 +990,7 @@ export class IntegrationManager {
 	private safeJsonParse(jsonString: string): Record<string, any> | undefined {
 		try {
 			return JSON.parse(jsonString) as Record<string, any>
-		} catch (error) {
+		} catch {
 			return undefined
 		}
 	}

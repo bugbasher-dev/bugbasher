@@ -276,7 +276,7 @@ export class SSOHealthChecker {
 					} else {
 						invalidConfigs++
 					}
-				} catch (error) {
+				} catch {
 					invalidConfigs++
 				}
 			}
@@ -463,7 +463,7 @@ export class SSOHealthChecker {
 				cacheHitRate: Math.round(cacheHitRate * 100) / 100,
 				averageResponseTime: Math.round(averageResponseTime * 100) / 100,
 			}
-		} catch (error) {
+		} catch {
 			return {
 				totalConfigurations: 0,
 				enabledConfigurations: 0,
@@ -599,7 +599,7 @@ export class SSOHealthChecker {
 		} else {
 			try {
 				new URL(config.issuerUrl)
-			} catch (error) {
+			} catch {
 				issues.push({
 					type: 'error',
 					code: 'INVALID_ISSUER_URL',
@@ -735,7 +735,7 @@ export class SSOHealthChecker {
 						suggestion: 'Map at least one of name or username fields',
 					})
 				}
-			} catch (error) {
+			} catch {
 				issues.push({
 					type: 'error',
 					code: 'INVALID_ATTRIBUTE_MAPPING',

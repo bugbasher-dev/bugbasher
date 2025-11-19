@@ -255,7 +255,7 @@ function EmptyState() {
 function useOptionalNovu() {
 	try {
 		return useNovu()
-	} catch (error) {
+	} catch {
 		return null
 	}
 }
@@ -263,7 +263,7 @@ function useOptionalNovu() {
 function useOptionalNotifications(filter?: { read?: boolean }) {
 	try {
 		return useNotifications(filter)
-	} catch (error) {
+	} catch {
 		return null
 	}
 }

@@ -388,14 +388,14 @@ export class TrelloProvider extends BaseIntegrationProvider {
 					// Try to parse as JSON first
 					const errorData = (await boardsResponse.json()) as TrelloApiError
 					errorMessage = `Failed to fetch boards: ${errorData.message || errorData.error || 'Unknown error'}`
-				} catch (error) {
+				} catch {
 					// If JSON parsing fails, try to get plain text error
 					try {
 						const errorText = await boardsResponse.text()
 						if (errorText) {
 							errorMessage = `Failed to fetch boards: ${errorText}`
 						}
-					} catch (error) {
+					} catch {
 						// If both fail, use the status text
 					}
 				}
@@ -532,14 +532,14 @@ export class TrelloProvider extends BaseIntegrationProvider {
 					// Try to parse as JSON first
 					const errorData = (await response.json()) as TrelloApiError
 					errorMessage = `Failed to create card: ${errorData.message || errorData.error || 'Unknown error'}`
-				} catch (error) {
+				} catch {
 					// If JSON parsing fails, try to get plain text error
 					try {
 						const errorText = await response.text()
 						if (errorText) {
 							errorMessage = `Failed to create card: ${errorText}`
 						}
-					} catch (error) {
+					} catch {
 						// If both fail, use the status text
 					}
 				}

@@ -568,7 +568,7 @@ export class SSOConfigurationService {
 
 		try {
 			return JSON.parse(config.attributeMapping) as Record<string, string>
-		} catch (error) {
+		} catch {
 			// Return default mapping if parsing fails
 			return {
 				email: 'email',

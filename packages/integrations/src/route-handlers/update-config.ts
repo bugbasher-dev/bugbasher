@@ -49,7 +49,7 @@ export async function handleUpdateIntegrationConfig(
 	let config: any
 	try {
 		config = JSON.parse(configString)
-	} catch (error) {
+	} catch {
 		return Response.json({ error: 'Invalid config JSON' }, { status: 400 })
 	}
 

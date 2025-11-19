@@ -174,7 +174,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 				ORG_PERMISSIONS.READ_NOTE_ANY,
 			)
 			// If we reach here, user can read all organization notes
-		} catch (error) {
+		} catch {
 			// User doesn't have org-wide read access, check for personal access
 			const hasPersonalAccess =
 				note.createdById === userId ||
@@ -445,7 +445,7 @@ export async function action({ request }: ActionFunctionArgs) {
 				ORG_PERMISSIONS.DELETE_NOTE_ANY,
 			)
 			canDelete = true
-		} catch (error) {
+		} catch {
 			// If not admin-level delete, check if they can delete their own note
 			if (note.createdById === userId) {
 				try {
@@ -455,7 +455,7 @@ export async function action({ request }: ActionFunctionArgs) {
 						ORG_PERMISSIONS.DELETE_NOTE_OWN,
 					)
 					canDelete = true
-				} catch (error) {
+				} catch {
 					// User doesn't have delete permissions at all
 				}
 			}
@@ -528,7 +528,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			})
 
 			return data({ result: { status: 'success' } })
-		} catch (error) {
+		} catch {
 			return data(
 				{
 					result: {
@@ -597,7 +597,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			}
 
 			return data({ result: { status: 'success' } })
-		} catch (error) {
+		} catch {
 			return data(
 				{
 					result: {
@@ -699,7 +699,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			})
 
 			return data({ result: { status: 'success' } })
-		} catch (error) {
+		} catch {
 			return data(
 				{
 					result: {
@@ -785,7 +785,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			})
 
 			return data({ result: { status: 'success' } })
-		} catch (error) {
+		} catch {
 			return data(
 				{
 					result: {
@@ -843,7 +843,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			})
 
 			return data({ result: { status: 'success' } })
-		} catch (error) {
+		} catch {
 			return data(
 				{
 					result: {
@@ -1074,7 +1074,7 @@ export async function action({ request }: ActionFunctionArgs) {
 					note.organizationId,
 					ORG_PERMISSIONS.READ_NOTE_ANY,
 				)
-			} catch (error) {
+			} catch {
 				// Check personal access to this specific note
 				const hasPersonalAccess =
 					note.createdById === userId ||
@@ -1219,7 +1219,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			}
 
 			return data({ result: { status: 'success' } })
-		} catch (error) {
+		} catch {
 			return data(
 				{
 					result: {
@@ -1287,7 +1287,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			}
 
 			return data({ result: { status: 'success' } })
-		} catch (error) {
+		} catch {
 			return data(
 				{
 					result: {
@@ -1343,7 +1343,7 @@ export async function action({ request }: ActionFunctionArgs) {
 					note.organizationId,
 					ORG_PERMISSIONS.READ_NOTE_ANY,
 				)
-			} catch (error) {
+			} catch {
 				// Check personal access to this specific note
 				const hasPersonalAccess =
 					note.createdById === userId ||
@@ -1382,7 +1382,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			}
 
 			return data({ result: { status: 'success' } })
-		} catch (error) {
+		} catch {
 			return data(
 				{
 					result: {

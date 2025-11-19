@@ -135,7 +135,7 @@ export async function createCheckoutSession(
 				testClock.id,
 			)
 			testCustomerId = testCustomer.id
-		} catch (error) {
+		} catch {
 			// Ignore test customer creation errors
 		}
 	}
@@ -323,7 +323,7 @@ export async function getTrialStatus(userId: string, organizationSlug: string) {
 		} else {
 			return { isActive: false, daysRemaining: 0 }
 		}
-	} catch (error) {
+	} catch {
 		throw new Error('Failed to fetch subscription status')
 	}
 }

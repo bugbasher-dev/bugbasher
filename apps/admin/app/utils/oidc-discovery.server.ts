@@ -770,7 +770,7 @@ export function normalizeIssuerUrl(input: string): string {
 		new URL(url) // This will throw if invalid
 
 		return url
-	} catch (error) {
+	} catch {
 		throw new Error(`Invalid issuer URL format: ${input}`)
 	}
 }
@@ -782,7 +782,7 @@ function isValidUrl(urlString: string): boolean {
 	try {
 		const url = new URL(urlString)
 		return url.protocol === 'http:' || url.protocol === 'https:'
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

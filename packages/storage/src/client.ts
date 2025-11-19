@@ -232,7 +232,7 @@ export async function testS3Connection(
 				const { url: deleteUrl, headers: deleteHeaders } =
 					getSignedDeleteRequestInfo(testKey, config)
 				await fetch(deleteUrl, { method: 'DELETE', headers: deleteHeaders })
-			} catch (error) {
+			} catch {
 				// Ignore delete errors - test file will remain in bucket
 			}
 

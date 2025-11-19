@@ -1,8 +1,10 @@
-import React from 'react'
-import { createRoot } from 'react-dom/client'
 import { brand } from '@repo/config/brand'
 import { Button } from '@repo/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card'
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import browser from 'webextension-polyfill'
+
 import {
 	getAuthStatus,
 	MessageHandler,
@@ -274,9 +276,6 @@ function destroyWidget() {
 		widget.remove()
 	}
 }
-
-// Set up message listener for content script
-import browser from 'webextension-polyfill'
 
 browser.runtime.onMessage.addListener((message: unknown) => {
 	try {

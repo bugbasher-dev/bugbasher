@@ -202,7 +202,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 			},
 			payload: {},
 		})
-	} catch (error) {
+	} catch {
 		// Error triggering workflow
 	}
 

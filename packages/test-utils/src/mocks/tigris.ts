@@ -74,7 +74,7 @@ export const handlers = [
 				let file: Buffer
 				try {
 					file = await fs.readFile(testFixturesPath)
-				} catch (error) {
+				} catch {
 					// If not found in test fixtures, try original path
 					file = await fs.readFile(filePath)
 				}
@@ -88,7 +88,7 @@ export const handlers = [
 						'Cache-Control': 'public, max-age=31536000, immutable',
 					},
 				})
-			} catch (error) {
+			} catch {
 				return new HttpResponse('Not found', { status: 404 })
 			}
 		},

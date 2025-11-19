@@ -165,7 +165,6 @@ export function CommentsSection({
 						<CommentItem
 							key={comment.id}
 							comment={comment}
-							noteId={noteId}
 							currentUserId={currentUserId}
 							users={users}
 							onReply={handleReply}

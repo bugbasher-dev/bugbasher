@@ -140,7 +140,7 @@ app.get(['/img/*', '/favicons/*'], (_req, res) => {
 morgan.token('url', (req) => {
 	try {
 		return decodeURIComponent(req.url ?? '')
-	} catch (error) {
+	} catch {
 		return req.url ?? ''
 	}
 })

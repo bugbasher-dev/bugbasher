@@ -175,7 +175,7 @@ export function OrgNoteEditor({
 						}
 					}
 					return ''
-				} catch (error) {
+				} catch {
 					return ''
 				}
 			})(),

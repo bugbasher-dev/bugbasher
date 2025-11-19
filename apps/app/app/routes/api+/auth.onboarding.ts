@@ -66,7 +66,7 @@ export async function action({ request }: Route.ActionArgs) {
 		if (!email) {
 			try {
 				email = await requireOnboardingEmail(request)
-			} catch (error) {
+			} catch {
 				return data(
 					{
 						success: false,
@@ -93,7 +93,7 @@ export async function action({ request }: Route.ActionArgs) {
 		// Check honeypot
 		try {
 			await checkHoneypot(formData)
-		} catch (error) {
+		} catch {
 			return data(
 				{
 					success: false,

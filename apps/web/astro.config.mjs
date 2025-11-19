@@ -1,10 +1,10 @@
+import cloudflare from '@astrojs/cloudflare'
 import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
 import { fontless } from 'fontless'
 
-import cloudflare from '@astrojs/cloudflare'
 
 export default defineConfig({
 	output: 'server',

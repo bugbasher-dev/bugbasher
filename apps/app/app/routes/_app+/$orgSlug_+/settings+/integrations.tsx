@@ -87,7 +87,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 		try {
 			await integrationManager.disconnectIntegration(integrationId)
 			return Response.json({ success: true })
-		} catch (error) {
+		} catch {
 			return Response.json(
 				{
 					error: 'Failed to disconnect integration',

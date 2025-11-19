@@ -13,6 +13,10 @@
 		"*.config.ts",
 		".turbo",
 		".cache",
-		".react-router"
+		".react-router",
+		"**/*.test.ts",
+		"**/*.test.tsx",
+		"**/*.spec.ts",
+		"**/*.spec.tsx"
 	]
 }

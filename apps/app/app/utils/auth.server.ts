@@ -45,7 +45,7 @@ export async function getSSOStrategy(organizationId: string) {
 		if (existingStrategy) {
 			return strategyName
 		}
-	} catch (error) {
+	} catch {
 		// Strategy doesn't exist, we'll create it below
 	}
 
@@ -70,7 +70,7 @@ export async function refreshSSOStrategy(organizationId: string) {
 	// Remove existing strategy if it exists
 	try {
 		;(authenticator as any)._strategies.delete(strategyName)
-	} catch (error) {
+	} catch {
 		// Strategy might not exist, that's fine
 	}
 

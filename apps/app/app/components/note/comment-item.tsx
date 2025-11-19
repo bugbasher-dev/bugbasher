@@ -33,7 +33,6 @@ interface Comment {
 
 interface CommentItemProps {
 	comment: Comment
-	noteId: string
 	currentUserId: string
 	users: MentionUser[]
 	depth?: number
@@ -44,7 +43,6 @@ interface CommentItemProps {
 
 export function CommentItem({
 	comment,
-	noteId,
 	currentUserId,
 	users,
 	depth = 0,
@@ -208,7 +206,6 @@ export function CommentItem({
 						<CommentItem
 							key={reply.id}
 							comment={reply}
-							noteId={noteId}
 							organizationId={organizationId}
 							currentUserId={currentUserId}
 							users={users}

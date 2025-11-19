@@ -1,5 +1,5 @@
-import type { APIRoute } from 'astro'
 import { getUptimeStatus } from '@repo/observability'
+import { type APIRoute } from 'astro'
 
 /**
  * Status endpoint that returns uptime monitoring information

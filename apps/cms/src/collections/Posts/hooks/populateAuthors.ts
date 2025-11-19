@@ -31,7 +31,7 @@ export const populateAuthors: CollectionAfterReadHook = async ({
             name: authorDoc.name,
           }))
         }
-      } catch (error) {
+      } catch {
         // swallow error
       }
     }

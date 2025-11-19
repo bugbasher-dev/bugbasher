@@ -18,7 +18,7 @@ export async function action({ request }: Route.ActionArgs) {
 		// Check honeypot
 		try {
 			await checkHoneypot(formData)
-		} catch (error) {
+		} catch {
 			return data(
 				{
 					success: false,

@@ -216,7 +216,7 @@ export abstract class BaseIntegrationProvider implements IntegrationProvider {
 			if (errorData?.error || errorData?.message) {
 				errorMessage += ` - ${errorData.error || errorData.message}`
 			}
-		} catch (error) {
+		} catch {
 			// If response is not JSON, include raw text
 			if (errorText) {
 				errorMessage += ` - ${errorText}`

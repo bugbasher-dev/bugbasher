@@ -197,7 +197,7 @@ export function sanitizeRedirectUrl(input: string): string | null {
 		}
 
 		return decoded.substring(0, 200) // Limit length
-	} catch (error) {
+	} catch {
 		return null
 	}
 }
@@ -342,7 +342,7 @@ export function sanitizeOIDCUserInfo(userInfo: any): any {
 	if (userInfo.picture) {
 		try {
 			sanitized.picture = sanitizeUrl(String(userInfo.picture))
-		} catch (error) {
+		} catch {
 			// Ignore invalid picture URLs
 		}
 	}

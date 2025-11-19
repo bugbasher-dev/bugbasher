@@ -129,7 +129,7 @@ export class SSOConnectionPool {
 		try {
 			const url = new URL(baseUrl)
 			return `${url.protocol}//${url.host}`
-		} catch (error) {
+		} catch {
 			return baseUrl
 		}
 	}
@@ -141,7 +141,7 @@ export class SSOConnectionPool {
 		try {
 			const urlObj = new URL(url)
 			return `${urlObj.protocol}//${urlObj.host}`
-		} catch (error) {
+		} catch {
 			return url
 		}
 	}

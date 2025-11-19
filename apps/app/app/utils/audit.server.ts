@@ -669,7 +669,7 @@ export class AuditService {
 			const date = new Date()
 			date.setDate(date.getDate() + retentionDays)
 			return date
-		} catch (error) {
+		} catch {
 			// Fall back to default 1 year retention
 			const date = new Date()
 			date.setFullYear(date.getFullYear() + 1)

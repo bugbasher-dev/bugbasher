@@ -14,5 +14,11 @@
 	},
 	"globals": {
 		"React": "readonly"
-	}
+	},
+	"ignorePatterns": [
+		"**/*.test.ts",
+		"**/*.test.tsx",
+		"**/*.spec.ts",
+		"**/*.spec.tsx"
+	]
 }

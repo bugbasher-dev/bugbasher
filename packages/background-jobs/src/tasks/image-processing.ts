@@ -37,7 +37,7 @@ if (!process.env.PRISMA_QUERY_ENGINE_LIBRARY) {
 				break
 			}
 		}
-	} catch (error) {
+	} catch {
 		// Fallback - let Prisma handle it
 	}
 }
@@ -426,7 +426,7 @@ export const imageProcessingTask = task({
 			// Clean up temporary files on error
 			try {
 				await fs.unlink(thumbnailPath)
-			} catch (error) {
+			} catch {
 				// Ignore cleanup errors
 			}
 			try {
@@ -434,7 +434,7 @@ export const imageProcessingTask = task({
 				await fs.unlink(`${tempImagePath}.png`)
 				await fs.unlink(`${tempImagePath}.gif`)
 				await fs.unlink(`${tempImagePath}.webp`)
-			} catch (error) {
+			} catch {
 				// Ignore cleanup errors
 			}
 

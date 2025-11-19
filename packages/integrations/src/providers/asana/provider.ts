@@ -437,7 +437,7 @@ export class AsanaProvider extends BaseIntegrationProvider {
 					if (errorData.errors && errorData.errors.length > 0) {
 						errorMessage += ` - ${errorData.errors[0]?.message || 'Unknown error'}`
 					}
-				} catch (error) {
+				} catch {
 					// If we can't parse the error, use the raw text
 					errorMessage += ` - ${errorText}`
 				}
@@ -498,7 +498,7 @@ export class AsanaProvider extends BaseIntegrationProvider {
 
 			const _project = await response.json()
 			return true
-		} catch (error) {
+		} catch {
 			return false
 		}
 	}

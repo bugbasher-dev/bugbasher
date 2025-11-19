@@ -10,10 +10,6 @@ export async function action({ request, params }: Route.ActionArgs) {
 	try {
 		await handleMockAction(providerName, request)
 
-		// For API endpoints, we need to handle the authentication differently
-		// The authenticator.authenticate will redirect, but we want to return the auth URL
-		const formData = await request.formData()
-
 		// Store redirect info and initiate OAuth flow
 		// This will redirect to the provider's OAuth page
 		return await authenticator.authenticate(providerName, request)

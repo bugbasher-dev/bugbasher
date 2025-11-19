@@ -284,7 +284,7 @@ export class SSOMonitoringService {
 			}
 
 			return { status, issues }
-		} catch (error) {
+		} catch {
 			return {
 				status: 'unhealthy',
 				issues: [
@@ -334,7 +334,7 @@ export class SSOMonitoringService {
 							message: `Identity provider test failed for ${config.providerName}: ${testResult.error}`,
 						})
 					}
-				} catch (error) {
+				} catch {
 					failedTests++
 					issues.push({
 						severity: 'error',
@@ -352,7 +352,7 @@ export class SSOMonitoringService {
 			}
 
 			return { status, issues }
-		} catch (error) {
+		} catch {
 			return {
 				status: 'unhealthy',
 				issues: [
@@ -376,7 +376,7 @@ export class SSOMonitoringService {
 			// This would query audit logs for recent auth failures
 			// For now, assume healthy
 			return 'healthy'
-		} catch (error) {
+		} catch {
 			return 'unhealthy'
 		}
 	}
@@ -396,7 +396,7 @@ export class SSOMonitoringService {
 				averageResponseTime: 0, // Would calculate from performance logs
 				errorRate: 0, // Would calculate from error logs
 			}
-		} catch (error) {
+		} catch {
 			return {
 				totalConfigurations: 0,
 				activeConfigurations: 0,
