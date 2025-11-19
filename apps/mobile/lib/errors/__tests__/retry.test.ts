@@ -7,7 +7,7 @@ import {
 	shouldShowRetryButton,
 	getRateLimitRetryDelay,
 } from '../retry'
-import { ErrorCategory } from '../types'
+import { ErrorCategory, type RateLimitError } from '../types'
 
 // Mock setTimeout for testing
 jest.useFakeTimers()
@@ -193,7 +193,9 @@ describe('retry utility functions', () => {
 			retryable: true,
 		}
 
-		const delay = getRateLimitRetryDelay(rateLimitError as any)
+		const delay = getRateLimitRetryDelay(
+			rateLimitError as unknown as RateLimitError,
+		)
 		expect(delay).toBe(30000) // 30 seconds in milliseconds
 	})
 

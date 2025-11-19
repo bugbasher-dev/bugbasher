@@ -34,7 +34,7 @@ test.describe('Theme Switching', () => {
 		await page.waitForTimeout(500)
 
 		// Verify dark theme is applied by checking the html class or data attribute
-		const htmlElement = page.locator('html')
+		const htmlElement = page.getByRole('document')
 		await expect(htmlElement).toHaveClass(/dark/)
 	})
 
@@ -64,11 +64,15 @@ test.describe('Theme Switching', () => {
 		await page.waitForTimeout(500)
 
 		// Verify light theme is applied (should not have dark class)
-		const htmlElement = page.locator('html')
+		const htmlElement = page.getByRole('document')
 		await expect(htmlElement).not.toHaveClass(/dark/)
 	})
 
-	test('Users can switch to system theme', async ({ page, login, navigate }) => {
+	test('Users can switch to system theme', async ({
+		page,
+		login,
+		navigate,
+	}) => {
 		// Set a larger viewport to ensure elements are visible
 		await page.setViewportSize({ width: 1280, height: 720 })
 
@@ -102,7 +106,7 @@ test.describe('Theme Switching', () => {
 
 		// Verify system theme is applied by checking that the page doesn't have dark class
 		// (system theme behavior depends on the system's current theme)
-		const htmlElement = page.locator('html')
+		const htmlElement = page.getByRole('document')
 		// We can't reliably test system theme appearance, so just verify the selection worked
 		await expect(htmlElement).toBeVisible()
 	})
@@ -137,7 +141,7 @@ test.describe('Theme Switching', () => {
 		await page.waitForTimeout(500)
 
 		// Verify dark theme is applied
-		const htmlElement = page.locator('html')
+		const htmlElement = page.getByRole('document')
 		await expect(htmlElement).toHaveClass(/dark/)
 
 		// Reload the page
@@ -178,7 +182,7 @@ test.describe('Theme Switching', () => {
 		await page.waitForTimeout(500)
 
 		// Verify dark theme is applied
-		const htmlElement = page.locator('html')
+		const htmlElement = page.getByRole('document')
 		await expect(htmlElement).toHaveClass(/dark/)
 
 		// Navigate to settings page
@@ -228,11 +232,15 @@ test.describe('Theme Switching', () => {
 		await page.waitForTimeout(1000)
 
 		// Verify dark theme is applied - this is the main functionality we're testing
-		const htmlElement = page.locator('html')
+		const htmlElement = page.getByRole('document')
 		await expect(htmlElement).toHaveClass(/dark/)
 	})
 
-	test('Theme switching works on different pages', async ({ page, login, navigate }) => {
+	test('Theme switching works on different pages', async ({
+		page,
+		login,
+		navigate,
+	}) => {
 		// Set a larger viewport to ensure elements are visible
 		await page.setViewportSize({ width: 1280, height: 720 })
 
@@ -249,15 +257,13 @@ test.describe('Theme Switching', () => {
 		await userMenuButton.scrollIntoViewIfNeeded()
 		await userMenuButton.click()
 
-		const themeButton = page
-			.locator('[data-slot="dropdown-menu-sub-trigger"]')
-			.filter({ hasText: 'Theme' })
+		const themeButton = page.getByRole('menuitem', { name: 'Theme' })
 		await themeButton.click()
 		await page.getByRole('menuitem', { name: /dark/i }).first().click()
 		await page.waitForTimeout(1000)
 
 		// Verify dark theme is applied
-		const htmlElement = page.locator('html')
+		const htmlElement = page.getByRole('document')
 		await expect(htmlElement).toHaveClass(/dark/)
 
 		// Navigate to different pages and verify theme persists
@@ -302,7 +308,7 @@ test.describe('Theme Switching', () => {
 		await page.waitForTimeout(1000)
 
 		// Verify dark theme is applied
-		const htmlElement = page.locator('html')
+		const htmlElement = page.getByRole('document')
 		await expect(htmlElement).toHaveClass(/dark/)
 	})
 })

@@ -15,7 +15,11 @@ async function ensureOnboardingStepsExist() {
 }
 
 test.describe('Dashboard', () => {
-	test('Dashboard displays organization overview', async ({ page, login, navigate }) => {
+	test('Dashboard displays organization overview', async ({
+		page,
+		login,
+		navigate,
+	}) => {
 		const user = await login()
 
 		// Create an organization for the user
@@ -30,10 +34,14 @@ test.describe('Dashboard', () => {
 
 		// Verify dashboard components are present - use more specific selector
 		await expect(page.getByRole('heading', { name: /welcome/i })).toBeVisible()
-		await expect(page.locator('main')).toBeVisible()
+		await expect(page.getByRole('main')).toBeVisible()
 	})
 
-	test('Dashboard shows notes chart with data', async ({ page, login, navigate }) => {
+	test('Dashboard shows notes chart with data', async ({
+		page,
+		login,
+		navigate,
+	}) => {
 		const user = await login()
 
 		// Create an organization for the user
@@ -221,7 +229,11 @@ test.describe('Dashboard', () => {
 		await expect(page.getByText(/5 notes/i)).toBeVisible()
 	})
 
-	test('Dashboard allows quick note creation', async ({ page, login, navigate }) => {
+	test('Dashboard allows quick note creation', async ({
+		page,
+		login,
+		navigate,
+	}) => {
 		const user = await login()
 
 		// Create an organization for the user
@@ -280,7 +292,11 @@ test.describe('Dashboard', () => {
 		await expect(page.getByRole('heading', { name: /welcome/i })).toBeVisible()
 	})
 
-	test('Dashboard navigation works correctly', async ({ page, login, navigate }) => {
+	test('Dashboard navigation works correctly', async ({
+		page,
+		login,
+		navigate,
+	}) => {
 		const user = await login()
 
 		// Create an organization for the user
@@ -346,7 +362,7 @@ test.describe('Dashboard', () => {
 
 		// Verify dashboard is still functional on mobile - just check the page loaded
 		// The org name might be in sidebar which could be collapsed on mobile
-		await expect(page.locator('body')).toBeVisible()
+		await expect(page.getByRole('document')).toBeVisible()
 		// Alternative check: verify we're on the right URL
 		await expect(page).toHaveURL(new RegExp(`/${org.slug}`))
 	})

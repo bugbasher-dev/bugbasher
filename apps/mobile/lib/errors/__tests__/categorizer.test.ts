@@ -5,7 +5,13 @@ import {
 	isAuthenticationError,
 	isValidationError,
 } from '../categorizer'
-import { ErrorCategory } from '../types'
+import {
+	ErrorCategory,
+	type NetworkError,
+	type AuthenticationError,
+	type OAuthError,
+	type ServerError,
+} from '../types'
 
 describe('categorizeError', () => {
 	it('categorizes network errors by message pattern', () => {
@@ -114,21 +120,21 @@ describe('categorizeError', () => {
 	it('sets specific properties for network errors', () => {
 		const timeoutError = categorizeError({ message: 'Request timeout' })
 		expect(timeoutError.category).toBe(ErrorCategory.NETWORK)
-		expect((timeoutError as any).timeout).toBe(true)
+		expect((timeoutError as NetworkError).timeout).toBe(true)
 
 		const offlineError = categorizeError({ message: 'Network offline' })
 		expect(offlineError.category).toBe(ErrorCategory.NETWORK)
-		expect((offlineError as any).offline).toBe(true)
+		expect((offlineError as NetworkError).offline).toBe(true)
 	})
 
 	it('sets specific properties for authentication errors', () => {
 		const bannedError = categorizeError({ message: 'Account banned' })
 		expect(bannedError.category).toBe(ErrorCategory.AUTHENTICATION)
-		expect((bannedError as any).banned).toBe(true)
+		expect((bannedError as AuthenticationError).banned).toBe(true)
 
 		const suspendedError = categorizeError({ message: 'Account suspended' })
 		expect(suspendedError.category).toBe(ErrorCategory.AUTHENTICATION)
-		expect((suspendedError as any).suspended).toBe(true)
+		expect((suspendedError as AuthenticationError).suspended).toBe(true)
 	})
 
 	it('sets specific properties for OAuth errors', () => {
@@ -136,7 +142,7 @@ describe('categorizeError', () => {
 			message: 'OAuth cancelled by user',
 		})
 		expect(cancelledError.category).toBe(ErrorCategory.OAUTH)
-		expect((cancelledError as any).cancelled).toBe(true)
+		expect((cancelledError as OAuthError).cancelled).toBe(true)
 	})
 
 	it('sets specific properties for server errors', () => {
@@ -144,7 +150,7 @@ describe('categorizeError', () => {
 			message: 'Server under maintenance',
 		})
 		expect(maintenanceError.category).toBe(ErrorCategory.SERVER)
-		expect((maintenanceError as any).maintenance).toBe(true)
+		expect((maintenanceError as ServerError).maintenance).toBe(true)
 	})
 })
 

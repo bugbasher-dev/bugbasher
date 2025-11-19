@@ -18,6 +18,8 @@ describe('AuthApi', () => {
 
 	beforeEach(() => {
 		mockHttpClient = {
+			request: jest.fn(),
+			postForm: jest.fn(),
 			post: jest.fn(),
 			get: jest.fn(),
 			put: jest.fn(),
@@ -29,7 +31,7 @@ describe('AuthApi', () => {
 				timeout: 10000,
 				retryAttempts: 3,
 			}),
-		} as any
+		} as unknown as jest.Mocked<HttpClient>
 
 		MockedHttpClient.mockImplementation(() => mockHttpClient)
 

@@ -55,7 +55,9 @@ describe('OAuth Integration', () => {
 
 			// Mock the HTTP client get method
 			const mockGet = jest.fn().mockResolvedValue(mockBackendResponse)
-			;(authApi as any).httpClient.get = mockGet
+			;(
+				authApi as unknown as { httpClient: { get: jest.Mock } }
+			).httpClient.get = mockGet
 
 			// Test the OAuth callback
 			const result = await authApi.socialCallback(
@@ -82,7 +84,9 @@ describe('OAuth Integration', () => {
 			}
 
 			const mockGet = jest.fn().mockResolvedValue(mockErrorResponse)
-			;(authApi as any).httpClient.get = mockGet
+			;(
+				authApi as unknown as { httpClient: { get: jest.Mock } }
+			).httpClient.get = mockGet
 
 			const result = await authApi.socialCallback(
 				'github',
@@ -99,7 +103,9 @@ describe('OAuth Integration', () => {
 
 		it('should handle network errors during OAuth callback', async () => {
 			const mockGet = jest.fn().mockRejectedValue(new Error('Network timeout'))
-			;(authApi as any).httpClient.get = mockGet
+			;(
+				authApi as unknown as { httpClient: { get: jest.Mock } }
+			).httpClient.get = mockGet
 
 			const result = await authApi.socialCallback(
 				'github',
@@ -124,7 +130,9 @@ describe('OAuth Integration', () => {
 			}
 
 			const mockGet = jest.fn().mockResolvedValue(mockOnboardingResponse)
-			;(authApi as any).httpClient.get = mockGet
+			;(
+				authApi as unknown as { httpClient: { get: jest.Mock } }
+			).httpClient.get = mockGet
 
 			const result = await authApi.socialCallback(
 				'github',
@@ -147,7 +155,9 @@ describe('OAuth Integration', () => {
 			}
 
 			const mockGet = jest.fn().mockResolvedValue(mockBannedResponse)
-			;(authApi as any).httpClient.get = mockGet
+			;(
+				authApi as unknown as { httpClient: { get: jest.Mock } }
+			).httpClient.get = mockGet
 
 			const result = await authApi.socialCallback(
 				'github',
@@ -216,7 +226,9 @@ describe('OAuth Integration', () => {
 			}
 
 			const mockGet = jest.fn().mockResolvedValue(mockInvalidStateResponse)
-			;(authApi as any).httpClient.get = mockGet
+			;(
+				authApi as unknown as { httpClient: { get: jest.Mock } }
+			).httpClient.get = mockGet
 
 			const result = await authApi.socialCallback(
 				'github',
@@ -234,7 +246,9 @@ describe('OAuth Integration', () => {
 			const mockGet = jest
 				.fn()
 				.mockResolvedValue({ success: true, data: {}, status: 200 })
-			;(authApi as any).httpClient.get = mockGet
+			;(
+				authApi as unknown as { httpClient: { get: jest.Mock } }
+			).httpClient.get = mockGet
 
 			await authApi.socialCallback('github', 'code', 'csrf_protection_state')
 
@@ -254,7 +268,9 @@ describe('OAuth Integration', () => {
 			const mockGet = jest
 				.fn()
 				.mockResolvedValue({ success: true, data: {}, status: 200 })
-			;(authApi as any).httpClient.get = mockGet
+			;(
+				authApi as unknown as { httpClient: { get: jest.Mock } }
+			).httpClient.get = mockGet
 
 			await authApi.socialCallback('github', 'code', 'state')
 

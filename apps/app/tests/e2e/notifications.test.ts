@@ -194,9 +194,7 @@ test.describe('Notifications', () => {
 
 		// Verify invitation notification is displayed
 		await expect(
-			page
-				.locator('[data-slot="card-title"]')
-				.filter({ hasText: 'Pending Invitations' }),
+			page.getByRole('heading', { name: /pending invitations/i }),
 		).toBeVisible()
 		await expect(page.getByText(org.name)).toBeVisible()
 	})
@@ -343,9 +341,7 @@ test.describe('Notifications', () => {
 
 		// Check if the notification preferences card is displayed
 		await expect(
-			page
-				.locator('[data-slot="card-title"]')
-				.filter({ hasText: 'Notification Preferences' }),
+			page.getByRole('heading', { name: /notification preferences/i }),
 		).toBeVisible()
 
 		// The page should show some content - either preferences, loading, error, or no preferences

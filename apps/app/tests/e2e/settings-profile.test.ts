@@ -16,8 +16,10 @@ test('Users can update their basic info', async ({ page, login, navigate }) => {
 
 	const newUserData = createUser()
 
-	await page.locator('input[name="name"]').fill(newUserData.name)
-	await page.locator('input[name="username"]').fill(newUserData.username)
+	await page.getByRole('textbox', { name: /name/i }).fill(newUserData.name)
+	await page
+		.getByRole('textbox', { name: /username/i })
+		.fill(newUserData.username)
 
 	await page.getByRole('button', { name: /save changes/i }).click()
 })
@@ -45,11 +47,11 @@ test('Users can update their password', async ({ page, login, navigate }) => {
 
 	// Use dialog context and input names for password form fields
 	const dialog = page.getByRole('dialog')
-	await expect(dialog.locator('input[name="currentPassword"]')).toBeVisible()
+	await expect(dialog.getByLabel(/current password/i)).toBeVisible()
 
-	await dialog.locator('input[name="currentPassword"]').fill(oldPassword)
-	await dialog.locator('input[name="newPassword"]').fill(newPassword)
-	await dialog.locator('input[name="confirmNewPassword"]').fill(newPassword)
+	await dialog.getByLabel(/current password/i).fill(oldPassword)
+	await dialog.getByLabel(/^new password$/i).fill(newPassword)
+	await dialog.getByLabel(/confirm.*password/i).fill(newPassword)
 
 	await page.getByRole('button', { name: /^change password/i }).click()
 
@@ -69,7 +71,11 @@ test('Users can update their password', async ({ page, login, navigate }) => {
 	).toEqual({ id: user.id })
 })
 
-test('Users can update their profile photo', async ({ page, login, navigate }) => {
+test('Users can update their profile photo', async ({
+	page,
+	login,
+	navigate,
+}) => {
 	const user = await login()
 	await navigate('/profile')
 
@@ -127,9 +133,9 @@ test('Users can change their email address', async ({
 
 	// Target the DialogTrigger button specifically using data attributes
 	// This is the button that actually opens the email dialog
-	const changeEmailButton = page.locator(
-		'button[data-slot="dialog-trigger"]:has-text("Change")',
-	)
+	const changeEmailButton = page
+		.getByRole('button', { name: /change/i })
+		.filter({ has: page.locator('[data-slot="dialog-trigger"]') })
 	await expect(changeEmailButton).toBeVisible()
 	await changeEmailButton.click()
 
@@ -138,7 +144,9 @@ test('Users can change their email address', async ({
 	await expect(
 		emailDialog.getByRole('heading', { name: 'Change Email' }),
 	).toBeVisible()
-	await emailDialog.locator('input[name="email"]').fill(newEmailAddress)
+	await emailDialog
+		.getByRole('textbox', { name: /email/i })
+		.fill(newEmailAddress)
 	await page.getByRole('button', { name: 'Save' }).click()
 	// After save, the dialog shows verification info with the code directly
 	await expect(
@@ -146,7 +154,7 @@ test('Users can change their email address', async ({
 	).toBeVisible()
 
 	// Extract the verification code directly from the success message
-	const codeElement = page.getByText(/Verification code:/).locator('strong')
+	const codeElement = page.getByText(/Verification code:/).getByRole('strong')
 	await expect(codeElement).toBeVisible()
 	const code = await codeElement.innerText()
 	invariant(code, 'Verification code not found in dialog')

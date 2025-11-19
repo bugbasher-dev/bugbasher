@@ -271,7 +271,7 @@ test('shows help texts on entering invalid details on onboarding page after GitH
 	await createAccountButton.click()
 
 	await expect(
-		createAccountButton.locator('svg[class*="animate-spin"], svg'),
+		createAccountButton.getByRole('img').or(createAccountButton.locator('svg')),
 	).toBeVisible()
 	await expect(
 		page.getByText(
@@ -356,9 +356,9 @@ test('login as existing user', async ({ page, insertNewUser, navigate }) => {
 		console.log('Login did not redirect to home page. Current URL:', page.url())
 
 		// Check if there are any error messages (but don't wait too long)
-		const errorElements = page.locator(
-			'[role="alert"], .error, .text-red-500, .text-destructive',
-		)
+		const errorElements = page
+			.getByRole('alert')
+			.or(page.locator('.error, .text-red-500, .text-destructive'))
 		const errorCount = await errorElements.count()
 
 		if (errorCount > 0) {

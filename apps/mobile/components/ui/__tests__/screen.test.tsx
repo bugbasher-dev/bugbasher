@@ -5,7 +5,7 @@ import { Screen } from '../screen'
 
 // Mock SafeAreaView
 jest.mock('react-native-safe-area-context', () => ({
-	SafeAreaView: ({ children, ...props }: any) => (
+	SafeAreaView: ({ children, ...props }: { children: React.ReactNode }) => (
 		<div {...props}>{children}</div>
 	),
 }))

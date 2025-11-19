@@ -1,4 +1,4 @@
-import { type TokenData } from '../../types'
+import { type TokenData, type User } from '../../types'
 import { SecureStorage } from './secure-storage'
 
 export interface TokenValidationResult {
@@ -96,7 +96,7 @@ export class TokenManager {
 	 * Store user data separately from session
 	 * @param user - User data to store
 	 */
-	async storeUser(user: any): Promise<void> {
+	async storeUser(user: User): Promise<void> {
 		try {
 			await this.storage.storeUser(user)
 		} catch (error) {
@@ -110,7 +110,7 @@ export class TokenManager {
 	 * Get stored user data
 	 * @returns User data or null
 	 */
-	async getUser(): Promise<any | null> {
+	async getUser(): Promise<User | null> {
 		try {
 			return await this.storage.getUser()
 		} catch {

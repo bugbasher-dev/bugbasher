@@ -1,5 +1,6 @@
 import { Keyboard } from 'react-native'
 import { getKeyboardConfig, dismissKeyboard } from '../keyboard-utils'
+import { type InputType } from '../types'
 
 // Mock React Native Keyboard
 jest.mock('react-native', () => ({
@@ -79,7 +80,7 @@ describe('keyboard-utils', () => {
 		})
 
 		it('should return default config for unknown input type', () => {
-			const config = getKeyboardConfig('unknown' as any)
+			const config = getKeyboardConfig('unknown' as unknown as InputType)
 
 			expect(config).toEqual({
 				keyboardType: 'default',

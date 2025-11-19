@@ -1,4 +1,5 @@
 import { renderHook, act } from '@testing-library/react-native'
+import { type TextInput } from 'react-native'
 import { dismissKeyboard } from '../../lib/keyboard'
 import { useFocusManager } from '../use-focus-manager'
 
@@ -16,14 +17,16 @@ describe('useFocusManager', () => {
 		const { result } = renderHook(() => useFocusManager(3))
 
 		expect(result.current.refs.current).toHaveLength(3)
-		expect(result.current.refs.current.every((ref: any) => ref === null)).toBe(
-			true,
-		)
+		expect(
+			result.current.refs.current.every(
+				(ref: TextInput | null) => ref === null,
+			),
+		).toBe(true)
 	})
 
 	it('should set refs correctly', () => {
 		const { result } = renderHook(() => useFocusManager(2))
-		const mockRef = { focus: jest.fn() } as any
+		const mockRef = { focus: jest.fn() } as unknown as TextInput
 
 		act(() => {
 			result.current.setRef(0)(mockRef)
@@ -34,8 +37,8 @@ describe('useFocusManager', () => {
 
 	it('should focus next input', () => {
 		const { result } = renderHook(() => useFocusManager(3))
-		const mockRef1 = { focus: jest.fn() } as any
-		const mockRef2 = { focus: jest.fn() } as any
+		const mockRef1 = { focus: jest.fn() } as unknown as TextInput
+		const mockRef2 = { focus: jest.fn() } as unknown as TextInput
 
 		act(() => {
 			result.current.setRef(0)(mockRef1)
@@ -51,7 +54,7 @@ describe('useFocusManager', () => {
 
 	it('should dismiss keyboard when no next input', () => {
 		const { result } = renderHook(() => useFocusManager(2))
-		const mockRef = { focus: jest.fn() } as any
+		const mockRef = { focus: jest.fn() } as unknown as TextInput
 
 		act(() => {
 			result.current.setRef(0)(mockRef)
@@ -66,8 +69,8 @@ describe('useFocusManager', () => {
 
 	it('should focus previous input', () => {
 		const { result } = renderHook(() => useFocusManager(3))
-		const mockRef1 = { focus: jest.fn() } as any
-		const mockRef2 = { focus: jest.fn() } as any
+		const mockRef1 = { focus: jest.fn() } as unknown as TextInput
+		const mockRef2 = { focus: jest.fn() } as unknown as TextInput
 
 		act(() => {
 			result.current.setRef(0)(mockRef1)

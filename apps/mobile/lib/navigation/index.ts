@@ -1,4 +1,4 @@
-import { router } from 'expo-router'
+import { router, type Href } from 'expo-router'
 
 /**
  * Handle deep link URLs for authentication flows
@@ -51,7 +51,7 @@ export const handleDeepLink = (url: string): void => {
 				}).toString()
 
 				console.log('Navigating to verify-code with params:', params)
-				router.replace(`/(auth)/verify-code?${params}` as any)
+				router.replace(`/(auth)/verify-code?${params}` as Href)
 				return
 			}
 		}
@@ -59,7 +59,7 @@ export const handleDeepLink = (url: string): void => {
 		// Handle OAuth callback
 		if (pathname.includes('callback')) {
 			console.log('Navigating to OAuth callback')
-			router.replace('/auth/callback' as any)
+			router.replace('/auth/callback' as Href)
 			return
 		}
 
@@ -80,7 +80,7 @@ export const handleDeepLink = (url: string): void => {
 
 			if (authPath) {
 				console.log('Navigating to auth path:', authPath)
-				router.replace(`/(auth)/${authPath}` as any)
+				router.replace(`/(auth)/${authPath}` as Href)
 				return
 			}
 		}
@@ -106,7 +106,7 @@ export const navigateAfterAuth = (redirectTo?: string): void => {
 	if (redirectTo) {
 		console.log('🧭 Navigation: Redirecting to specific URL:', redirectTo)
 		// If there's a specific redirect URL, navigate there
-		router.replace(redirectTo as any)
+		router.replace(redirectTo as Href)
 	} else {
 		console.log('🧭 Navigation: Redirecting to dashboard screen')
 		// Default to the main app screen (dashboard)
@@ -121,7 +121,7 @@ export const navigateToSignIn = (redirectTo?: string): void => {
 	const params = redirectTo
 		? `?redirectTo=${encodeURIComponent(redirectTo)}`
 		: ''
-	router.replace(`/(auth)/sign-in${params}` as any)
+	router.replace(`/(auth)/sign-in${params}` as Href)
 }
 
 /**
@@ -131,7 +131,7 @@ export const navigateToSignUp = (redirectTo?: string): void => {
 	const params = redirectTo
 		? `?redirectTo=${encodeURIComponent(redirectTo)}`
 		: ''
-	router.replace(`/(auth)/sign-up${params}` as any)
+	router.replace(`/(auth)/sign-up${params}` as Href)
 }
 
 /**

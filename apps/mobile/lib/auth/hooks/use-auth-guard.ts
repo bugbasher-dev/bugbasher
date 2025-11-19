@@ -1,10 +1,10 @@
-import { useRouter } from 'expo-router'
-import { useEffect } from 'react'
+import { useRouter, type Href } from 'expo-router'
+import { useCallback, useEffect } from 'react'
+import { type User } from '../../../types'
 import { useAuth } from './use-auth'
 
 /**
- * Hook for protecting routes that require authentication
- * Redirects to sign-in if user is not authenticated
+ * Hook for protecting  mockAuthSession.AuthRequest.mockImplementation(() => mockRequest as unknown)to sign-in if user is not authenticated
  */
 export function useAuthGuard(options?: {
 	redirectTo?: string
@@ -20,7 +20,7 @@ export function useAuthGuard(options?: {
 		if (isLoading) return
 
 		if (requireAuth && !isAuthenticated) {
-			router.replace(redirectTo as any)
+			router.replace(redirectTo as Href)
 		}
 	}, [isAuthenticated, isLoading, requireAuth, redirectTo, router])
 
@@ -47,7 +47,7 @@ export function useGuestGuard(options?: { redirectTo?: string }) {
 		if (isLoading) return
 
 		if (isAuthenticated) {
-			router.replace(redirectTo as any)
+			router.replace(redirectTo as Href)
 		}
 	}, [isAuthenticated, isLoading, redirectTo, router])
 
@@ -64,7 +64,7 @@ export function useGuestGuard(options?: { redirectTo?: string }) {
  * Allows for more complex authentication logic
  */
 export function useConditionalAuthGuard(
-	condition: (user: any, isAuthenticated: boolean) => boolean,
+	condition: (user: User | null, isAuthenticated: boolean) => boolean,
 	options?: {
 		redirectTo?: string
 		onRedirect?: () => void
@@ -83,7 +83,7 @@ export function useConditionalAuthGuard(
 
 		if (shouldRedirect) {
 			onRedirect?.()
-			router.replace(redirectTo as any)
+			router.replace(redirectTo as Href)
 		}
 	}, [
 		isAuthenticated,
@@ -111,7 +111,9 @@ export function useRoleGuard(
 	allowedRoles: string[],
 	options?: {
 		redirectTo?: string
-		getUserRole?: (user: any) => string | string[]
+		getUserRole?: (user: unknown) => string | string[]
+		errors?: unknown
+		[key: string]: unknown | string[]
 	},
 ) {
 	const { isAuthenticated, isLoading, user } = useAuth()
@@ -119,26 +121,35 @@ export function useRoleGuard(
 
 	const {
 		redirectTo = '/(auth)/sign-in',
-		getUserRole = (user: any) => user?.role || [],
+		getUserRole = (user: User) =>
+			(user as unknown as { role?: string | string[] })?.role || [],
 	} = options || {}
 
-	const hasAccess = () => {
+	const hasAccess = useCallback(() => {
 		if (!isAuthenticated || !user) return false
 
 		const userRoles = getUserRole(user)
 		const roles = Array.isArray(userRoles) ? userRoles : [userRoles]
 
 		return allowedRoles.some((role) => roles.includes(role))
-	}
+	}, [isAuthenticated, user, allowedRoles, getUserRole])
 
 	useEffect(() => {
 		// Don't redirect while loading
 		if (isLoading) return
 
 		if (!hasAccess()) {
-			router.replace(redirectTo as any)
+			router.replace(redirectTo as Href)
 		}
-	}, [isAuthenticated, isLoading, user, allowedRoles, redirectTo, router])
+	}, [
+		isAuthenticated,
+		isLoading,
+		user,
+		allowedRoles,
+		redirectTo,
+		router,
+		hasAccess,
+	])
 
 	return {
 		isAuthenticated,

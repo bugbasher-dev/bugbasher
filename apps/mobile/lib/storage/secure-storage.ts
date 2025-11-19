@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store'
 import { Platform } from 'react-native'
-import { type TokenData } from '../../types'
+import { type TokenData, type User } from '../../types'
 import { type StorageError, StorageKeys } from './types'
 
 // Web fallback using localStorage (less secure but functional for development)
@@ -111,7 +111,7 @@ export class SecureStorage {
 	 * Store user data securely
 	 * @param user - User data to store
 	 */
-	async storeUser(user: any): Promise<void> {
+	async storeUser(user: User): Promise<void> {
 		try {
 			const userJson = JSON.stringify(user)
 			const storage = Platform.OS === 'web' ? WebStorage : SecureStore
@@ -129,7 +129,7 @@ export class SecureStorage {
 	 * Retrieve user data from secure storage
 	 * @returns User data or null if not found
 	 */
-	async getUser(): Promise<any | null> {
+	async getUser(): Promise<User | null> {
 		try {
 			const storage = Platform.OS === 'web' ? WebStorage : SecureStore
 			const userJson = await storage.getItemAsync(StorageKeys.USER_DATA)
@@ -174,7 +174,9 @@ export class SecureStorage {
 	 * Store user preferences
 	 * @param preferences - User preferences object
 	 */
-	async storeUserPreferences(preferences: Record<string, any>): Promise<void> {
+	async storeUserPreferences(
+		preferences: Record<string, unknown>,
+	): Promise<void> {
 		try {
 			const preferencesJson = JSON.stringify(preferences)
 			const storage = Platform.OS === 'web' ? WebStorage : SecureStore
@@ -192,7 +194,7 @@ export class SecureStorage {
 	 * Retrieve user preferences
 	 * @returns User preferences object or null if not found
 	 */
-	async getUserPreferences(): Promise<Record<string, any> | null> {
+	async getUserPreferences(): Promise<Record<string, unknown> | null> {
 		try {
 			const storage = Platform.OS === 'web' ? WebStorage : SecureStore
 			const preferencesJson = await storage.getItemAsync(

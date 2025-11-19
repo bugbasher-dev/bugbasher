@@ -4,7 +4,14 @@ import {
 	getErrorMessageUtil,
 	shouldRetryError,
 } from '../handler'
-import { ErrorCategory } from '../types'
+import {
+	ErrorCategory,
+	type NetworkError,
+	type AuthenticationError,
+	type ValidationError,
+	type OAuthError,
+	type AppErrorType,
+} from '../types'
 
 describe('ErrorHandler', () => {
 	describe('handle', () => {
@@ -139,7 +146,7 @@ describe('ErrorHandler', () => {
 			const error = {
 				category: ErrorCategory.NETWORK,
 				message: 'Network connection failed',
-			} as any
+			} as unknown as NetworkError
 			const message = ErrorHandler.getMessage(error)
 			expect(message).toBe(
 				'Network connection failed. Please check your internet connection and try again.',
@@ -149,7 +156,9 @@ describe('ErrorHandler', () => {
 
 	describe('getTitle', () => {
 		it('returns appropriate title', () => {
-			const error = { category: ErrorCategory.NETWORK } as any
+			const error = {
+				category: ErrorCategory.NETWORK,
+			} as unknown as NetworkError
 			const title = ErrorHandler.getTitle(error)
 			expect(title).toBe('Connection Error')
 		})
@@ -157,7 +166,10 @@ describe('ErrorHandler', () => {
 
 	describe('getActionText', () => {
 		it('returns appropriate action text', () => {
-			const error = { category: ErrorCategory.NETWORK, retryable: true } as any
+			const error = {
+				category: ErrorCategory.NETWORK,
+				retryable: true,
+			} as unknown as NetworkError
 			const actionText = ErrorHandler.getActionText(error)
 			expect(actionText).toBe('Retry')
 		})
@@ -168,14 +180,16 @@ describe('ErrorHandler', () => {
 			const error = {
 				category: ErrorCategory.VALIDATION,
 				fields: { email: ['Invalid email'] },
-			} as any
+			} as unknown as ValidationError
 
 			const formatted = ErrorHandler.formatValidationErrors(error)
 			expect(formatted).toEqual({ email: ['Invalid email'] })
 		})
 
 		it('returns null for non-validation errors', () => {
-			const error = { category: ErrorCategory.NETWORK } as any
+			const error = {
+				category: ErrorCategory.NETWORK,
+			} as unknown as NetworkError
 			const formatted = ErrorHandler.formatValidationErrors(error)
 			expect(formatted).toBeNull()
 		})
@@ -183,34 +197,47 @@ describe('ErrorHandler', () => {
 
 	describe('shouldLog', () => {
 		it('returns false for validation errors', () => {
-			const error = { category: ErrorCategory.VALIDATION } as any
+			const error = {
+				category: ErrorCategory.VALIDATION,
+			} as unknown as ValidationError
 			expect(ErrorHandler.shouldLog(error)).toBe(false)
 		})
 
 		it('returns false for cancelled OAuth', () => {
-			const error = { category: ErrorCategory.OAUTH, cancelled: true } as any
+			const error = {
+				category: ErrorCategory.OAUTH,
+				cancelled: true,
+			} as unknown as OAuthError
 			expect(ErrorHandler.shouldLog(error)).toBe(false)
 		})
 
 		it('returns true for other errors', () => {
-			const error = { category: ErrorCategory.NETWORK } as any
+			const error = {
+				category: ErrorCategory.NETWORK,
+			} as unknown as NetworkError
 			expect(ErrorHandler.shouldLog(error)).toBe(true)
 		})
 	})
 
 	describe('getLogLevel', () => {
 		it('returns warn for network errors', () => {
-			const error = { category: ErrorCategory.NETWORK } as any
+			const error = {
+				category: ErrorCategory.NETWORK,
+			} as unknown as NetworkError
 			expect(ErrorHandler.getLogLevel(error)).toBe('warn')
 		})
 
 		it('returns error for authentication errors', () => {
-			const error = { category: ErrorCategory.AUTHENTICATION } as any
+			const error = {
+				category: ErrorCategory.AUTHENTICATION,
+			} as unknown as AuthenticationError
 			expect(ErrorHandler.getLogLevel(error)).toBe('error')
 		})
 
 		it('returns info for unknown errors', () => {
-			const error = { category: ErrorCategory.UNKNOWN } as any
+			const error = {
+				category: ErrorCategory.UNKNOWN,
+			} as unknown as AppErrorType
 			expect(ErrorHandler.getLogLevel(error)).toBe('info')
 		})
 	})

@@ -5,6 +5,7 @@ import {
 	StyleSheet,
 	ActivityIndicator,
 	type TouchableOpacityProps,
+	type GestureResponderEvent,
 } from 'react-native'
 import { triggerButtonHaptic } from '../../lib/haptics'
 
@@ -30,7 +31,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
 	const isDisabled = disabled || loading
 
-	const handlePress = async (event: any) => {
+	const handlePress = async (event: GestureResponderEvent) => {
 		if (isDisabled) return
 
 		if (hapticFeedback) {

@@ -10,6 +10,7 @@ import {
 	type AppErrorType,
 	type ErrorDisplayConfig,
 	ErrorCategory,
+	type ValidationError,
 } from './types'
 
 /**
@@ -19,7 +20,7 @@ export class ErrorHandler {
 	/**
 	 * Processes any error and returns a categorized error with display configuration
 	 */
-	static handle(error: any): {
+	static handle(error: unknown): {
 		error: AppErrorType
 		displayConfig: ErrorDisplayConfig
 	} {
@@ -159,7 +160,7 @@ export class ErrorHandler {
 		error: AppErrorType,
 	): Record<string, string[]> | null {
 		if (error.category === ErrorCategory.VALIDATION) {
-			return formatValidationErrors(error as any)
+			return formatValidationErrors(error as ValidationError)
 		}
 		return null
 	}
@@ -209,7 +210,7 @@ export class ErrorHandler {
 	static createApiError(
 		statusCode: number,
 		message: string,
-		details?: any,
+		details?: unknown,
 	): AppErrorType {
 		return categorizeError({
 			status: statusCode,
@@ -222,7 +223,7 @@ export class ErrorHandler {
 /**
  * Utility function to handle errors in a consistent way
  */
-export function handleError(error: any): {
+export function handleError(error: unknown): {
 	error: AppErrorType
 	displayConfig: ErrorDisplayConfig
 } {
@@ -232,7 +233,7 @@ export function handleError(error: any): {
 /**
  * Utility function to get error message
  */
-export function getErrorMessageUtil(error: any): string {
+export function getErrorMessageUtil(error: unknown): string {
 	const categorizedError = categorizeError(error)
 	return ErrorHandler.getMessage(categorizedError)
 }
@@ -240,7 +241,7 @@ export function getErrorMessageUtil(error: any): string {
 /**
  * Utility function to check if error should be retried
  */
-export function shouldRetryError(error: any): boolean {
+export function shouldRetryError(error: unknown): boolean {
 	const categorizedError = categorizeError(error)
 	return shouldShowRetryButton(categorizedError)
 }

@@ -9,7 +9,7 @@ global.setTimeout = jest.fn((callback) => {
 	if (typeof callback === 'function') {
 		callback()
 	}
-	return 1 as any
+	return 1 as unknown as NodeJS.Timeout
 })
 global.clearTimeout = jest.fn()
 
@@ -78,7 +78,7 @@ describe('HttpClient', () => {
 				status: 200,
 				headers: new Headers({ 'content-type': 'application/json' }),
 				json: jest.fn().mockResolvedValue(mockResponse),
-			} as any)
+			} as unknown as Response)
 
 			const result = await client.get('/test')
 
@@ -107,7 +107,7 @@ describe('HttpClient', () => {
 				status: 201,
 				headers: new Headers({ 'content-type': 'application/json' }),
 				json: jest.fn().mockResolvedValue(mockResponse),
-			} as any)
+			} as unknown as Response)
 
 			const result = await client.post('/auth/login', requestData)
 
@@ -136,7 +136,7 @@ describe('HttpClient', () => {
 				status: 200,
 				headers: new Headers({ 'content-type': 'text/plain' }),
 				text: jest.fn().mockResolvedValue(textResponse),
-			} as any)
+			} as unknown as Response)
 
 			const result = await client.get('/text')
 
@@ -163,7 +163,7 @@ describe('HttpClient', () => {
 				status: 400,
 				headers: new Headers({ 'content-type': 'application/json' }),
 				json: jest.fn().mockResolvedValue(errorResponse),
-			} as any)
+			} as unknown as Response)
 
 			const result = await client.post('/auth/login', {})
 
@@ -187,7 +187,7 @@ describe('HttpClient', () => {
 				status: 401,
 				headers: new Headers({ 'content-type': 'application/json' }),
 				json: jest.fn().mockResolvedValue(errorResponse),
-			} as any)
+			} as unknown as Response)
 
 			const result = await client.post('/auth/login', {})
 
@@ -206,7 +206,7 @@ describe('HttpClient', () => {
 				statusText: 'Too Many Requests',
 				headers: new Headers(),
 				json: jest.fn().mockResolvedValue({}),
-			} as any)
+			} as unknown as Response)
 
 			const result = await client.post('/auth/login', {})
 
@@ -229,7 +229,7 @@ describe('HttpClient', () => {
 				status: 403,
 				headers: new Headers({ 'content-type': 'application/json' }),
 				json: jest.fn().mockResolvedValue(errorResponse),
-			} as any)
+			} as unknown as Response)
 
 			const result = await client.post('/auth/login', {})
 
@@ -280,7 +280,7 @@ describe('HttpClient', () => {
 					status: 200,
 					headers: new Headers({ 'content-type': 'application/json' }),
 					json: jest.fn().mockResolvedValue({ success: true }),
-				} as any)
+				} as unknown as Response)
 
 			const result = await client.get('/test')
 
@@ -348,7 +348,7 @@ describe('HttpClient', () => {
 				status: 200,
 				headers: new Headers({ 'content-type': 'application/json' }),
 				json: jest.fn().mockResolvedValue({}),
-			} as any)
+			} as unknown as Response)
 
 			await client.get('/test', {
 				headers: { 'X-Custom': 'value' },
@@ -374,7 +374,7 @@ describe('HttpClient', () => {
 				status: 200,
 				headers: new Headers({ 'content-type': 'application/json' }),
 				json: jest.fn().mockResolvedValue({}),
-			} as any)
+			} as unknown as Response)
 		})
 
 		it('should make PUT request', async () => {
@@ -409,7 +409,7 @@ describe('HttpClient', () => {
 				status: 200,
 				headers: new Headers({ 'content-type': 'application/json' }),
 				json: jest.fn().mockResolvedValue({}),
-			} as any)
+			} as unknown as Response)
 
 			await client.get('/api/test')
 
@@ -425,7 +425,7 @@ describe('HttpClient', () => {
 				status: 200,
 				headers: new Headers({ 'content-type': 'application/json' }),
 				json: jest.fn().mockResolvedValue({}),
-			} as any)
+			} as unknown as Response)
 
 			await client.get('api/test')
 

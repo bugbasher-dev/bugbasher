@@ -23,7 +23,7 @@ test.describe('Mobile Responsiveness', () => {
 		// Verify main content is visible and page loaded correctly
 		// On mobile, sidebar might be collapsed so org name might not be visible
 		// Just verify the page is rendered and we're on the right URL
-		await expect(page.locator('body')).toBeVisible()
+		await expect(page.getByRole('document')).toBeVisible()
 		await expect(page).toHaveURL(new RegExp(`/${org.slug}`))
 
 		// Verify no horizontal scrolling is needed
@@ -45,7 +45,7 @@ test.describe('Mobile Responsiveness', () => {
 			.catch(() => false)
 		if (!orgNameVisible) {
 			// If org name not visible, just verify page loaded correctly
-			await expect(page.locator('body')).toBeVisible()
+			await expect(page.getByRole('document')).toBeVisible()
 		} else {
 			await expect(page.getByText(org.name).first()).toBeVisible()
 		}
@@ -173,7 +173,7 @@ test.describe('Mobile Responsiveness', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Check if tables are present
-		const tables = page.locator('table')
+		const tables = page.getByRole('table')
 		const tableCount = await tables.count()
 
 		if (tableCount > 0) {
@@ -277,7 +277,9 @@ test.describe('Mobile Responsiveness', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Check font sizes are appropriate for mobile
-		const textElements = page.locator('p, span, div, h1, h2, h3, h4, h5, h6')
+		const textElements = page
+			.getByRole('heading')
+			.or(page.getByRole('paragraph'))
 		const textCount = await textElements.count()
 
 		for (let i = 0; i < Math.min(textCount, 10); i++) {
@@ -306,7 +308,7 @@ test.describe('Mobile Responsiveness', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Check that images don't overflow the viewport
-		const images = page.locator('img')
+		const images = page.getByRole('img')
 		const imageCount = await images.count()
 
 		for (let i = 0; i < imageCount; i++) {
@@ -373,7 +375,7 @@ test.describe('Mobile Responsiveness', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Check for viewport meta tag
-		const viewportMeta = page.locator('meta[name="viewport"]')
+		const viewportMeta = page.locator('head meta[name="viewport"]')
 		await expect(viewportMeta).toHaveAttribute('content', /width=device-width/)
 	})
 
@@ -393,7 +395,7 @@ test.describe('Mobile Responsiveness', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Verify content is visible in portrait - just check page loaded
-		await expect(page.locator('body')).toBeVisible()
+		await expect(page.getByRole('document')).toBeVisible()
 		await expect(page).toHaveURL(new RegExp(`/${org.slug}`))
 
 		// Switch to landscape mode
@@ -402,7 +404,7 @@ test.describe('Mobile Responsiveness', () => {
 		await page.waitForTimeout(500) // Allow layout to adjust
 
 		// Verify content is still visible and properly laid out in landscape
-		await expect(page.locator('body')).toBeVisible()
+		await expect(page.getByRole('document')).toBeVisible()
 		await expect(page).toHaveURL(new RegExp(`/${org.slug}`))
 
 		// Verify no horizontal scrolling is needed

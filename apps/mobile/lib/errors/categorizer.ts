@@ -83,10 +83,17 @@ const ERROR_PATTERNS: Record<ErrorCategory, RegExp[]> = {
 /**
  * Categorizes an error based on status code, message, and other properties
  */
-export function categorizeError(error: any): AppErrorType {
-	const statusCode = error.status || error.statusCode || error.response?.status
-	const message =
-		error.message || error.error || error.description || 'Unknown error'
+export function categorizeError(error: unknown): AppErrorType {
+	const err = error as {
+		status?: number
+		statusCode?: number
+		response?: { status?: number }
+		message?: string
+		error?: string
+		description?: string
+	}
+	const statusCode = err.status || err.statusCode || err.response?.status
+	const message = err.message || err.error || err.description || 'Unknown error'
 	const originalError = error instanceof Error ? error : undefined
 
 	// First, try to categorize by status code

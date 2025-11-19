@@ -3,12 +3,14 @@ import { prisma } from '#app/utils/db.server.ts'
 // Removed prisma import - using test utilities instead
 import { readEmail } from '#tests/mocks/utils.ts'
 import { expect, test, waitFor } from '#tests/playwright-utils.ts'
-import {
-	createTestOrganization,
-} from '#tests/test-utils.ts'
+import { createTestOrganization } from '#tests/test-utils.ts'
 
 test.describe('Organization Invitations', () => {
-	test('Organization owners can send invitations', async ({ page, login, navigate }) => {
+	test('Organization owners can send invitations', async ({
+		page,
+		login,
+		navigate,
+	}) => {
 		const user = await login()
 
 		// Create an organization for the user
@@ -60,7 +62,11 @@ test.describe('Organization Invitations', () => {
 		)
 	})
 
-	test('Users can accept organization invitations', async ({ page, login, navigate }) => {
+	test('Users can accept organization invitations', async ({
+		page,
+		login,
+		navigate,
+	}) => {
 		const invitedUser = await login()
 
 		// Create organization owner
@@ -106,9 +112,7 @@ test.describe('Organization Invitations', () => {
 
 		// Verify invitation details are displayed in pending invitations section
 		await expect(
-			page
-				.locator('[data-slot="card-title"]')
-				.filter({ hasText: 'Pending Invitations' }),
+			page.getByRole('heading', { name: /pending invitations/i }),
 		).toBeVisible()
 		await expect(page.getByText(org.name)).toBeVisible()
 
@@ -209,9 +213,7 @@ test.describe('Organization Invitations', () => {
 
 		// Verify invitation is displayed
 		await expect(
-			page
-				.locator('[data-slot="card-title"]')
-				.filter({ hasText: 'Pending Invitations' }),
+			page.getByRole('heading', { name: /pending invitations/i }),
 		).toBeVisible()
 		await expect(page.getByText(org.name)).toBeVisible()
 
@@ -283,13 +285,11 @@ test.describe('Organization Invitations', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Find the invitation in the pending invitations section and click the trash button
-		const pendingSection = page
-			.locator('[data-slot="card-content"]')
-			.filter({ hasText: 'Pending Invitations' })
-		const invitationRow = pendingSection
-			.locator('div')
-			.filter({ hasText: invitationEmail })
-		await invitationRow.locator('button[type="submit"]').click()
+		const pendingSection = page.getByRole('region', {
+			name: /pending invitations/i,
+		})
+		const invitationRow = pendingSection.getByText(invitationEmail)
+		await invitationRow.locator('..').locator('button[type="submit"]').click()
 
 		// Verify invitation is no longer displayed (check that the email is not in pending invitations)
 		await expect(pendingSection.getByText(invitationEmail)).not.toBeVisible()
@@ -301,7 +301,11 @@ test.describe('Organization Invitations', () => {
 		expect(deletedInvitation).toBeNull()
 	})
 
-	test('Users can view their pending invitations', async ({ page, login, navigate }) => {
+	test('Users can view their pending invitations', async ({
+		page,
+		login,
+		navigate,
+	}) => {
 		const invitedUser = await login()
 
 		// Create organization owner
@@ -371,9 +375,7 @@ test.describe('Organization Invitations', () => {
 
 		// Verify pending invitations section is displayed
 		await expect(
-			page
-				.locator('[data-slot="card-title"]')
-				.filter({ hasText: 'Pending Invitations' }),
+			page.getByRole('heading', { name: /pending invitations/i }),
 		).toBeVisible()
 
 		// Verify both invitations are displayed
@@ -384,7 +386,11 @@ test.describe('Organization Invitations', () => {
 		// Just verify the invitations are displayed correctly
 	})
 
-	test('Expired invitations cannot be accepted', async ({ page, login, navigate }) => {
+	test('Expired invitations cannot be accepted', async ({
+		page,
+		login,
+		navigate,
+	}) => {
 		const invitedUser = await login()
 
 		// Create organization owner
@@ -434,9 +440,9 @@ test.describe('Organization Invitations', () => {
 
 		// Verify expired invitation does NOT appear in pending invitations
 		// (The organizations page should filter out expired invitations)
-		const pendingSection = page
-			.locator('[data-slot="card-title"]')
-			.filter({ hasText: 'Pending Invitations' })
+		const pendingSection = page.getByRole('heading', {
+			name: /pending invitations/i,
+		})
 
 		// The pending invitations section should either not exist or not contain the expired invitation
 		if (await pendingSection.isVisible()) {

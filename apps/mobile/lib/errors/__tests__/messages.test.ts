@@ -5,7 +5,7 @@ import {
 	getErrorTitle,
 	formatValidationErrors,
 } from '../messages'
-import { ErrorCategory } from '../types'
+import { ErrorCategory, type ValidationError } from '../types'
 
 describe('getErrorMessage', () => {
 	it('returns specific message for network timeout', () => {
@@ -224,7 +224,9 @@ describe('formatValidationErrors', () => {
 			retryable: false,
 		}
 
-		const formatted = formatValidationErrors(error as any)
+		const formatted = formatValidationErrors(
+			error as unknown as ValidationError,
+		)
 		expect(formatted).toEqual({
 			email: ['Invalid email format'],
 			password: ['Password too short', 'Password must contain numbers'],
@@ -240,7 +242,9 @@ describe('formatValidationErrors', () => {
 			retryable: false,
 		}
 
-		const formatted = formatValidationErrors(error as any)
+		const formatted = formatValidationErrors(
+			error as unknown as ValidationError,
+		)
 		expect(formatted).toEqual({
 			email: ['Invalid email format'],
 		})
@@ -254,7 +258,9 @@ describe('formatValidationErrors', () => {
 			retryable: false,
 		}
 
-		const formatted = formatValidationErrors(error as any)
+		const formatted = formatValidationErrors(
+			error as unknown as ValidationError,
+		)
 		expect(formatted).toEqual({
 			general: ['Form validation failed'],
 		})

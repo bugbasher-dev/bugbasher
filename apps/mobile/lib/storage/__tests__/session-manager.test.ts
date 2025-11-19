@@ -16,7 +16,7 @@ const mockStorageInstance = {
 	clearAll: jest.fn(),
 	storeRefreshToken: jest.fn(),
 	getRefreshToken: jest.fn(),
-} as any
+} as unknown as jest.Mocked<SecureStorage>
 
 describe('SessionManager', () => {
 	let sessionManager: SessionManager

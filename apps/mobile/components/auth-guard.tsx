@@ -3,6 +3,7 @@ import {
 	useSegments,
 	useRootNavigationState,
 	useLocalSearchParams,
+	type Href,
 } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { useAuth } from '../lib/auth/hooks/use-auth'
@@ -66,14 +67,14 @@ export function AuthGuard() {
 			if (inAuthGroup) {
 				// Redirect to dashboard or specified redirect location
 				if (redirectTo && redirectTo.startsWith('/')) {
-					router.replace(redirectTo as any)
+					router.replace(redirectTo as Href)
 				} else {
 					router.replace('/(dashboard)')
 				}
 			} else if (onIndexScreen) {
 				// Index screen will handle the redirect, but we can help by going to dashboard
 				if (redirectTo && redirectTo.startsWith('/')) {
-					router.replace(redirectTo as any)
+					router.replace(redirectTo as Href)
 				} else {
 					router.replace('/(dashboard)')
 				}

@@ -8,6 +8,8 @@ import {
 	ScrollView,
 	Dimensions,
 	StatusBar,
+	type NativeSyntheticEvent,
+	type NativeScrollEvent,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -59,7 +61,7 @@ export default function LandingScreen() {
 		router.push('/(auth)/sign-in')
 	}
 
-	const handleScroll = (event: any) => {
+	const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 		const slideSize = width
 		const index = Math.round(event.nativeEvent.contentOffset.x / slideSize)
 		setCurrentIndex(index)

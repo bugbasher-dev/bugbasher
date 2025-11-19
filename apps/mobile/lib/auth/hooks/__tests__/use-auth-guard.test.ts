@@ -53,7 +53,7 @@ describe('Auth Guard Hooks Logic', () => {
 		it('should allow access when condition returns true', () => {
 			const user = { email: 'test@example.com' }
 			const isAuthenticated = true
-			const condition = (user: any, isAuthenticated: boolean) =>
+			const condition = (user: { email?: string }, isAuthenticated: boolean) =>
 				isAuthenticated && user?.email === 'test@example.com'
 
 			const canAccess = condition(user, isAuthenticated)
@@ -64,7 +64,7 @@ describe('Auth Guard Hooks Logic', () => {
 		it('should deny access when condition returns false', () => {
 			const user = { email: 'test@example.com' }
 			const isAuthenticated = true
-			const condition = (user: any, _isAuthenticated: boolean) =>
+			const condition = (user: { email?: string }, _isAuthenticated: boolean) =>
 				user?.email === 'admin@example.com'
 
 			const canAccess = condition(user, isAuthenticated)
@@ -77,7 +77,7 @@ describe('Auth Guard Hooks Logic', () => {
 		it('should allow access when user has required role', () => {
 			const user = { role: 'admin' }
 			const allowedRoles = ['admin', 'moderator']
-			const getUserRole = (user: any) => user?.role || []
+			const getUserRole = (user: { role?: string }) => user?.role || []
 
 			const userRoles = getUserRole(user)
 			const roles = Array.isArray(userRoles) ? userRoles : [userRoles]
@@ -89,7 +89,7 @@ describe('Auth Guard Hooks Logic', () => {
 		it('should deny access when user does not have required role', () => {
 			const user = { role: 'user' }
 			const allowedRoles = ['admin', 'moderator']
-			const getUserRole = (user: any) => user?.role || []
+			const getUserRole = (user: { role?: string }) => user?.role || []
 
 			const userRoles = getUserRole(user)
 			const roles = Array.isArray(userRoles) ? userRoles : [userRoles]
@@ -101,7 +101,7 @@ describe('Auth Guard Hooks Logic', () => {
 		it('should work with array of roles', () => {
 			const user = { roles: ['user', 'editor'] }
 			const allowedRoles = ['editor']
-			const getUserRole = (user: any) => user?.roles || []
+			const getUserRole = (user: { roles?: string[] }) => user?.roles || []
 
 			const userRoles = getUserRole(user)
 			const roles = Array.isArray(userRoles) ? userRoles : [userRoles]

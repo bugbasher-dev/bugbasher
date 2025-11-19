@@ -24,40 +24,43 @@ export default function VerifyEmailScreen() {
 	)
 	const [isVerified, setIsVerified] = useState(false)
 
-	const handleVerifyEmail = async (verificationToken: string) => {
-		setIsVerifying(true)
-		setVerificationError(null)
+	const handleVerifyEmail = React.useCallback(
+		async (verificationToken: string) => {
+			setIsVerifying(true)
+			setVerificationError(null)
 
-		try {
-			// TODO: Implement email verification API call
-			console.log('Verifying email with token:', verificationToken)
+			try {
+				// TODO: Implement email verification API call
+				console.log('Verifying email with token:', verificationToken)
 
-			// Simulate API call
-			await new Promise((resolve) => setTimeout(resolve, 2000))
+				// Simulate API call
+				await new Promise((resolve) => setTimeout(resolve, 2000))
 
-			// For now, just mark as verified
-			setIsVerified(true)
+				// For now, just mark as verified
+				setIsVerified(true)
 
-			Alert.alert(
-				'Email Verified!',
-				'Your email has been successfully verified. You can now sign in to your account.',
-				[
-					{
-						text: 'Continue to Sign In',
-						onPress: () => {
-							navigateToSignIn(redirectTo)
+				Alert.alert(
+					'Email Verified!',
+					'Your email has been successfully verified. You can now sign in to your account.',
+					[
+						{
+							text: 'Continue to Sign In',
+							onPress: () => {
+								navigateToSignIn(redirectTo)
+							},
 						},
-					},
-				],
-			)
-		} catch (error) {
-			setVerificationError(
-				error instanceof Error ? error.message : 'Email verification failed',
-			)
-		} finally {
-			setIsVerifying(false)
-		}
-	}
+					],
+				)
+			} catch (error) {
+				setVerificationError(
+					error instanceof Error ? error.message : 'Email verification failed',
+				)
+			} finally {
+				setIsVerifying(false)
+			}
+		},
+		[redirectTo],
+	)
 
 	useEffect(() => {
 		// If we have a token, automatically attempt verification

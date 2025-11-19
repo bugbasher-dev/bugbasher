@@ -1,5 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { View, TextInput, StyleSheet, type ViewStyle } from 'react-native'
+import {
+	View,
+	TextInput,
+	StyleSheet,
+	type ViewStyle,
+	type NativeSyntheticEvent,
+	type TextInputKeyPressEventData,
+} from 'react-native'
 
 interface InputOTPProps {
 	maxLength: number
@@ -145,7 +152,9 @@ export function InputOTPSlot({ index }: InputOTPSlotProps) {
 		}
 	}
 
-	const handleKeyPress = ({ nativeEvent }: any) => {
+	const handleKeyPress = ({
+		nativeEvent,
+	}: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
 		// Handle backspace
 		if (nativeEvent.key === 'Backspace') {
 			if (currentValue) {

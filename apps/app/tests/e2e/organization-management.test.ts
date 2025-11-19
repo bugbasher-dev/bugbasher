@@ -142,8 +142,12 @@ test.describe('Organization Management', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Verify settings page loads with organization details
-		await expect(page.locator(`input[value="${org.name}"]`)).toBeVisible()
-		await expect(page.locator(`input[value="${org.slug}"]`)).toBeVisible()
+		await expect(page.getByRole('textbox', { name: /name/i })).toHaveValue(
+			org.name,
+		)
+		await expect(page.getByRole('textbox', { name: /slug/i })).toHaveValue(
+			org.slug,
+		)
 
 		// Verify the settings page has loaded by checking for the general settings card
 		await expect(page.getByText('General Settings')).toBeVisible()
@@ -282,9 +286,9 @@ test.describe('Organization Management', () => {
 		// Find and click remove button for the member
 		// Look for the form with remove-member intent
 		const removeForm = page
-			.locator('form')
+			.getByRole('form')
 			.filter({
-				has: page.locator('input[name="intent"][value="remove-member"]'),
+				has: page.getByRole('button', { name: /remove/i }),
 			})
 			.filter({
 				has: page.locator(`input[value="${member.id}"]`),
@@ -354,8 +358,8 @@ test.describe('Organization Management', () => {
 		await expect(page.getByText(currentUserName).first()).toBeVisible()
 
 		// Check the actual behavior - there seems to be 1 remove button visible
-		const removeButtons = page.locator('form').filter({
-			has: page.locator('input[name="intent"][value="remove-member"]'),
+		const removeButtons = page.getByRole('form').filter({
+			has: page.getByRole('button', { name: /remove/i }),
 		})
 
 		// Based on the test results, there is 1 remove button visible

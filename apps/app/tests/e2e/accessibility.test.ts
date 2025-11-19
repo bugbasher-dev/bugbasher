@@ -19,7 +19,7 @@ test.describe('Accessibility', () => {
 			await page.waitForLoadState('networkidle')
 
 			// Verify h1 exists and is unique
-			const h1Elements = page.locator('h1')
+			const h1Elements = page.getByRole('heading', { level: 1 })
 			await expect(h1Elements).toHaveCount(1)
 			await expect(h1Elements.first()).toBeVisible()
 		} catch (error: any) {
@@ -28,7 +28,7 @@ test.describe('Accessibility', () => {
 			await page.reload()
 			await page.waitForLoadState('networkidle')
 
-			const h1Elements = page.locator('h1')
+			const h1Elements = page.getByRole('heading', { level: 1 })
 			await expect(h1Elements).toHaveCount(1)
 			await expect(h1Elements.first()).toBeVisible()
 		}
@@ -38,7 +38,7 @@ test.describe('Accessibility', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Verify proper heading hierarchy
-		const headings = page.locator('h1, h2, h3, h4, h5, h6')
+		const headings = page.getByRole('heading')
 		const headingCount = await headings.count()
 		expect(headingCount).toBeGreaterThan(0)
 
@@ -47,7 +47,7 @@ test.describe('Accessibility', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Verify h1 exists
-		await expect(page.locator('h1')).toHaveCount(1)
+		await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1)
 	})
 
 	test('Forms have proper labels and ARIA attributes', async ({
@@ -112,7 +112,7 @@ test.describe('Accessibility', () => {
 		await page.keyboard.press('Tab')
 
 		// Verify focus is visible
-		const focusedElement = page.locator(':focus')
+		const focusedElement = page.locator('*:focus')
 		await expect(focusedElement).toBeVisible()
 
 		// Test that all buttons are focusable
@@ -151,7 +151,7 @@ test.describe('Accessibility', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Check all images have alt attributes
-		const images = page.locator('img')
+		const images = page.getByRole('img')
 		const imageCount = await images.count()
 
 		for (let i = 0; i < imageCount; i++) {
@@ -167,7 +167,7 @@ test.describe('Accessibility', () => {
 			await navigate('/profile')
 			await page.waitForLoadState('networkidle')
 
-			const profileImages = page.locator('img')
+			const profileImages = page.getByRole('img')
 			const profileImageCount = await profileImages.count()
 
 			for (let i = 0; i < profileImageCount; i++) {
@@ -182,7 +182,7 @@ test.describe('Accessibility', () => {
 				await page.reload()
 				await page.waitForLoadState('networkidle')
 				// Retry the test after reload
-				const profileImages = page.locator('img')
+				const profileImages = page.getByRole('img')
 				const profileImageCount = await profileImages.count()
 
 				for (let i = 0; i < profileImageCount; i++) {
@@ -225,9 +225,10 @@ test.describe('Accessibility', () => {
 			}
 
 			// Check text elements have sufficient contrast
-			const textElements = page.locator(
-				'p, span, div, h1, h2, h3, h4, h5, h6, button, a',
-			)
+			const textElements = page
+				.locator('p, span, div, h1, h2, h3, h4, h5, h6')
+				.or(page.getByRole('button'))
+				.or(page.getByRole('link'))
 			const textCount = await textElements.count()
 
 			// Sample a few text elements to verify they're visible (basic contrast check)
@@ -262,9 +263,11 @@ test.describe('Accessibility', () => {
 		}
 
 		// Test focus indicators on various interactive elements
-		const interactiveElements = page.locator(
-			'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled])',
-		)
+		const interactiveElements = page
+			.getByRole('button', { disabled: false })
+			.or(page.getByRole('link'))
+			.or(page.getByRole('textbox', { disabled: false }))
+			.or(page.getByRole('combobox', { disabled: false }))
 		const elementCount = await interactiveElements.count()
 
 		let focusableElementsFound = 0
@@ -365,7 +368,7 @@ test.describe('Accessibility', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Check for ARIA live regions
-		const liveRegions = page.locator('[aria-live]')
+		const liveRegions = page.getByRole('status').or(page.getByRole('alert'))
 		const liveRegionCount = await liveRegions.count()
 
 		if (liveRegionCount > 0) {
@@ -476,14 +479,14 @@ test.describe('Accessibility', () => {
 		await expect(dialog).toHaveAttribute('aria-modal', 'true')
 
 		// Verify dialog has accessible name
-		const dialogTitle = dialog.locator('[aria-labelledby], [aria-label]')
+		const dialogTitle = dialog.getByRole('heading').first()
 		if ((await dialogTitle.count()) > 0) {
-			await expect(dialogTitle.first()).toBeVisible()
+			await expect(dialogTitle).toBeVisible()
 		}
 
 		// Test focus trap - focus should stay within dialog
 		await page.keyboard.press('Tab')
-		const focusedElement = page.locator(':focus')
+		const focusedElement = page.locator('*:focus')
 
 		// Verify focused element is within the dialog
 		const isWithinDialog = await focusedElement.evaluate(
@@ -526,14 +529,14 @@ test.describe('Accessibility', () => {
 		await page.waitForLoadState('networkidle')
 
 		// Check for tables
-		const tables = page.locator('table')
+		const tables = page.getByRole('table')
 		const tableCount = await tables.count()
 
 		for (let i = 0; i < tableCount; i++) {
 			const table = tables.nth(i)
 
 			// Check for table headers
-			const headers = table.locator('th')
+			const headers = table.getByRole('columnheader')
 			const headerCount = await headers.count()
 
 			if (headerCount > 0) {
@@ -550,7 +553,7 @@ test.describe('Accessibility', () => {
 			}
 
 			// Check for table caption
-			const caption = table.locator('caption')
+			const caption = table.getByRole('caption')
 			if ((await caption.count()) > 0) {
 				await expect(caption.first()).toBeVisible()
 			}

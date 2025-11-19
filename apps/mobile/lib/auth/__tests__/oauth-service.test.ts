@@ -1,32 +1,10 @@
+import * as AuthSession from 'expo-auth-session'
+import * as Linking from 'expo-linking'
 import {
 	OAuthService,
 	OAUTH_PROVIDERS,
 	createOAuthService,
 } from '../oauth-service'
-
-// Mock expo modules
-jest.mock('expo-auth-session', () => ({
-	AuthRequest: jest.fn(),
-	ResponseType: { Code: 'code' },
-	makeRedirectUri: jest.fn(),
-}))
-
-jest.mock('expo-linking', () => ({
-	parse: jest.fn(),
-}))
-
-jest.mock('expo-constants', () => ({
-	expoConfig: {
-		scheme: 'epicnotes',
-	},
-}))
-
-jest.mock('react-native', () => ({
-	Platform: { OS: 'ios' },
-}))
-
-import * as AuthSession from 'expo-auth-session'
-import * as Linking from 'expo-linking'
 
 const mockAuthSession = AuthSession as jest.Mocked<typeof AuthSession>
 const mockLinking = Linking as jest.Mocked<typeof Linking>
@@ -97,7 +75,9 @@ describe('OAuthService', () => {
 				}),
 			}
 
-			mockAuthSession.AuthRequest.mockImplementation(() => mockRequest as any)
+			mockAuthSession.AuthRequest.mockImplementation(
+				() => mockRequest as unknown as AuthSession.AuthRequest,
+			)
 
 			const result = await oauthService.authenticate('github', 'test-state')
 
@@ -130,7 +110,9 @@ describe('OAuthService', () => {
 				}),
 			}
 
-			mockAuthSession.AuthRequest.mockImplementation(() => mockRequest as any)
+			mockAuthSession.AuthRequest.mockImplementation(
+				() => mockRequest as unknown as AuthSession.AuthRequest,
+			)
 
 			const result = await oauthService.authenticate('google', 'test-state')
 
@@ -164,7 +146,9 @@ describe('OAuthService', () => {
 				}),
 			}
 
-			mockAuthSession.AuthRequest.mockImplementation(() => mockRequest as any)
+			mockAuthSession.AuthRequest.mockImplementation(
+				() => mockRequest as unknown as AuthSession.AuthRequest,
+			)
 
 			const result = await oauthService.authenticate('github')
 
@@ -182,7 +166,9 @@ describe('OAuthService', () => {
 				}),
 			}
 
-			mockAuthSession.AuthRequest.mockImplementation(() => mockRequest as any)
+			mockAuthSession.AuthRequest.mockImplementation(
+				() => mockRequest as unknown as AuthSession.AuthRequest,
+			)
 
 			const result = await oauthService.authenticate('github')
 
@@ -208,7 +194,9 @@ describe('OAuthService', () => {
 				promptAsync: jest.fn().mockRejectedValue(new Error('Network error')),
 			}
 
-			mockAuthSession.AuthRequest.mockImplementation(() => mockRequest as any)
+			mockAuthSession.AuthRequest.mockImplementation(
+				() => mockRequest as unknown as AuthSession.AuthRequest,
+			)
 
 			const result = await oauthService.authenticate('github')
 
@@ -223,11 +211,14 @@ describe('OAuthService', () => {
 	describe('handleCallback', () => {
 		it('should successfully handle callback with code', async () => {
 			mockLinking.parse.mockReturnValue({
+				scheme: 'epicnotes',
+				hostname: 'auth',
+				path: 'callback',
 				queryParams: {
 					code: 'test-auth-code',
 					state: 'test-state',
 				},
-			} as any)
+			} as Linking.ParsedURL)
 
 			const result = await oauthService.handleCallback(
 				'epicnotes://auth/callback?code=test-auth-code&state=test-state',
@@ -242,11 +233,14 @@ describe('OAuthService', () => {
 
 		it('should handle callback error', async () => {
 			mockLinking.parse.mockReturnValue({
+				scheme: 'epicnotes',
+				hostname: 'auth',
+				path: 'callback',
 				queryParams: {
 					error: 'access_denied',
 					error_description: 'User denied access',
 				},
-			} as any)
+			} as Linking.ParsedURL)
 
 			const result = await oauthService.handleCallback(
 				'epicnotes://auth/callback?error=access_denied',
@@ -262,7 +256,7 @@ describe('OAuthService', () => {
 		it('should handle invalid callback', async () => {
 			mockLinking.parse.mockReturnValue({
 				queryParams: {},
-			} as any)
+			} as Linking.ParsedURL)
 
 			const result = await oauthService.handleCallback(
 				'epicnotes://auth/callback',

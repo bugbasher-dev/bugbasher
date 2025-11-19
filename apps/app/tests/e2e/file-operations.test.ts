@@ -138,7 +138,7 @@ test.describe('File Operations', () => {
 
 			// Verify note was created with image
 			await expect(page.getByText('Note with Image')).toBeVisible()
-			await expect(page.locator('img')).toBeVisible()
+			await expect(page.getByRole('img')).toBeVisible()
 		}
 	})
 
@@ -339,7 +339,9 @@ test.describe('File Operations', () => {
 			}
 
 			// Look for image preview
-			await expect(page.locator('img[src*="blob:"]')).toBeVisible() // Fixed .first() syntax - using conditional logic instead
+			await expect(
+				page.getByRole('img').filter({ has: page.locator('[src*="blob:"]') }),
+			).toBeVisible() // Fixed .first() syntax - using conditional logic instead
 			// expect(page.getByText(/preview/i)).toBeVisible())
 		}
 	})

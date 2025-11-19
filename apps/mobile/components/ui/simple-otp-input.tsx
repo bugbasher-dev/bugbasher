@@ -1,5 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { View, TextInput, StyleSheet } from 'react-native'
+import {
+	View,
+	TextInput,
+	StyleSheet,
+	type NativeSyntheticEvent,
+	type TextInputKeyPressEventData,
+} from 'react-native'
 
 interface SimpleOTPInputProps {
 	length: number
@@ -54,7 +60,10 @@ export function SimpleOTPInput({
 		}
 	}
 
-	const handleKeyPress = (event: any, index: number) => {
+	const handleKeyPress = (
+		event: NativeSyntheticEvent<TextInputKeyPressEventData>,
+		index: number,
+	) => {
 		if (event.nativeEvent.key === 'Backspace') {
 			const currentValue = value[index] || ''
 

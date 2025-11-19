@@ -7,6 +7,8 @@ import {
 	Text,
 	StyleSheet,
 	TouchableOpacity,
+	type StyleProp,
+	type ViewStyle,
 } from 'react-native'
 import { getKeyboardConfig, type InputType } from '../../lib/keyboard'
 
@@ -16,7 +18,7 @@ export interface InputProps extends Omit<TextInputProps, 'style'> {
 	disabled?: boolean
 	rightIcon?: React.ReactNode | string
 	onRightIconPress?: () => void
-	style?: any
+	style?: StyleProp<ViewStyle>
 	inputType?: InputType
 	onSubmitEditing?: () => void
 	nextInputRef?: React.RefObject<TextInput | null>
@@ -68,8 +70,12 @@ const Input = forwardRef<TextInput, InputProps>(
 						autoCapitalize={keyboardConfig.autoCapitalize}
 						autoCorrect={keyboardConfig.autoCorrect}
 						returnKeyType={keyboardConfig.returnKeyType}
-						textContentType={keyboardConfig.textContentType as any}
-						autoComplete={keyboardConfig.autoComplete as any}
+						textContentType={
+							keyboardConfig.textContentType as TextInputProps['textContentType']
+						}
+						autoComplete={
+							keyboardConfig.autoComplete as TextInputProps['autoComplete']
+						}
 						onSubmitEditing={handleSubmitEditing}
 						// Merge with any overrides from props
 						{...props}
@@ -81,7 +87,11 @@ const Input = forwardRef<TextInput, InputProps>(
 							disabled={!onRightIconPress}
 						>
 							{typeof rightIcon === 'string' ? (
-								<Ionicons name={rightIcon as any} size={20} color="#6B7280" />
+								<Ionicons
+									name={rightIcon as keyof typeof Ionicons.glyphMap}
+									size={20}
+									color="#6B7280"
+								/>
 							) : (
 								rightIcon
 							)}

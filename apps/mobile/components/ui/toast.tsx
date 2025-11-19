@@ -23,7 +23,7 @@ const Toast: React.FC<ToastProps> = ({
 		new Animated.Value(position === 'top' ? -100 : 100),
 	).current
 
-	const hideToast = () => {
+	const hideToast = React.useCallback(() => {
 		Animated.parallel([
 			Animated.timing(fadeAnim, {
 				toValue: 0,
@@ -38,7 +38,7 @@ const Toast: React.FC<ToastProps> = ({
 		]).start(() => {
 			onHide()
 		})
-	}
+	}, [fadeAnim, onHide, position, slideAnim])
 
 	useEffect(() => {
 		if (visible) {
@@ -65,7 +65,7 @@ const Toast: React.FC<ToastProps> = ({
 		} else {
 			hideToast()
 		}
-	}, [visible, duration, fadeAnim, slideAnim])
+	}, [visible, duration, fadeAnim, slideAnim, hideToast])
 
 	// Don't render if not visible and animation hasn't started
 	if (!visible) {

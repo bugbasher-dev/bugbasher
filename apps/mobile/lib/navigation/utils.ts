@@ -1,5 +1,5 @@
 import * as Linking from 'expo-linking'
-import { router } from 'expo-router'
+import { router, type Href } from 'expo-router'
 
 /**
  * Navigation utilities for handling authentication flows and deep linking
@@ -62,7 +62,7 @@ export function navigateAfterAuth(redirectTo?: string) {
 	if (redirectTo && redirectTo.startsWith('/')) {
 		// Validate that the redirect path is safe
 		if (isValidRedirectPath(redirectTo)) {
-			router.replace(redirectTo as any)
+			router.replace(redirectTo as Href)
 		} else {
 			// Fallback to dashboard if redirect path is invalid
 			router.replace('/(dashboard)')
@@ -202,7 +202,7 @@ export function handleDeepLink(url: string): boolean {
 
 		// Handle other valid paths
 		if (isValidRedirectPath(`/${pathname}`)) {
-			router.replace(`/${pathname}` as any)
+			router.replace(`/${pathname}` as Href)
 			return true
 		}
 

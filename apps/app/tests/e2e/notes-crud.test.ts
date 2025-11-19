@@ -20,8 +20,8 @@ test.describe('Notes CRUD Operations', () => {
 		await page.getByRole('textbox', { name: /title/i }).fill(newNote.title)
 		// Content editor is a TipTap rich text editor using ProseMirror
 		const contentEditor = page
-			.locator('.ProseMirror')
-			.or(page.getByRole('textbox', { name: /content/i }))
+			.getByRole('textbox', { name: /content/i })
+			.or(page.locator('.ProseMirror'))
 		await contentEditor.waitFor({ state: 'visible' })
 		await contentEditor.fill(newNote.content)
 
@@ -60,8 +60,8 @@ test.describe('Notes CRUD Operations', () => {
 		await page.getByRole('textbox', { name: /title/i }).fill(updatedNote.title)
 		// Content editor is a TipTap rich text editor using ProseMirror
 		const contentEditor = page
-			.locator('.ProseMirror')
-			.or(page.getByRole('textbox', { name: /content/i }))
+			.getByRole('textbox', { name: /content/i })
+			.or(page.locator('.ProseMirror'))
 		await contentEditor.waitFor({ state: 'visible' })
 		await contentEditor.fill(updatedNote.content)
 

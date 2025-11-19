@@ -164,7 +164,7 @@ describe('useOAuth', () => {
 	})
 
 	it('should show loading state during authentication', async () => {
-		let resolveAuth: (value: any) => void
+		let resolveAuth: (value: OAuthResult) => void
 		const authPromise = new Promise<OAuthResult>((resolve) => {
 			resolveAuth = resolve
 		})
@@ -206,7 +206,7 @@ describe('useOAuthCallback', () => {
 	it('should successfully handle callback', async () => {
 		const { result } = renderHook(() => useOAuthCallback())
 
-		let callbackResult: any
+		let callbackResult: OAuthResult | undefined
 		await act(async () => {
 			callbackResult = await result.current.handleCallback(
 				'epicnotes://auth/callback?code=test-code',
@@ -234,7 +234,7 @@ describe('useOAuthCallback', () => {
 
 		const { result } = renderHook(() => useOAuthCallback())
 
-		let callbackResult: any
+		let callbackResult: OAuthResult | undefined
 		await act(async () => {
 			callbackResult = await result.current.handleCallback(
 				'epicnotes://auth/callback',
@@ -254,7 +254,7 @@ describe('useOAuthCallback', () => {
 
 		const { result } = renderHook(() => useOAuthCallback())
 
-		let callbackResult: any
+		let callbackResult: OAuthResult | undefined
 		await act(async () => {
 			callbackResult = await result.current.handleCallback(
 				'epicnotes://auth/callback?code=test-code',
@@ -269,7 +269,7 @@ describe('useOAuthCallback', () => {
 	})
 
 	it('should show processing state', async () => {
-		let resolveCallback: (value: any) => void
+		let resolveCallback: (value: OAuthResult) => void
 		const callbackPromise = new Promise<OAuthResult>((resolve) => {
 			resolveCallback = resolve
 		})

@@ -1,5 +1,5 @@
 import { type UserOrganization } from '@repo/types'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '../../auth/hooks/use-auth'
 import { jwtAuthApi } from '../index'
 
@@ -9,7 +9,7 @@ export function useOrganizations() {
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 
-	const fetchOrganizations = async () => {
+	const fetchOrganizations = useCallback(async () => {
 		if (!isAuthenticated || !user) {
 			return
 		}
@@ -35,11 +35,11 @@ export function useOrganizations() {
 		} finally {
 			setIsLoading(false)
 		}
-	}
+	}, [isAuthenticated, user])
 
 	useEffect(() => {
 		void fetchOrganizations()
-	}, [])
+	}, [fetchOrganizations])
 
 	return {
 		organizations,

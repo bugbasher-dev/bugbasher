@@ -15,7 +15,7 @@ export interface AppError {
 	type: ErrorType
 	message: string
 	field?: string
-	details?: Record<string, any>
+	details?: Record<string, unknown>
 	originalError?: Error
 	retryable: boolean
 }
@@ -194,7 +194,7 @@ export function createAuthError(
 		| 'bot_detection',
 	message: string,
 	field?: string,
-	details?: Record<string, any>,
+	details?: Record<string, unknown>,
 ): AuthError {
 	return {
 		type,

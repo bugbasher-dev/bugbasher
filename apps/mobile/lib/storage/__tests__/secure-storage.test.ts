@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store'
-import { type TokenData } from '../../../types'
+import { type User, type TokenData } from '../../../types'
 import { SecureStorage } from '../secure-storage'
 import { StorageKeys } from '../types'
 
@@ -138,7 +138,7 @@ describe('SecureStorage', () => {
 			it('should store user data successfully', async () => {
 				mockSecureStore.setItemAsync.mockResolvedValue()
 
-				await storage.storeUser(mockUser)
+				await storage.storeUser(mockUser as User)
 
 				expect(mockSecureStore.setItemAsync).toHaveBeenCalledWith(
 					StorageKeys.USER_DATA,
@@ -150,10 +150,12 @@ describe('SecureStorage', () => {
 				const error = new Error('Storage failed')
 				mockSecureStore.setItemAsync.mockRejectedValue(error)
 
-				await expect(storage.storeUser(mockUser)).rejects.toMatchObject({
-					message: 'Failed to store user data',
-					code: 'STORAGE_ERROR',
-				})
+				await expect(storage.storeUser(mockUser as User)).rejects.toMatchObject(
+					{
+						message: 'Failed to store user data',
+						code: 'STORAGE_ERROR',
+					},
+				)
 			})
 		})
 

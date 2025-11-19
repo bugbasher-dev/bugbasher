@@ -243,7 +243,8 @@ export class AuthApi {
 
 			// Make a GET request to the callback endpoint
 			// The backend will handle the OAuth code exchange
-			const response = await this.httpClient.get<any>(callbackUrl)
+			const response =
+				await this.httpClient.get<LoginApiResponse['data']>(callbackUrl)
 
 			// The backend callback might return a redirect response or session data
 			// We need to handle both cases

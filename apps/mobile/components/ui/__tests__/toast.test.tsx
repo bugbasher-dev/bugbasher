@@ -3,7 +3,13 @@ import React from 'react'
 
 // Mock the Toast component to avoid React hooks compatibility issues
 jest.mock('../toast', () => ({
-	Toast: ({ message, type: _type, onHide, visible, testID }: any) => {
+	Toast: ({
+		message,
+		type: _type,
+		onHide,
+		visible,
+		testID,
+	}: ToastProps & { testID?: string }) => {
 		const mockReact = require('react')
 		if (!visible) return null
 		return mockReact.createElement('View', { testID: testID || 'toast' }, [
@@ -18,7 +24,7 @@ jest.mock('../toast', () => ({
 	},
 }))
 
-import { Toast } from '../toast'
+import { Toast, type ToastProps } from '../toast'
 
 describe('Toast', () => {
 	const mockOnHide = jest.fn()

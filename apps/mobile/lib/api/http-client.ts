@@ -4,6 +4,13 @@ import {
 	type RequestConfig,
 } from '@repo/types'
 
+interface HttpErrorData {
+	error?: string
+	message?: string
+	errors?: unknown
+	[key: string]: unknown
+}
+
 export interface HttpClientConfig {
 	baseUrl: string
 	timeout?: number
@@ -45,7 +52,7 @@ export class HttpClient {
 	/**
 	 * Makes an HTTP request with timeout, retry logic, and error handling
 	 */
-	async request<T = any>(
+	async request<T = unknown>(
 		endpoint: string,
 		config: RequestConfig = {},
 	): Promise<ApiResponse<T>> {
@@ -103,7 +110,7 @@ export class HttpClient {
 	/**
 	 * GET request
 	 */
-	async get<T = any>(
+	async get<T = unknown>(
 		endpoint: string,
 		config?: RequestConfig,
 	): Promise<ApiResponse<T>> {
@@ -113,9 +120,9 @@ export class HttpClient {
 	/**
 	 * POST request
 	 */
-	async post<T = any>(
+	async post<T = unknown>(
 		endpoint: string,
-		data?: any,
+		data?: unknown,
 		config?: RequestConfig,
 	): Promise<ApiResponse<T>> {
 		return this.request<T>(endpoint, {
@@ -128,9 +135,9 @@ export class HttpClient {
 	/**
 	 * POST request with form data (URL-encoded)
 	 */
-	async postForm<T = any>(
+	async postForm<T = unknown>(
 		endpoint: string,
-		data?: Record<string, any>,
+		data?: object,
 		config?: RequestConfig,
 	): Promise<ApiResponse<T>> {
 		const params = new URLSearchParams()
@@ -168,9 +175,9 @@ export class HttpClient {
 	/**
 	 * PUT request
 	 */
-	async put<T = any>(
+	async put<T = unknown>(
 		endpoint: string,
-		data?: any,
+		data?: unknown,
 		config?: RequestConfig,
 	): Promise<ApiResponse<T>> {
 		return this.request<T>(endpoint, {
@@ -183,7 +190,7 @@ export class HttpClient {
 	/**
 	 * DELETE request
 	 */
-	async delete<T = any>(
+	async delete<T = unknown>(
 		endpoint: string,
 		config?: RequestConfig,
 	): Promise<ApiResponse<T>> {
@@ -240,12 +247,12 @@ export class HttpClient {
 	private async handleHttpError<T>(
 		response: Response,
 	): Promise<ApiResponse<T>> {
-		let errorData: any = null
+		let errorData: HttpErrorData | null = null
 
 		try {
 			const contentType = response.headers.get('content-type')
 			if (contentType?.includes('application/json')) {
-				errorData = await response.json()
+				errorData = (await response.json()) as HttpErrorData
 			} else {
 				errorData = { message: await response.text() }
 			}
@@ -277,7 +284,6 @@ export class HttpClient {
 				success: false,
 				error: 'validation_error',
 				message: 'Validation failed',
-				data: errorData.errors,
 				status: response.status,
 			}
 		}
