@@ -1,5 +1,5 @@
 {
-	"extends": "../../tsconfig.json",
+	"extends": "../config/tsconfig.base-package.json",
 	"compilerOptions": {
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
@@ -7,7 +7,9 @@
 		"rootDir": "src",
 		"declaration": true,
 		"declarationMap": true,
-		"sourceMap": true
+		"sourceMap": true,
+		"types": ["node"],
+		"allowSyntheticDefaultImports": true
 	},
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", "dist"]

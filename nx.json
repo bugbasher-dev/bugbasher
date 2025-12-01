@@ -1,19 +1,12 @@
 {
 	"$schema": "./node_modules/nx/schemas/nx-schema.json",
 	"namedInputs": {
-		"sharedGlobals": [
-			"{workspaceRoot}/**/.env.*local"
-		],
-		"default": [
-			"{projectRoot}/**/*",
-			"sharedGlobals"
-		]
+		"sharedGlobals": ["{workspaceRoot}/**/.env.*local"],
+		"default": ["{projectRoot}/**/*", "sharedGlobals"]
 	},
 	"targetDefaults": {
 		"build": {
-			"dependsOn": [
-				"^build"
-			],
+			"dependsOn": ["^build"],
 			"outputs": [
 				"{projectRoot}/build/**",
 				"{projectRoot}/public/build/**",
@@ -23,6 +16,47 @@
 			],
 			"cache": true
 		},
+		"@repo/auth:build": {
+			"dependsOn": ["^build", "@repo/cache:build"]
+		},
+		"@repo/email:build": {
+			"dependsOn": ["^build", "@repo/cache:build", "@repo/observability:build"]
+		},
+		"@repo/observability:build": {
+			"dependsOn": ["^build", "@repo/security:build"]
+		},
+		"app:build": {
+			"dependsOn": [
+				"^build",
+				"@repo/auth:build",
+				"@repo/email:build",
+				"@repo/observability:build",
+				"@repo/integrations:build",
+				"@repo/ui:build",
+				"@repo/i18n:build",
+				"@repo/payments:build",
+				"@repo/storage:build",
+				"@repo/security:build",
+				"@repo/notifications:build",
+				"@repo/ai:build"
+			]
+		},
+		"admin:build": {
+			"dependsOn": [
+				"^build",
+				"@repo/auth:build",
+				"@repo/email:build",
+				"@repo/observability:build",
+				"@repo/integrations:build",
+				"@repo/ui:build",
+				"@repo/i18n:build",
+				"@repo/payments:build",
+				"@repo/storage:build",
+				"@repo/security:build",
+				"@repo/notifications:build",
+				"@repo/ai:build"
+			]
+		},
 		"lint": {
 			"cache": true
 		},
@@ -30,24 +64,18 @@
 			"cache": true
 		},
 		"test": {
-			"dependsOn": [
-				"^build"
-			],
+			"dependsOn": ["^build"],
 			"cache": true
 		},
 		"test:e2e:run": {
-			"dependsOn": [
-				"^build"
-			],
+			"dependsOn": ["^build"],
 			"cache": true
 		},
 		"dev": {
 			"cache": false
 		},
 		"build:docs": {
-			"outputs": [
-				"{projectRoot}/.mintlify/doc-build/**"
-			],
+			"outputs": ["{projectRoot}/.mintlify/doc-build/**"],
 			"cache": true
 		}
 	},
