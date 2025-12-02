@@ -15,12 +15,12 @@ node_modules
 /test-results/
 /playwright-report/
 /playwright/.cache/
-/tests/fixtures/email/
-/tests/fixtures/uploaded/
-/tests/fixtures/openimg/
+/packages/**/fixtures/email/
+/packages/**/fixtures/uploaded/
+/packages/**/fixtures/openimg/
 /coverage
 
-/other/cache.db
+/packages/database/cache.db
 
 # Easy way to create temporary files/folders that won't accidentally be added to git
 *.local.*

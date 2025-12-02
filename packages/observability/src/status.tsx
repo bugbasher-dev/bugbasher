@@ -43,7 +43,7 @@ export function Status({
 			if (!response.ok) {
 				throw new Error('Failed to fetch status')
 			}
-			const data = await response.json()
+			const data = await response.json() as StatusInfo
 			setStatus(data)
 		} catch (error) {
 			console.error('Error fetching status:', error)

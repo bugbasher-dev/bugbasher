@@ -189,7 +189,31 @@ export interface Page {
           id?: string | null;
         }[]
       | null;
+    assetType?: ('none' | 'image' | 'video') | null;
+    textPosition?: ('left' | 'center') | null;
+    assetPosition?: ('left' | 'right' | 'center') | null;
+    variant?: ('primary' | 'secondary') | null;
+    withBackground?: boolean | null;
+    withBackgroundGlow?: boolean | null;
+    assetShadow?: ('none' | 'soft' | 'hard') | null;
+    imagePerspective?: ('none' | 'left' | 'right' | 'bottom' | 'bottom-lg' | 'paper') | null;
+    /**
+     * Minimum height of the hero section in pixels
+     */
+    minHeight?: number | null;
     media?: (string | null) | Media;
+    /**
+     * URL to the video file (MP4, WebM, etc.)
+     */
+    videoSrc?: string | null;
+    /**
+     * Thumbnail image shown before video plays
+     */
+    videoPoster?: (string | null) | Media;
+    videoAutoPlay?: boolean | null;
+    videoLoop?: boolean | null;
+    videoMuted?: boolean | null;
+    videoControls?: boolean | null;
   };
   layout: (
     | CallToActionBlock
@@ -1427,7 +1451,22 @@ export interface PagesSelect<T extends boolean = true> {
                   };
               id?: T;
             };
+        assetType?: T;
+        textPosition?: T;
+        assetPosition?: T;
+        variant?: T;
+        withBackground?: T;
+        withBackgroundGlow?: T;
+        assetShadow?: T;
+        imagePerspective?: T;
+        minHeight?: T;
         media?: T;
+        videoSrc?: T;
+        videoPoster?: T;
+        videoAutoPlay?: T;
+        videoLoop?: T;
+        videoMuted?: T;
+        videoControls?: T;
       };
   layout?:
     | T
