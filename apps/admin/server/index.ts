@@ -2,6 +2,7 @@ import { type OutgoingHttpHeaders, type OutgoingHttpHeader } from 'node:http'
 import { styleText } from 'node:util'
 import { helmet } from '@nichtsam/helmet/node-http'
 import { createRequestHandler } from '@react-router/express'
+import { wideEventMiddleware } from '@repo/observability'
 import * as Sentry from '@sentry/react-router'
 import { ip as ipAddress } from 'address'
 import closeWithGrace from 'close-with-grace'
@@ -9,7 +10,6 @@ import compression from 'compression'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import getPort, { portNumbers } from 'get-port'
-import morgan from 'morgan'
 import { type ServerBuild } from 'react-router'
 
 const MODE = process.env.NODE_ENV ?? 'development'
@@ -82,7 +82,7 @@ app.use((req, res, next) => {
 })
 
 // no ending slashes for SEO reasons
-// https://github.com/epicweb-dev/epic-stack/discussions/108
+// https://github.com/mohammedzamakhan/epic-startup/discussions/108
 app.get('*', (req, res, next) => {
 	if (req.path.endsWith('/') && req.path.length > 1) {
 		const query = req.url.slice(req.path.length)
@@ -127,19 +127,18 @@ app.get(['/img/*', '/favicons/*'], (_req, res) => {
 	return res.status(404).send('Not found')
 })
 
-morgan.token('url', (req) => {
-	try {
-		return decodeURIComponent(req.url ?? '')
-	} catch {
-		return req.url ?? ''
-	}
-})
+// Wide Event middleware - emits one structured log per request with full context
 app.use(
-	morgan('tiny', {
-		skip: (req, res) =>
-			res.statusCode === 200 &&
-			(req.url?.startsWith('/resources/images') ||
-				req.url?.startsWith('/resources/healthcheck')),
+	wideEventMiddleware({
+		serviceName: 'admin',
+		serviceVersion: process.env.npm_package_version,
+		skipPaths: [
+			'/resources/healthcheck',
+			'/resources/images/*',
+			'/assets/*',
+			'/favicons/*',
+			'/img/*',
+		],
 	}),
 )
 

@@ -1,3 +1,4 @@
+import { useDirection } from '@base-ui/react/direction-provider'
 import { Trans, msg } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
 import { type OnboardingProgressData } from '@repo/common/onboarding'
@@ -7,7 +8,6 @@ import { Button } from '@repo/ui/button'
 import { Card, CardContent, CardDescription, CardHeader } from '@repo/ui/card'
 import { HomeIcon } from '@repo/ui/home-icon'
 import { Logo } from '@repo/ui/logo'
-import { useDirection } from '@base-ui/react/direction-provider'
 
 import { MessageSquareMoreIcon } from '@repo/ui/message-square-more'
 import { SettingsGearIcon } from '@repo/ui/settings-gear-icon'
@@ -197,10 +197,10 @@ function OrganizationSidebar({
 }) {
 	const { _ } = useLingui()
 	const [isExtensionInstalled, setIsExtensionInstalled] = useState(false)
-	const [helpUrl, setHelpUrl] = useState('https://docs.epic-stack.me:2999')
+	const [helpUrl, setHelpUrl] = useState('https://docs.epic-startup.me:2999')
 
 	useEffect(() => {
-		setHelpUrl(getCrossAppUrl('docs', '', 'https://docs.epic-stack.me:2999'))
+		setHelpUrl(getCrossAppUrl('docs', '', 'https://docs.epic-startup.me:2999'))
 	}, [])
 
 	useEffect(() => {
