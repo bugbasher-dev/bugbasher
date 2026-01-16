@@ -1,5 +1,5 @@
 import { invariant } from '@epic-web/invariant'
-import type { PrismaClient } from '@prisma/client'
+import { prisma } from '@repo/database'
 import { integrationManager, OAuthStateManager } from '../index'
 import { type LoaderFunctionArgs } from 'react-router'
 
@@ -9,7 +9,6 @@ export interface OAuthCallbackDependencies {
 		url: string,
 		options: { title: string; description: string; type: string },
 	) => Response | Promise<Response>
-	prisma: PrismaClient
 }
 
 /**
@@ -18,7 +17,7 @@ export interface OAuthCallbackDependencies {
  * Used by both the admin and app applications.
  *
  * @param request - The incoming request
- * @param deps - Dependencies (auth, toast, prisma)
+ * @param deps - Dependencies (auth, toast)
  * @returns Redirect response with toast message
  */
 export async function handleOAuthCallback(
@@ -38,7 +37,7 @@ export async function handleOAuthCallback(
 	const oauthToken = url.searchParams.get('oauth_token')
 	const oauthVerifier = url.searchParams.get('oauth_verifier')
 
-	let providerName = url.searchParams.get('provider')
+	const providerName = url.searchParams.get('provider')
 
 	// Handle OAuth errors
 	if (error) {
@@ -50,10 +49,6 @@ export async function handleOAuthCallback(
 			description: `Failed to connect: ${errorMsg}`,
 			type: 'error',
 		})
-	}
-
-	if (code && state && !providerName) {
-		providerName = 'notion'
 	}
 
 	// Determine if this is OAuth 1.0a (Trello) or OAuth 2.0 flow
@@ -69,7 +64,7 @@ export async function handleOAuthCallback(
 		})
 	}
 
-	if (!providerName) {
+	if (isOAuth1 && !providerName) {
 		return deps.redirectWithToast('/', {
 			title: 'Integration failed',
 			description: 'Missing provider parameter',
@@ -110,15 +105,18 @@ export async function handleOAuthCallback(
 				timestamp: tokenContext.timestamp,
 			}
 
-			integration = await integrationManager.handleOAuthCallback(providerName, {
-				organizationId: stateData.organizationId,
-				code: oauthVerifier!, // Use oauth_verifier as code for OAuth 1.0a
-				state: `trello-oauth1-${Date.now()}`, // Generate a simple state for OAuth 1.0a
-				error: error || undefined,
-				errorDescription: errorDescription || undefined,
-				// Pass oauth_token for OAuth 1.0a flows
-				oauthToken: oauthToken!,
-			})
+			integration = await integrationManager.handleOAuthCallback(
+				stateData.providerName,
+				{
+					organizationId: stateData.organizationId,
+					code: oauthVerifier!, // Use oauth_verifier as code for OAuth 1.0a
+					state: `trello-oauth1-${Date.now()}`, // Generate a simple state for OAuth 1.0a
+					error: error || undefined,
+					errorDescription: errorDescription || undefined,
+					// Pass oauth_token for OAuth 1.0a flows
+					oauthToken: oauthToken!,
+				},
+			)
 		} else {
 			// OAuth 2.0 flow (all other providers) - validate state first
 			try {
@@ -127,17 +125,20 @@ export async function handleOAuthCallback(
 				throw new Error(`Invalid OAuth state: ${error}`)
 			}
 
-			integration = await integrationManager.handleOAuthCallback(providerName, {
-				organizationId: stateData.organizationId,
-				code: code!,
-				state: state!,
-				error: error || undefined,
-				errorDescription: errorDescription || undefined,
-			})
+			integration = await integrationManager.handleOAuthCallback(
+				stateData.providerName,
+				{
+					organizationId: stateData.organizationId,
+					code: code!,
+					state: state!,
+					error: error || undefined,
+					errorDescription: errorDescription || undefined,
+				},
+			)
 		}
 
 		// Get organization slug for redirect
-		const organization = await deps.prisma.organization.findUnique({
+		const organization = await prisma.organization.findUnique({
 			where: { id: integration.organizationId },
 			select: { slug: true },
 		})
@@ -146,7 +147,7 @@ export async function handleOAuthCallback(
 
 		return deps.redirectWithToast(`/${organization.slug}/settings`, {
 			title: 'Integration connected',
-			description: `Successfully connected to ${providerName}`,
+			description: `Successfully connected to ${stateData.providerName}`,
 			type: 'success',
 		})
 	} catch (error) {
