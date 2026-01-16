@@ -14,14 +14,13 @@ import {
 } from 'react-router'
 import { loadCatalog } from './modules/lingui/lingui'
 import { linguiServer } from './modules/lingui/lingui.server'
-import { getEnv } from './utils/env.server.ts'
 import { getInstanceInfo } from './utils/litefs.server.ts'
 import { NonceProvider } from './utils/nonce-provider.ts'
 import { makeTimings } from './utils/timing.server.ts'
 
-export const streamTimeout = 5000
+import { auditSensitiveRoutes } from '#app/utils/audit/audit-middleware.server.ts'
 
-global.ENV = getEnv()
+export const streamTimeout = 5000
 
 const MODE = process.env.NODE_ENV ?? 'development'
 
@@ -30,6 +29,13 @@ type DocRequestArgs = Parameters<HandleDocumentRequestFunction>
 export default async function handleRequest(...args: DocRequestArgs) {
 	const [request, responseStatusCode, responseHeaders, reactRouterContext] =
 		args
+
+	// Automatic audit logging for sensitive routes
+	void auditSensitiveRoutes(
+		request,
+		new Response(null, { status: responseStatusCode }),
+	)
+
 	const { currentInstance, primaryInstance } = await getInstanceInfo()
 	responseHeaders.set('fly-region', process.env.FLY_REGION ?? 'unknown')
 	responseHeaders.set('fly-app', process.env.FLY_APP_NAME ?? 'unknown')

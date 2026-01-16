@@ -83,7 +83,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 	if (existingConnection && userId) {
 		if (existingConnection.userId === userId) {
 			return redirectWithToast(
-				'/settings/profile/connections',
+				'/settings',
 				{
 					title: 'Already Connected',
 					description: `Your "${profile.username}" ${label} account is already connected.`,
@@ -92,7 +92,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 			)
 		} else {
 			return redirectWithToast(
-				'/settings/profile/connections',
+				'/settings',
 				{
 					title: 'Already Connected',
 					description: `The "${profile.username}" ${label} account is already connected to another account.`,
@@ -112,7 +112,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 			},
 		})
 		return redirectWithToast(
-			'/settings/profile/connections',
+			'/settings',
 			{
 				title: 'Connected',
 				type: 'success',
@@ -232,14 +232,14 @@ async function makeSession(
 	const session = await prisma.session.create({
 		select: { id: true, expirationDate: true, userId: true },
 		data: {
-			expirationDate: getSessionExpirationDate(),
+			expirationDate: getSessionExpirationDate(false),
 			userId,
 			ipAddress,
 			userAgent,
 		},
 	})
 	return handleNewSession(
-		{ request, session, redirectTo, remember: true },
+		{ request, session, redirectTo, remember: false },
 		{ headers: combineHeaders(responseInit?.headers, destroyRedirectTo) },
 	)
 }

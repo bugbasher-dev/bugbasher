@@ -1,10 +1,29 @@
-import { prisma } from '@repo/database'
-import { handleOAuthCallback } from '@repo/integrations'
+import { handleOAuthCallback, OAuthStateManager } from '@repo/integrations'
 import { type LoaderFunctionArgs } from 'react-router'
 import { requireUserId } from '#app/utils/auth.server.ts'
+import { userHasOrgAccess } from '#app/utils/organization/organizations.server.ts'
 import { redirectWithToast as _redirectWithToast } from '#app/utils/toast.server.ts'
 
 export async function loader(args: LoaderFunctionArgs) {
+	const url = new URL(args.request.url)
+	const state = url.searchParams.get('state')
+
+	// OAuth 2.0 flows use 'state' parameter - validate organization access
+	// Note: OAuth 1.0a (Trello) doesn't use 'state', so this check only applies to OAuth 2.0
+	if (state) {
+		try {
+			const stateData = OAuthStateManager.validateState(state)
+			await userHasOrgAccess(args.request, stateData.organizationId)
+		} catch (error) {
+			return _redirectWithToast('/', {
+				title: 'Integration failed',
+				description:
+					error instanceof Error ? error.message : 'Authorization failed',
+				type: 'error',
+			})
+		}
+	}
+
 	return handleOAuthCallback(args, {
 		requireUserId,
 		redirectWithToast: async (
@@ -17,6 +36,5 @@ export async function loader(args: LoaderFunctionArgs) {
 				type: options.type as 'message' | 'success' | 'error',
 			})
 		},
-		prisma,
 	})
 }
