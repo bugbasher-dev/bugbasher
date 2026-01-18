@@ -73,10 +73,10 @@ import {
 import {
 	logNoteActivity,
 	getNoteActivityLogs,
-} from '#app/utils/audit/activity-log.server.ts'
+} from '@repo/audit'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { sanitizeCommentContent } from '#app/utils/content-sanitization.server.ts'
-import { getNoteImgSrc, getUserImgSrc, useIsPending } from '#app/utils/misc.tsx'
+import { getNoteImgSrc, getUserImgSrc, useIsPending } from '@repo/common'
 import {
 	notifyCommentMentions,
 	notifyNoteOwner,

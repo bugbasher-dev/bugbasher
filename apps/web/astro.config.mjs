@@ -1,4 +1,5 @@
 import cloudflare from '@astrojs/cloudflare'
+import partytown from '@astrojs/partytown'
 import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 import { brand } from '@repo/config/brand'
@@ -23,6 +24,11 @@ export default defineConfig({
 			priority: 0.7,
 			lastmod: new Date(),
 		}),
+		partytown({
+			config: {
+				forward: ['dataLayer.push', 'gtag'],
+			},
+		}),
 	],
 
 	vite: {
@@ -32,8 +38,24 @@ export default defineConfig({
 		},
 		optimizeDeps: {
 			exclude: ['@sentry/profiling-node', '@sentry-internal/node-cpu-profiler'],
+		},
+		ssr: {
+			external: [
+				'zlib', 'http', 'https', 'node:path', 'node:url', 'node:fs', 
+				'node:http2', 'node:buffer', 'node:crypto', 'fs', 'os', 'path', 
+				'child_process', 'crypto', 'tty', 'worker_threads', 'net', 'stream',
+				'util', 'events', 'buffer', 'url', 'querystring', 'assert'
+			],
+			noExternal: ['@payloadcms/live-preview']
+		},
+		define: {
+			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
 		}
 	},
 
-	adapter: cloudflare(),
+	adapter: cloudflare({
+		platformProxy: {
+			enabled: true
+		}
+	}),
 })
