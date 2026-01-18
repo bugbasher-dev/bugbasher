@@ -71,10 +71,10 @@ export const TestimonialHighlight: Block = {
     },
     {
       name: 'authorImage',
-      type: 'text',
-      required: true,
-      label: 'Author Image URL',
-      defaultValue: 'https://i.pravatar.cc/150?img=42',
+      type: 'upload',
+      relationTo: 'media',
+      required: false,
+      label: 'Author Image',
     },
   ],
   labels: {

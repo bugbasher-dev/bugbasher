@@ -7,7 +7,7 @@ import {
 } from '#app/utils/auth.server.ts'
 import { ProviderNameSchema, providerLabels } from '#app/utils/connections.tsx'
 import { ensurePrimary } from '#app/utils/litefs.server.ts'
-import { combineHeaders } from '#app/utils/misc.tsx'
+import { combineHeaders } from '@repo/common'
 import {
 	normalizeEmail,
 	normalizeUsername,
@@ -15,7 +15,7 @@ import {
 import {
 	destroyRedirectToHeader,
 	getRedirectCookieValue,
-} from '#app/utils/redirect-cookie.server.ts'
+} from '@repo/common/redirect-cookie'
 import { checkSSOEnforcementByEmail } from '#app/utils/sso/enforcement.server.ts'
 import {
 	createToastHeaders,

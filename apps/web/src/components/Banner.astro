@@ -1,22 +1,35 @@
 ---
 import { fetchBannerData } from '~/lib/fetchBanner'
 
+// Define valid banner types
+type BannerType = 'info' | 'warning' | 'error' | 'success'
+
+// Define AriaRole type to match what Astro expects
+type AriaRole = 'alert' | 'status'
+
 const banner = await fetchBannerData()
 const isEnabled = banner?.isEnabled
 
-const type = banner?.type || 'info'
+const type: BannerType = (banner?.type as BannerType) || 'info'
 const content = banner?.content
 const addLink = banner?.addLink
 const link = banner?.link
 
-const bgColors = {
+const bgColors: Record<BannerType, string> = {
 	info: 'bg-primary',
 	warning: 'bg-accent',
 	error: 'bg-destructive',
 	success: 'bg-primary',
 }
 
-const textColors = {
+const ariaRoles: Record<BannerType, AriaRole> = {
+	info: 'status',
+	warning: 'alert',
+	error: 'alert',
+	success: 'status',
+}
+
+const textColors: Record<BannerType, string> = {
 	info: 'text-primary-foreground',
 	warning: 'text-accent-foreground',
 	error: 'text-destructive-foreground',
@@ -26,7 +39,8 @@ const textColors = {
 
 {
 	isEnabled && (
-		<div class={`${bgColors[type]} ${textColors[type]} px-4 py-3 relative`}>
+		<div role="banner">
+			<div role={ariaRoles[type]} class={`${bgColors[type]} ${textColors[type]} px-4 py-3 relative`}>
 			<div class="container mx-auto flex items-center justify-between">
 				<div class="flex-1 text-center text-sm font-medium flex justify-center items-center">
 					<span class="flex items-center" set:html={content}></span>
@@ -52,6 +66,7 @@ const textColors = {
 					)}
 				</div>
 			</div>
+		</div>
 		</div>
 	)
 }

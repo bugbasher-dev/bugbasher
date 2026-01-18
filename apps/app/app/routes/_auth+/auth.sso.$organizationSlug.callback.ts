@@ -3,12 +3,12 @@ import { SSOCallbackSchema } from '@repo/validation'
 import { redirect } from 'react-router'
 import { getUserId, loginWithSSO } from '#app/utils/auth.server.ts'
 import { ensurePrimary } from '#app/utils/litefs.server.ts'
-import { combineHeaders } from '#app/utils/misc.tsx'
+import { combineHeaders } from '@repo/common'
 import { getOrganizationBySlug } from '#app/utils/organization/organizations.server.ts'
 import {
 	destroyRedirectToHeader,
 	getRedirectCookieValue,
-} from '#app/utils/redirect-cookie.server.ts'
+} from '@repo/common/redirect-cookie'
 import {
 	ssoAuditLogger,
 	SSOAuditEventType,

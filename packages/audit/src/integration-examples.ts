@@ -6,7 +6,8 @@
  * your routes and services.
  */
 
-import { auditService, AuditAction } from './audit.server.ts'
+import { AuditAction } from './actions.ts'
+import { auditService } from './index.ts'
 
 /**
  * Example 1: User Registration/Creation
@@ -479,7 +480,7 @@ export async function exampleSubscriptionUpdated(
  * HOW TO USE THESE EXAMPLES:
  *
  * 1. Import the audit service in your route:
- *    import { auditService, AuditAction } from '#app/utils/audit.server.ts'
+ *    import { auditService, AuditAction } from '@repo/audit'
  *
  * 2. Call the appropriate log method after the operation succeeds:
  *    await auditService.log({ ... })
