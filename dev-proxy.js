@@ -59,6 +59,45 @@ const proxy = httpProxy.createProxyServer({
 	xfwd: true,
 })
 
+// Global error handler to prevent crashes
+proxy.on('error', (err, req, res) => {
+	if (err.code === 'ECONNREFUSED') {
+		console.log(`⏳ Waiting for backend to start...`)
+		// Response might already be handled, check if writable
+		if (res && res.writeHead && !res.headersSent) {
+			res.writeHead(503, {
+				'Content-Type': 'text/html',
+				'Retry-After': '5',
+			})
+			res.end(`
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<title>Service Starting...</title>
+					<meta http-equiv="refresh" content="3">
+					<style>
+						body { font-family: system-ui; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #1a1a2e; color: #eee; }
+						.container { text-align: center; }
+						.spinner { width: 40px; height: 40px; border: 4px solid #333; border-top: 4px solid #6366f1; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+						@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+					</style>
+				</head>
+				<body>
+					<div class="container">
+						<div class="spinner"></div>
+						<h2>Service Starting...</h2>
+						<p>Waiting for backend service to be ready</p>
+						<p style="color: #888; font-size: 14px;">This page will auto-refresh</p>
+					</div>
+				</body>
+				</html>
+			`)
+		}
+	} else {
+		console.error('Proxy error:', err.message)
+	}
+})
+
 // Request handler
 function requestHandler(req, res) {
 	const host = req.headers.host
@@ -68,9 +107,40 @@ function requestHandler(req, res) {
 		req.headers['x-forwarded-proto'] = protocol
 		req.headers['x-forwarded-host'] = host
 		proxy.web(req, res, { target }, (err) => {
-			console.error('Proxy error:', err)
-			res.writeHead(500, { 'Content-Type': 'text/plain' })
-			res.end('Proxy error')
+			if (err.code === 'ECONNREFUSED') {
+				console.log(`⏳ Waiting for ${target} to start...`)
+				res.writeHead(503, {
+					'Content-Type': 'text/html',
+					'Retry-After': '5',
+				})
+				res.end(`
+					<!DOCTYPE html>
+					<html>
+					<head>
+						<title>Service Starting...</title>
+						<meta http-equiv="refresh" content="3">
+						<style>
+							body { font-family: system-ui; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #1a1a2e; color: #eee; }
+							.container { text-align: center; }
+							.spinner { width: 40px; height: 40px; border: 4px solid #333; border-top: 4px solid #6366f1; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+							@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+						</style>
+					</head>
+					<body>
+						<div class="container">
+							<div class="spinner"></div>
+							<h2>Service Starting...</h2>
+							<p>Waiting for <code>${target}</code> to be ready</p>
+							<p style="color: #888; font-size: 14px;">This page will auto-refresh</p>
+						</div>
+					</body>
+					</html>
+				`)
+			} else {
+				console.error('Proxy error:', err)
+				res.writeHead(500, { 'Content-Type': 'text/plain' })
+				res.end('Proxy error: ' + err.message)
+			}
 		})
 	} else {
 		res.writeHead(404, { 'Content-Type': 'text/plain' })

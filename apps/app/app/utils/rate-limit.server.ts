@@ -16,22 +16,25 @@ export interface RateLimitKey {
 }
 
 // Rate limit configurations
+// Development mode: much higher limits for testing
+const isDev = process.env.NODE_ENV !== 'production'
+
 export const RATE_LIMITS = {
 	authorization: {
-		maxRequests: 10,
+		maxRequests: isDev ? 1000 : 10,
 		windowMs: 60 * 60 * 1000, // 1 hour
 	},
 	token: {
-		maxRequests: 20,
+		maxRequests: isDev ? 1000 : 20,
 		windowMs: 60 * 60 * 1000, // 1 hour
 	},
 	// Explicit SSE connection limit (separate from token limits)
 	sseConnection: {
-		maxRequests: 20,
+		maxRequests: isDev ? 1000 : 100,
 		windowMs: 60 * 60 * 1000, // 1 hour
 	},
 	toolInvocation: {
-		maxRequests: 1000,
+		maxRequests: isDev ? 10000 : 1000,
 		windowMs: 60 * 60 * 1000, // 1 hour
 	},
 }

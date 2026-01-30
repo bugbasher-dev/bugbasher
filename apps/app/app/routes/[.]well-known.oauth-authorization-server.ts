@@ -1,3 +1,4 @@
+import { getDomainUrl } from '@repo/common'
 import { type LoaderFunctionArgs } from 'react-router'
 
 /**
@@ -9,8 +10,7 @@ import { type LoaderFunctionArgs } from 'react-router'
  * Route: /.well-known/oauth-authorization-server
  */
 export async function loader({ request }: LoaderFunctionArgs) {
-	const url = new URL(request.url)
-	const baseUrl = `${url.protocol}//${url.host}`
+	const baseUrl = getDomainUrl(request)
 
 	return Response.json(
 		{

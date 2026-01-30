@@ -3,8 +3,10 @@ import MarketingLayout from '../../../layouts/MarketingLayout.astro'
 import { cmsClient } from '../../../lib/cms'
 import SEO from '../../../components/SEO.astro'
 import { getPageTitle, brand } from '@repo/config/brand'
+import GridDesign from '../../../components/GridDesign.astro'
 
 export const prerender = true;
+const CMS_URL = (import.meta as any).env?.PUBLIC_CMS_URL
 
 export async function getStaticPaths() {
 	// Generate paths for pagination using cmsClient
@@ -52,10 +54,11 @@ const pageDescription = `Discover the latest insights, tutorials, and updates fr
 		{posts.totalPages > pageNumber && <link rel="next" href={`/blog/page/${pageNumber + 1}`} />}
 	</Fragment>
 
-	<main class="min-h-screen py-24">
+	<main class="relative min-h-screen py-24">
+		<GridDesign />
 		<div class="container mx-auto px-4 mb-16">
 			<div class="prose dark:prose-invert max-w-none">
-				<h1 class="text-4xl font-bold text-center mb-8">Blog Posts</h1>
+				<h1 class="text-4xl font-bold text-center mb-8 font-title">Blog Posts</h1>
 				<p class="text-xl text-center text-gray-600 mb-12">
 					Discover the latest insights and updates from our team - Page {
 						pageNumber
@@ -66,13 +69,13 @@ const pageDescription = `Discover the latest insights, tutorials, and updates fr
 
 		{
 			posts.docs && posts.docs.length > 0 ? (
-				<div class="container mx-auto px-4">
-					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				<div class="container mx-auto px-6">
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 						{posts.docs.map((post) => (
-							<article class="border border-gray-200 rounded-lg overflow-hidden bg-white hover:shadow-lg transition-shadow">
+							<article class="border border-border overflow-hidden bg-background hover:shadow-lg transition-shadow relative z-1">
 								{post.meta?.image && (
 									<img
-										src={post.meta.image.url}
+										src={`${CMS_URL}${post.meta.image.url}`}
 										alt={post.meta.image.alt || post.title}
 										class="w-full h-48 object-cover"
 									/>
@@ -117,7 +120,7 @@ const pageDescription = `Discover the latest insights, tutorials, and updates fr
 										)}
 										<a
 											href={`/blog/${post.slug}`}
-											class="text-blue-600 hover:text-blue-800 font-medium"
+											class="text-primary hover:text-primary/80 font-medium"
 										>
 											Read more →
 										</a>

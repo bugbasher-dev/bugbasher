@@ -17,6 +17,13 @@ export function getNoteImgSrc(objectKey: string, organizationId?: string) {
 	return `/resources/images?${params.toString()}`
 }
 
+export function formatDate(date: Date | string | number) {
+	return new Intl.DateTimeFormat('en-US', {
+		dateStyle: 'medium',
+		timeStyle: 'short',
+	}).format(new Date(date))
+}
+
 export function getImgSrc({
 	height,
 	optimizerEndpoint,
@@ -67,11 +74,17 @@ export function getDomainUrl(request: Request) {
 	const protocol =
 		(
 			request.headers.get('X-Forwarded-Proto') ??
+			request.headers.get('x-forwarded-proto') ??
 			new URL(request.url).protocol.slice(0, -1)
 		)
 			.split(',')[0]
 			?.trim() ?? 'http'
 	const hostValue = host.split(',')[0]?.trim() ?? host
+	// If we're behind a proxy that terminates TLS, use https
+	// Also brute force for specific domain to match existing logic
+	if (protocol === 'https' || hostValue.includes('epic-startup.me')) {
+		return `https://${hostValue}`
+	}
 	return `${protocol}://${hostValue}`
 }
 

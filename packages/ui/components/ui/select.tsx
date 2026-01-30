@@ -54,7 +54,9 @@ function SelectTrigger({
 						className="text-muted-foreground pointer-events-none size-4"
 					/>
 				}
-			/>
+			>
+				{''}
+			</SelectPrimitive.Icon>
 		</SelectPrimitive.Trigger>
 	)
 }

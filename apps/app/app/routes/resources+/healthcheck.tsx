@@ -3,6 +3,7 @@ import { getValidatedHost } from '@repo/common/headers'
 import { prisma } from '@repo/database'
 import { ENV } from 'varlock/env'
 import { type Route } from './+types/healthcheck.ts'
+import { securityAlertService } from '@repo/audit'
 
 export async function loader({ request }: Route.LoaderArgs) {
 	const host = getValidatedHost(request, ENV.BASE_URL)
@@ -16,12 +17,14 @@ export async function loader({ request }: Route.LoaderArgs) {
 		// and make a HEAD request to ourselves, then we're good.
 		await Promise.all([
 			prisma.user.count(),
-			fetch(`${new URL(request.url).protocol}//${host}`, {
+			fetch(`https://${host}`, {
 				method: 'HEAD',
 				headers: { 'X-Healthcheck': 'true' },
 			}).then((r) => {
 				if (!r.ok) return Promise.reject(r)
 			}),
+			// Verify security monitoring is operational (SOC 2 CC7.2)
+			securityAlertService.getSecurityMetrics({ windowMinutes: 1 }),
 		])
 		return new Response('OK')
 	} catch {

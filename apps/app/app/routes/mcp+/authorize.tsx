@@ -23,6 +23,7 @@ import {
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
+	SelectValue,
 } from '@repo/ui/select'
 import { useEffect, useState } from 'react'
 import {
@@ -332,9 +333,13 @@ export default function AuthorizePage() {
 							<Select
 								value={selectedOrgId}
 								onValueChange={(value) => setSelectedOrgId(value as string)}
+								items={organizations.map((org) => ({
+									value: org.id,
+									label: org.name,
+								}))}
 							>
 								<SelectTrigger id="organization-select">
-									Select an organization
+									<SelectValue placeholder="Select an organization" />
 								</SelectTrigger>
 								<SelectContent>
 									{organizations.map((org) => (

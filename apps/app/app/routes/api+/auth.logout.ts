@@ -1,6 +1,7 @@
+import { auditService, AuditAction } from '@repo/audit'
 import { data } from 'react-router'
 import { z } from 'zod'
-import { revokeRefreshToken } from '#app/utils/jwt.server.ts'
+import { revokeRefreshToken, verifyAccessToken } from '#app/utils/jwt.server.ts'
 import { type Route } from './+types/auth.logout.ts'
 
 const LogoutSchema = z.object({
@@ -9,6 +10,19 @@ const LogoutSchema = z.object({
 
 export async function action({ request }: Route.ActionArgs) {
 	try {
+		// Try to get user ID from authorization header for logging
+		let userId: string | undefined
+		const authHeader = request.headers.get('Authorization')
+		if (authHeader?.startsWith('Bearer ')) {
+			const token = authHeader.slice(7)
+			try {
+				const payload = verifyAccessToken(token)
+				userId = payload?.sub
+			} catch {
+				// Token verification failed, continue without userId
+			}
+		}
+
 		const body = await request.json()
 		const result = LogoutSchema.safeParse(body)
 
@@ -16,6 +30,16 @@ export async function action({ request }: Route.ActionArgs) {
 			// Revoke the refresh token
 			await revokeRefreshToken(result.data.refreshToken)
 		}
+
+		// Log logout event (SOC 2 CC7.2)
+		void auditService.logAuth(
+			AuditAction.USER_LOGOUT,
+			userId,
+			'User logged out via API',
+			{ source: 'api' },
+			request,
+			true,
+		)
 
 		return data({
 			success: true,
