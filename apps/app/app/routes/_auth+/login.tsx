@@ -3,6 +3,7 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { Trans, t } from '@lingui/macro'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
+import { auditService, AuditAction } from '@repo/audit'
 import { requireAnonymous } from '@repo/auth'
 import { providerNames } from '@repo/auth/constants'
 import { getErrorMessage, useIsPending } from '@repo/common'
@@ -238,6 +239,17 @@ export async function action({ request }: Route.ActionArgs) {
 	})
 
 	if (submission.status !== 'success' || !submission.value.session) {
+		// Log failed login attempt (SOC 2 CC7.2)
+		const username = formData.get('username')?.toString()
+		void auditService.logAuth(
+			AuditAction.USER_LOGIN_FAILED,
+			undefined,
+			`Failed login attempt for: ${username}`,
+			{ username, source: 'web' },
+			request,
+			false,
+		)
+
 		return data(
 			{ result: submission.reply({ hideFields: ['password'] }) },
 			{ status: submission.status === 'error' ? 400 : 200 },

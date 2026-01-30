@@ -209,7 +209,7 @@ export function BillingCard({
 							}`}
 						>
 							<Trans>Yearly</Trans>
-							<Badge variant="secondary" className="ml-2 text-xs">
+							<Badge variant="default" className="ml-2 text-xs">
 								<Trans>Save 20%</Trans>
 							</Badge>
 						</button>

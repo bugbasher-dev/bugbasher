@@ -5,6 +5,7 @@ import {
 	getUserId,
 	sessionKey,
 } from '@repo/auth'
+import { auditService, AuditAction } from '@repo/audit'
 import { combineResponseInits } from '@repo/common'
 import { redirectWithToast } from '@repo/common/toast'
 import { prisma } from '@repo/database'
@@ -76,6 +77,16 @@ export async function handleNewSession(
 		)
 		authSession.set(sessionKey, session.id)
 
+		// Log successful login (SOC 2 CC7.2)
+		void auditService.logAuth(
+			AuditAction.USER_LOGIN,
+			session.userId,
+			'User logged in successfully',
+			{ loginMethod: 'password', hasTwoFactor: false },
+			request,
+			true,
+		)
+
 		return redirect(
 			safeRedirect(redirectTo),
 			combineResponseInits(
@@ -144,6 +155,22 @@ export async function handleVerification({
 		'set-cookie',
 		await verifySessionStorage.destroySession(verifySession),
 	)
+
+	// Log successful login with 2FA (SOC 2 CC7.2)
+	const sessionForLog = await prisma.session.findUnique({
+		select: { userId: true },
+		where: { id: unverifiedSessionId || '' },
+	})
+	if (sessionForLog) {
+		void auditService.logAuth(
+			AuditAction.USER_LOGIN,
+			sessionForLog.userId,
+			'User logged in successfully with 2FA',
+			{ loginMethod: 'password', hasTwoFactor: true },
+			request,
+			true,
+		)
+	}
 
 	return redirect(safeRedirect(redirectTo), { headers })
 }

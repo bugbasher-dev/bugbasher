@@ -1,4 +1,5 @@
 import { parseWithZod } from '@conform-to/zod'
+import { auditService, AuditAction } from '@repo/audit'
 import { checkHoneypot } from '@repo/security'
 import { UsernameSchema, PasswordSchema } from '@repo/validation'
 import { data } from 'react-router'
@@ -42,6 +43,17 @@ export async function action({ request }: Route.ActionArgs) {
 	})
 
 	if (submission.status !== 'success' || !submission.value.session) {
+		// Log failed login attempt (SOC 2 CC7.2)
+		const username = formData.get('username')?.toString()
+		void auditService.logAuth(
+			AuditAction.USER_LOGIN_FAILED,
+			undefined,
+			`Failed API login attempt for: ${username}`,
+			{ username, source: 'api' },
+			request,
+			false,
+		)
+
 		return data(
 			{
 				success: false,
@@ -53,6 +65,16 @@ export async function action({ request }: Route.ActionArgs) {
 	}
 
 	const { session } = submission.value
+
+	// Log successful login (SOC 2 CC7.2)
+	void auditService.logAuth(
+		AuditAction.USER_LOGIN,
+		session.userId,
+		'User logged in via API',
+		{ source: 'api', loginMethod: 'password' },
+		request,
+		true,
+	)
 
 	// Use shared helper to create authenticated session response
 	const response = await createAuthenticatedSessionResponse(

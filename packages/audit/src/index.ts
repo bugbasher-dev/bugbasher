@@ -2,6 +2,8 @@ import { prisma } from '@repo/database'
 import { logger } from '@repo/observability'
 import { getClientIp } from '@repo/security'
 import { AuditAction } from './actions.ts'
+import { computeIntegrityHash } from './integrity.ts'
+import { securityAlertService } from './alerting.ts'
 
 export interface AuditLogInput {
 	action: AuditAction
@@ -11,9 +13,9 @@ export interface AuditLogInput {
 	metadata?: Record<string, any>
 	request?: Request
 	severity?: 'info' | 'warning' | 'error' | 'critical'
-	targetUserId?: string // For actions that affect another user
-	resourceId?: string // ID of the resource being acted upon
-	resourceType?: string // Type of resource (note, user, org, etc.)
+	targetUserId?: string
+	resourceId?: string
+	resourceType?: string
 }
 
 /**
@@ -24,9 +26,18 @@ export interface AuditLogInput {
  * - Request context capture (IP, user agent)
  * - Metadata sanitization
  * - Structured logging
- * - Immutability protection
+ * - Immutability protection (SOC 2 CC7.2)
+ *
+ * IMPORTANT: Audit logs are immutable by design. Updates to audit log
+ * records are restricted to archival operations only. Any attempt to
+ * modify audit log content will be logged as a security violation.
  */
 export class AuditService {
+	/**
+	 * SECURITY: Audit logs are append-only. This list defines the only
+	 * fields that may be modified after creation (for archival purposes).
+	 */
+	private static readonly ALLOWED_UPDATE_FIELDS = ['archived', 'retainUntil']
 	/**
 	 * Create an audit log entry
 	 * This is the primary method for logging audit events across the application
@@ -53,16 +64,39 @@ export class AuditService {
 				input.organizationId || undefined,
 			)
 
-			// Create the audit log entry
+			const logId = crypto.randomUUID()
+			const createdAt = new Date()
+			const sanitizedDetails = this.sanitizeLogMessage(input.details)
+			const metadataStr = sanitizedMetadata
+				? JSON.stringify(sanitizedMetadata)
+				: null
+
+			// Compute integrity hash for tamper detection (SOC 2 CC7.2)
+			const integrityHash = computeIntegrityHash({
+				id: logId,
+				action: input.action,
+				userId: input.userId || null,
+				organizationId: input.organizationId || null,
+				details: sanitizedDetails,
+				metadata: metadataStr,
+				ipAddress: ipAddress || null,
+				userAgent: userAgent || null,
+				resourceType: input.resourceType || null,
+				resourceId: input.resourceId || null,
+				targetUserId: input.targetUserId || null,
+				severity: input.severity || 'info',
+				createdAt,
+			})
+
+			// Create the audit log entry with integrity protection
 			await prisma.auditLog.create({
 				data: {
+					id: logId,
 					action: input.action,
 					userId: input.userId || null,
 					organizationId: input.organizationId || null,
-					details: this.sanitizeLogMessage(input.details),
-					metadata: sanitizedMetadata
-						? JSON.stringify(sanitizedMetadata)
-						: null,
+					details: sanitizedDetails,
+					metadata: metadataStr,
 					ipAddress,
 					userAgent,
 					resourceType: input.resourceType || null,
@@ -70,8 +104,25 @@ export class AuditService {
 					targetUserId: input.targetUserId || null,
 					severity: input.severity || 'info',
 					retainUntil,
+					integrityHash,
+					createdAt,
 				},
 			})
+
+			// Process security alerts (non-blocking)
+			void securityAlertService
+				.processEvent({
+					action: input.action,
+					userId: input.userId || undefined,
+					organizationId: input.organizationId || undefined,
+					ipAddress,
+					details: sanitizedDetails,
+					metadata: sanitizedMetadata,
+					severity: input.severity,
+				})
+				.catch((err) =>
+					logger.error({ err }, 'Failed to process security alert'),
+				)
 
 			// Also log to structured logger for real-time monitoring
 			this.logToStructuredLogger({
@@ -201,6 +252,44 @@ export class AuditService {
 			request,
 			severity: 'info',
 		})
+	}
+
+	/**
+	 * SECURITY: Validate that an update operation only modifies allowed fields.
+	 * Logs a security violation if unauthorized fields are modified.
+	 * (SOC 2 CC7.2 - Tamper Prevention)
+	 */
+	validateUpdateFields(
+		updateData: Record<string, any>,
+		context?: { userId?: string; request?: Request },
+	): { valid: boolean; violatingFields: string[] } {
+		const violatingFields = Object.keys(updateData).filter(
+			(field) => !AuditService.ALLOWED_UPDATE_FIELDS.includes(field),
+		)
+
+		if (violatingFields.length > 0) {
+			// Log security violation for attempted tampering
+			logger.error(
+				{
+					violatingFields,
+					attemptedUpdate: updateData,
+					userId: context?.userId,
+				},
+				'SECURITY ALERT: Attempted modification of immutable audit log fields',
+			)
+
+			// Also create an audit log entry for the violation attempt
+			void this.log({
+				action: AuditAction.SECURITY_VIOLATION,
+				userId: context?.userId,
+				details: `Attempted unauthorized modification of audit log fields: ${violatingFields.join(', ')}`,
+				metadata: { violatingFields, attemptedFields: Object.keys(updateData) },
+				request: context?.request,
+				severity: 'critical',
+			})
+		}
+
+		return { valid: violatingFields.length === 0, violatingFields }
 	}
 
 	/**
@@ -474,7 +563,7 @@ export class AuditService {
 		// Remove control characters and limit length
 		return message
 			.replace(/[\u0000-\u001f\u007f-\u009f]/g, '')
-			.replace(/[[0-9;]*m/g, '')
+			.replace(/\x1b\[[0-9;]*m/g, '')
 			.substring(0, 2000)
 	}
 
@@ -638,5 +727,11 @@ export * from './integration-examples.ts'
 
 // Re-export MCP audit utilities
 export * from './mcp-audit.ts'
+
+// Re-export integrity verification (SOC 2 CC7.2)
+export * from './integrity.ts'
+
+// Re-export security alerting (SOC 2 CC7.2)
+export * from './alerting.ts'
 
 export * from './actions.ts'

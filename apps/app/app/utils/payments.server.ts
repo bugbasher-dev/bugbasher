@@ -13,6 +13,7 @@ import {
 	calculateManualTrialDaysRemaining,
 } from '@repo/payments'
 import { data, redirect } from 'react-router'
+import { getDomainUrl } from '../../../../packages/common/src/misc'
 
 if (!process.env.STRIPE_SECRET_KEY) {
 	const errorMsg = 'STRIPE_SECRET_KEY environment variable is not set!'
@@ -213,11 +214,11 @@ export async function createCheckoutSession(
 	const session = await paymentProvider.createCheckoutSession({
 		priceId,
 		quantity,
-		successUrl: `${process.env.BASE_URL}/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}&organizationId=${organization.id}${isCreationFlow ? '&creation=true' : ''}`,
+		successUrl: `${getDomainUrl(request)}/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}&organizationId=${organization.id}${isCreationFlow ? '&creation=true' : ''}`,
 		cancelUrl:
 			from === 'checkout'
-				? `${process.env.BASE_URL}/${organization.slug}/settings/billing`
-				: `${process.env.BASE_URL}/pricing`,
+				? `${getDomainUrl(request)}/${organization.slug}/settings/billing`
+				: `${getDomainUrl(request)}/pricing`,
 		customerId: organization.stripeCustomerId || testCustomerId || undefined,
 		clientReferenceId: userId.toString(),
 		allowPromotionCodes: true,
@@ -236,14 +237,17 @@ export async function deleteSubscription(subscriptionId: string) {
 	await paymentProvider.cancelSubscription(subscriptionId)
 }
 
-export async function createCustomerPortalSession(organization: Organization) {
+export async function createCustomerPortalSession(
+	request: Request,
+	organization: Organization,
+) {
 	if (!organization.stripeCustomerId || !organization.stripeProductId) {
 		return redirect('/pricing')
 	}
 
 	return paymentProvider.createCustomerPortalSession({
 		customerId: organization.stripeCustomerId,
-		returnUrl: `${process.env.BASE_URL}/${organization.slug}/settings`,
+		returnUrl: `${getDomainUrl(request)}/${organization.slug}/settings`,
 		productId: organization.stripeProductId,
 	})
 }
@@ -482,10 +486,10 @@ export const checkoutAction = async (
 }
 
 export const customerPortalAction = async (
-	_: Request,
+	request: Request,
 	organization: Organization,
 ) => {
-	const portalSession = await createCustomerPortalSession(organization)
+	const portalSession = await createCustomerPortalSession(request, organization)
 	return redirect(portalSession.url)
 }
 

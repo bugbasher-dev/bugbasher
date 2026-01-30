@@ -1,4 +1,5 @@
 import { Trans } from '@lingui/macro'
+import { useDoubleCheck } from '@repo/common'
 import {
 	Frame,
 	FramePanel,
@@ -6,16 +7,43 @@ import {
 	FrameHeader,
 	FrameTitle,
 } from '@repo/ui/frame'
-import { DeleteData } from '#app/components/settings/account-management.tsx'
+import { Icon } from '@repo/ui/icon'
+import { StatusButton } from '@repo/ui/status-button'
+import { useFetcher } from 'react-router'
+import {
+	requestDataDeletionActionIntent,
+	cancelDataDeletionActionIntent,
+} from '#app/routes/_app+/security.tsx'
 
 interface DangerCardProps {
-	user: {
-		id: string
-		email: string
+	gdpr: {
+		activeErasureRequest: {
+			id: string
+			status: string
+			scheduledFor: string | undefined
+			requestedAt: string
+		} | null
 	}
 }
 
-export function DangerCard({ user: _user }: DangerCardProps) {
+function formatDate(date: Date) {
+	return new Intl.DateTimeFormat('en-US', {
+		dateStyle: 'medium',
+		timeStyle: 'short',
+	}).format(date)
+}
+
+export function DangerCard({ gdpr }: DangerCardProps) {
+	const dc = useDoubleCheck()
+	const deletionFetcher = useFetcher()
+	const cancelFetcher = useFetcher()
+
+	const hasActiveErasureRequest = gdpr.activeErasureRequest !== null
+	const scheduledDate = gdpr.activeErasureRequest?.scheduledFor
+		? new Date(gdpr.activeErasureRequest.scheduledFor)
+		: null
+	const deletionDateFormatted = scheduledDate ? formatDate(scheduledDate) : ''
+
 	return (
 		<Frame className="border-destructive/20 bg-destructive/5 dark:bg-destructive/30 w-full">
 			<FrameHeader>
@@ -27,19 +55,71 @@ export function DangerCard({ user: _user }: DangerCardProps) {
 				</FrameDescription>
 			</FrameHeader>
 			<FramePanel>
-				<div className="flex justify-between">
-					<div>
+				<div className="flex items-start justify-between gap-4">
+					<div className="flex-1">
 						<h3 className="text-foreground mb-2 font-medium">
 							<Trans>Delete account</Trans>
 						</h3>
-						<p className="text-muted-foreground text-sm">
-							<Trans>
-								Deleting your user will permanently delete all user data. You
-								should download any data that you wish to retain.
-							</Trans>
-						</p>
+						{hasActiveErasureRequest && scheduledDate ? (
+							<div className="space-y-2">
+								<p className="text-destructive text-sm font-medium">
+									<Trans>
+										Your account is scheduled for deletion on{' '}
+										{deletionDateFormatted}.
+									</Trans>
+								</p>
+								<p className="text-muted-foreground text-sm">
+									<Trans>
+										You can cancel this request before the scheduled date to
+										keep your account. After deletion, all your data will be
+										permanently removed.
+									</Trans>
+								</p>
+							</div>
+						) : (
+							<p className="text-muted-foreground text-sm">
+								<Trans>
+									Request permanent deletion of your account and all associated
+									data. A 7-day grace period allows you to cancel if needed.
+								</Trans>
+							</p>
+						)}
 					</div>
-					<DeleteData />
+					<div className="flex items-center gap-2">
+						{hasActiveErasureRequest ? (
+							<cancelFetcher.Form method="POST">
+								<StatusButton
+									type="submit"
+									name="intent"
+									value={cancelDataDeletionActionIntent}
+									variant="outline"
+									status={cancelFetcher.state !== 'idle' ? 'pending' : 'idle'}
+								>
+									<Icon name="x" />
+									<Trans>Cancel deletion</Trans>
+								</StatusButton>
+							</cancelFetcher.Form>
+						) : (
+							<deletionFetcher.Form method="POST">
+								<StatusButton
+									{...dc.getButtonProps({
+										type: 'submit',
+										name: 'intent',
+										value: requestDataDeletionActionIntent,
+									})}
+									variant={dc.doubleCheck ? 'destructive' : 'outline'}
+									status={deletionFetcher.state !== 'idle' ? 'pending' : 'idle'}
+								>
+									<Icon name="trash-2" />
+									{dc.doubleCheck ? (
+										<Trans>Confirm deletion request</Trans>
+									) : (
+										<Trans>Request deletion</Trans>
+									)}
+								</StatusButton>
+							</deletionFetcher.Form>
+						)}
+					</div>
 				</div>
 			</FramePanel>
 		</Frame>

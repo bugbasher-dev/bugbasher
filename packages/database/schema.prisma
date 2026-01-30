@@ -815,6 +815,9 @@ model AuditLog {
   retainUntil DateTime? // When this log can be safely deleted (compliance-aware)
   archived    Boolean   @default(false) // Whether moved to cold storage
 
+  // Integrity protection (SOC 2 CC7.2)
+  integrityHash String? // HMAC-SHA256 hash for tamper detection
+
   // Timestamps (immutable - do not update after creation)
   createdAt DateTime @default(now())
 

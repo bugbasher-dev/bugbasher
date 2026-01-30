@@ -1,7 +1,6 @@
 import { invariantResponse } from '@epic-web/invariant'
 
 import { authSessionStorage, sessionKey } from '@repo/auth'
-import { redirectWithToast } from '@repo/common/toast'
 import { prisma } from '@repo/database'
 
 type AccountActionArgs = {
@@ -29,13 +28,4 @@ export async function signOutOfSessionsAction({
 		},
 	})
 	return Response.json({ status: 'success' })
-}
-
-export async function deleteDataAction({ userId }: AccountActionArgs) {
-	await prisma.user.delete({ where: { id: userId } })
-	return redirectWithToast('/', {
-		type: 'success',
-		title: 'Data Deleted',
-		description: 'All of your data has been deleted',
-	})
 }

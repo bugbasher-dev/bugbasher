@@ -378,10 +378,17 @@ export default function OrganizationsPage() {
 							</ItemMedia>
 							<ItemContent>
 								<ItemTitle>{org.organization.name}</ItemTitle>
-								<ItemDescription>/app/{org.organization.slug}</ItemDescription>
+								<ItemDescription>/{org.organization.slug}</ItemDescription>
 							</ItemContent>
 							<ItemActions>
-								<span className="text-sm">1</span>
+								<Link
+									to={`/${org.organization.slug}/settings`}
+									onClick={(e) => e.stopPropagation()}
+									className="hover:bg-accent rounded-md p-2 transition-colors"
+									title="Organization settings"
+								>
+									<Icon name="gear" className="block h-4 w-4" />
+								</Link>
 								<Icon
 									name="chevron-right"
 									className="h-4 w-4 rtl:-scale-x-100"

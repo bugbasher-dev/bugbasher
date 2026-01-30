@@ -76,9 +76,6 @@ export async function action({ request }: Route.ActionArgs) {
 				email,
 				verificationRequired: true,
 				verifyUrl: verifyUrl.toString(),
-				// In production, don't return the OTP for security
-				// For development/testing, you might want to include it
-				...(process.env.NODE_ENV === 'development' && { otp }),
 			},
 		})
 	} catch (error) {
