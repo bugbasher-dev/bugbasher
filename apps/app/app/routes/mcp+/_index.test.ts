@@ -7,6 +7,7 @@ import {
 	validateAccessToken,
 	createAuthorizationWithTokens,
 } from '#app/utils/mcp/oauth.server.ts'
+import { MCP_PROTOCOL_VERSION } from '#app/utils/mcp/streamable-http.server.ts'
 
 // Mock context helper for tests
 const createMockContext = (): AppLoadContext => ({
@@ -22,6 +23,44 @@ interface JsonRpcResponse {
 		code: number
 		message: string
 	}
+}
+
+// Helper to initialize a session and get the session ID
+async function initializeSession(
+	accessToken: string,
+): Promise<{ sessionId: string; response: Response }> {
+	const { action } = await import('./_index.ts')
+
+	const request = new Request('http://localhost/mcp', {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+			'Content-Type': 'application/json',
+			Accept: 'application/json',
+		},
+		body: JSON.stringify({
+			jsonrpc: '2.0',
+			id: 1,
+			method: 'initialize',
+			params: {
+				protocolVersion: MCP_PROTOCOL_VERSION,
+				capabilities: {},
+				clientInfo: {
+					name: 'test-client',
+					version: '1.0.0',
+				},
+			},
+		}),
+	})
+
+	const response = await action({
+		request,
+		params: {},
+		context: createMockContext(),
+	} as any)
+
+	const sessionId = response.headers.get('MCP-Session-Id') || ''
+	return { sessionId, response }
 }
 
 // Helper to create test user
@@ -432,7 +471,7 @@ describe('MCP SSE Endpoint', () => {
 	})
 
 	describe('Integration tests for streamableHttp transport', () => {
-		it('should handle POST request with valid token', async () => {
+		it('should handle POST request with valid token and session', async () => {
 			const user = await createTestUser(createdUserIds)
 			const org = await createTestOrganization(user.id, createdOrgIds)
 
@@ -443,22 +482,27 @@ describe('MCP SSE Endpoint', () => {
 				clientName: 'Test Client',
 			})
 
-			// Create POST request with JSON-RPC payload
-			const request = new Request('http://localhost/mcp+/sse', {
+			// First, initialize to get a session
+			const { sessionId } = await initializeSession(accessToken)
+			expect(sessionId).toBeTruthy()
+
+			// Create POST request with JSON-RPC payload and session ID
+			const request = new Request('http://localhost/mcp', {
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 					'Content-Type': 'application/json',
+					'MCP-Session-Id': sessionId,
 				},
 				body: JSON.stringify({
 					jsonrpc: '2.0',
-					id: 1,
+					id: 2,
 					method: 'ping',
 				}),
 			})
 
 			// Import the action function
-			const { action } = await import('./sse.ts')
+			const { action } = await import('./_index.ts')
 
 			// Execute the action
 			const response = await action({
@@ -471,7 +515,7 @@ describe('MCP SSE Endpoint', () => {
 			expect(response.status).toBe(200)
 			const data = (await response.json()) as JsonRpcResponse
 			expect(data.jsonrpc).toBe('2.0')
-			expect(data.id).toBe(1)
+			expect(data.id).toBe(2)
 			expect(data.result).toBeDefined()
 		})
 
@@ -490,7 +534,7 @@ describe('MCP SSE Endpoint', () => {
 			})
 
 			// Import the action function
-			const { action } = await import('./sse.ts')
+			const { action } = await import('./_index.ts')
 
 			// Execute the action
 			const response = await action({
@@ -505,7 +549,7 @@ describe('MCP SSE Endpoint', () => {
 			expect(text).toBe('Unauthorized')
 		})
 
-		it('should handle initialize handshake', async () => {
+		it('should handle initialize handshake and return session ID', async () => {
 			const user = await createTestUser(createdUserIds)
 			const org = await createTestOrganization(user.id, createdOrgIds)
 
@@ -517,18 +561,19 @@ describe('MCP SSE Endpoint', () => {
 			})
 
 			// Create initialize request
-			const request = new Request('http://localhost/mcp+/sse', {
+			const request = new Request('http://localhost/mcp', {
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 					'Content-Type': 'application/json',
+					Accept: 'application/json',
 				},
 				body: JSON.stringify({
 					jsonrpc: '2.0',
 					id: 1,
 					method: 'initialize',
 					params: {
-						protocolVersion: '2024-11-05',
+						protocolVersion: MCP_PROTOCOL_VERSION,
 						capabilities: {},
 						clientInfo: {
 							name: 'test-client',
@@ -539,7 +584,7 @@ describe('MCP SSE Endpoint', () => {
 			})
 
 			// Import the action function
-			const { action } = await import('./sse.ts')
+			const { action } = await import('./_index.ts')
 
 			// Execute the action
 			const response = await action({
@@ -548,19 +593,28 @@ describe('MCP SSE Endpoint', () => {
 				context: createMockContext(),
 			} as any)
 
-			// Verify response
+			// Verify response status and headers
 			expect(response.status).toBe(200)
+
+			// Check for MCP-Session-Id header (Streamable HTTP requirement)
+			const sessionId = response.headers.get('MCP-Session-Id')
+			expect(sessionId).toBeTruthy()
+
+			// Check for MCP-Protocol-Version header
+			const protocolVersion = response.headers.get('MCP-Protocol-Version')
+			expect(protocolVersion).toBe(MCP_PROTOCOL_VERSION)
+
 			const data = (await response.json()) as JsonRpcResponse
 			expect(data.jsonrpc).toBe('2.0')
 			expect(data.id).toBe(1)
 			expect(data.result).toBeDefined()
-			expect(data.result!.protocolVersion).toBe('2024-11-05')
+			expect(data.result!.protocolVersion).toBe(MCP_PROTOCOL_VERSION)
 			expect(data.result!.capabilities).toBeDefined()
 			expect(data.result!.serverInfo).toBeDefined()
 			expect(data.result!.serverInfo.name).toBe('epic-startup-mcp')
 		})
 
-		it('should handle tools/list request', async () => {
+		it('should handle tools/list request with session', async () => {
 			const user = await createTestUser(createdUserIds)
 			const org = await createTestOrganization(user.id, createdOrgIds)
 
@@ -571,12 +625,17 @@ describe('MCP SSE Endpoint', () => {
 				clientName: 'Test Client',
 			})
 
-			// Create tools/list request
-			const request = new Request('http://localhost/mcp+/sse', {
+			// First, initialize to get a session
+			const { sessionId } = await initializeSession(accessToken)
+			expect(sessionId).toBeTruthy()
+
+			// Create tools/list request with session ID
+			const request = new Request('http://localhost/mcp', {
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 					'Content-Type': 'application/json',
+					'MCP-Session-Id': sessionId,
 				},
 				body: JSON.stringify({
 					jsonrpc: '2.0',
@@ -586,7 +645,7 @@ describe('MCP SSE Endpoint', () => {
 			})
 
 			// Import the action function
-			const { action } = await import('./sse.ts')
+			const { action } = await import('./_index.ts')
 
 			// Execute the action
 			const response = await action({
@@ -607,7 +666,7 @@ describe('MCP SSE Endpoint', () => {
 			expect(data.result!.tools.length).toBeGreaterThan(0)
 		})
 
-		it('should handle tools/call request', async () => {
+		it('should handle tools/call request with session', async () => {
 			const user = await createTestUser(createdUserIds)
 			const org = await createTestOrganization(user.id, createdOrgIds)
 
@@ -618,12 +677,17 @@ describe('MCP SSE Endpoint', () => {
 				clientName: 'Test Client',
 			})
 
-			// Create tools/call request
-			const request = new Request('http://localhost/mcp+/sse', {
+			// First, initialize to get a session
+			const { sessionId } = await initializeSession(accessToken)
+			expect(sessionId).toBeTruthy()
+
+			// Create tools/call request with session ID
+			const request = new Request('http://localhost/mcp', {
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 					'Content-Type': 'application/json',
+					'MCP-Session-Id': sessionId,
 				},
 				body: JSON.stringify({
 					jsonrpc: '2.0',
@@ -639,7 +703,7 @@ describe('MCP SSE Endpoint', () => {
 			})
 
 			// Import the action function
-			const { action } = await import('./sse.ts')
+			const { action } = await import('./_index.ts')
 
 			// Execute the action
 			const response = await action({
@@ -680,7 +744,7 @@ describe('MCP SSE Endpoint', () => {
 			})
 
 			// Import the action function
-			const { action } = await import('./sse.ts')
+			const { action } = await import('./_index.ts')
 
 			// Execute the action
 			const response = await action({
@@ -698,7 +762,7 @@ describe('MCP SSE Endpoint', () => {
 			expect(data.error!.message).toContain('Parse error')
 		})
 
-		it('should return error for unknown method', async () => {
+		it('should return error for unknown method with session', async () => {
 			const user = await createTestUser(createdUserIds)
 			const org = await createTestOrganization(user.id, createdOrgIds)
 
@@ -709,12 +773,17 @@ describe('MCP SSE Endpoint', () => {
 				clientName: 'Test Client',
 			})
 
-			// Create request with unknown method
-			const request = new Request('http://localhost/mcp+/sse', {
+			// First, initialize to get a session
+			const { sessionId } = await initializeSession(accessToken)
+			expect(sessionId).toBeTruthy()
+
+			// Create request with unknown method and session ID
+			const request = new Request('http://localhost/mcp', {
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 					'Content-Type': 'application/json',
+					'MCP-Session-Id': sessionId,
 				},
 				body: JSON.stringify({
 					jsonrpc: '2.0',
@@ -724,7 +793,7 @@ describe('MCP SSE Endpoint', () => {
 			})
 
 			// Import the action function
-			const { action } = await import('./sse.ts')
+			const { action } = await import('./_index.ts')
 
 			// Execute the action
 			const response = await action({
@@ -759,7 +828,7 @@ describe('MCP SSE Endpoint', () => {
 			})
 
 			// Import the action function
-			const { action } = await import('./sse.ts')
+			const { action } = await import('./_index.ts')
 
 			// Execute the action
 			const response = await action({
@@ -777,7 +846,7 @@ describe('MCP SSE Endpoint', () => {
 			expect(data.error!.message).toContain('Invalid or expired access token')
 		})
 
-		it('should handle notifications without response', async () => {
+		it('should handle notifications with 202 Accepted response', async () => {
 			const user = await createTestUser(createdUserIds)
 			const org = await createTestOrganization(user.id, createdOrgIds)
 
@@ -788,8 +857,8 @@ describe('MCP SSE Endpoint', () => {
 				clientName: 'Test Client',
 			})
 
-			// Create notification request (no id)
-			const request = new Request('http://localhost/mcp+/sse', {
+			// Create notification request (no id) - per Streamable HTTP spec
+			const request = new Request('http://localhost/mcp', {
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
@@ -802,7 +871,7 @@ describe('MCP SSE Endpoint', () => {
 			})
 
 			// Import the action function
-			const { action } = await import('./sse.ts')
+			const { action } = await import('./_index.ts')
 
 			// Execute the action
 			const response = await action({
@@ -811,11 +880,11 @@ describe('MCP SSE Endpoint', () => {
 				context: createMockContext(),
 			} as any)
 
-			// Verify 204 No Content response
-			expect(response.status).toBe(204)
+			// Verify 202 Accepted response (Streamable HTTP spec requirement)
+			expect(response.status).toBe(202)
 		})
 
-		it('should handle tools/call with missing tool', async () => {
+		it('should handle tools/call with missing tool and session', async () => {
 			const user = await createTestUser(createdUserIds)
 			const org = await createTestOrganization(user.id, createdOrgIds)
 
@@ -826,12 +895,17 @@ describe('MCP SSE Endpoint', () => {
 				clientName: 'Test Client',
 			})
 
-			// Create tools/call request with non-existent tool
-			const request = new Request('http://localhost/mcp+/sse', {
+			// First, initialize to get a session
+			const { sessionId } = await initializeSession(accessToken)
+			expect(sessionId).toBeTruthy()
+
+			// Create tools/call request with non-existent tool and session ID
+			const request = new Request('http://localhost/mcp', {
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 					'Content-Type': 'application/json',
+					'MCP-Session-Id': sessionId,
 				},
 				body: JSON.stringify({
 					jsonrpc: '2.0',
@@ -845,7 +919,7 @@ describe('MCP SSE Endpoint', () => {
 			})
 
 			// Import the action function
-			const { action } = await import('./sse.ts')
+			const { action } = await import('./_index.ts')
 
 			// Execute the action
 			const response = await action({
@@ -862,6 +936,141 @@ describe('MCP SSE Endpoint', () => {
 			expect(data.error).toBeDefined()
 			expect(data.error!.code).toBe(-32603)
 			expect(data.error!.message).toContain('Internal error')
+		})
+
+		it('should reject requests without session ID for non-initialize methods', async () => {
+			const user = await createTestUser(createdUserIds)
+			const org = await createTestOrganization(user.id, createdOrgIds)
+
+			// Create authorization with tokens
+			const { accessToken } = await createAuthorizationWithTokens({
+				userId: user.id,
+				organizationId: org.id,
+				clientName: 'Test Client',
+			})
+
+			// Create request WITHOUT session ID (but not initialize)
+			const request = new Request('http://localhost/mcp', {
+				method: 'POST',
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'tools/list',
+				}),
+			})
+
+			// Import the action function
+			const { action } = await import('./_index.ts')
+
+			// Execute the action
+			const response = await action({
+				request,
+				params: {},
+				context: createMockContext(),
+			} as any)
+
+			// Verify error response - should require session
+			expect(response.status).toBe(400)
+			const data = (await response.json()) as JsonRpcResponse
+			expect(data.error).toBeDefined()
+			expect(data.error!.message).toContain('Missing MCP-Session-Id')
+		})
+
+		it('should reject requests with invalid session ID', async () => {
+			const user = await createTestUser(createdUserIds)
+			const org = await createTestOrganization(user.id, createdOrgIds)
+
+			// Create authorization with tokens
+			const { accessToken } = await createAuthorizationWithTokens({
+				userId: user.id,
+				organizationId: org.id,
+				clientName: 'Test Client',
+			})
+
+			// Create request with invalid session ID
+			const request = new Request('http://localhost/mcp', {
+				method: 'POST',
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+					'Content-Type': 'application/json',
+					'MCP-Session-Id': 'invalid-session-id-12345',
+				},
+				body: JSON.stringify({
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'tools/list',
+				}),
+			})
+
+			// Import the action function
+			const { action } = await import('./_index.ts')
+
+			// Execute the action
+			const response = await action({
+				request,
+				params: {},
+				context: createMockContext(),
+			} as any)
+
+			// Verify error response - session not found
+			expect(response.status).toBe(404)
+			const data = (await response.json()) as JsonRpcResponse
+			expect(data.error).toBeDefined()
+			expect(data.error!.message).toContain('Session not found')
+		})
+
+		it('should return SSE response when Accept header includes text/event-stream', async () => {
+			const user = await createTestUser(createdUserIds)
+			const org = await createTestOrganization(user.id, createdOrgIds)
+
+			// Create authorization with tokens
+			const { accessToken } = await createAuthorizationWithTokens({
+				userId: user.id,
+				organizationId: org.id,
+				clientName: 'Test Client',
+			})
+
+			// Create initialize request with SSE Accept header
+			const request = new Request('http://localhost/mcp', {
+				method: 'POST',
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+					'Content-Type': 'application/json',
+					Accept: 'text/event-stream',
+				},
+				body: JSON.stringify({
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'initialize',
+					params: {
+						protocolVersion: MCP_PROTOCOL_VERSION,
+						capabilities: {},
+						clientInfo: {
+							name: 'test-client',
+							version: '1.0.0',
+						},
+					},
+				}),
+			})
+
+			// Import the action function
+			const { action } = await import('./_index.ts')
+
+			// Execute the action
+			const response = await action({
+				request,
+				params: {},
+				context: createMockContext(),
+			} as any)
+
+			// Verify SSE response
+			expect(response.status).toBe(200)
+			expect(response.headers.get('Content-Type')).toBe('text/event-stream')
+			expect(response.headers.get('MCP-Session-Id')).toBeTruthy()
 		})
 	})
 })

@@ -10,6 +10,7 @@ import {
 import {
 	Dialog,
 	DialogContent,
+	DialogDescription,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
@@ -245,10 +246,17 @@ export function SecurityCard({
 									<DialogTitle>
 										<Trans>Manage Passkeys</Trans>
 									</DialogTitle>
+									<DialogDescription>
+										<Trans>
+											Passkeys are a secure, passwordless way to sign in using
+											your device's biometrics.
+										</Trans>
+									</DialogDescription>
 								</DialogHeader>
 								<PasskeyManager
 									data={{ passkeys }}
 									deleteIntent={deletePasskeyActionIntent}
+									onCancel={() => setIsPasskeyModalOpen(false)}
 								/>
 							</DialogContent>
 						</Dialog>

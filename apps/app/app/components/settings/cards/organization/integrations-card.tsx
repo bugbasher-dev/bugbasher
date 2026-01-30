@@ -122,7 +122,7 @@ function IntegrationCard({
 
 	return (
 		<Card className="flex h-full flex-col">
-			<CardHeader className="mb-3 flex w-full items-center gap-3">
+			<CardHeader className="flex w-full items-center gap-3">
 				<div className="relative grid h-10 w-10 shrink-0 place-items-center rounded-md after:absolute after:inset-0 after:h-full after:w-full after:rounded-[inherit] after:ring-1 after:ring-black/8 after:ring-inset dark:after:ring-white/8">
 					<Icon name={provider.icon as any} className="h-6 w-6" />
 				</div>
@@ -137,7 +137,7 @@ function IntegrationCard({
 				</div>
 			</CardHeader>
 
-			<CardContent className="min-h-[3rem] flex-1">
+			<CardContent className="flex-1">
 				<p className="text-muted-foreground text-sm leading-5">
 					{provider.description}
 				</p>
@@ -194,7 +194,7 @@ function IntegrationCard({
 				</div>
 			</CardContent>
 
-			<CardFooter className="py-1">
+			<CardFooter className="py-2">
 				<a
 					href={getCrossAppUrl('docs', `/integrations/${provider.name}`)}
 					target="_blank"

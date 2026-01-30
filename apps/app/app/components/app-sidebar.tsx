@@ -50,7 +50,8 @@ function UpgradeAccountCard({
 	orgSlug: string
 	launchStatus?: string
 }) {
-	if (!trialStatus.isActive || trialStatus.daysRemaining < 0) return null
+	if (trialStatus.isActive) return null
+	if (trialStatus.daysRemaining < 0) return null
 	// Hide upgrade card for PUBLIC_BETA and CLOSED_BETA
 	if (launchStatus === 'PUBLIC_BETA' || launchStatus === 'CLOSED_BETA')
 		return null

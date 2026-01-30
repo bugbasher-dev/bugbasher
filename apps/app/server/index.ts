@@ -247,6 +247,11 @@ const strongRateLimit = rateLimit({
 
 const generalRateLimit = rateLimit(rateLimitDefault)
 app.use((req, res, next) => {
+	// MCP endpoints have their own rate limiting - skip express rate limiter
+	if (req.path.startsWith('/mcp')) {
+		return next()
+	}
+
 	const strongPaths = [
 		'/login',
 		'/signup',

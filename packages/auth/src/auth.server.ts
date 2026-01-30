@@ -139,7 +139,29 @@ export async function logout(
 		request.headers.get('cookie'),
 	)
 	const sessionId = authSession.get(sessionKey)
+
+	// Get user ID for audit logging before deleting session
+	let userId: string | undefined
 	if (sessionId) {
+		const session = await prisma.session.findUnique({
+			select: { userId: true },
+			where: { id: sessionId },
+		})
+		userId = session?.userId
+
+		// Log logout event (SOC 2 CC7.2)
+		if (userId) {
+			const { auditService, AuditAction } = await import('@repo/audit')
+			void auditService.logAuth(
+				AuditAction.USER_LOGOUT,
+				userId,
+				'User logged out',
+				{ sessionId },
+				request,
+				true,
+			)
+		}
+
 		void prisma.session.deleteMany({ where: { id: sessionId } }).catch(() => {})
 	}
 	throw redirect(safeRedirect(redirectTo), {

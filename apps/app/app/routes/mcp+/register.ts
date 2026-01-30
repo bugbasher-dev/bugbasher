@@ -1,3 +1,4 @@
+import { getDomainUrl } from '@repo/common'
 import { prisma } from '@repo/database'
 import { type ActionFunctionArgs } from 'react-router'
 import { generateToken } from '#app/utils/mcp/oauth.server.ts'
@@ -15,8 +16,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	try {
 		const body = (await request.json()) as Record<string, any>
 
-		const url = new URL(request.url)
-		const baseUrl = `${url.protocol}//${url.host}`
+		const baseUrl = getDomainUrl(request)
 
 		// Validate redirect_uris
 		const redirectUris = Array.isArray(body.redirect_uris)

@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "react-router build",
-    "dev": "cross-env NODE_ENV=development MOCKS=true DISABLE_STRIPE_MOCKS=false node server/index.ts",
+    "dev": "cross-env NODE_ENV=development MOCKS=true node server/index.ts",
     "dev:no-mocks": "cross-env NODE_ENV=development node server/index.ts",
     "dev:all-mocks": "cross-env NODE_ENV=development MOCKS=true node server/index.ts",
     "format": "prettier --write .",

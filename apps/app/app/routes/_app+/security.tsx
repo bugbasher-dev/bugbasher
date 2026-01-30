@@ -19,7 +19,6 @@ import {
 	type LoaderFunctionArgs,
 	useLoaderData,
 } from 'react-router'
-import { AdvancedSettingsCard } from '#app/components/settings/cards/advanced-settings-card.tsx'
 import { ConnectionsCard } from '#app/components/settings/cards/connections-card.tsx'
 import { DangerCard } from '#app/components/settings/cards/danger-card.tsx'
 import { PrivacyCard } from '#app/components/settings/cards/privacy-card.tsx'
@@ -33,10 +32,7 @@ import {
 import { checkSSOEnforcementByUserId } from '#app/utils/sso/enforcement.server.ts'
 import { parseUserAgent } from '#app/utils/user-agent.server.ts'
 import { userSecuritySelect } from '#app/utils/user-security.server.ts'
-import {
-	deleteDataAction,
-	signOutOfSessionsAction,
-} from '../settings+/actions/account.actions'
+import { signOutOfSessionsAction } from '../settings+/actions/account.actions'
 import { disconnectProviderAction } from '../settings+/actions/connections.actions'
 import {
 	requestDataDeletionAction,
@@ -227,7 +223,6 @@ type SecurityActionArgs = {
 
 export const signOutOfSessionsActionIntent = 'sign-out-of-sessions'
 export const revokeSessionActionIntent = 'revoke-session'
-export const deleteDataActionIntent = 'delete-data'
 export const disconnectProviderActionIntent = 'disconnect-provider'
 export const registerPasskeyActionIntent = 'register-passkey'
 export const deletePasskeyActionIntent = 'delete-passkey'
@@ -254,9 +249,6 @@ export async function action({ request }: ActionFunctionArgs) {
 		}
 		case revokeSessionActionIntent: {
 			return revokeSessionAction({ request, userId, formData })
-		}
-		case deleteDataActionIntent: {
-			return deleteDataAction({ request, userId, formData })
 		}
 		case disconnectProviderActionIntent: {
 			return disconnectProviderAction({ userId, formData })
@@ -387,16 +379,16 @@ export default function SecuritySettings() {
 				</AnnotatedSection>
 
 				<AnnotatedSection>
-					<AdvancedSettingsCard user={data.user} />
-				</AnnotatedSection>
-
-				<AnnotatedSection>
-					<PrivacyCard gdpr={data.gdpr} />
+					<PrivacyCard
+						gdpr={{ latestExportRequest: data.gdpr.latestExportRequest }}
+					/>
 				</AnnotatedSection>
 
 				<AnnotatedSection>
 					<Divider className="mt-2" />
-					<DangerCard user={data.user} />
+					<DangerCard
+						gdpr={{ activeErasureRequest: data.gdpr.activeErasureRequest }}
+					/>
 				</AnnotatedSection>
 			</AnnotatedLayout>
 		</div>

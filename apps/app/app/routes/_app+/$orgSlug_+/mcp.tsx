@@ -1272,8 +1272,8 @@ export default function McpPage() {
 
 	const serverUrl =
 		typeof window !== 'undefined'
-			? `${window.location.protocol}//${window.location.host}/mcp/sse`
-			: 'https://yourdomain.com/mcp/sse'
+			? `${window.location.protocol}//${window.location.host}/mcp`
+			: 'https://yourdomain.com/mcp'
 
 	// Handle successful API key creation
 	useEffect(() => {
@@ -1313,25 +1313,22 @@ export default function McpPage() {
 				/>
 			</div>
 
-			<AnnotatedLayout>
-				<AnnotatedSection>
+			<div className="space-y-8">
+				{/* Setup Instructions - Full width at top */}
+				<SetupInstructionsCard
+					organization={organization}
+					serverUrl={serverUrl}
+				/>
+
+				{/* Two column layout for Authorized Clients and Available Tools */}
+				<div className="grid gap-8 lg:grid-cols-2">
 					<AuthorizedClientsCard
 						authorizations={mcpAuthorizations}
 						onRevokeClick={handleRevokeClick}
 					/>
-				</AnnotatedSection>
-
-				<AnnotatedSection>
-					<SetupInstructionsCard
-						organization={organization}
-						serverUrl={serverUrl}
-					/>
-				</AnnotatedSection>
-
-				<AnnotatedSection>
 					<AvailableToolsCard organization={organization} />
-				</AnnotatedSection>
-			</AnnotatedLayout>
+				</div>
+			</div>
 
 			{/* Modals */}
 			<CreateApiKeyModal
