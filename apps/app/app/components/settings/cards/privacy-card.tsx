@@ -1,4 +1,5 @@
 import { Trans } from '@lingui/macro'
+import { formatDate } from '@repo/common'
 import { Button } from '@repo/ui/button'
 import {
 	Frame,
@@ -21,16 +22,9 @@ interface PrivacyCardProps {
 	}
 }
 
-function formatDate(date: Date) {
-	return new Intl.DateTimeFormat('en-US', {
-		dateStyle: 'medium',
-		timeStyle: 'short',
-	}).format(date)
-}
-
 export function PrivacyCard({ gdpr }: PrivacyCardProps) {
 	const lastExportDateFormatted = gdpr.latestExportRequest?.completedAt
-		? formatDate(new Date(gdpr.latestExportRequest.completedAt))
+		? formatDate(gdpr.latestExportRequest.completedAt)
 		: ''
 
 	return (

@@ -1,3 +1,4 @@
+import { getDomainUrl } from '@repo/common'
 import { logMCPRateLimitExceeded, logMCPToolInvoked } from '@repo/audit'
 import { getClientIp } from '@repo/security'
 import { type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router'
@@ -31,15 +32,8 @@ import {
  * Build resource URL for OAuth discovery (RFC 9728)
  */
 function getResourceUrl(request: Request): string {
-	const url = new URL(request.url)
-	const forwardedProto =
-		request.headers.get('X-Forwarded-Proto') ||
-		request.headers.get('x-forwarded-proto')
-	const protocol =
-		forwardedProto === 'https' || url.hostname.includes('epic-startup.me')
-			? 'https:'
-			: url.protocol
-	return `${protocol}//${url.host}/mcp`
+	const domainUrl = getDomainUrl(request)
+	return `${domainUrl}/mcp`
 }
 
 /**
@@ -84,6 +78,12 @@ async function handlePreflight(request: Request): Promise<Response> {
  * Handle DELETE requests to terminate sessions
  */
 async function handleDelete(request: Request): Promise<Response> {
+	// Validate Origin header (DNS rebinding protection)
+	const originResult = validateOrigin(request)
+	if (originResult instanceof Response) {
+		return originResult
+	}
+
 	const sessionId = getSessionId(request)
 	if (!sessionId) {
 		return Response.json(
@@ -98,9 +98,41 @@ async function handleDelete(request: Request): Promise<Response> {
 		)
 	}
 
-	const deleted = deleteSession(sessionId)
+	// Build resource URL for OAuth discovery (use same logic as action)
+	const resourceUrl = getResourceUrl(request)
+
+	// Extract access token from Authorization header
+	const authHeader = request.headers.get('authorization')
+	if (!authHeader || !authHeader.startsWith('Bearer ')) {
+		return new Response('Unauthorized', {
+			status: 401,
+			headers: {
+				'Content-Type': 'text/plain',
+				'WWW-Authenticate': `Bearer realm="MCP", resource="${resourceUrl}"`,
+			},
+		})
+	}
+
+	const accessToken = authHeader.slice(7)
+
+	// Validate access token
+	const tokenData = await validateAccessToken(accessToken)
+	if (!tokenData) {
+		return Response.json(
+			{
+				jsonrpc: '2.0',
+				error: {
+					code: -32600,
+					message: 'Invalid or expired access token',
+				},
+			},
+			{ status: 401 },
+		)
+	}
+
+	const deleted = deleteSession(sessionId, tokenData)
 	if (!deleted) {
-		// Session doesn't exist or already expired
+		// Session doesn't exist, already expired, or doesn't belong to user
 		return new Response(null, { status: 404 })
 	}
 
@@ -576,10 +608,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		)
 	}
 
-	// Handle Last-Event-ID for resumability
-	const ignoredLastEventId = request.headers.get('Last-Event-ID')
-	void ignoredLastEventId
-
 	// Create SSE stream for server-to-client messages
 	const encoder = new TextEncoder()
 	let isClosed = false
@@ -640,16 +668,9 @@ function createLegacySseResponse(request: Request, origin?: string): Response {
 	let heartbeatInterval: ReturnType<typeof setInterval> | null = null
 
 	// Build the POST endpoint URL (same URL, just for POST)
-	// Use X-Forwarded-Proto header to get correct protocol behind proxy
-	const url = new URL(request.url)
-	const forwardedProto =
-		request.headers.get('X-Forwarded-Proto') ||
-		request.headers.get('x-forwarded-proto')
-	// If we're behind a proxy that terminates TLS, use https
-	if (forwardedProto === 'https' || url.hostname.includes('epic-startup.me')) {
-		url.protocol = 'https:'
-	}
-	const postEndpoint = url.href
+	// Use getDomainUrl to handle proxy headers and protocol adjustments accurately
+	const domainUrl = getDomainUrl(request)
+	const postEndpoint = `${domainUrl}/mcp`
 
 	const stream = new ReadableStream({
 		start(controller) {

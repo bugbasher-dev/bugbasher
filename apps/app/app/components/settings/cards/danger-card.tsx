@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { useDoubleCheck } from '@repo/common'
+import { useDoubleCheck, formatDate } from '@repo/common'
 import {
 	Frame,
 	FramePanel,
@@ -26,13 +26,6 @@ interface DangerCardProps {
 	}
 }
 
-function formatDate(date: Date) {
-	return new Intl.DateTimeFormat('en-US', {
-		dateStyle: 'medium',
-		timeStyle: 'short',
-	}).format(date)
-}
-
 export function DangerCard({ gdpr }: DangerCardProps) {
 	const dc = useDoubleCheck()
 	const deletionFetcher = useFetcher()
@@ -40,7 +33,7 @@ export function DangerCard({ gdpr }: DangerCardProps) {
 
 	const hasActiveErasureRequest = gdpr.activeErasureRequest !== null
 	const scheduledDate = gdpr.activeErasureRequest?.scheduledFor
-		? new Date(gdpr.activeErasureRequest.scheduledFor)
+		? gdpr.activeErasureRequest.scheduledFor
 		: null
 	const deletionDateFormatted = scheduledDate ? formatDate(scheduledDate) : ''
 

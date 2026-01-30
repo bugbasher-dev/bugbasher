@@ -1,3 +1,4 @@
+import { getDomainUrl } from '@repo/common'
 import { type LoaderFunctionArgs } from 'react-router'
 
 /**
@@ -9,18 +10,7 @@ import { type LoaderFunctionArgs } from 'react-router'
  * Route: /.well-known/oauth-protected-resource
  */
 export async function loader({ request }: LoaderFunctionArgs) {
-	const url = new URL(request.url)
-
-	// Use X-Forwarded-Proto to get correct protocol behind proxy
-	const forwardedProto =
-		request.headers.get('X-Forwarded-Proto') ||
-		request.headers.get('x-forwarded-proto')
-	const protocol =
-		forwardedProto === 'https' || url.hostname.includes('epic-startup.me')
-			? 'https:'
-			: url.protocol
-
-	const baseUrl = `${protocol}//${url.host}`
+	const baseUrl = getDomainUrl(request)
 
 	return Response.json(
 		{

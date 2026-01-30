@@ -1,6 +1,25 @@
 import { faker } from '@faker-js/faker'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-import { getErrorMessage } from '@repo/common'
+import { getDomainUrl, getErrorMessage, formatDate } from '@repo/common'
+
+describe('formatDate', () => {
+	test('formats Date object correctly', () => {
+		const date = new Date('2023-01-01T12:00:00Z')
+		// Note: The specific output depends on the timezone of the environment running the test
+		// Using a regex to verify the format roughly matches "Jan 1, 2023, 12:00 PM"
+		expect(formatDate(date)).toMatch(/Jan 1, 2023, \d{1,2}:\d{2} [AP]M/)
+	})
+
+	test('formats ISO string correctly', () => {
+		const dateString = '2023-01-01T12:00:00Z'
+		expect(formatDate(dateString)).toMatch(/Jan 1, 2023, \d{1,2}:\d{2} [AP]M/)
+	})
+
+	test('formats timestamp number correctly', () => {
+		const timestamp = 1672574400000 // 2023-01-01T12:00:00Z
+		expect(formatDate(timestamp)).toMatch(/Jan 1, 2023, \d{1,2}:\d{2} [AP]M/)
+	})
+})
 
 describe('getErrorMessage', () => {
 	const consoleError = vi.spyOn(console, 'error')
@@ -30,5 +49,55 @@ describe('getErrorMessage', () => {
 			undefined,
 		)
 		expect(consoleError).toHaveBeenCalledTimes(1)
+	})
+})
+
+describe('getDomainUrl', () => {
+	test('returns correct url for http', () => {
+		const url = 'http://example.com'
+		const request = new Request(url)
+		expect(getDomainUrl(request)).toBe(url)
+	})
+
+	test('returns correct url for https', () => {
+		const url = 'https://example.com'
+		const request = new Request(url)
+		expect(getDomainUrl(request)).toBe(url)
+	})
+
+	test('respects X-Forwarded-Proto', () => {
+		const url = 'http://example.com'
+		const request = new Request(url, {
+			headers: { 'X-Forwarded-Proto': 'https' },
+		})
+		expect(getDomainUrl(request)).toBe('https://example.com')
+	})
+
+	test('respects x-forwarded-proto (lowercase)', () => {
+		const url = 'http://example.com'
+		const request = new Request(url, {
+			headers: { 'x-forwarded-proto': 'https' },
+		})
+		expect(getDomainUrl(request)).toBe('https://example.com')
+	})
+
+	test('respects X-Forwarded-Host', () => {
+		const url = 'http://example.com'
+		const request = new Request(url, {
+			headers: { 'X-Forwarded-Host': 'example.org' },
+		})
+		expect(getDomainUrl(request)).toBe('http://example.org')
+	})
+
+	test('forces https for epic-startup.me', () => {
+		const url = 'http://epic-startup.me'
+		const request = new Request(url)
+		expect(getDomainUrl(request)).toBe('https://epic-startup.me')
+	})
+
+	test('forces https for epic-startup.me subdomain', () => {
+		const url = 'http://sub.epic-startup.me'
+		const request = new Request(url)
+		expect(getDomainUrl(request)).toBe('https://sub.epic-startup.me')
 	})
 })

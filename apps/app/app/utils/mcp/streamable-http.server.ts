@@ -249,7 +249,26 @@ export function getSession(
 /**
  * Delete a session (for explicit termination)
  */
-export function deleteSession(sessionId: string): boolean {
+export function deleteSession(
+	sessionId: string,
+	tokenData: {
+		user: { id: string }
+		organization: { id: string }
+	},
+): boolean {
+	const session = sessions.get(sessionId)
+	if (!session) {
+		return false
+	}
+
+	// Validate session belongs to this token's user and org
+	if (
+		session.userId !== tokenData.user.id ||
+		session.organizationId !== tokenData.organization.id
+	) {
+		return false
+	}
+
 	return sessions.delete(sessionId)
 }
 
@@ -304,13 +323,6 @@ export function createPreflightHeaders(origin?: string): Headers {
 	headers.set('Access-Control-Max-Age', '86400') // 24 hours
 
 	return headers
-}
-
-/**
- * SSE helper: encode data for SSE format
- */
-export function encodeSseData(data: unknown): string {
-	return `data: ${JSON.stringify(data)}\n\n`
 }
 
 /**
