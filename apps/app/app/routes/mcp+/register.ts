@@ -16,7 +16,17 @@ export async function action({ request }: ActionFunctionArgs) {
 		const body = (await request.json()) as Record<string, any>
 
 		const url = new URL(request.url)
-		const baseUrl = `${url.protocol}//${url.host}`
+
+		// Use X-Forwarded-Proto to get correct protocol behind proxy
+		const forwardedProto =
+			request.headers.get('X-Forwarded-Proto') ||
+			request.headers.get('x-forwarded-proto')
+		const protocol =
+			forwardedProto === 'https' || url.hostname.includes('epic-startup.me')
+				? 'https:'
+				: url.protocol
+
+		const baseUrl = `${protocol}//${url.host}`
 
 		// Validate redirect_uris
 		const redirectUris = Array.isArray(body.redirect_uris)

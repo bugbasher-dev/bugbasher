@@ -1,12 +1,12 @@
 import { type LoaderFunctionArgs } from 'react-router'
 
 /**
- * OAuth 2.0 Authorization Server Metadata (RFC 8414)
+ * OAuth 2.0 Protected Resource Metadata (RFC 9728)
  *
- * This endpoint provides OAuth server metadata for discovery.
- * MCP clients may query this to discover OAuth endpoints.
+ * This endpoint provides protected resource metadata for MCP clients.
+ * MCP clients use this to discover the authorization server location.
  *
- * Route: /.well-known/oauth-authorization-server
+ * Route: /.well-known/oauth-protected-resource
  */
 export async function loader({ request }: LoaderFunctionArgs) {
 	const url = new URL(request.url)
@@ -24,14 +24,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 	return Response.json(
 		{
-			issuer: baseUrl,
-			authorization_endpoint: `${baseUrl}/mcp/authorize`,
-			token_endpoint: `${baseUrl}/mcp/token`,
-			registration_endpoint: `${baseUrl}/mcp/register`,
-			response_types_supported: ['code'],
-			grant_types_supported: ['authorization_code', 'refresh_token'],
-			token_endpoint_auth_methods_supported: ['none'],
-			code_challenge_methods_supported: ['S256'],
+			// The resource identifier (this MCP server)
+			resource: `${baseUrl}/mcp`,
+			// The authorization server(s) that protect this resource
+			authorization_servers: [`${baseUrl}`],
+			// Scopes supported by this resource (optional)
+			scopes_supported: ['mcp:read', 'mcp:write'],
+			// Bearer token methods supported
+			bearer_methods_supported: ['header'],
 		},
 		{
 			status: 200,
