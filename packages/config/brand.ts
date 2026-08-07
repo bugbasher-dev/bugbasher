@@ -48,6 +48,10 @@ export const brand = {
 			name: 'BugBasher CMS',
 			description: 'Content management system for BugBasher',
 		},
+		sites: {
+			name: 'Epic Startup Sites',
+			description: 'Public organization websites',
+		},
 	},
 
 	// Email subjects
